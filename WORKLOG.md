@@ -166,3 +166,24 @@
 - [ ] Stripe £5/月订阅接入
 - [ ] 用户注册登录（Supabase Auth）
 - [ ] 133本缺文件的书补齐后重新上传
+
+---
+
+## 2026-04-09 | Session 8 | v1.0.5
+
+**Objective:** Fix LinkedIn URL, update placeholder links, correct email domain
+
+**Completed:**
+- [x] Kevin LinkedIn → linkedin.com/in/xiaoyu-su-217a3b85/
+- [x] Sign in → mailto:hello@readii.co.uk
+- [x] Start free trial → mailto with subject
+- [x] Enrol now → mailto with subject
+- [x] All readii.vip emails → readii.co.uk
+- [x] Hero card domain → readii.co.uk
+- [x] Version comment → v1.0.5
+
+**Files changed:**
+- index.html (v1.0.4 → v1.0.5)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)
+- VERSION (1.0.5)

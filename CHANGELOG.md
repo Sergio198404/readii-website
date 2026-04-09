@@ -91,3 +91,16 @@ Format: [Version] — YYYY-MM-DD
 - 133 books skipped (missing PDF/audio)
 - Database: 239 books rows + ~400 lesson rows created
 - Storage: ~700 files (PDF + reading audio + commentary audio)
+
+---
+
+## [1.0.5] — 2026-04-09
+
+### Fixed
+- Kevin personal LinkedIn URL corrected to linkedin.com/in/xiaoyu-su-217a3b85/
+- Sign in link → mailto:hello@readii.co.uk (until auth is built)
+- Start free trial → mailto with subject line
+- Enrol now → mailto with subject line
+- All email addresses updated from readii.vip to readii.co.uk
+- Hero card domain display: readii.vip → readii.co.uk
+- Version comment updated to v1.0.5
