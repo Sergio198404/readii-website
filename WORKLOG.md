@@ -148,3 +148,21 @@
 - VERSION (1.0.3 → 1.0.4)
 - WORKLOG.md (updated)
 - CHANGELOG.md (updated)
+
+---
+
+## 2026-04-09 | Session 7 | v1.0.4
+
+**Completed:**
+- [x] Netlify 部署成功
+- [x] readii.co.uk 域名绑定完成
+- [x] HTTPS 证书自动签发
+- [x] 239本书 is_published = true
+- [x] 网站正式上线
+
+**网站地址:** https://readii.co.uk
+
+**下一个 Session：**
+- [ ] Stripe £5/月订阅接入
+- [ ] 用户注册登录（Supabase Auth）
+- [ ] 133本缺文件的书补齐后重新上传
