@@ -1,0 +1,1823 @@
+◇ injected env (3) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+📂 内容根目录: C:/Users/sergi/Downloads
+📊 Excel: tools/readii_content_import.xlsx
+🔗 Supabase: https://bltfljdgjxhcmbfduert.supabase.co
+📚 Excel 中共 372 本书
+✅ 文件齐全: 239 本
+⏭️  跳过: 133 本 (有缺失文件)
+
+[1/239] Baby (Heinemann GK)
+  📝 book_id: 514298bd-92ff-4054-9e73-fa4dd0ae8163
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[2/239] Playing Dress Up (Heinemann GK)
+  📝 book_id: 3b84b5c5-ef5f-4b7c-b0c0-6f4d9db5d436
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[3/239] Little Cub (Heinemann GK)
+  📝 book_id: 6ea1610d-1cda-4649-a7f0-28f6d052a828
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[4/239] The Baby (Heinemann GK)
+  📝 book_id: 472282d9-36d9-4a0d-ae9c-fa2e1c7ed8a2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[5/239] My Bear (Heinemann GK)
+  📝 book_id: 4df83360-36c1-43bf-a1fa-549e5ad2749f
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[6/239] The Play (Heinemann GK)
+  📝 book_id: 7b0301f3-9220-46e3-a2f7-fb1520001196
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[7/239] Making a Pizza (Heinemann GK)
+  📝 book_id: 0c9ddb3a-5acc-4a89-b3e7-53c0c1a18185
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[8/239] Birds (Heinemann GK)
+  📝 book_id: 314ec4b4-f204-45c6-8b40-b84457fe93f3
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[9/239] At the Pond (Heinemann GK)
+  📝 book_id: 50975305-d2a3-4458-932e-7eb790fcfc47
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[10/239] Spots (Heinemann GK)
+  📝 book_id: e16cd715-ef6c-48d5-9dae-41935bd3c591
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[11/239] Drawing (Heinemann GK)
+  📝 book_id: 7963e321-0c5d-4632-828e-fce7908ed0f2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[12/239] Baking (Heinemann GK)
+  📝 book_id: 6170ad8f-949f-476f-b3e0-1ecf0346e37a
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[13/239] painting (Heinemann GK)
+  📝 book_id: b89770a1-2db2-4388-a88b-2b0de8f3b9ca
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[14/239] Things that go fast (Heinemann GK)
+  📝 book_id: c939f913-f8c7-4820-a83a-f8c105364af5
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[15/239] The Baby Animals (Heinemann GK)
+  📝 book_id: b169c0df-e894-467f-94af-0e1d2a467f57
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[16/239] Over The River (Heinemann GK)
+  📝 book_id: 837dd932-b5ba-4eb5-859b-c1959f995181
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[17/239] My Big Bear (Heinemann GK)
+  📝 book_id: 85c3b38e-fe22-417f-becb-dc06357b994c
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[18/239] Making Soup (Heinemann GK)
+  📝 book_id: f9b8ab44-55e6-4c91-bf92-07500eda6bbd
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[19/239] My Family (Heinemann GK)
+  📝 book_id: 6be28f40-e4c1-49ef-8738-75ac2ea3d8ae
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[20/239] Playing Together (Heinemann GK)
+  📝 book_id: 09aedccf-4ba7-470c-a8a1-6c94f3b22169
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[21/239] At the Farm (Heinemann GK)
+  📝 book_id: ed5007c1-2fb7-477a-b1a8-8780224e742e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[22/239] The Hat (Heinemann GK)
+  📝 book_id: cdebe1bc-f325-4b54-ab13-c4705ad67cfc
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[23/239] Going on Vacation (Heinemann GK)
+  📝 book_id: 58638874-57ef-4ce6-b37b-80b444b00f30
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[24/239] Hiding (Heinemann GK)
+  📝 book_id: 53aad8d0-899b-4217-a998-a273b38f4980
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[25/239] Hop Hop Hop (Heinemann GK)
+  📝 book_id: bd7c34c4-2050-4309-8ee7-0ed95d2d09e4
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[26/239] Rain (Heinemann GK)
+  📝 book_id: dfddc819-401d-428c-9044-146f56f6f333
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[27/239] So big! (Heinemann GK)
+  📝 book_id: fa379419-c55d-41dc-a9e1-79e49c778ddb
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[28/239] Fun at School (Heinemann GK)
+  📝 book_id: df11cb5c-9d55-41b3-b86b-496f09c641b2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[29/239] My Big Brother (Heinemann GK)
+  📝 book_id: a7eba9e7-8b3c-4e3e-be93-fc3eaaf34a3f
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[30/239] Mouse (Heinemann GK)
+  📝 book_id: 03ee6f68-dd78-4997-92a0-9dc3987eacdb
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[31/239] Mop (Heinemann GK)
+  📝 book_id: 921fd286-3389-4d4e-84b7-dc38b1ad5c6e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[32/239] Play and ride (Heinemann GK)
+  📝 book_id: 9b047b31-46f8-477b-a223-b8c854fd0668
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[33/239] What is Very Long (Heinemann GK)
+  📝 book_id: 3addd412-0fb6-41a9-85db-4d16de58a9cd
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[34/239] -Our Pets (Heinemann GK)
+  📝 book_id: 437449e5-5cad-4c4b-a668-22f4ae1d875f
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[35/239] A Visit from Aunt Bee (Heinemann GK)
+  📝 book_id: 8bec17cd-8b39-487c-b03f-58b77a501f32
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[36/239] Flap, Flap, Fly (Heinemann GK)
+  📝 book_id: 52eea05e-dcfa-47b6-be24-6073accb18f9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[37/239] Going on a Train Ride (Heinemann GK)
+  📝 book_id: 340b3589-8174-4bfa-980a-b0ac6213f809
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[38/239] Playing with Blocks (Heinemann GK)
+  📝 book_id: 1357dd26-dedc-4d7a-8296-6f4e8a7aa1e9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[39/239] Helping (Heinemann GK)
+  📝 book_id: 1879881b-0a1d-461a-a2b4-c2d52988c9e8
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[40/239] Out to Play (Heinemann GK)
+  📝 book_id: 2ab5a905-13c8-41bc-8209-8742d5fea9a3
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[41/239] Animals That Go Fast (Heinemann GK)
+  📝 book_id: 8f403729-4e31-4ecb-9962-db073ff889e3
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[42/239] At School (Heinemann GK)
+  📝 book_id: 43311640-72e0-439f-bf32-5a4eceffb50e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[43/239] Getting Ready (Heinemann GK)
+  📝 book_id: 0f767927-052f-4e25-9dce-de3967306e14
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[44/239] Monkey (Heinemann G1)
+  📝 book_id: 5672ccfe-cf6d-46bb-865b-d2065fada139
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[45/239] Oh No! (Heinemann G1)
+  📝 book_id: 81af4c1f-70a2-4d6c-85d7-f4e9991a9b22
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[46/239] Getting Dressed (Heinemann G1)
+  📝 book_id: 6372e0e9-a418-4cba-9546-e5d57d01ea15
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[47/239] Family Pictures (Heinemann G1)
+  📝 book_id: 893b8967-5f67-4d82-8f12-63fe8bd8ebf2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[48/239] My Bath (Heinemann G1)
+  📝 book_id: beb7aeca-9269-49c2-a062-deb7b8351b9d
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[49/239] At the Park (Heinemann G1)
+  📝 book_id: ccd9cab3-965f-44a8-80a9-e283034c1826
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[50/239] My Puppy (Heinemann G1)
+  📝 book_id: c506be47-9b4a-47a9-be6f-3bb7318bed4b
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[51/239] My New School (Heinemann G1)
+  📝 book_id: bf7de579-0081-4b38-802b-bff065bcec62
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[52/239] Traffic (Heinemann G1)
+  📝 book_id: fe0a095b-ba03-45dc-9ee8-25a7086a4b88
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[53/239] Jump (Heinemann G1)
+  📝 book_id: 357f14c3-5ed4-4736-987e-4d6966594378
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[54/239] Swim! (Heinemann G1)
+  📝 book_id: 99c0889f-a26d-40a2-8103-38f44468ceb9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[55/239] The Sky (Heinemann G1)
+  📝 book_id: 2cee8920-8332-4f43-b24f-325a82416333
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[56/239] The Picnic (Heinemann G1)
+  📝 book_id: 17e62324-c0a6-4669-b886-6dabbb10d898
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[57/239] Look! (Heinemann G1)
+  📝 book_id: b3c4d659-9ae6-49e9-8cc0-1490e2f56218
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[58/239] Sam and Papa (Heinemann G1)
+  📝 book_id: 1637c89f-593e-4b14-9ab2-fa4f9806e109
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[59/239] Too Much Stuff (Heinemann G1)
+  📝 book_id: cdd496ae-dcb1-4a9d-a03f-f9e5e7aabc25
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[60/239] Orson_s Tummy Ache (Heinemann G1)
+  📝 book_id: 4fcfcc86-774e-4cea-8c44-1f792b6116a6
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[61/239] Bubbles (Heinemann G1)
+  📝 book_id: 0145c121-632d-44ec-8cbf-48a1c4f7324f
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[62/239] The Farmers (Heinemann G1)
+  📝 book_id: 2a938811-842c-4a4b-a03a-347b4d3885bb
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[63/239] Mon and Kayla (Heinemann G1)
+  📝 book_id: b865c200-22b3-4390-afe9-d6fed1ef9318
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[64/239] Our Garden (Heinemann G1)
+  📝 book_id: 7790c1fc-ae1b-4af4-8b24-d65c8efe4395
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[65/239] Boots and Shoes (Heinemann G1)
+  📝 book_id: 10936746-0910-4267-87fd-a792e3dd1f9f
+  📄 PDF 上传完成
+    ❌ 上传失败: books/10936746-0910-4267-87fd-a792e3dd1f9f/day-1-reading.mp3 — Gateway Timeout
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[66/239] Apple Pie (Heinemann G1)
+  📝 book_id: 7de636aa-048d-4bbf-a9f9-564cbd7bfb9f
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[67/239] At Rainy Day (Heinemann G1)
+  📝 book_id: 3bdc3b16-973b-4f3b-900e-e7fdedbc31d1
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[68/239] My Friend (Heinemann G1)
+  📝 book_id: 8f5b14f8-9b10-4889-826a-7b63aee5550c
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[69/239] Trucks (Heinemann G1)
+  📝 book_id: e2cb9199-0b6b-459a-8391-056734f5348f
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[70/239] Ant Can_t (Heinemann G1)
+  📝 book_id: 4a0ab673-f483-4bfe-af0d-4805a396a9f5
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[71/239] Eggs (Heinemann G1)
+  📝 book_id: c7abac68-d953-47bf-969c-34ed2f388bf8
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+    ❌ 上传失败: books/c7abac68-d953-47bf-969c-34ed2f388bf8/day-2-reading.mp3 — Gateway Timeout
+  ✅ 完成
+
+[72/239] Where Things Grow (Heinemann G1)
+  📝 book_id: 67caf585-ceb4-4756-a671-27e383c048fc
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[73/239] A Day at the Park (Heinemann G1)
+  📝 book_id: a532df6d-2679-451c-ac0e-3151b4ed01e2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[74/239] Looking for Taco (Heinemann G1)
+  📝 book_id: a855dea1-7474-4274-a949-20491897bcbd
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[75/239] Meli on the Stairs (Heinemann G1)
+  📝 book_id: 84c424a9-fb48-40b7-98f4-643002c4b459
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[76/239] Homes (Heinemann G1)
+  📝 book_id: 174f25cd-442d-4e56-91cc-bfafa4a2fbdb
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[77/239] Clouds (Heinemann G1)
+  📝 book_id: c0bdbaaf-b120-4616-ba8e-e41a4b72bc3c
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[78/239] The Puppets (Heinemann G1)
+  📝 book_id: c7a4a6ce-af6a-4c80-a9ec-0ee832f3a5f3
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[79/239] Play Ball! (Heinemann G1)
+  📝 book_id: a8e18880-18df-4dfe-826c-7361a9887703
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[80/239] Talent Show (Heinemann G1)
+  📝 book_id: f9820114-2e6c-4828-be41-ebe5dedb9711
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[81/239] Kate_s Truck (Heinemann G1)
+  📝 book_id: 76ca43fe-f8ce-48e1-bdb1-e7dceffbe7bd
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[82/239] A Visit to the City (Heinemann G1)
+  📝 book_id: e4e33956-23a1-4dd7-bbc8-92586fc4ecd2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[83/239] Pets (Heinemann G1)
+  📝 book_id: c8af8a4f-fa9d-4f03-a3a3-8b1ff7ad2416
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[84/239] The Very Busy Hen (Heinemann G1)
+  📝 book_id: 6cb5e979-1c54-4471-b403-5387a0bd1f96
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[85/239] The Three Pigs (Heinemann G1)
+  📝 book_id: 9b2b8143-2e18-48fb-8217-66ddb09b11f7
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[86/239] Up in a Tree (Heinemann G1)
+  📝 book_id: eed535fd-7bc6-44a0-8bea-1935571c13a5
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[87/239] Time for Lunch (Heinemann G1)
+  📝 book_id: 0d64c9d7-8bfb-4ee0-a95c-0e8459cd1656
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[88/239] The Good Dog (Heinemann G1)
+  📝 book_id: 41220a0b-546e-4404-953e-f2b984397a81
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[89/239] What Am I (Heinemann G1)
+  📝 book_id: 7ec1af2d-0007-4e85-a7c1-e2e5e2575aef
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[90/239] A Box (Heinemann G1)
+  📝 book_id: cb7e3aa5-ac38-454e-bc7f-2d374a6797f5
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[91/239] Books (Heinemann G1)
+  📝 book_id: 16594cc7-b4de-4364-a2b0-6623a4b7cd44
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[92/239] The Pool (Heinemann G1)
+  📝 book_id: 0803bbc7-313b-4505-a469-eec1440461de
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[93/239] Farmer Dan_s Ducks (Heinemann G1)
+  📝 book_id: 3a4866ce-0bcd-4332-b9a6-f928b2a96777
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[94/239] My Five Senses (Heinemann G1)
+  📝 book_id: 06dae364-32a7-4e83-8a01-2773427fdec5
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[95/239] The Three Bears (Heinemann G1)
+  📝 book_id: bee327fe-5f10-4618-8340-5aee71f2e345
+  📄 PDF 上传完成
+    ❌ 上传失败: books/bee327fe-5f10-4618-8340-5aee71f2e345/day-1-reading.mp3 — Service Temporarily Unavailable
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[96/239] The Surprise (Heinemann G1)
+  📝 book_id: dce5feba-e0d2-486b-94ef-616553995fa1
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[97/239] Baby Pictures (Heinemann G1)
+  📝 book_id: cd91cd41-aad1-4b54-b746-a961b3cf3f6e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[98/239] A Walk with Meli (Heinemann G1)
+  📝 book_id: ecd46be9-ecf8-41b2-9068-bb6025be2219
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[99/239] Helping Mom (Heinemann G1)
+  📝 book_id: a45d0c3e-82fa-4a16-a7ba-d282e6981613
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[100/239] The Storm (Heinemann G1)
+  📝 book_id: 66c37464-43c1-4ed1-b7ca-1a467d9b9d1e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[101/239] Lizzy (Heinemann G1)
+  📝 book_id: 18821dbe-7b18-475b-b969-278f6925a2a2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[102/239] A Surprise for Mom (Heinemann G1)
+  📝 book_id: dbb0435b-6345-4cb6-a8c4-b09a70bce43e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[103/239] Brave Taco (Heinemann G1)
+  📝 book_id: 1ae1370e-d78e-445b-847b-714bce6bbc25
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[104/239] Smells (Heinemann G1)
+  📝 book_id: f8d8f646-7a53-4015-b441-2d78966ecbe5
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[105/239] Jesse (Heinemann G1)
+  📝 book_id: ed9926a1-86a3-4513-b084-f429a6bfc36e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[106/239] 4-D(1+2)-61 three little pigs (Heinemann G1)
+  📝 book_id: e3a7ea2c-e4c9-4747-b5f0-9178615d8883
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[107/239] 4-D(11+12)-82.  The Tree House (Heinemann G1)
+  📝 book_id: beb51947-c9fc-4ff4-be73-06d4586012f8
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[108/239] 4-D(13+14)-84.  Out for Lunch (Heinemann G1)
+  📝 book_id: 37590abf-00a7-4e4c-9e6c-351ea0404fc6
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[109/239] 4-D(15+16)-86.  Just Wait and See (Heinemann G1)
+  📝 book_id: 407aa1b7-fb09-4cbe-9b8f-ed36c5629946
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[110/239] 4-D(17+18)-88.  All About Animal Babies (Heinemann G1)
+  📝 book_id: ed5e19ae-150d-41e3-9b50-289168c41ba8
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[111/239] 4-D(19+20)-90.  Grandmas Glasses (Heinemann G1)
+  📝 book_id: 73b0273f-dc45-415b-aa20-4189741f4b92
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[112/239] 4-D(21+22)-71.  Goldie and the Three Bears (Heinemann G1)
+  📝 book_id: a21183c3-450d-4f4a-87c8-584fa0a824e7
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[113/239] 4-D(23+24)-73.  Papa_s Birthday (Heinemann G1)
+  📝 book_id: 6f843704-8caa-4f2d-950e-fa438d123069
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[114/239] 4-D(25+26)-G75 Baby Bird (Heinemann G1)
+  📝 book_id: c37dad49-894b-46e6-a963-a416bed8709b
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[115/239] 4-D(27+28)-G77 The Goat in the Garden (Heinemann G1)
+  📝 book_id: b3eb595c-7640-46b3-8f74-1ada13ba4607
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[116/239] 4-D(29+30)-G79 How Frogs Grow (Heinemann G1)
+  📝 book_id: cb176e25-af18-40b2-849f-d546bc019e63
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[117/239] 4-D(3+4)-63.  The Soccer Game (Heinemann G1)
+  📝 book_id: d4fedb87-2805-49e7-b325-b2c9160196d1
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[118/239] 4-D(31+32)-G92 Home Sweet Home (Heinemann G1)
+  📝 book_id: 2d888898-2e9f-49d0-aba5-c3b6e799fec9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[119/239] 4-D(33+34)-G94 The Bossy Pig (Heinemann G1)
+  📝 book_id: f4c83876-3c0d-41f6-bf77-dbab91360659
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[120/239] 4-D(35+36)-G96 Best New Friends (Heinemann G1)
+  📝 book_id: 64f8917f-f47b-4898-a719-380a814a26d9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[121/239] 4-D(37+38)-G98 The Lucky Penny (Heinemann G1)
+  📝 book_id: ac4e7273-006d-42ba-b350-14847becfa50
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[122/239] 4-D(39+40)-G100 A Walk at Night (Heinemann G1)
+  📝 book_id: c303e3f6-8662-4117-b1fd-40d9a7874a78
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[123/239] 4-D(41+42)-H81 The Skunk with no Stripes (Heinemann G1)
+  📝 book_id: 08690d15-2367-4b0f-aa3b-556a29911330
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[124/239] 4-D(43+44)-H83 The Gingerbread Man (Heinemann G1)
+  📝 book_id: 7e6fe59f-8252-4a42-9d94-883186671106
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[125/239] 4-D(45+46)-H85 Dinner for Maisy Part (Heinemann G1)
+  📝 book_id: effc7e75-97a9-4731-9b99-b177a814493c
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[126/239] 4-D(47+48)-H87 In Winter Part (Heinemann G1)
+  📝 book_id: a503dfb9-b321-448a-aef8-5aa48f0f6ca9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[127/239] 4-D(5+6)-65. Bunny and the Monster (Heinemann G1)
+  📝 book_id: 3ccddf32-b70b-4357-80db-4bbce3b47313
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[128/239] 4-D(7+8)-67.  Pictures of Hugs (Heinemann G1)
+  📝 book_id: f42573f4-7386-4161-a442-28da10d831bf
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[129/239] 4-D(9+10)-69.  The Big Storm (Heinemann G1)
+  📝 book_id: 7d7c45d9-110f-4866-bd38-098ad7582797
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[130/239] 4-D（49+50）-H89 The Gecko that came to School (Heinemann G1)
+  📝 book_id: 42bed4a2-95e6-4cfb-883b-86c4fccb7ad3
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[131/239] 4-D（51+52）-H102 Two Teams (Heinemann G1)
+  📝 book_id: 94aa6461-a99e-49f8-802a-d8ca8ed3b9dc
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[132/239] 4-D（53+54）-H104 The Cherries (Heinemann G1)
+  📝 book_id: 9f163d22-6c0f-4d18-aaf3-8d3679f89638
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[133/239] 4-D（55+56）-H106 All About Boats (Heinemann G1)
+  📝 book_id: 56d205e0-12e6-432e-9a72-9af6dfa9b497
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[134/239] 4-D（57+58）-H108 All About Chimps (Heinemann G1)
+  📝 book_id: 75946c41-16d3-4e56-b244-9fa3b5ecea20
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[135/239] 4-D（59+60）-H110 A Trip to the Laundromutt (Heinemann G1)
+  📝 book_id: ad49178d-92e0-4a38-acc5-59e1d4efd792
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[136/239] 4-D（61+62）-I91 Fun for Hugs (Heinemann G1)
+  📝 book_id: 48a169c9-5ea9-4ece-abe1-7b772e3774c6
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[137/239] 4-D（63+64）-I93 Bears Birthday (Heinemann G1)
+  📝 book_id: 2b4da0df-e467-4467-a505-4e1a6bb9d8a8
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[138/239] 4-D（65+66）-I95 Stone Soup (Heinemann G1)
+  📝 book_id: 11e42d6f-6b2f-48a3-98bc-4675386ec7e1
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[139/239] 4-D（67+68）-I97 The Missing Cat (Heinemann G1)
+  📝 book_id: ede700f5-c5a3-4b65-8a11-bd91dc14f7ac
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[140/239] 4-D（69+70）-I99 All About Honey Bees (Heinemann G1)
+  📝 book_id: a87e8b2c-9730-4e21-84d0-e115a8cc9e07
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[141/239] 4-D（71+72）-J101 Too Tall (Heinemann G1)
+  📝 book_id: c86d25eb-b5fc-4598-9693-0c55bd17dba7
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[142/239] 4-D（73+74）-J103 All About Dolphins (Heinemann G1)
+  📝 book_id: d304e279-1059-413b-9b12-835d69fdfbd7
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[143/239] 4-D（75+76）-J105 The Lion and the Mouse (Heinemann G1)
+  📝 book_id: 824fed17-96c3-4604-b2de-8b430c25b240
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[144/239] 4-D（77+78）-J107 The Three Billy Goats (Heinemann G1)
+  📝 book_id: 4d466cf7-0aa7-4e44-87c8-4c2378442f5a
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[145/239] 4-D（79+80）-J109  Bad-Luck Day (Heinemann G1)
+  📝 book_id: fa049fb6-2780-436c-a944-afb78eb20929
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[146/239] D(49+50)-41.  Meli at School (Heinemann G2)
+  📝 book_id: e2463799-5c3a-49c7-a59f-c9522386c81f
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[147/239] D(51+52)-43.  Super Fox (Heinemann G2)
+  📝 book_id: be6fd89e-c599-4fb3-8f9f-5b5f042cc289
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[148/239] D(53+54)-45.  Moosling the Babysitter (Heinemann G2)
+  📝 book_id: bed5ef32-f16c-4a98-9d89-d52baae3fab2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[149/239] D(55+56)-47.  At the Beach (Heinemann G2)
+  📝 book_id: a6914b99-d208-4607-9a36-8e208050dadc
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[150/239] D(57+58)-49.  Fighting Fires (Heinemann G2)
+  📝 book_id: bb87a8c8-b9c5-405a-a3ad-bc3aba04840e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[151/239] D(59+60)-62.  The Perfect Picnic (Heinemann G2)
+  📝 book_id: cd6e9b6b-4e3d-4657-a569-558b95835055
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[152/239] D(61+62)-64.  A Party for Panda (Heinemann G2)
+  📝 book_id: bed6730d-cbb8-47fe-968f-e3156dfbd194
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[153/239] D(63+64)-66.  The New Roof (Heinemann G2)
+  📝 book_id: 48fe8293-4820-433f-a115-7b176f806777
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[154/239] D(65+66)-68.  Kims New Shoes (Heinemann G2)
+  📝 book_id: d20ce9e1-2f83-42fe-aefb-fd5a0190404e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[155/239] D(67+68)-70.  The Play Date (Heinemann G2)
+  📝 book_id: 713725c2-3a2f-468b-9780-9d1791f75085
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[156/239] All About Penguins (Heinemann G2)
+  📝 book_id: 880898bc-3d26-4764-8aeb-1f8f2e3731c8
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[157/239] Big Lizard, Little Lizard (Heinemann G2)
+  📝 book_id: 5ca22224-61e4-4d6b-8bc9-f18d1cc44fde
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[158/239] Tug-of -War (Heinemann G2)
+  📝 book_id: 3489354a-4a2c-43ba-b0c9-25b55ebbe9aa
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[159/239] Pinky The Pig (Heinemann G2)
+  📝 book_id: 71c52c36-36ae-450e-a7d8-c1e92fe064dd
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[160/239] In My Room (Heinemann G2)
+  📝 book_id: 6c56ed8f-8ab4-4066-8f56-0b30e9390d0b
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[161/239] Fishing (Heinemann G2)
+  📝 book_id: c695d1a1-7186-4dab-b74f-775945d088ff
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[162/239] The fish tank (Heinemann G2)
+  📝 book_id: b26fa9d6-797d-4d42-bc08-d4e783cad981
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[163/239] Kittens (Heinemann G2)
+  📝 book_id: 25a2c2cc-9728-407f-94d6-b82c337fa35b
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[164/239] The big city (Heinemann G2)
+  📝 book_id: f1b9ea33-2f83-47c9-bcc7-1bf43dbafbe0
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[165/239] All About Snakes (Heinemann G2)
+  📝 book_id: e0755ee8-9030-42e1-a0bc-3ecbf4b4c4d3
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[166/239] The Drip (Heinemann G2)
+  📝 book_id: 35913c17-4162-40a6-87e0-0f97c92b8686
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[167/239] The Mitten (Heinemann G2)
+  📝 book_id: e2c86a4b-5b7a-43d1-b71c-0f7da83104f8
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[168/239] A Picnic In The Rain (Heinemann G2)
+  📝 book_id: ed399ed1-d8e4-4d59-a0c8-ead9f5a43f9b
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[169/239] A Surprise for Roxy (Heinemann G2)
+  📝 book_id: 5437094b-4bf1-4227-89e1-7d3203564110
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[170/239] Night Workers (Heinemann G2)
+  📝 book_id: 8dee1c52-7105-4396-a740-5df212991ad1
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[171/239] Tails (Heinemann G2)
+  📝 book_id: d5cff303-5cf5-4489-b6c4-670e280098ff
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[172/239] Billy_s Pen (Heinemann G2)
+  📝 book_id: 1e8bed6a-2c01-44f3-88a6-979bcceddeab
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[173/239] The Red Pajamas (Heinemann G2)
+  📝 book_id: 7ec1b5d0-3674-4658-ad71-9d2a459af0b5
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[174/239] The Cold (Heinemann G2)
+  📝 book_id: cd4e8769-f737-4b67-a5ee-3dee41e18ec8
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[175/239] The Birthday Song (Heinemann G2)
+  📝 book_id: aaad8176-23b0-47a9-8bd1-17d50384ffac
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[176/239] Chicken Little (Heinemann G2)
+  📝 book_id: a59903cb-6b29-4bd3-99fc-955422b90e53
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[177/239] Meli at the Pet Shop (Heinemann G2)
+  📝 book_id: 43214706-3e75-45d4-8899-65d5ca518719
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[178/239] Meli at the Vet (Heinemann G2)
+  📝 book_id: ad4ac27a-ad9b-41b5-8c93-04ba071c85c9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[179/239] Little Bat (Heinemann G2)
+  📝 book_id: 70916ca3-34ae-4d2f-b194-9e9afd0ec211
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[180/239] The Trip (Heinemann G2)
+  📝 book_id: 34510912-a342-4ac9-9a45-d347da99d375
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[181/239] Pig_s New House (Heinemann G2)
+  📝 book_id: 9e267c63-38b7-4bf4-8d59-cb25fef5b8cb
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[182/239] The Hug (Heinemann G2)
+  📝 book_id: b94ca465-d708-48ed-adfd-f2859409282e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[183/239] Ants On A Log (Heinemann G2)
+  📝 book_id: be4eeb5c-d51c-4170-bcc1-22114c071d45
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[184/239] The Broken Clock (Heinemann G2)
+  📝 book_id: 197d0eb8-0235-4393-a3c7-097349393123
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[185/239] All About Sharks (Heinemann G2)
+  📝 book_id: 4e2b8224-6357-4b2a-96dd-3e1b173caa15
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[186/239] A Fast Fox (Heinemann G2)
+  📝 book_id: d4cdd049-a885-4bb3-88a7-5f4229719c96
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[187/239] The Muddy mess (Heinemann G2)
+  📝 book_id: d995a152-4097-4d19-bdaf-227389a82a3c
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[188/239] Taking Care Of Meli (Heinemann G2)
+  📝 book_id: 4999fcf1-16c5-4e8a-bd60-d9a6aac2a4f7
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[189/239] Taking Care of Meli (Heinemann G2)
+  📝 book_id: 10617053-481b-45ae-a4f9-7cd3e81758e0
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[190/239] Mother Sea Turtle (Heinemann G2)
+  📝 book_id: 7635b273-3bef-48b2-8fc8-838ffda2e85e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[191/239] Down By The Pond (Heinemann G2)
+  📝 book_id: 9cdb1d8a-9dea-44b6-8976-f39fd827f94e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[192/239] Pop, Pop, Popcorn! (Heinemann G2)
+  📝 book_id: 7abb3bd1-3231-43e6-ad9c-7fb17202cba4
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[193/239] Going Camping (Heinemann G2)
+  📝 book_id: 94ee2a89-c8a6-41f5-a68a-a0101a879b22
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[194/239] Little Wolf_s New Home (Heinemann G2)
+  📝 book_id: 3f0de3f5-1ecd-4761-bcdb-ee9305eda855
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[195/239] The Sea (Heinemann G2)
+  📝 book_id: ddd9244d-738c-465e-9f37-660f3e0ab0e9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[196/239] Down the River (Heinemann G2)
+  📝 book_id: d996c956-19ae-4069-a883-4612e933d1aa
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  🔊 Day 2 阅读音频上传完成
+  ✅ 完成
+
+[197/239] 6-D（101+102）-101 The Costume Party (Heinemann G2)
+  📝 book_id: 12b19400-7243-437c-8e5c-019d12aac9c2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[198/239] 6-D（103+104） The Roadrunners (Heinemann G2)
+  📝 book_id: 0d8c026c-faac-4055-a17c-d353b4f2958c
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[199/239] 6-D（105+106） Venus, The Flytrap who wouldn_t eat Flies (Heinemann G2)
+  📝 book_id: c02f49b4-93c0-4225-8433-1f188206b87b
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[200/239] 6-D（107+108）-107 The Fox and the Gulls (Heinemann G2)
+  📝 book_id: 45149ec3-3bc1-4bf6-a56f-0979e60606fd
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[201/239] 6-D（109+110）-109 A Dragons Lullaby (Heinemann G2)
+  📝 book_id: 0b7c3056-54b1-43e9-a79f-9b0cfa2df8e2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[202/239] 6-D（11+12）-72.  Footprints (Heinemann G2)
+  📝 book_id: 76234145-69df-4342-a093-ecb7c0565ce0
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[203/239] 6-D（113+114）-113 All About Astronauts (Heinemann G2)
+  📝 book_id: e5675a0a-fec6-4cdf-af9c-f078b3ae89da
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[204/239] 6-D（119+120)-119 Chester Greenwood_s Big Idea (Heinemann G2)
+  📝 book_id: 78b1389f-a64f-424e-a3a3-55bd5b6dca44
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[205/239] 6-D（13+14）-074 All About Spiders (Heinemann G2)
+  📝 book_id: 325b27b8-fcf8-41f8-b393-2503f95be6f5
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[206/239] 6-D（17+18）-078 The Bird Feeders (Heinemann G2)
+  📝 book_id: 3a890248-8fa3-4f9d-bf78-8c4d630f22ab
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[207/239] 6-D（19+20）-080 The Boss (Heinemann G2)
+  📝 book_id: 4e49fd74-194e-4711-a545-2fd4fd0ef46a
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[208/239] 6-D（21+22）-061 Road Builders (Heinemann G2)
+  📝 book_id: 9623c41f-05da-48da-b818-832709fcfb93
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[209/239] 6-D（23+24）-063 All About Dinosaurs (Heinemann G2)
+  📝 book_id: ca96ca40-6842-464f-9974-5b045c6832b2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[210/239] 6-D（29+30）-069 The Wind and the Sun (Heinemann G2)
+  📝 book_id: a7c86b83-f82b-4688-96e5-6e12d78e0640
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[211/239] 6-D（31+32）-82 The Singing Duck (Heinemann G2)
+  📝 book_id: 47f9222d-5458-4325-9483-a52c9f8c3ff2
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[212/239] 6-D（33+34）-84 The Wise Blackbird (Heinemann G2)
+  📝 book_id: ed561ac4-940b-4fbb-af77-588a1f1dd6b9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[213/239] 6-D（35+36）-86  All About Redwood Trees (Heinemann G2)
+  📝 book_id: 27732831-eb49-41ef-999b-bc25c6e9ffa9
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[214/239] 6-D（43+44）-73 All About Bats (Heinemann G2)
+  📝 book_id: 0a3cf173-60a2-45fe-b73d-9b1a1245c7b7
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[215/239] 6-D（45+46）-J75 The Hare and the Tortoise (Heinemann G2)
+  📝 book_id: 30b4296a-d774-4ff6-9a60-03622c3e976f
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[216/239] 6-D（47+48）-77 All About the Sonoran Desert (Heinemann G2)
+  📝 book_id: b1aca2ae-5ff8-4f3b-ac4c-3791809a3675
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[217/239] 6-D（51+52）-92 Frog Songs (Heinemann G2)
+  📝 book_id: 4f28e82a-310e-4e6b-81e3-ad8b1a7fd763
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[218/239] 6-D（53+54）-94 Elephant and Tiger (Heinemann G2)
+  📝 book_id: 046bde73-5f96-433e-a7fe-82e6c6c41b7c
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[219/239] 6-D（57+58）-98 Into the Sea (Heinemann G2)
+  📝 book_id: 6b747b81-57c4-4959-8036-6846f5018b3d
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[220/239] 6-D（59+60）-100  The Ladybug and the Cricket (Heinemann G2)
+  📝 book_id: 6204be13-28f4-49f3-9944-d3c1ec3bbea0
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[221/239] 6-D（61+62）-81 All About Robots (Heinemann G2)
+  📝 book_id: 26f2f0d8-207c-40a5-8e28-dd1844144717
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[222/239] 6-D（67+68）-87 The City Mouse and the Country Mouse (Heinemann G2)
+  📝 book_id: d2e28e08-3c52-4b2a-b3c4-4c6f8971b9bd
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[223/239] 6-D（7+8）-057 The Coyote and the Rabbit (Heinemann G2)
+  📝 book_id: d18e938a-c00d-4dea-bb2f-0288cd1c90be
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[224/239] 6-D（71+72)-102 Moosling in Winter (Heinemann G2)
+  📝 book_id: 988838ba-0a6a-4311-953d-ffc92f370577
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[225/239] 6-D（77+78）-108 Puddle Play (Heinemann G2)
+  📝 book_id: b057a102-f3b4-4156-8b09-58fca20f852f
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[226/239] 6-D（79-80）-110 The Scream (Heinemann G2)
+  📝 book_id: 78c6c0ba-2171-4ae4-bcc7-4c773d48c303
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[227/239] 6-D（87+88）-97 Little Cat, Big Cat Part (Heinemann G2)
+  📝 book_id: 10549e0c-45b4-4ed1-8fd9-b490a0748638
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[228/239] 6-D（89+90）-99 A Surprise for the Big Bad Wolf (Heinemann G2)
+  📝 book_id: 43a1e034-670d-4417-aa16-2326c890d9fb
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[229/239] 6-D（9+10）-059 Plants That Eat Bugs (Heinemann G2)
+  📝 book_id: fa5f049a-a3dc-4df9-90c1-fc688ccf5e5e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[230/239] 6-D（93+94）-114 Too Many Teeth (Heinemann G2)
+  📝 book_id: 3fb6961d-cdf7-48e2-b867-083fd75d0ff3
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[231/239] 6-D（99+100）-120 Animals with Wings (Heinemann G2)
+  📝 book_id: 7162a886-2324-4fde-813d-046e74a8e569
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[232/239] 6-D（111+112）-111 The Hot Day (Heinemann G2)
+  📝 book_id: 7e62fb85-e722-45ba-9452-d4c1290cfff7
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[233/239] 6-D（27+28）-67 The Fun Club Goes to the Vet Clinic (Heinemann G2)
+  📝 book_id: 4babc0cf-ab84-482e-9a03-6922c7ea1034
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[234/239] 6-D（49+50）-79 The Ugly Duckling (Heinemann G2)
+  📝 book_id: f944dbfc-c3ad-4466-a91f-12e43cc5388e
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[235/239] 6-D（55+56）-96 Hide and Seek (Heinemann G2)
+  📝 book_id: 3ce72690-faca-4ba7-95d6-a9ba5c2a9356
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[236/239] 6-D（63+64）-83 How Bear Lost His Tail (Heinemann G2)
+  📝 book_id: 63293c41-bfed-44e0-bf9b-8034acdfcb14
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[237/239] 6-D（69+70）-89 The Fun Club goes to the Aquarium (Heinemann G2)
+  📝 book_id: 1585c845-80fe-432b-81a6-6abcb61a9436
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[238/239] 6-D（81+82）-91 From Milk to Ice Cream (Heinemann G2)
+  📝 book_id: 280e81ab-fc53-487e-b1ae-440504f3af26
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+[239/239] 6-D（85+86）-95 Jack and the Beanstalk (Heinemann G2)
+  📝 book_id: 8545277a-644e-4f24-b865-1783bf8f570a
+  📄 PDF 上传完成
+  🔊 Day 1 阅读音频上传完成
+  💬 Day 1 讲解音频上传完成
+  ✅ 完成
+
+═══════════════════════════════
+📊 上传完成
+   成功: 239
+   失败: 0
+   跳过(缺文件): 133
+═══════════════════════════════

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Readii v1.0.1 | Updated: 2026-04-09 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
+<meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FAF7F2;--cream2:#F2EDE4;--cream3:#E8E0D4;
+  --ink:#1A1714;--ink2:#3D3830;--ink3:#6B6459;
+  --forest:#1B3A2D;--forest2:#2A5940;--forest3:#3A7A56;--fp:#E8F2EC;
+  --gold:#C49A38;--gold2:#E0B84A;--gp:#FBF3E0;
+  --white:#FFFFFF;--border:#DDD8CF;--border2:#C8C1B5;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;
+  --r:10px;--rl:16px;--rxl:24px;
+  --sh:0 2px 20px rgba(26,23,20,0.07);--shm:0 6px 40px rgba(26,23,20,0.11);
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.7;overflow-x:hidden}
+[data-en],[data-zh]{transition:opacity .15s}
+body.zh [data-en]{display:none!important}
+body:not(.zh) [data-zh]{display:none!important}
+span[data-en],span[data-zh]{display:inline}
+body.zh span[data-en]{display:none!important}
+body.zh span[data-zh]{display:inline!important}
+#view-app{display:none}
+body.app #view-landing{display:none}
+body.app #view-app{display:block}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:64px;background:rgba(250,247,242,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(221,216,207,.7)}
+.logo{text-decoration:none;display:flex;align-items:center;gap:8px}
+.lm{width:28px;height:28px;border-radius:6px;background:var(--forest);display:flex;align-items:center;justify-content:center}
+.lm svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.2}
+.ln{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--ink)}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{font-size:13px;font-weight:400;color:var(--ink2);text-decoration:none;letter-spacing:.03em;transition:color .15s}
+.nav-links a:hover{color:var(--forest)}
+.nav-r{display:flex;align-items:center;gap:10px}
+.ltog{display:flex;background:var(--cream2);border:1px solid var(--border);border-radius:20px;overflow:hidden;padding:2px}
+.lopt{padding:4px 12px;border:none;background:transparent;font-family:var(--sans);font-size:12px;color:var(--ink3);cursor:pointer;border-radius:16px;transition:all .15s}
+.lopt.on{background:var(--white);color:var(--ink);font-weight:500}
+.btn-si{font-size:13px;color:var(--ink2);text-decoration:none;padding:7px 16px;border:1px solid var(--border);border-radius:6px;transition:all .15s}
+.btn-si:hover{border-color:var(--border2)}
+.btn-p{display:inline-block;background:var(--forest);color:var(--white);font-size:13px;font-weight:500;letter-spacing:.05em;padding:8px 20px;border-radius:6px;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
+.btn-p:hover{background:var(--forest2)}
+.btn-s{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);padding:13px 24px;border:1px solid var(--border);border-radius:6px;text-decoration:none;transition:all .15s;cursor:pointer;background:transparent}
+.btn-s:hover{border-color:var(--border2);background:var(--white)}
+.hero{min-height:100vh;padding:120px 56px 80px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;right:-80px;top:50%;transform:translateY(-50%);width:560px;height:560px;border-radius:50%;background:radial-gradient(ellipse,var(--fp) 0%,transparent 65%);pointer-events:none}
+.htag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);background:var(--gp);padding:6px 14px;border-radius:20px;border:1px solid rgba(196,154,56,.25);margin-bottom:28px}
+.htag-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:var(--serif);font-size:clamp(44px,5.5vw,70px);font-weight:400;line-height:1.08;letter-spacing:-.01em;margin-bottom:24px;color:var(--ink)}
+h1 em{font-style:italic;color:var(--forest)}
+.hsub{font-size:17px;color:var(--ink2);line-height:1.8;max-width:460px;margin-bottom:40px;font-weight:300}
+.hbtns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:44px}
+.htrust{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.htrust-i{font-size:12px;color:var(--ink3);display:flex;align-items:center;gap:6px}
+.htrust-i::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--forest3);flex-shrink:0}
+.hcard{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);overflow:hidden;box-shadow:var(--shm);position:relative;z-index:2}
+.hcard-bar{background:var(--forest);padding:13px 18px;display:flex;align-items:center;gap:8px}
+.hcard-bar span{font-size:11px;color:rgba(255,255,255,.55);font-family:var(--mono)}
+.hdots{display:flex;gap:5px}
+.hdots i{width:9px;height:9px;border-radius:50%;display:block}
+.hcard-body{padding:22px}
+.pbook{display:flex;gap:14px;align-items:flex-start;background:var(--cream);border-radius:var(--r);padding:14px;margin-bottom:14px;border:1px solid var(--border)}
+.pbc{width:50px;height:64px;border-radius:6px;background:linear-gradient(135deg,var(--forest),var(--forest2));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+.pbm{flex:1}
+.pbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.pbt{font-family:var(--serif);font-size:14px;font-weight:400;color:var(--ink);margin-bottom:3px}
+.pbd{font-size:11px;color:var(--ink3)}
+.pwv{display:flex;align-items:center;gap:2px;height:34px;margin-bottom:12px}
+.wb{flex:1;border-radius:2px;background:var(--border);min-height:4px;animation:wv 1.1s ease-in-out infinite}
+.wb:nth-child(2n){animation-delay:.14s}.wb:nth-child(3n){animation-delay:.28s}.wb:nth-child(5n){animation-delay:.42s}
+@keyframes wv{0%,100%{transform:scaleY(.2)}50%{transform:scaleY(1)}}
+.wb.p{background:var(--forest)!important;animation:none!important}
+.wb.a{background:var(--gold)!important;animation:none!important}
+.pctrl{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.ppbtn{width:34px;height:34px;border-radius:50%;background:var(--forest);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:11px;transition:all .15s}
+.ppbtn:hover{background:var(--forest2);transform:scale(1.06)}
+.pt{font-size:11px;color:var(--ink3);font-family:var(--mono)}
+.paiscore{display:flex;align-items:center;justify-content:space-between;background:var(--fp);border-radius:var(--r);padding:12px 14px;border:1px solid rgba(27,58,45,.12)}
+.paisl{font-size:10px;color:var(--forest2);letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+.paisg{display:flex;gap:3px;margin-top:5px}
+.paisgs{height:4px;border-radius:2px;flex:1;background:rgba(27,58,45,.12)}
+.paisgs.on{background:var(--forest)}
+.paisv{font-family:var(--serif);font-size:22px;color:var(--forest)}
+.stats{background:var(--forest);display:grid;grid-template-columns:repeat(4,1fr)}
+.stat{padding:32px 20px;text-align:center;border-right:1px solid rgba(255,255,255,.08)}
+.stat:last-child{border:none}
+.sn{font-family:var(--serif);font-size:38px;font-weight:400;color:var(--white);line-height:1;margin-bottom:5px}
+.sl{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+section{padding:96px 56px}
+.ey{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:block;font-weight:500}
+h2{font-family:var(--serif);font-size:clamp(30px,4vw,48px);font-weight:400;line-height:1.15;margin-bottom:20px}
+h2 em{font-style:italic;color:var(--forest)}
+.sd{font-size:16px;color:var(--ink2);max-width:520px;line-height:1.8;margin-bottom:56px}
+.feats{background:var(--white)}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border-radius:var(--rl);overflow:hidden}
+.fc{background:var(--white);padding:42px 34px;transition:background .2s}
+.fc:hover{background:var(--cream)}
+.fi{width:46px;height:46px;border-radius:var(--r);background:var(--fp);border:1px solid rgba(27,58,45,.12);display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:20px}
+.fn{font-family:var(--serif);font-size:52px;font-weight:400;color:var(--cream3);line-height:1;margin-bottom:10px}
+.ft{font-family:var(--serif);font-size:21px;font-weight:400;margin-bottom:10px;color:var(--ink)}
+.fdesc{font-size:13px;color:var(--ink2);line-height:1.75}
+.fp{display:inline-block;margin-top:18px;font-size:11px;font-weight:500;color:var(--forest);background:var(--fp);padding:5px 14px;border-radius:20px}
+.rsec{background:var(--cream2)}
+.ri{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.amock{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);overflow:hidden;box-shadow:var(--shm)}
+.mbar{background:var(--cream2);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.mdots{display:flex;gap:4px}
+.mdots i{width:9px;height:9px;border-radius:50%;display:block}
+.mc{padding:22px}
+.urow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r);border:1px solid transparent;margin-bottom:7px;cursor:pointer;transition:all .15s}
+.urow:hover{background:var(--cream);border-color:var(--border)}
+.urow.act{background:var(--fp);border-color:rgba(27,58,45,.18)}
+.ucov{width:42px;height:54px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px}
+.ucg{background:linear-gradient(135deg,#1B3A2D,#3A7A56)}
+.uco{background:linear-gradient(135deg,#7A4A10,#C49A38)}
+.ucb{background:linear-gradient(135deg,#1A3A5A,#3A70A0)}
+.ucr{background:linear-gradient(135deg,#5A1A1A,#A03A3A)}
+.ui{flex:1}
+.ut{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}
+.utit{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px;font-family:var(--serif)}
+.um{font-size:11px;color:var(--ink3)}
+.ubadge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500}
+.ubd{background:var(--fp);color:var(--forest)}
+.ubn{background:var(--gp);color:#7A4A10}
+.ubl{background:var(--cream2);color:var(--ink3)}
+.about{background:var(--cream)}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.afounder{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:44px}
+.fav{width:60px;height:60px;border-radius:50%;background:var(--fp);border:2px solid rgba(27,58,45,.15);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:24px;color:var(--forest);margin-bottom:18px}
+.fname{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:4px}
+.frole{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px}
+.fbio{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:22px}
+.ftags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px}
+.ftag{font-size:11px;padding:4px 12px;border-radius:20px;background:var(--cream);border:1px solid var(--border);color:var(--ink2)}
+.lilink{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--forest);text-decoration:none;border:1px solid rgba(27,58,45,.25);padding:8px 16px;border-radius:6px;transition:all .15s}
+.lilink:hover{background:var(--fp)}
+.cfacts{display:flex;flex-direction:column;gap:14px}
+.cfc{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:22px 26px}
+.cfl{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink3);margin-bottom:7px}
+.cfv{font-family:var(--serif);font-size:19px;font-weight:400;color:var(--ink)}
+.cfs{font-size:13px;color:var(--ink3);margin-top:3px}
+.psec{background:var(--white)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pcard{border:1px solid var(--border);border-radius:var(--rxl);padding:36px 32px;position:relative;transition:all .2s}
+.pcard:hover{box-shadow:var(--shm);transform:translateY(-2px)}
+.pcard.feat{border-color:rgba(27,58,45,.28);border-width:2px;background:linear-gradient(160deg,var(--fp) 0%,var(--white) 55%)}
+.pbadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--forest);color:var(--white);font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:4px 16px;border-radius:20px}
+.ptier{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
+.pamt{font-family:var(--serif);font-size:42px;font-weight:400;color:var(--ink);line-height:1;margin-bottom:5px}
+.pper{font-size:13px;color:var(--ink3);margin-bottom:22px}
+.pdesc{font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.pfl{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+.pfl li{font-size:13px;color:var(--ink2);display:flex;gap:9px;align-items:flex-start}
+.pfl li::before{content:'›';color:var(--forest);font-size:14px;line-height:1.3;flex-shrink:0}
+footer{background:var(--ink);padding:68px 56px 0}
+.fgrid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:44px;padding-bottom:52px;border-bottom:1px solid rgba(255,255,255,.07)}
+.fln{font-family:var(--serif);font-size:21px;color:rgba(255,255,255,.88)}
+.fdesc{font-size:13px;color:rgba(255,255,255,.32);line-height:1.7;margin-top:13px;max-width:260px}
+.faddr{font-size:12px;color:rgba(255,255,255,.22);line-height:1.8;margin-top:12px}
+footer h4{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.22);margin-bottom:18px}
+footer ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+footer ul a{font-size:13px;color:rgba(255,255,255,.42);text-decoration:none;transition:color .15s}
+footer ul a:hover{color:rgba(255,255,255,.8)}
+.fbot{padding:22px 0;display:flex;justify-content:space-between;align-items:center}
+.flegal{font-size:11px;color:rgba(255,255,255,.16)}
+.app-shell{display:flex;height:100vh;overflow:hidden;background:var(--cream)}
+.asb{width:236px;background:var(--forest);flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto}
+.sbh{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sbhl{display:flex;align-items:center;gap:8px}
+.sbhlm{width:26px;height:26px;border-radius:5px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
+.sbhln{font-family:var(--serif);font-size:17px;color:rgba(255,255,255,.88)}
+.sbu{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sbui{display:flex;align-items:center;gap:9px}
+.sbuav{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:13px;color:var(--white);flex-shrink:0}
+.sbun{font-size:13px;color:rgba(255,255,255,.82);font-weight:500}
+.sbulv{font-size:11px;color:rgba(255,255,255,.38);margin-top:1px}
+.sbnav{padding:12px 8px;flex:1}
+.nbgl{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.28);padding:3px 10px;margin-bottom:3px;margin-top:10px}
+.nbgl:first-child{margin-top:0}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;font-size:13px;color:rgba(255,255,255,.5);cursor:pointer;transition:all .15s;margin-bottom:1px}
+.ni:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.78)}
+.ni.act{background:rgba(255,255,255,.12);color:var(--white)}
+.nic{font-size:14px;width:19px;text-align:center;flex-shrink:0}
+.nibadge{margin-left:auto;font-size:10px;background:var(--gold);color:var(--ink);padding:1px 7px;border-radius:20px;font-weight:600}
+.sbprog{padding:12px 14px;margin:8px;border-radius:var(--r);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07)}
+.sbpl{font-size:11px;color:rgba(255,255,255,.36);margin-bottom:5px}
+.sbpt{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.sbpf{height:100%;background:var(--gold2);border-radius:2px;width:68%}
+.sbpm{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.3)}
+.amain{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.atb{height:54px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.atbbc{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink3)}
+.atbbc span{color:var(--ink)}
+.atba{display:flex;align-items:center;gap:9px}
+.ltog2{display:flex;background:var(--cream2);border:1px solid var(--border);border-radius:20px;overflow:hidden;padding:2px}
+.lopt2{padding:3px 9px;border:none;background:transparent;font-family:var(--sans);font-size:11px;color:var(--ink3);cursor:pointer;border-radius:14px;transition:all .15s}
+.lopt2.on{background:var(--white);color:var(--ink);font-weight:500}
+.backbtn{font-size:13px;color:var(--ink2);padding:6px 13px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:transparent;transition:all .15s}
+.backbtn:hover{border-color:var(--border2)}
+.acon{flex:1;overflow-y:auto;padding:24px}
+.agr{display:grid;grid-template-columns:1fr 348px;gap:18px}
+.rp{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);overflow:hidden;display:flex;flex-direction:column}
+.rph{background:var(--cream);border-bottom:1px solid var(--border);padding:18px 22px;display:flex;align-items:center;gap:14px}
+.rpbc{width:46px;height:60px;border-radius:6px;flex-shrink:0;background:linear-gradient(135deg,var(--forest),var(--forest2));display:flex;align-items:center;justify-content:center;font-size:20px}
+.rpbi{flex:1}
+.rpbu{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.rpbt{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--ink);margin-bottom:2px}
+.rpbtr{font-size:12px;color:var(--ink3)}
+.rpbody{padding:26px 30px;flex:1;overflow-y:auto}
+.rtxt{font-family:var(--serif);font-size:19px;line-height:1.95;color:var(--ink);margin-bottom:22px}
+.hl{background:var(--gp);border-radius:3px;padding:0 3px;border-bottom:2px solid var(--gold);cursor:pointer;transition:background .15s}
+.hl:hover{background:rgba(196,154,56,.25)}
+.ph{color:var(--forest);font-style:italic;cursor:pointer;border-bottom:1px dashed var(--forest3)}
+.vstrip{display:flex;gap:7px;flex-wrap:wrap;padding-top:18px;border-top:1px solid var(--border);margin-bottom:18px}
+.vpill{font-size:12px;padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:var(--cream);color:var(--ink2);cursor:pointer;transition:all .15s}
+.vpill:hover{background:var(--fp);border-color:rgba(27,58,45,.2);color:var(--forest)}
+.aplayer{background:var(--cream);border-top:1px solid var(--border);padding:18px 22px}
+.aptch{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.aptav{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--forest),var(--forest2));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;color:var(--white);flex-shrink:0}
+.aptn{font-size:13px;font-weight:500;color:var(--ink)}
+.aptd{font-size:11px;color:var(--ink3)}
+.wvf{display:flex;align-items:center;gap:2px;height:40px;margin-bottom:11px}
+.wvb{flex:1;border-radius:2px;background:var(--border);animation:wv 1s ease-in-out infinite}
+.wvb:nth-child(2n){animation-delay:.12s}.wvb:nth-child(3n){animation-delay:.24s}.wvb:nth-child(7n){animation-delay:.36s}
+.wvb.p{background:var(--forest)!important;animation:none!important}
+.wvb.c{background:var(--gold)!important;animation:none!important}
+.apctrl{display:flex;align-items:center;gap:11px}
+.applay{width:38px;height:38px;border-radius:50%;background:var(--forest);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:12px;flex-shrink:0;transition:all .15s}
+.applay:hover{background:var(--forest2);transform:scale(1.05)}
+.approg{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;cursor:pointer}
+.apfill{width:42%;height:100%;background:var(--forest);border-radius:2px}
+.aptime{font-size:11px;color:var(--ink3);font-family:var(--mono);white-space:nowrap}
+.apspd{font-size:11px;font-weight:500;padding:4px 9px;border:1px solid var(--border);border-radius:20px;background:transparent;cursor:pointer;color:var(--ink2);transition:all .15s;flex-shrink:0}
+.apspd:hover{border-color:var(--border2)}
+.rpan{display:flex;flex-direction:column;gap:14px}
+.pc{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);overflow:hidden}
+.pch{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pctit{font-size:13px;font-weight:500;color:var(--ink)}
+.pctag{font-size:10px;padding:3px 8px;border-radius:20px;background:var(--fp);color:var(--forest);font-weight:500}
+.pcb{padding:18px}
+.recbtn{width:100%;padding:12px;border:2px dashed var(--border);border-radius:var(--rl);background:var(--cream);cursor:pointer;text-align:center;transition:all .2s;margin-bottom:12px}
+.recbtn:hover{border-color:var(--forest3);background:var(--fp)}
+.reci{font-size:22px;margin-bottom:5px;display:block}
+.recl{font-size:13px;color:var(--ink2)}
+.recs{font-size:11px;color:var(--ink3);margin-top:2px}
+.scored{background:var(--fp);border-radius:var(--r);padding:12px;margin-bottom:11px;border:1px solid rgba(27,58,45,.1)}
+.sctop{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.scl{font-size:11px;color:var(--forest2);font-weight:500;text-transform:uppercase;letter-spacing:.1em}
+.scv{font-family:var(--serif);font-size:26px;font-weight:400;color:var(--forest)}
+.scbars{display:flex;gap:3px}
+.scb{flex:1;height:5px;border-radius:2px;background:rgba(27,58,45,.1)}
+.scb.on{background:var(--forest)}
+.fblist{display:flex;flex-direction:column;gap:7px}
+.fbi{display:flex;gap:7px;align-items:flex-start;padding:9px 11px;border-radius:6px;font-size:12px}
+.fbg{background:#EAF3DE;color:#3B6D11}
+.fbt{background:var(--gp);color:#7A4A10}
+.fbic{flex-shrink:0;margin-top:1px;font-size:12px}
+.vlist{display:flex;flex-direction:column;gap:7px}
+.vi{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)}
+.vi:last-child{border-bottom:none;padding-bottom:0}
+.vw{font-family:var(--serif);font-size:15px;color:var(--ink);min-width:84px}
+.vd{flex:1}
+.vpos{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.vdef{font-size:12px;color:var(--ink2);line-height:1.5}
+.vcn{font-size:12px;color:var(--ink3);margin-top:1px}
+.vplay{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;color:var(--ink3);transition:all .15s}
+.vplay:hover{background:var(--fp);border-color:rgba(27,58,45,.2);color:var(--forest)}
+.prow{display:flex;align-items:center;justify-content:space-between;gap:11px;padding:7px 0;border-bottom:1px solid var(--border)}
+.prow:last-child{border-bottom:none;padding-bottom:0}
+.prl{font-size:13px;color:var(--ink2)}
+.prt{flex:1;height:5px;background:var(--cream2);border-radius:3px;overflow:hidden}
+.prf{height:100%;border-radius:3px}
+.prp{font-size:12px;font-weight:500;color:var(--ink3);min-width:30px;text-align:right}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.htag{animation:fu .5s ease both .05s}
+h1{animation:fu .6s ease both .15s}
+.hsub{animation:fu .6s ease both .28s}
+.hbtns{animation:fu .6s ease both .38s}
+.htrust{animation:fu .6s ease both .46s}
+.hcard{animation:fu .65s ease both .28s}
+</style></head>
+<body>
+<div id="view-landing">
+<nav>
+  <a href="#" class="logo"><div class="lm"><svg viewBox="0 0 16 16"><path d="M3 3h4a2 2 0 0 1 0 4H3V3z"/><path d="M3 7h5a2.5 2.5 0 0 1 0 5H3V7z"/></svg></div><span class="ln">Readii</span></a>
+  <ul class="nav-links">
+    <li><a href="#platform"><span data-en>Platform</span><span data-zh>产品</span></a></li>
+    <li><a href="#reading"><span data-en>For Children</span><span data-zh>儿童英语</span></a></li>
+    <li><a href="#about"><span data-en>About</span><span data-zh>关于</span></a></li>
+    <li><a href="#pricing"><span data-en>Pricing</span><span data-zh>价格</span></a></li>
+  </ul>
+  <div class="nav-r">
+    <div class="ltog"><button class="lopt on" id="ln-en" onclick="setLang('en')">EN</button><button class="lopt" id="ln-zh" onclick="setLang('zh')">中文</button></div>
+    <a href="#" class="btn-si"><span data-en>Sign in</span><span data-zh>登录</span></a>
+    <button class="btn-p" onclick="openApp()"><span data-en>Try Platform</span><span data-zh>体验平台</span></button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="htag"><span class="htag-dot"></span><span data-en>AI-Powered Platform · Canterbury, UK</span><span data-zh>AI 技术平台 · 英国坎特伯雷</span></div>
+    <h1><span data-en>The platform that<br>bridges China<br>and <em>Britain.</em></span><span data-zh>连接中国与<br>英国的<br><em>AI平台。</em></span></h1>
+    <p class="hsub"><span data-en>Readii combines AI voice technology with curated British English content — helping children master English and entrepreneurs build confidently in the UK.</span><span data-zh>Readii 将 AI 语音技术与精选英式英语内容结合，帮助孩子掌握英语，帮助创业者在英国自信发展。</span></p>
+    <div class="hbtns">
+      <button class="btn-p" onclick="openApp()"><span data-en>Open Platform →</span><span data-zh>进入平台 →</span></button>
+      <a href="#reading" class="btn-s"><span data-en>See how it works</span><span data-zh>了解产品</span></a>
+    </div>
+    <div class="htrust">
+      <div class="htrust-i"><span data-en>Incorporated in Canterbury, England</span><span data-zh>注册于英国坎特伯雷</span></div>
+      <div class="htrust-i">Co. No. 15002332</div>
+      <div class="htrust-i">VAT 463 5349 77</div>
+    </div>
+  </div>
+  <div>
+    <div class="hcard">
+      <div class="hcard-bar"><div class="hdots"><i style="background:#ff6058"></i><i style="background:#ffbd2e"></i><i style="background:#28ca41"></i></div><span>readii.vip · platform</span></div>
+      <div class="hcard-body">
+        <div class="pbook"><div class="pbc">📗</div><div class="pbm"><div class="pbl">Heinemann · Level 2</div><div class="pbt"><span data-en>The Very Hungry Caterpillar</span><span data-zh>好饿的毛毛虫</span></div><div class="pbd"><span data-en>Emma · Unit 14 · 4:22</span><span data-zh>Emma · 第14单元 · 4:22</span></div></div></div>
+        <div class="pwv"><div class="wb p" style="height:55%"></div><div class="wb p" style="height:78%"></div><div class="wb p" style="height:44%"></div><div class="wb p" style="height:88%"></div><div class="wb p" style="height:62%"></div><div class="wb p" style="height:71%"></div><div class="wb a" style="height:84%"></div><div class="wb" style="height:52%"></div><div class="wb" style="height:68%"></div><div class="wb" style="height:90%"></div><div class="wb" style="height:47%"></div><div class="wb" style="height:76%"></div><div class="wb" style="height:58%"></div><div class="wb" style="height:83%"></div><div class="wb" style="height:65%"></div></div>
+        <div class="pctrl"><span class="pt">1:52</span><button class="ppbtn">▶</button><span class="pt">4:22</span></div>
+        <div class="paiscore"><div><div class="paisl"><span data-en>AI Pronunciation Score</span><span data-zh>AI 发音评分</span></div><div class="paisg"><div class="paisgs on"></div><div class="paisgs on"></div><div class="paisgs on"></div><div class="paisgs on"></div><div class="paisgs on"></div><div class="paisgs on"></div><div class="paisgs on"></div><div class="paisgs"></div><div class="paisgs"></div><div class="paisgs"></div></div></div><div class="paisv">72<span style="font-size:13px;opacity:.5">/100</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="sn">1,000+</div><div class="sl"><span data-en>Audio lessons</span><span data-zh>音频课程</span></div></div>
+  <div class="stat"><div class="sn">3–12</div><div class="sl"><span data-en>Age range</span><span data-zh>适用年龄</span></div></div>
+  <div class="stat"><div class="sn">100+</div><div class="sl"><span data-en>Clients served</span><span data-zh>服务客户</span></div></div>
+  <div class="stat"><div class="sn">2 yrs</div><div class="sl"><span data-en>Operating in UK</span><span data-zh>在英运营</span></div></div>
+</div>
+
+<section id="platform" class="feats">
+  <span class="ey"><span data-en>The Platform</span><span data-zh>平台功能</span></span>
+  <h2><span data-en>Three layers.<br>One <em>integrated</em> platform.</span><span data-zh>三层结构，<br>一个<em>完整</em>平台。</span></h2>
+  <p class="sd"><span data-en>Readii is a technology platform built on proprietary AI voice and communication tools — not a consultancy. We serve individuals and enterprises across the UK-China corridor.</span><span data-zh>Readii 是基于自研 AI 语音与沟通技术构建的平台，不是咨询公司。我们服务于中英两地的个人与企业客户。</span></p>
+  <div class="fgrid">
+    <div class="fc"><div class="fi">🔊</div><div class="fn">01</div><div class="ft"><span data-en>AI Voice Engine</span><span data-zh>AI 语音引擎</span></div><p class="fdesc"><span data-en>Proprietary AI voice analysis and pronunciation assessment. Scores speech, identifies phonetic gaps, and delivers personalised feedback in real time — the core technology that powers Readii.</span><span data-zh>自研 AI 语音分析与发音评估技术。实时打分、识别语音弱点、提供个性化反馈——驱动 Readii 所有产品的核心技术。</span></p><span class="fp"><span data-en>Core technology</span><span data-zh>核心技术</span></span></div>
+    <div class="fc"><div class="fi">📚</div><div class="fn">02</div><div class="ft"><span data-en>English Learning Platform</span><span data-zh>英语学习平台</span></div><p class="fdesc"><span data-en>1,000+ audio lessons with native British teachers. Heinemann, science, and history series for ages 3–12. AI pronunciation coaching, vocabulary tracking, and progress dashboards.</span><span data-zh>超过1000节英国外教音频课程。海尼曼、科学、历史系列，适合3至12岁。AI 发音指导、词汇追踪与进度看板。</span></p><span class="fp">£5 / <span data-en>month</span><span data-zh>月</span></span></div>
+    <div class="fc"><div class="fi">🌐</div><div class="fn">03</div><div class="ft"><span data-en>Cross-border Business Programme</span><span data-zh>跨境商业服务</span></div><p class="fdesc"><span data-en>UK market entry support, business establishment services, and cross-border communication training for Chinese entrepreneurs. AI-assisted preparation aligned with UK-China trade policy.</span><span data-zh>面向中国创业者的英国市场进入、公司落地服务与跨境沟通培训。AI 辅助，对齐英中贸易政策。</span></p><span class="fp"><span data-en>Enterprise</span><span data-zh>企业版</span></span></div>
+  </div>
+</section>
+
+<section id="reading" class="rsec">
+  <div class="ri">
+    <div>
+      <span class="ey"><span data-en>For Children</span><span data-zh>儿童英语</span></span>
+      <h2><span data-en>British English built<br>into a <em>daily habit.</em></span><span data-zh>英式英语，<br>融入<em>每日习惯。</em></span></h2>
+      <p class="sd" style="margin-bottom:28px;"><span data-en>1,000 audio lessons. Native British teachers read the full Heinemann, history, and science series. AI pronunciation scoring after every lesson. Chinese tutor vocabulary explanations. From £5 per month.</span><span data-zh>超过1000节音频课。英国外教朗读海尼曼、历史、科学全系列。每课 AI 发音打分，中教词汇讲解。每月仅 £5。</span></p>
+      <button class="btn-p" onclick="openApp()"><span data-en>Open Reading Platform →</span><span data-zh>进入阅读平台 →</span></button>
+    </div>
+    <div class="amock">
+      <div class="mbar"><div class="mdots"><i style="background:#ff6058"></i><i style="background:#ffbd2e"></i><i style="background:#28ca41"></i></div></div>
+      <div class="mc">
+        <div class="urow act"><div class="ucov ucg">📗</div><div class="ui"><div class="ut">Heinemann Level 2</div><div class="utit"><span data-en>The Very Hungry Caterpillar</span><span data-zh>好饿的毛毛虫</span></div><div class="um">Emma · 4:22</div></div><span class="ubadge ubn"><span data-en>Now</span><span data-zh>进行中</span></span></div>
+        <div class="urow"><div class="ucov uco">🦁</div><div class="ui"><div class="ut">Heinemann Level 2</div><div class="utit"><span data-en>The Lion and the Mouse</span><span data-zh>狮子与老鼠</span></div><div class="um">Sophie · 3:55</div></div><span class="ubadge ubd">✓</span></div>
+        <div class="urow"><div class="ucov ucb">🌍</div><div class="ui"><div class="ut">History Series</div><div class="utit"><span data-en>The Great Fire of London</span><span data-zh>伦敦大火</span></div><div class="um">James · 5:10</div></div><span class="ubadge ubd">✓</span></div>
+        <div class="urow"><div class="ucov ucr">🦋</div><div class="ui"><div class="ut">Science Series</div><div class="utit"><span data-en>Life Cycles — Butterflies</span><span data-zh>生命周期：蝴蝶</span></div><div class="um">Emma · 4:40</div></div><span class="ubadge ubl">🔒</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="about">
+  <span class="ey"><span data-en>About Readii</span><span data-zh>关于我们</span></span>
+  <h2 style="margin-bottom:52px;"><span data-en>UK-registered technology<br>company, built from <em>Canterbury.</em></span><span data-zh>注册于英国的<br>科技公司，从<em>坎特伯雷</em>出发。</span></h2>
+  <div class="agrid">
+    <div class="afounder">
+      <div class="fav">K</div>
+      <div class="fname">Xiaoyu (Kevin) Su</div>
+      <div class="frole"><span data-en>Founder & CEO · UK Innovator Founder</span><span data-zh>创始人兼CEO · 英国创新创业者</span></div>
+      <p class="fbio"><span data-en>Kevin brings 10+ years of experience in EdTech and internet technology, having worked at UMU (enterprise learning platform, Beijing) and ChinaHR. He moved to Canterbury, England in 2023 to build Readii — an AI-powered platform bridging the communication and cultural gap between China and the UK, starting with children's English education and expanding into cross-border business services.</span><span data-zh>Kevin 拥有超过10年教育科技与互联网行业经验，曾就职于 UMU（企业学习平台，北京）与中华英才网。2023年移居英国坎特伯雷，创立 Readii——从儿童英语教育出发，拓展至跨境商业服务的 AI 技术平台。</span></p>
+      <div class="ftags"><span class="ftag">EdTech</span><span class="ftag">AI Voice Technology</span><span class="ftag">UK-China Trade</span><span class="ftag">Canterbury, UK</span></div>
+      <a href="https://www.linkedin.com/in/xiaoyu-su-readii/" target="_blank" class="lilink"><span data-en>LinkedIn Profile →</span><span data-zh>LinkedIn 主页 →</span></a>
+    </div>
+    <div class="cfacts">
+      <div class="cfc"><div class="cfl"><span data-en>Company</span><span data-zh>公司名称</span></div><div class="cfv">Readii Limited</div><div class="cfs"><span data-en>Registered in England & Wales</span><span data-zh>注册于英格兰和威尔士</span></div></div>
+      <div class="cfc"><div class="cfl"><span data-en>Registration</span><span data-zh>注册信息</span></div><div class="cfv">No. 15002332</div><div class="cfs">VAT 463 5349 77 · <span data-en>July 2023</span><span data-zh>2023年7月</span></div></div>
+      <div class="cfc"><div class="cfl"><span data-en>Registered office</span><span data-zh>注册地址</span></div><div class="cfv" style="font-size:15px;line-height:1.5;">Suite 3.2, 27 Castle Street<br>Canterbury, England, CT1 2PX</div></div>
+      <div class="cfc"><div class="cfl"><span data-en>UK-China alignment</span><span data-zh>英中政策对齐</span></div><div class="cfs" style="font-size:13px;line-height:1.7;color:var(--ink2);"><span data-en>Readii's cross-border platform directly supports UK-China trade priorities — serving Chinese entrepreneurs in Britain and helping UK businesses communicate effectively in China.</span><span data-zh>Readii 跨境平台直接支持英中贸易政策——服务在英中国创业者，并帮助英国企业有效进入中国市场。</span></div></div>
+      <a href="https://www.linkedin.com/company/112639056/" target="_blank" class="lilink" style="width:fit-content"><span data-en>Readii on LinkedIn →</span><span data-zh>LinkedIn 公司主页 →</span></a>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="psec">
+  <span class="ey"><span data-en>Pricing</span><span data-zh>价格</span></span>
+  <h2><span data-en>Simple, transparent <em>pricing.</em></span><span data-zh>简单透明的<em>价格。</em></span></h2>
+  <div class="pgrid">
+    <div class="pcard">
+      <div class="ptier"><span data-en>Children</span><span data-zh>儿童版</span></div>
+      <div class="pamt">£5</div><div class="pper">/ <span data-en>month</span><span data-zh>月</span></div>
+      <p class="pdesc"><span data-en>Full access to British English audio library for children aged 3–12.</span><span data-zh>3至12岁儿童英式英语音频库完整访问权限。</span></p>
+      <ul class="pfl"><li><span data-en>1,000+ audio lessons</span><span data-zh>超过1000节课程</span></li><li><span data-en>Heinemann, history & science series</span><span data-zh>海尼曼、历史与科学系列</span></li><li><span data-en>Native British teachers</span><span data-zh>英国外教</span></li><li><span data-en>AI pronunciation scoring</span><span data-zh>AI 发音评分</span></li><li><span data-en>Progress tracking</span><span data-zh>进度追踪</span></li></ul>
+      <button class="btn-p" onclick="openApp()" style="width:100%"><span data-en>Start free trial</span><span data-zh>开始免费试用</span></button>
+    </div>
+    <div class="pcard feat">
+      <div class="pbadge"><span data-en>Most popular</span><span data-zh>最受欢迎</span></div>
+      <div class="ptier"><span data-en>Learner Pro</span><span data-zh>学习者专业版</span></div>
+      <div class="pamt">£299</div><div class="pper"><span data-en>one-time programme</span><span data-zh>一次性课程费用</span></div>
+      <p class="pdesc"><span data-en>Full AI voice coaching programme for non-native English speakers.</span><span data-zh>面向非英语母语者的完整 AI 语音指导课程。</span></p>
+      <ul class="pfl"><li><span data-en>AI pronunciation assessment</span><span data-zh>AI 发音评估</span></li><li><span data-en>Personalised coaching plan</span><span data-zh>个性化指导方案</span></li><li><span data-en>Voice recording & feedback</span><span data-zh>语音录制与反馈</span></li><li><span data-en>British accent training</span><span data-zh>英式口音训练</span></li><li><span data-en>Certificate of completion</span><span data-zh>完成证书</span></li></ul>
+      <button class="btn-p" onclick="openApp()" style="width:100%"><span data-en>Enrol now</span><span data-zh>立即报名</span></button>
+    </div>
+    <div class="pcard">
+      <div class="ptier"><span data-en>Business Programme</span><span data-zh>商业服务</span></div>
+      <div class="pamt" style="font-size:30px;"><span data-en>Custom</span><span data-zh>定制</span></div><div class="pper"><span data-en>project-based</span><span data-zh>按项目</span></div>
+      <p class="pdesc"><span data-en>UK market entry and cross-border business establishment support for entrepreneurs and companies.</span><span data-zh>面向创业者和企业的英国市场进入与跨境商业落地支持。</span></p>
+      <ul class="pfl"><li><span data-en>UK company formation</span><span data-zh>英国公司注册</span></li><li><span data-en>Market research & business plan</span><span data-zh>市场调研与商业计划</span></li><li><span data-en>Cross-border communication training</span><span data-zh>跨境沟通培训</span></li><li><span data-en>Partner & supplier introductions</span><span data-zh>合作伙伴引介</span></li></ul>
+      <a href="mailto:hello@readii.vip" class="btn-s" style="width:100%;justify-content:center"><span data-en>Book a call</span><span data-zh>预约咨询</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fgrid">
+    <div><div class="fln">Readii</div><p class="fdesc"><span data-en>AI-powered platform for Chinese families and entrepreneurs building their future in Britain.</span><span data-zh>为在英国打造未来的中国家庭与创业者提供 AI 技术平台。</span></p><p class="faddr">Suite 3.2, 27 Castle Street<br>Canterbury, England, CT1 2PX<br>Co. No. 15002332 · VAT 463 5349 77</p></div>
+    <div><h4><span data-en>Platform</span><span data-zh>平台</span></h4><ul><li><a href="#reading"><span data-en>English Reading</span><span data-zh>英语阅读</span></a></li><li><a href="#platform"><span data-en>AI Voice Training</span><span data-zh>AI 语音训练</span></a></li><li><a href="#pricing"><span data-en>Business Programme</span><span data-zh>商业服务</span></a></li><li><a href="#pricing"><span data-en>Pricing</span><span data-zh>价格</span></a></li></ul></div>
+    <div><h4><span data-en>Company</span><span data-zh>公司</span></h4><ul><li><a href="#about"><span data-en>About Readii</span><span data-zh>关于 Readii</span></a></li><li><a href="#about"><span data-en>Kevin Su — Founder</span><span data-zh>创始人 Kevin Su</span></a></li><li><a href="#"><span data-en>Articles & Insights</span><span data-zh>文章与洞见</span></a></li><li><a href="mailto:hello@readii.vip"><span data-en>Contact</span><span data-zh>联系我们</span></a></li></ul></div>
+    <div><h4><span data-en>Connect</span><span data-zh>联系方式</span></h4><ul><li><a href="https://www.linkedin.com/company/112639056/" target="_blank">LinkedIn</a></li><li><a href="#">WeChat / 微信</a></li><li><a href="#">小红书</a></li><li><a href="#">Douyin / 抖音</a></li><li><a href="mailto:hello@readii.vip">hello@readii.vip</a></li></ul></div>
+  </div>
+  <div class="fbot"><span class="flegal">© 2025 Readii Limited · <span data-en>Registered in England and Wales</span><span data-zh>注册于英格兰和威尔士</span> · No. 15002332</span><span class="flegal">Canterbury · CT1 2PX</span></div>
+</footer>
+</div>
+<div id="view-app">
+<div class="app-shell">
+  <div class="asb">
+    <div class="sbh"><div class="sbhl"><div class="sbhlm"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="#fff" stroke-width="2.2"><path d="M3 3h4a2 2 0 0 1 0 4H3V3z"/><path d="M3 7h5a2.5 2.5 0 0 1 0 5H3V7z"/></svg></div><span class="sbhln">Readii</span></div></div>
+    <div class="sbu"><div class="sbui"><div class="sbuav">小</div><div><div class="sbun"><span data-en>Xiaoming</span><span data-zh>小明</span></div><div class="sbulv"><span data-en>Level 2 · Heinemann</span><span data-zh>第2级 · 海尼曼</span></div></div></div></div>
+    <div class="sbnav">
+      <div class="nbgl"><span data-en>Learn</span><span data-zh>学习</span></div>
+      <div class="ni act"><span class="nic">📚</span><span data-en>Reading Library</span><span data-zh>阅读书库</span></div>
+      <div class="ni"><span class="nic">🔊</span><span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span><span class="nibadge">3</span></div>
+      <div class="ni"><span class="nic">📊</span><span data-en>My Progress</span><span data-zh>我的进度</span></div>
+      <div class="nbgl"><span data-en>Vocabulary</span><span data-zh>词汇</span></div>
+      <div class="ni"><span class="nic">📝</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
+      <div class="ni"><span class="nic">🔁</span><span data-en>Review</span><span data-zh>复习</span></div>
+      <div class="nbgl"><span data-en>Account</span><span data-zh>账户</span></div>
+      <div class="ni"><span class="nic">⚙️</span><span data-en>Settings</span><span data-zh>设置</span></div>
+    </div>
+    <div class="sbprog"><div class="sbpl"><span data-en>Unit 14 progress</span><span data-zh>第14单元进度</span></div><div class="sbpt"><div class="sbpf"></div></div><div class="sbpm"><span>68%</span><span>32/47</span></div></div>
+  </div>
+  <div class="amain">
+    <div class="atb">
+      <div class="atbbc"><span data-en>The Very Hungry Caterpillar</span><span data-zh>好饿的毛毛虫</span></div>
+      <div class="atba">
+        <div class="ltog2"><button class="lopt2 on" onclick="setLang('en')">EN</button><button class="lopt2" onclick="setLang('zh')">中文</button></div>
+        <button class="backbtn" onclick="closeApp()">← <span data-en>Back to site</span><span data-zh>返回官网</span></button>
+      </div>
+    </div>
+    <div class="acon">
+      <!-- 书库浏览面板 -->
+      <div id="library-panel" style="margin-bottom:18px;background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);overflow:hidden;">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:13px;font-weight:500;color:var(--ink);"><span data-en>Reading Library</span><span data-zh>阅读书库</span> <span id="book-count" style="font-size:11px;color:var(--ink3);"></span></span>
+          <div style="display:flex;gap:4px;">
+            <button class="filter-btn on" data-series="all" onclick="filterBySeries('all')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:var(--fp);color:var(--forest);cursor:pointer;">All</button>
+            <button class="filter-btn" data-series="Heinemann GK" onclick="filterBySeries('Heinemann GK')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">GK</button>
+            <button class="filter-btn" data-series="Heinemann G1" onclick="filterBySeries('Heinemann G1')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">G1</button>
+            <button class="filter-btn" data-series="Heinemann G2" onclick="filterBySeries('Heinemann G2')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">G2</button>
+            <button class="filter-btn" data-series="History Series" onclick="filterBySeries('History Series')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">History</button>
+            <button class="filter-btn" data-series="Science Series" onclick="filterBySeries('Science Series')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">Science</button>
+          </div>
+        </div>
+        <div id="book-list" style="max-height:280px;overflow-y:auto;padding:8px;">
+          <div style="text-align:center;padding:30px;color:var(--ink3);font-size:13px;"><span data-en>Loading library...</span><span data-zh>加载书库中...</span></div>
+        </div>
+      </div>
+      <div class="agr">
+        <div class="rp">
+          <div class="rph"><div class="rpbc">📗</div><div class="rpbi"><div class="rpbu"><span data-en>Heinemann · Level 2 · Unit 14</span><span data-zh>海尼曼 · 第2级 · 第14单元</span></div><div class="rpbt"><span data-en>The Very Hungry Caterpillar</span><span data-zh>好饿的毛毛虫</span></div><div class="rpbtr"><span data-en>Read by Emma · Native British teacher</span><span data-zh>Emma 朗读 · 英国外教</span></div></div></div>
+          <div class="rpbody">
+            <div class="rtxt">
+              <span data-en>In the light of the <span class="hl">moon</span>, a little egg lay on a leaf.<br><br>One Sunday morning the <span class="hl">warm</span> sun came up and — pop — out of the egg came a tiny and very <span class="ph">hungry</span> <span class="hl">caterpillar</span>.<br><br>He started to look for some food. On Monday he ate through one apple. But he was still <span class="ph">hungry</span>.<br><br>On Tuesday he ate through two <span class="hl">pears</span>, but he was still hungry.</span>
+              <span data-zh>月光下，一片叶子上<span class="hl">躺着</span>一颗小小的蛋。<br><br>星期天早晨，暖暖的<span class="hl">太阳</span>升起，"啪"的一声，从蛋里钻出一条又小又<span class="ph">饿</span>的<span class="hl">毛毛虫</span>。<br><br>他开始找东西吃。星期一吃了一个苹果，但还是<span class="ph">饿</span>。<br><br>星期二吃了两个<span class="hl">梨</span>，仍然很饿。</span>
+            </div>
+            <div class="vstrip"><span class="vpill">moon 月亮</span><span class="vpill">warm 温暖</span><span class="vpill">caterpillar 毛毛虫</span><span class="vpill">pears 梨</span><span class="vpill">leaf 树叶</span><span class="vpill">hungry 饥饿</span></div>
+          </div>
+          <div class="aplayer">
+            <div class="aptch"><div class="aptav">E</div><div><div class="aptn"><span data-en>Emma · British English teacher</span><span data-zh>Emma · 英国外教</span></div><div class="aptd"><span data-en>Native speaker · Southern England</span><span data-zh>母语者 · 英格兰南部</span></div></div></div>
+            <div class="wvf"><div class="wvb p" style="height:55%"></div><div class="wvb p" style="height:75%"></div><div class="wvb p" style="height:42%"></div><div class="wvb p" style="height:88%"></div><div class="wvb p" style="height:60%"></div><div class="wvb p" style="height:72%"></div><div class="wvb p" style="height:85%"></div><div class="wvb p" style="height:50%"></div><div class="wvb p" style="height:68%"></div><div class="wvb p" style="height:91%"></div><div class="wvb c" style="height:47%"></div><div class="wvb" style="height:78%"></div><div class="wvb" style="height:65%"></div><div class="wvb" style="height:82%"></div><div class="wvb" style="height:55%"></div><div class="wvb" style="height:74%"></div><div class="wvb" style="height:88%"></div><div class="wvb" style="height:48%"></div><div class="wvb" style="height:70%"></div><div class="wvb" style="height:85%"></div><div class="wvb" style="height:58%"></div><div class="wvb" style="height:76%"></div><div class="wvb" style="height:92%"></div><div class="wvb" style="height:52%"></div><div class="wvb" style="height:67%"></div></div>
+            <div class="apctrl">
+              <button class="applay" id="ap-btn" onclick="togglePlay()">▶</button>
+              <div class="approg" onclick="seekAudio(event)"><div class="apfill" id="ap-fill"></div></div>
+              <span class="aptime" id="ap-time">1:52 / 4:22</span>
+              <button class="apspd" onclick="cycleSpeed(this)">1.0×</button>
+            </div>
+          </div>
+        </div>
+        <div class="rpan">
+          <div class="pc">
+            <div class="pch"><span class="pctit"><span data-en>AI Pronunciation</span><span data-zh>AI 发音评估</span></span><span class="pctag">AI</span></div>
+            <div class="pcb">
+              <button class="recbtn" onclick="this.innerHTML='<span class=reci>⏹</span><div class=recl>Recording...</div><div class=recs>Tap to stop</div>';this.style.borderColor='#C49A38';this.style.background='#FBF3E0'"><span class="reci">🎙</span><div class="recl"><span data-en>Tap to read aloud</span><span data-zh>点击朗读</span></div><div class="recs"><span data-en>AI will score your pronunciation</span><span data-zh>AI 为发音打分</span></div></button>
+              <div class="scored"><div class="sctop"><span class="scl"><span data-en>Last score</span><span data-zh>上次得分</span></span><span class="scv">72</span></div><div class="scbars"><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb"></div><div class="scb"></div><div class="scb"></div></div></div>
+              <div class="fblist">
+                <div class="fbi fbg"><span class="fbic">✓</span><span><span data-en>Good rhythm on "caterpillar"</span><span data-zh>"caterpillar" 节奏很好</span></span></div>
+                <div class="fbi fbt"><span class="fbic">→</span><span><span data-en>Softer "th" in "the" — tongue between teeth</span><span data-zh>"the" 中 "th" 更轻柔，舌尖放牙间</span></span></div>
+                <div class="fbi fbt"><span class="fbic">→</span><span><span data-en>"hungry" — stress first syllable: HUN-gry</span><span data-zh>"hungry" 重音在第一音节：HUN-gry</span></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="pc">
+            <div class="pch"><span class="pctit"><span data-en>Vocabulary</span><span data-zh>本课词汇</span></span><span class="pctag">6</span></div>
+            <div class="pcb">
+              <div class="vlist">
+                <div class="vi"><div class="vw">moon</div><div class="vd"><div class="vpos">noun</div><div class="vdef"><span data-en>Earth's natural satellite</span><span data-zh>地球的天然卫星</span></div><div class="vcn">月亮</div></div><button class="vplay">▶</button></div>
+                <div class="vi"><div class="vw">warm</div><div class="vd"><div class="vpos">adjective</div><div class="vdef"><span data-en>Comfortably hot temperature</span><span data-zh>温暖舒适的温度</span></div><div class="vcn">温暖的</div></div><button class="vplay">▶</button></div>
+                <div class="vi"><div class="vw">caterpillar</div><div class="vd"><div class="vpos">noun</div><div class="vdef"><span data-en>Larva of a butterfly</span><span data-zh>蝴蝶的幼虫</span></div><div class="vcn">毛毛虫</div></div><button class="vplay">▶</button></div>
+                <div class="vi"><div class="vw">hungry</div><div class="vd"><div class="vpos">adjective</div><div class="vdef"><span data-en>Needing food</span><span data-zh>需要进食</span></div><div class="vcn">饥饿的</div></div><button class="vplay">▶</button></div>
+              </div>
+            </div>
+          </div>
+          <div class="pc">
+            <div class="pch"><span class="pctit"><span data-en>This week</span><span data-zh>本周进度</span></span></div>
+            <div class="pcb">
+              <div class="prow"><span class="prl"><span data-en>Lessons</span><span data-zh>课程</span></span><div class="prt"><div class="prf" style="width:80%;background:var(--forest)"></div></div><span class="prp">4/5</span></div>
+              <div class="prow"><span class="prl"><span data-en>Pronunciation</span><span data-zh>发音</span></span><div class="prt"><div class="prf" style="width:72%;background:var(--gold)"></div></div><span class="prp">72%</span></div>
+              <div class="prow"><span class="prl"><span data-en>Vocabulary</span><span data-zh>词汇</span></span><div class="prt"><div class="prf" style="width:65%;background:var(--forest3)"></div></div><span class="prp">65%</span></div>
+              <div class="prow"><span class="prl"><span data-en>Streak</span><span data-zh>连续</span></span><div class="prt"><div class="prf" style="width:100%;background:var(--gold2)"></div></div><span class="prp">7d</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function setLang(l){
+  const zh=l==='zh';
+  document.body.classList.toggle('zh',zh);
+  document.documentElement.lang=l;
+  document.querySelectorAll('.lopt,.lopt2').forEach(b=>{
+    b.classList.toggle('on',(b.textContent.trim()==='EN'&&!zh)||(b.textContent.trim()==='中文'&&zh));
+  });
+}
+function openApp(){document.body.classList.add('app');document.body.style.overflow='hidden'}
+function closeApp(){document.body.classList.remove('app');document.body.style.overflow=''}
+let playing=false,prog=42;
+function togglePlay(){
+  playing=!playing;
+  document.getElementById('ap-btn').textContent=playing?'⏸':'▶';
+  if(playing)animProg();
+}
+function animProg(){
+  if(!playing)return;
+  prog=Math.min(prog+0.08,100);
+  document.getElementById('ap-fill').style.width=prog+'%';
+  const total=262,cur=Math.round(total*prog/100);
+  document.getElementById('ap-time').textContent=fmt(cur)+' / '+fmt(total);
+  if(prog<100)requestAnimationFrame(animProg);
+  else{playing=false;document.getElementById('ap-btn').textContent='▶';}
+}
+function fmt(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60}
+function seekAudio(e){const r=e.currentTarget.getBoundingClientRect();prog=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));document.getElementById('ap-fill').style.width=prog+'%';}
+function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textContent);const i=s.indexOf(c);b.textContent=s[(i+1)%s.length]+'×';}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/library.js"></script>
+</body>
+</html>
