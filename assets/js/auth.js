@@ -121,6 +121,8 @@ async function handleAuthSubmit(e, mode) {
       await authSignIn(email, password);
       document.getElementById('auth-modal').remove();
       updateAuthUI();
+      // 登录成功后继续待支付流程
+      if (typeof resumePendingCheckout === 'function') resumePendingCheckout();
     }
   } catch (err) {
     errEl.style.color = '#c0392b';

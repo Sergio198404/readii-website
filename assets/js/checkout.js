@@ -3,17 +3,26 @@
  * 依赖全局变量: STRIPE_CONFIG, authGetCurrentUser
  */
 
+// 待支付信息（登录后自动继续）
+let _pendingCheckout = null;
+
 async function startCheckout(priceId, mode) {
   try {
     const user = await authGetCurrentUser();
-    const email = user?.email || null;
+
+    // 未登录 → 先弹出注册/登录，登录后自动继续支付
+    if (!user) {
+      _pendingCheckout = { priceId, mode };
+      showAuthModal('signup');
+      return;
+    }
 
     const res = await fetch('/.netlify/functions/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         priceId: priceId,
-        customerEmail: email,
+        customerEmail: user.email,
         mode: mode || 'subscription',
       }),
     });
@@ -28,6 +37,15 @@ async function startCheckout(priceId, mode) {
     alert(isZh
       ? '支付启动失败，请稍后重试或联系 hello@readii.co.uk'
       : 'Payment could not be started. Please try again or contact hello@readii.co.uk');
+  }
+}
+
+// 登录成功后检查是否有待支付
+function resumePendingCheckout() {
+  if (_pendingCheckout) {
+    const { priceId, mode } = _pendingCheckout;
+    _pendingCheckout = null;
+    startCheckout(priceId, mode);
   }
 }
 
