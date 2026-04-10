@@ -104,3 +104,24 @@ Format: [Version] — YYYY-MM-DD
 - All email addresses updated from readii.vip to readii.co.uk
 - Hero card domain display: readii.vip → readii.co.uk
 - Version comment updated to v1.0.5
+
+---
+
+## [1.1.0] — 2026-04-10
+
+### Added
+- Stripe Checkout integration: £5/mo subscription + £299 one-time programme
+- Netlify serverless function: create-checkout.js (Stripe session creation)
+- Auth module: sign up/in/out with Supabase Auth, bilingual login/signup modal
+- Checkout handler: payment flow with success/cancel redirect
+- Payment success banner (auto-dismiss)
+
+### Changed
+- "Start free trial" button → "Start subscription — £5/mo" (Stripe checkout)
+- "Enrol now" button → "Enrol now — £299" (Stripe checkout)
+- Sign in button → opens auth modal (was mailto)
+- netlify.toml: added functions directory
+
+### Notes
+- Stripe Secret Key stored as Netlify environment variable (not in code)
+- Stripe Publishable Key in assets/js/stripe-config.js (client-side, safe to expose)

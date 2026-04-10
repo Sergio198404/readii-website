@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.0.5 | Updated: 2026-04-09 -->
+<!-- Readii v1.1.0 | Updated: 2026-04-10 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -402,7 +402,7 @@ h1{animation:fu .6s ease both .15s}
       <div class="pamt">£5</div><div class="pper">/ <span data-en>month</span><span data-zh>月</span></div>
       <p class="pdesc"><span data-en>Full access to British English audio library for children aged 3–12.</span><span data-zh>3至12岁儿童英式英语音频库完整访问权限。</span></p>
       <ul class="pfl"><li><span data-en>1,000+ audio lessons</span><span data-zh>超过1000节课程</span></li><li><span data-en>Heinemann, history & science series</span><span data-zh>海尼曼、历史与科学系列</span></li><li><span data-en>Native British teachers</span><span data-zh>英国外教</span></li><li><span data-en>AI pronunciation scoring</span><span data-zh>AI 发音评分</span></li><li><span data-en>Progress tracking</span><span data-zh>进度追踪</span></li></ul>
-      <a href="mailto:hello@readii.co.uk?subject=Free Trial — Readii" class="btn-p" style="width:100%;text-align:center"><span data-en>Start free trial</span><span data-zh>开始免费试用</span></a>
+      <button class="btn-p" onclick="handleCheckout('children')" style="width:100%"><span data-en>Start subscription — £5/mo</span><span data-zh>立即订阅 — £5/月</span></button>
     </div>
     <div class="pcard feat">
       <div class="pbadge"><span data-en>Most popular</span><span data-zh>最受欢迎</span></div>
@@ -410,7 +410,7 @@ h1{animation:fu .6s ease both .15s}
       <div class="pamt">£299</div><div class="pper"><span data-en>one-time programme</span><span data-zh>一次性课程费用</span></div>
       <p class="pdesc"><span data-en>Full AI voice coaching programme for non-native English speakers.</span><span data-zh>面向非英语母语者的完整 AI 语音指导课程。</span></p>
       <ul class="pfl"><li><span data-en>AI pronunciation assessment</span><span data-zh>AI 发音评估</span></li><li><span data-en>Personalised coaching plan</span><span data-zh>个性化指导方案</span></li><li><span data-en>Voice recording & feedback</span><span data-zh>语音录制与反馈</span></li><li><span data-en>British accent training</span><span data-zh>英式口音训练</span></li><li><span data-en>Certificate of completion</span><span data-zh>完成证书</span></li></ul>
-      <a href="mailto:hello@readii.co.uk?subject=Enrol — Learner Pro £299" class="btn-p" style="width:100%;text-align:center"><span data-en>Enrol now</span><span data-zh>立即报名</span></a>
+      <button class="btn-p" onclick="handleCheckout('pro')" style="width:100%"><span data-en>Enrol now — £299</span><span data-zh>立即报名 — £299</span></button>
     </div>
     <div class="pcard">
       <div class="ptier"><span data-en>Business Programme</span><span data-zh>商业服务</span></div>
@@ -571,6 +571,7 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
 <script src="assets/js/supabase-client.js"></script>
 <script src="assets/js/stripe-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/checkout.js"></script>
 <script src="assets/js/library.js"></script>
 </body>
 </html>

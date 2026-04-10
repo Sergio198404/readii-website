@@ -194,9 +194,27 @@
 
 **Objective:** 接入 Stripe £5/月订阅 + Supabase Auth 用户登录
 
-**今日计划：**
-- [ ] Stripe 账号注册，创建订阅产品
-- [ ] 网站接入 Stripe 支付按钮
-- [ ] Supabase Auth 邮箱注册登录
-- [ ] 订阅成功后自动更新 user_profiles
-- [ ] 登录后加载真实书库内容
+**Completed:**
+- [x] Stripe 账号注册，创建 2 个产品 (£5/mo + £299)
+- [x] 网站接入 Stripe Checkout 支付按钮
+- [x] Netlify serverless function: create-checkout.js
+- [x] Supabase Auth 登录/注册弹窗（中英双语）
+- [x] checkout.js: 支付流程 + 成功提示横幅
+- [x] auth.js: 注册/登录/登出 + 用户状态管理
+
+**Pending:**
+- [ ] 设置 Netlify 环境变量 STRIPE_SECRET_KEY
+- [ ] 订阅成功后自动更新 user_profiles (webhook)
+- [ ] 登录后根据订阅状态控制内容访问
+
+**Files changed:**
+- assets/js/stripe-config.js (updated, live keys)
+- assets/js/checkout.js (created)
+- assets/js/auth.js (created in Session 9 start)
+- netlify/functions/create-checkout.js (created)
+- netlify/functions/package.json (created)
+- netlify.toml (updated, added functions dir)
+- index.html (v1.0.5 → v1.1.0, Stripe buttons + checkout.js)
+- VERSION (1.1.0)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)
