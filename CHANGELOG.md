@@ -125,3 +125,18 @@ Format: [Version] — YYYY-MM-DD
 ### Notes
 - Stripe Secret Key stored as Netlify environment variable (not in code)
 - Stripe Publishable Key in assets/js/stripe-config.js (client-side, safe to expose)
+
+---
+
+## [1.1.1] — 2026-04-10
+
+### Added
+- Stripe Webhook: netlify/functions/stripe-webhook.js
+- Auto-update user_profiles.subscription_status on payment success
+- Handle checkout.session.completed (subscription + one-time payment)
+- Handle customer.subscription.deleted (cancellation)
+- Supabase JS added to functions dependencies
+
+### Notes
+- Webhook requires 3 Netlify env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY, STRIPE_WEBHOOK_SECRET
+- £5/mo subscription → 1 month access, £299 one-time → 6 months access

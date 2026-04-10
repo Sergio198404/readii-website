@@ -218,3 +218,31 @@
 - VERSION (1.1.0)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-10 | Session 10 | v1.1.1
+
+**Objective:** Stripe Webhook — 支付成功后自动更新订阅状态
+
+**Completed:**
+- [x] Created netlify/functions/stripe-webhook.js
+- [x] Handles checkout.session.completed → set subscription_status = 'active'
+- [x] Handles customer.subscription.deleted → set subscription_status = 'cancelled'
+- [x] Added @supabase/supabase-js to functions dependencies
+
+**Requires Netlify env vars:**
+- SUPABASE_URL
+- SUPABASE_SERVICE_KEY
+- STRIPE_WEBHOOK_SECRET (from Stripe Dashboard → Webhooks)
+
+**Requires Stripe Webhook setup:**
+- Endpoint: https://readii.co.uk/.netlify/functions/stripe-webhook
+- Events: checkout.session.completed, customer.subscription.deleted
+
+**Files changed:**
+- netlify/functions/stripe-webhook.js (created)
+- netlify/functions/package.json (added supabase-js)
+- VERSION (1.1.0 → 1.1.1)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)
