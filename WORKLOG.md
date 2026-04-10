@@ -187,3 +187,16 @@
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
 - VERSION (1.0.5)
+
+---
+
+## 2026-04-10 | Session 9 | 开始 Stripe + 用户登录
+
+**Objective:** 接入 Stripe £5/月订阅 + Supabase Auth 用户登录
+
+**今日计划：**
+- [ ] Stripe 账号注册，创建订阅产品
+- [ ] 网站接入 Stripe 支付按钮
+- [ ] Supabase Auth 邮箱注册登录
+- [ ] 订阅成功后自动更新 user_profiles
+- [ ] 登录后加载真实书库内容
