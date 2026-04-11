@@ -329,3 +329,33 @@
 - VERSION (1.2.1 -> 1.2.2)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-11 | Session 13 | v1.3.0
+
+**Objective:** Commentary audio, seek/speed controls, Articles/Blog section
+
+**Completed:**
+- [x] openBook() rewritten with dual audio track support (reading + commentary)
+- [x] Track toggle buttons: Reading / Commentary with bilingual labels
+- [x] Seek: click progress bar to jump to position in real audio
+- [x] Speed: 0.75x/1.0x/1.25x/1.5x connected to audio.playbackRate
+- [x] Commentary track auto-disabled if no commentary_audio_url
+- [x] Created articles/index.html with 3 article cards
+- [x] Created articles/why-ai-is-changing-english-learning.html (full SEO article)
+- [x] Footer "Articles & Insights" link updated to /articles/
+
+**Pending:**
+- [ ] Write remaining 2 articles (UK-China trade, founder story)
+- [ ] 133 books with missing files to fix and re-upload
+- [ ] Mobile responsive improvements
+- [ ] AI pronunciation scoring integration
+
+**Files changed:**
+- index.html (v1.2.2 -> v1.3.0, dual audio + articles link)
+- articles/index.html (created)
+- articles/why-ai-is-changing-english-learning.html (created)
+- VERSION (1.2.2 -> 1.3.0)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.2.2 | Updated: 2026-04-11 -->
+<!-- Readii v1.3.0 | Updated: 2026-04-11 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -437,7 +437,7 @@ h1{animation:fu .6s ease both .15s}
   <div class="fgrid">
     <div><div class="fln">Readii</div><p class="fdesc"><span data-en>AI-powered platform for Chinese families and entrepreneurs building their future in Britain.</span><span data-zh>为在英国打造未来的中国家庭与创业者提供 AI 技术平台。</span></p><p class="faddr">Suite 3.2, 27 Castle Street<br>Canterbury, England, CT1 2PX<br>Co. No. 15002332 · VAT 463 5349 77</p></div>
     <div><h4><span data-en>Platform</span><span data-zh>平台</span></h4><ul><li><a href="#reading"><span data-en>English Reading</span><span data-zh>英语阅读</span></a></li><li><a href="#platform"><span data-en>AI Voice Training</span><span data-zh>AI 语音训练</span></a></li><li><a href="#pricing"><span data-en>Business Programme</span><span data-zh>商业服务</span></a></li><li><a href="#pricing"><span data-en>Pricing</span><span data-zh>价格</span></a></li></ul></div>
-    <div><h4><span data-en>Company</span><span data-zh>公司</span></h4><ul><li><a href="#about"><span data-en>About Readii</span><span data-zh>关于 Readii</span></a></li><li><a href="#about"><span data-en>Kevin Su — Founder</span><span data-zh>创始人 Kevin Su</span></a></li><li><a href="#"><span data-en>Articles & Insights</span><span data-zh>文章与洞见</span></a></li><li><a href="mailto:hello@readii.co.uk"><span data-en>Contact</span><span data-zh>联系我们</span></a></li></ul></div>
+    <div><h4><span data-en>Company</span><span data-zh>公司</span></h4><ul><li><a href="#about"><span data-en>About Readii</span><span data-zh>关于 Readii</span></a></li><li><a href="#about"><span data-en>Kevin Su — Founder</span><span data-zh>创始人 Kevin Su</span></a></li><li><a href="/articles/"><span data-en>Articles & Insights</span><span data-zh>文章与洞见</span></a></li><li><a href="mailto:hello@readii.co.uk"><span data-en>Contact</span><span data-zh>联系我们</span></a></li></ul></div>
     <div><h4><span data-en>Connect</span><span data-zh>联系方式</span></h4><ul><li><a href="https://www.linkedin.com/company/112639056/" target="_blank">LinkedIn</a></li><li><a href="#">WeChat / 微信</a></li><li><a href="#">小红书</a></li><li><a href="#">Douyin / 抖音</a></li><li><a href="mailto:hello@readii.co.uk">hello@readii.co.uk</a></li></ul></div>
   </div>
   <div class="fbot"><span class="flegal">© 2025 Readii Limited · <span data-en>Registered in England and Wales</span><span data-zh>注册于英格兰和威尔士</span> · No. 15002332</span><span class="flegal">Canterbury · CT1 2PX</span></div>
@@ -668,7 +668,6 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
   }
 
   window.openBook = async function(bookId) {
-    // 从 Supabase 拉这本书的课节和音频
     const { data: book } = await _supabase
       .from('books')
       .select(`
@@ -684,85 +683,160 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
 
     if (!book) return
 
-    // 找第一个有音频的课节
     const lesson = book.lessons?.sort((a,b) => a.day_number - b.day_number)[0]
-    if (!lesson) {
-      alert('No audio available for this book yet.')
-      return
-    }
+    if (!lesson) { alert('No audio available yet.'); return }
 
-    // 更新播放器界面
+    // 更新播放器头部
     document.querySelector('.rpbu').textContent = `${book.series} · Day ${lesson.day_number}`
     document.querySelector('.rpbt').textContent = book.title
     document.querySelector('.rpbtr').textContent = 'Native British teacher'
 
-    // 设置音频源
-    let audioUrl = lesson.reading_audio_url
-    if (!audioUrl) {
-      alert('Audio not available yet for this book.')
-      return
+    // 获取签名 URL
+    let readingUrl = lesson.reading_audio_url
+    let commentaryUrl = lesson.commentary_audio_url
+
+    if (readingUrl && !readingUrl.startsWith('http')) {
+      readingUrl = await getSignedUrl(readingUrl)
+    }
+    if (commentaryUrl && !commentaryUrl.startsWith('http')) {
+      commentaryUrl = await getSignedUrl(commentaryUrl)
     }
 
-    // 如果是 Storage 路径（非完整 URL），生成签名 URL
-    if (!audioUrl.startsWith('http')) {
-      audioUrl = await getSignedUrl(audioUrl)
-      if (!audioUrl) {
-        alert('Could not load audio. Please try again.')
-        return
-      }
+    if (!readingUrl) { alert('Audio not available. Please try again.'); return }
+
+    // 创建两个 audio 元素
+    let readingAudio = document.getElementById('audio-reading')
+    let commentaryAudio = document.getElementById('audio-commentary')
+
+    if (!readingAudio) {
+      readingAudio = document.createElement('audio')
+      readingAudio.id = 'audio-reading'
+      document.body.appendChild(readingAudio)
+    }
+    if (!commentaryAudio) {
+      commentaryAudio = document.createElement('audio')
+      commentaryAudio.id = 'audio-commentary'
+      document.body.appendChild(commentaryAudio)
     }
 
-    // 创建或更新 audio 元素
-    let audio = document.getElementById('main-audio')
-    if (!audio) {
-      audio = document.createElement('audio')
-      audio.id = 'main-audio'
-      document.body.appendChild(audio)
+    readingAudio.src = readingUrl
+    readingAudio.load()
+    if (commentaryUrl) {
+      commentaryAudio.src = commentaryUrl
+      commentaryAudio.load()
     }
 
-    audio.src = audioUrl
-    audio.load()
+    // 当前激活的音轨
+    let activeAudio = readingAudio
+    let currentSpeed = 1.0
 
-    // 连接播放按钮
+    // 播放/暂停按钮
     const playBtn = document.getElementById('ap-btn')
     playBtn.onclick = function() {
-      if (audio.paused) {
-        audio.play()
+      if (activeAudio.paused) {
+        activeAudio.play()
         playBtn.textContent = '⏸'
       } else {
-        audio.pause()
+        activeAudio.pause()
         playBtn.textContent = '▶'
       }
     }
 
-    // 更新进度条
-    audio.addEventListener('timeupdate', () => {
-      const pct = (audio.currentTime / audio.duration) * 100
+    // 进度条 seek
+    const progressBar = document.querySelector('.approg')
+    progressBar.onclick = function(e) {
+      const rect = progressBar.getBoundingClientRect()
+      const pct = (e.clientX - rect.left) / rect.width
+      activeAudio.currentTime = pct * activeAudio.duration
+    }
+
+    // 语速控制
+    const speedBtn = document.querySelector('.apspd')
+    const speeds = [0.75, 1.0, 1.25, 1.5]
+    speedBtn.onclick = function() {
+      const idx = speeds.indexOf(currentSpeed)
+      currentSpeed = speeds[(idx + 1) % speeds.length]
+      activeAudio.playbackRate = currentSpeed
+      speedBtn.textContent = currentSpeed + '\u00d7'
+    }
+
+    // 进度更新
+    function updateProgress() {
+      const pct = (activeAudio.currentTime / activeAudio.duration) * 100 || 0
       document.getElementById('ap-fill').style.width = pct + '%'
       document.getElementById('ap-time').textContent =
-        fmt(Math.floor(audio.currentTime)) + ' / ' + fmt(Math.floor(audio.duration || 0))
-    })
+        fmt(Math.floor(activeAudio.currentTime)) + ' / ' +
+        fmt(Math.floor(activeAudio.duration || 0))
+    }
 
-    // 获取当前用户用于保存进度
-    const { user } = await checkAccess()
+    readingAudio.addEventListener('timeupdate', updateProgress)
+    commentaryAudio.addEventListener('timeupdate', updateProgress)
 
-    audio.addEventListener('ended', () => {
+    // 播放结束保存进度
+    readingAudio.addEventListener('ended', async () => {
       playBtn.textContent = '▶'
-      // 保存进度
+      const user = await authGetCurrentUser()
       if (user) {
         saveProgress(user.id, lesson.id, {
           reading_completed: true,
-          reading_progress_seconds: Math.floor(audio.duration)
+          reading_progress_seconds: Math.floor(readingAudio.duration)
         })
       }
     })
 
+    // 添加音轨切换按钮（如果还没有）
+    const playerHeader = document.querySelector('.aptch')
+    if (!document.getElementById('track-toggle')) {
+      const toggleRow = document.createElement('div')
+      toggleRow.style.cssText = 'display:flex;gap:8px;margin-bottom:12px;'
+      toggleRow.innerHTML = `
+        <button id="btn-reading" onclick="switchTrack('reading')" style="
+          flex:1;padding:7px;border-radius:6px;font-size:12px;cursor:pointer;
+          background:var(--forest);color:white;border:none;font-weight:500;
+        ">
+          🔊 <span data-en>Reading</span><span data-zh>外教朗读</span>
+        </button>
+        <button id="btn-commentary" onclick="switchTrack('commentary')" style="
+          flex:1;padding:7px;border-radius:6px;font-size:12px;cursor:pointer;
+          background:var(--cream2);color:var(--ink2);border:1px solid var(--border);
+        " ${!commentaryUrl ? 'disabled' : ''}>
+          💬 <span data-en>Commentary</span><span data-zh>中教讲解</span>
+        </button>
+      `
+      toggleRow.id = 'track-toggle'
+      playerHeader.parentNode.insertBefore(toggleRow, playerHeader)
+    }
+
+    window.switchTrack = function(track) {
+      const wasPlaying = !activeAudio.paused
+      activeAudio.pause()
+      playBtn.textContent = '▶'
+
+      if (track === 'reading') {
+        activeAudio = readingAudio
+        document.getElementById('btn-reading').style.background = 'var(--forest)'
+        document.getElementById('btn-reading').style.color = 'white'
+        document.getElementById('btn-commentary').style.background = 'var(--cream2)'
+        document.getElementById('btn-commentary').style.color = 'var(--ink2)'
+      } else {
+        activeAudio = commentaryAudio
+        document.getElementById('btn-commentary').style.background = 'var(--forest)'
+        document.getElementById('btn-commentary').style.color = 'white'
+        document.getElementById('btn-reading').style.background = 'var(--cream2)'
+        document.getElementById('btn-reading').style.color = 'var(--ink2)'
+      }
+
+      activeAudio.playbackRate = currentSpeed
+      if (wasPlaying) {
+        activeAudio.play()
+        playBtn.textContent = '⏸'
+      }
+    }
+
     // 自动开始播放
-    audio.play().then(() => {
+    readingAudio.play().then(() => {
       playBtn.textContent = '⏸'
-    }).catch(err => {
-      console.error('Playback error:', err)
-    })
+    }).catch(console.error)
   }
 
   // 登录/注册表单处理

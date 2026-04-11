@@ -128,6 +128,30 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.3.0] — 2026-04-11
+
+### Added
+- Commentary audio track: second audio element for Chinese tutor explanations
+- Track toggle buttons (Reading / Commentary) in audio player, bilingual labels
+- Seek control: click progress bar to jump to any position in audio
+- Speed control: 0.75x / 1.0x / 1.25x / 1.5x connected to real audio playbackRate
+- Articles section: /articles/ index page with 3 article cards
+- First full article: "Why non-native English speakers struggle in British schools"
+- Article page includes SEO meta tags, author bio, CTA to pricing
+- Footer "Articles & Insights" link now points to /articles/
+
+### Changed
+- openBook() rewritten: dual audio track support, signed URL for both reading + commentary
+- Progress bar and time display update from whichever track is active
+- Speed button cycles through real playback rates (was cosmetic only)
+
+### Notes
+- Commentary track disabled if lesson has no commentary_audio_url
+- Track switch preserves play/pause state and current speed
+- Articles are static HTML pages (no CMS) — good for Google indexing
+
+---
+
 ## [1.2.2] — 2026-04-11
 
 ### Fixed
