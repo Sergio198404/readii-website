@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.2.1 | Updated: 2026-04-11 -->
+<!-- Readii v1.2.2 | Updated: 2026-04-11 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -697,10 +697,19 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
     document.querySelector('.rpbtr').textContent = 'Native British teacher'
 
     // 设置音频源
-    const audioUrl = lesson.reading_audio_url
+    let audioUrl = lesson.reading_audio_url
     if (!audioUrl) {
       alert('Audio not available yet for this book.')
       return
+    }
+
+    // 如果是 Storage 路径（非完整 URL），生成签名 URL
+    if (!audioUrl.startsWith('http')) {
+      audioUrl = await getSignedUrl(audioUrl)
+      if (!audioUrl) {
+        alert('Could not load audio. Please try again.')
+        return
+      }
     }
 
     // 创建或更新 audio 元素

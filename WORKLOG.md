@@ -305,3 +305,27 @@
 - VERSION (1.2.0 → 1.2.1)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-11 | Session 12 | v1.2.2
+
+**Objective:** Fix audio playback for private Storage bucket (signed URLs)
+
+**Completed:**
+- [x] openBook() now checks if audio URL is a storage path vs full URL
+- [x] Storage paths auto-converted to signed URLs via getSignedUrl() (1hr expiry)
+- [x] supabase-client.js cleaned up, getSignedUrl() error logging improved
+- [x] Removed ES module export from supabase-client.js (stays as global script)
+
+**Pending:**
+- [ ] Verify audio plays after deploy (depends on reading_audio_url format in DB)
+- [ ] Commentary audio playback (second track)
+- [ ] Seek and speed controls connected to real audio
+
+**Files changed:**
+- assets/js/supabase-client.js (cleaned up, signed URL function updated)
+- index.html (v1.2.1 -> v1.2.2, signed URL logic in openBook)
+- VERSION (1.2.1 -> 1.2.2)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

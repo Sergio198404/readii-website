@@ -128,6 +128,20 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.2.2] — 2026-04-11
+
+### Fixed
+- Audio playback now works with private Supabase Storage bucket
+- openBook() generates signed URL before setting audio.src when path is not a full URL
+- getSignedUrl() error message improved (English)
+
+### Notes
+- If `reading_audio_url` starts with `http`, used directly (already a public/signed URL)
+- If it's a storage path (e.g. `gk/book-1/day-1-reading.mp3`), getSignedUrl() generates a 1-hour temporary link
+- supabase-client.js cleaned up (no ES module export — stays as global script)
+
+---
+
 ## [1.2.1] — 2026-04-11
 
 ### Added
