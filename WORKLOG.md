@@ -444,3 +444,19 @@
 - VERSION (1.3.3 -> 1.3.5)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-11 | Session 15 (continued) | v1.3.6
+
+**Objective:** Improve footer text contrast
+
+**Completed:**
+- [x] Footer background darkened to #0F0E0C
+- [x] All footer text opacity increased for readability
+
+**Files changed:**
+- index.html (v1.3.5 -> v1.3.6, footer contrast)
+- VERSION (1.3.5 -> 1.3.6)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

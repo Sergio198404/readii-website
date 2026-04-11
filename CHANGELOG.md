@@ -128,6 +128,15 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.3.6] — 2026-04-11
+
+### Fixed
+- Footer background darkened (#0F0E0C) for better contrast
+- All footer text opacity increased: logo .88→.95, desc .32→.55, addr .22→.45, headings .22→.4, links .42→.65, legal .16→.35
+- Footer link hover brightened to .95
+
+---
+
 ## [1.3.5] — 2026-04-11
 
 ### Fixed
