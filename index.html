@@ -648,7 +648,7 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
           <div class="book-days">${book.total_days} day${book.total_days > 1 ? 's' : ''}</div>
         </div>
         ${hasAccess
-          ? `<button class="play-book-btn" onclick="console.log('clicked', '${book.id}'); openBook('${book.id}')">▶ Listen</button>`
+          ? `<button class="play-book-btn" onclick="openBook('${book.id}')">▶ Listen</button>`
           : `<button class="subscribe-btn" onclick="handleCheckout('children')">🔒 Subscribe</button>`
         }
       `
@@ -668,6 +668,22 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
   }
 
   window.openBook = async function(bookId) {
+    // 确保在 app view 里
+    if (!document.body.classList.contains('app')) {
+      document.body.classList.add('app')
+      document.body.style.overflow = 'hidden'
+    }
+
+    // 给 DOM 渲染时间
+    await new Promise(r => setTimeout(r, 100))
+
+    // 确认播放器元素存在
+    const playerTitle = document.querySelector('.rpbt')
+    if (!playerTitle) {
+      console.error('Player elements not found in DOM')
+      return
+    }
+
     const { data: book } = await _supabase
       .from('books')
       .select(`
