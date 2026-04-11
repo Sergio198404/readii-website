@@ -128,6 +128,32 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.2.0] — 2026-04-11
+
+### Added
+- Library access control: `checkAccess()` checks user login + subscription status
+- Real book library grid: loads all published books from Supabase
+- Subscriber UI: ▶ Listen button for active subscribers
+- Non-subscriber UI: 🔒 Subscribe button + subscribe banner
+- Progress tracking functions: `loadProgress()`, `saveProgress()`
+- Book card CSS: grid layout with hover effects
+- Subscribe banner for free/guest users
+
+### Changed
+- library.js rewritten as ES module with access control logic
+- index.html inline script now uses module imports from library.js
+- App view book list replaced with responsive library-grid
+- Navigation buttons update based on login/subscription state
+- Settings sidebar item now triggers sign out
+
+### Notes
+- Guest → sees books with 🔒, prompted to subscribe
+- Logged in (free) → same as guest
+- Logged in (active subscription) → sees ▶ Listen on all books
+- `openBook()` placeholder ready for audio player integration
+
+---
+
 ## [1.1.1] — 2026-04-10
 
 ### Added

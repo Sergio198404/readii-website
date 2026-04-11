@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.1.0 | Updated: 2026-04-10 -->
+<!-- Readii v1.2.0 | Updated: 2026-04-11 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -287,6 +287,17 @@ h1{animation:fu .6s ease both .15s}
 .hbtns{animation:fu .6s ease both .38s}
 .htrust{animation:fu .6s ease both .46s}
 .hcard{animation:fu .65s ease both .28s}
+.book-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:16px;display:flex;flex-direction:column;gap:10px;transition:all .2s}
+.book-card:hover{box-shadow:var(--shm);transform:translateY(-2px)}
+.book-cover-img{height:80px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px}
+.book-series{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+.book-title{font-family:var(--serif);font-size:14px;font-weight:400;color:var(--ink);line-height:1.4}
+.book-days{font-size:11px;color:var(--ink3)}
+.play-book-btn{background:var(--forest);color:var(--white);border:none;padding:8px 14px;border-radius:6px;font-size:12px;cursor:pointer;transition:all .15s}
+.play-book-btn:hover{background:var(--forest2)}
+.subscribe-btn{background:var(--cream2);color:var(--ink3);border:1px solid var(--border);padding:8px 14px;border-radius:6px;font-size:12px;cursor:pointer}
+.subscribe-banner{background:var(--forest-pale,var(--fp));border:1px solid rgba(27,58,45,.15);border-radius:var(--rl);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;grid-column:1/-1;margin-bottom:8px}
+.subscribe-banner p{font-size:14px;color:var(--forest2);font-weight:500}
 </style></head>
 <body>
 <div id="view-landing">
@@ -472,8 +483,15 @@ h1{animation:fu .6s ease both .15s}
             <button class="filter-btn" data-series="Science Series" onclick="filterBySeries('Science Series')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">Science</button>
           </div>
         </div>
-        <div id="book-list" style="max-height:280px;overflow-y:auto;padding:8px;">
-          <div style="text-align:center;padding:30px;color:var(--ink3);font-size:13px;"><span data-en>Loading library...</span><span data-zh>加载书库中...</span></div>
+        <div class="library-grid" style="
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
+  gap:16px;
+  padding:4px;
+">
+          <div style="color:var(--ink3);font-size:14px;padding:20px;">
+            Loading library...加载书库中...
+          </div>
         </div>
       </div>
       <div class="agr">
@@ -572,6 +590,127 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
 <script src="assets/js/stripe-config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/checkout.js"></script>
-<script src="assets/js/library.js"></script>
+<script type="module">
+  import { checkAccess, loadLibrary } from './assets/js/library.js'
+
+  // 支付按钮
+  window.handleCheckout = function(type) {
+    if (type === 'children') {
+      startCheckout(STRIPE_CONFIG.prices.monthly_children, 'subscription')
+    } else if (type === 'pro') {
+      startCheckout(STRIPE_CONFIG.prices.one_time_pro, 'payment')
+    }
+  }
+
+  // 检查支付结果
+  checkPaymentResult()
+
+  // 检查登录状态，更新 UI
+  async function initApp() {
+    const { hasAccess, user, status } = await checkAccess()
+
+    // 更新导航栏
+    const signinBtn = document.querySelector('.btn-si')
+    const ctaBtn = document.querySelector('.btn-p')
+
+    if (user) {
+      if (signinBtn) signinBtn.textContent = user.email.split('@')[0]
+      if (ctaBtn) {
+        ctaBtn.textContent = hasAccess ? 'My Library' : 'Subscribe'
+        ctaBtn.onclick = hasAccess ? openApp : () => handleCheckout('children')
+      }
+    }
+
+    // 如果进入了 app view，加载真实书库
+    if (document.body.classList.contains('app')) {
+      await renderLibrary(hasAccess)
+    }
+  }
+
+  // 渲染真实书库
+  async function renderLibrary(hasAccess) {
+    const books = await loadLibrary()
+    const container = document.querySelector('.library-grid')
+    if (!container) return
+
+    container.innerHTML = ''
+
+    books.forEach(book => {
+      const card = document.createElement('div')
+      card.className = 'book-card'
+      card.innerHTML = `
+        <div class="book-cover-img" style="background:linear-gradient(135deg,var(--forest),var(--forest2))">
+          📗
+        </div>
+        <div class="book-info">
+          <div class="book-series">${book.series || ''}</div>
+          <div class="book-title">${book.title}</div>
+          <div class="book-days">${book.total_days} day${book.total_days > 1 ? 's' : ''}</div>
+        </div>
+        ${hasAccess
+          ? `<button class="play-book-btn" onclick="openBook('${book.id}')">▶ Listen</button>`
+          : `<button class="subscribe-btn" onclick="handleCheckout('children')">🔒 Subscribe</button>`
+        }
+      `
+      container.appendChild(card)
+    })
+
+    // 显示订阅提示（免费用户）
+    if (!hasAccess) {
+      const banner = document.createElement('div')
+      banner.className = 'subscribe-banner'
+      banner.innerHTML = `
+        <p>Subscribe for £5/month to unlock all ${books.length} books</p>
+        <button class="btn-p" onclick="handleCheckout('children')">Start subscription →</button>
+      `
+      container.prepend(banner)
+    }
+  }
+
+  window.openBook = function(bookId) {
+    console.log('Opening book:', bookId)
+    // 后续连接真实音频播放器
+  }
+
+  // 登录/注册表单处理
+  window.handleSignIn = async function(email, password) {
+    try {
+      await authSignIn(email, password)
+      window.location.reload()
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
+  window.handleSignUp = async function(email, password, childName, childAge) {
+    try {
+      await authSignUp(email, password, childName, childAge)
+      alert('Account created! Please check your email to confirm.')
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
+  window.handleSignOut = async function() {
+    await authSignOut()
+    window.location.reload()
+  }
+
+  // 在 app view 的侧边栏加退出按钮
+  const settingsItem = document.querySelector('.ni:last-child')
+  if (settingsItem) {
+    settingsItem.onclick = handleSignOut
+  }
+
+  // 进入 app view 时自动加载书库
+  const origOpenApp = window.openApp
+  window.openApp = async function() {
+    if (origOpenApp) origOpenApp()
+    const { hasAccess } = await checkAccess()
+    await renderLibrary(hasAccess)
+  }
+
+  initApp()
+</script>
 </body>
 </html>

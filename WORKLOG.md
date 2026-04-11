@@ -246,3 +246,35 @@
 - VERSION (1.1.0 → 1.1.1)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+
+---
+
+## 2026-04-11 | Session 11 | v1.2.0
+
+**Objective:** Content access control + real library rendering
+
+**Completed:**
+- [x] library.js rewritten as ES module with checkAccess() subscription check
+- [x] loadLibrary() fetches published books from Supabase
+- [x] loadProgress() / saveProgress() progress tracking functions
+- [x] index.html bottom script converted to module, imports library.js
+- [x] App view book list replaced with library-grid layout
+- [x] Subscribed users see ▶ Listen, non-subscribed see 🔒 Subscribe
+- [x] Free users see subscribe banner prompt
+- [x] Added book-card / subscribe-banner CSS
+- [x] Nav bar updates dynamically based on login + subscription status
+- [x] Settings button bound to sign out
+
+**Pending:**
+- [ ] openBook() connect to real audio player
+- [ ] Progress tracking UI (read/unread status)
+- [ ] Fix 133 books with missing files and re-upload
+- [ ] Add Articles/Blog page (Google indexability)
+
+**Files changed:**
+- assets/js/library.js (rewritten, ES module with access control)
+- index.html (v1.1.1 → v1.2.0, module script + library-grid + CSS)
+- VERSION (1.1.1 → 1.2.0)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)
