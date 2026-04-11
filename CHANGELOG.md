@@ -128,6 +128,25 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.3.3] — 2026-04-11
+
+### Added
+- Real progress tracking: reading_completed, commentary_completed saved to Supabase
+- Streak system: daily streak tracking with consecutive day logic
+- Auto-save: progress saved every 30 seconds during playback
+- updateProgressPanel(): updates sidebar and right panel with real data
+- Book completion badges: "Done" tag on completed books in library grid
+- Completed books show "Re-read" button instead of "Listen"
+- Commentary ended event saves commentary_completed
+
+### Changed
+- library.js: added loadStreak(), updateStreak() exports
+- renderLibrary(): loads user progress, shows completion state per book
+- initApp(): loads progress panel on login
+- openBook() ended listeners: save progress + update streak + refresh panel
+
+---
+
 ## [1.3.2] — 2026-04-11
 
 ### Added

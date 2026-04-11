@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.3.2 | Updated: 2026-04-11 -->
+<!-- Readii v1.3.3 | Updated: 2026-04-11 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -601,7 +601,7 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/checkout.js"></script>
 <script type="module">
-  import { checkAccess, loadLibrary, saveProgress } from './assets/js/library.js'
+  import { checkAccess, loadLibrary, loadProgress, saveProgress, loadStreak, updateStreak } from './assets/js/library.js'
 
   // 支付按钮
   window.handleCheckout = function(type) {
@@ -629,6 +629,9 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
         ctaBtn.textContent = hasAccess ? 'My Library' : 'Subscribe'
         ctaBtn.onclick = hasAccess ? openApp : () => handleCheckout('children')
       }
+
+      // 加载真实进度
+      updateProgressPanel(user.id)
     }
 
     // 如果进入了 app view，加载真实书库
@@ -639,33 +642,15 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
 
   // 渲染真实书库
   async function renderLibrary(hasAccess) {
+    const user = await authGetCurrentUser()
+    const progress = user ? await loadProgress(user.id) : {}
+
     const books = await loadLibrary()
     const container = document.querySelector('.library-grid')
     if (!container) return
 
     container.innerHTML = ''
 
-    books.forEach(book => {
-      const card = document.createElement('div')
-      card.className = 'book-card'
-      card.innerHTML = `
-        <div class="book-cover-img" style="background:linear-gradient(135deg,var(--forest),var(--forest2))">
-          📗
-        </div>
-        <div class="book-info">
-          <div class="book-series">${book.series || ''}</div>
-          <div class="book-title">${book.title}</div>
-          <div class="book-days">${book.total_days} day${book.total_days > 1 ? 's' : ''}</div>
-        </div>
-        ${hasAccess
-          ? `<button class="play-book-btn" onclick="openBook('${book.id}')">▶ Listen</button>`
-          : `<button class="subscribe-btn" onclick="handleCheckout('children')">🔒 Subscribe</button>`
-        }
-      `
-      container.appendChild(card)
-    })
-
-    // 显示订阅提示（免费用户）
     if (!hasAccess) {
       const banner = document.createElement('div')
       banner.className = 'subscribe-banner'
@@ -673,8 +658,36 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
         <p>Subscribe for £5/month to unlock all ${books.length} books</p>
         <button class="btn-p" onclick="handleCheckout('children')">Start subscription →</button>
       `
-      container.prepend(banner)
+      container.appendChild(banner)
     }
+
+    books.forEach(book => {
+      // 检查这本书的第一个 lesson 是否完成
+      const firstLesson = book.lessons?.sort((a,b) => a.day_number - b.day_number)[0]
+      const lessonProgress = firstLesson ? progress[firstLesson.id] : null
+      const isCompleted = lessonProgress?.reading_completed
+
+      const card = document.createElement('div')
+      card.className = 'book-card'
+      card.innerHTML = `
+        <div class="book-cover-img" style="background:linear-gradient(135deg,var(--forest),var(--forest2));position:relative;">
+          📗
+          ${isCompleted ? '<span style="position:absolute;top:6px;right:6px;background:#27500A;color:white;font-size:10px;padding:2px 6px;border-radius:20px;">✓ Done</span>' : ''}
+        </div>
+        <div class="book-info">
+          <div class="book-series">${book.series || ''}</div>
+          <div class="book-title">${book.title}</div>
+          <div class="book-days">${book.total_days} day${book.total_days > 1 ? 's' : ''}</div>
+        </div>
+        ${hasAccess
+          ? `<button class="play-book-btn" onclick="openBook('${book.id}')">
+              ${isCompleted ? '↺ Re-read' : '▶ Listen'}
+             </button>`
+          : `<button class="subscribe-btn" onclick="handleCheckout('children')">🔒 Subscribe</button>`
+        }
+      `
+      container.appendChild(card)
+    })
   }
 
   window.openBook = async function(bookId) {
@@ -837,12 +850,35 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
       playBtn.textContent = '▶'
       const user = await authGetCurrentUser()
       if (user) {
-        saveProgress(user.id, lesson.id, {
+        await saveProgress(user.id, lesson.id, {
           reading_completed: true,
           reading_progress_seconds: Math.floor(readingAudio.duration)
         })
+        await updateStreak(user.id)
+        updateProgressPanel(user.id)
       }
     })
+
+    commentaryAudio.addEventListener('ended', async () => {
+      const user = await authGetCurrentUser()
+      if (user) {
+        await saveProgress(user.id, lesson.id, {
+          commentary_completed: true
+        })
+      }
+    })
+
+    // 每30秒自动保存进度
+    setInterval(async () => {
+      if (!readingAudio.paused && readingAudio.currentTime > 0) {
+        const user = await authGetCurrentUser()
+        if (user) {
+          await saveProgress(user.id, lesson.id, {
+            reading_progress_seconds: Math.floor(readingAudio.currentTime)
+          })
+        }
+      }
+    }, 30000)
 
     // 添加音轨切换按钮（如果还没有）
     const playerHeader = document.querySelector('.aptch')
@@ -939,6 +975,40 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
   const settingsItem = document.querySelector('.ni:last-child')
   if (settingsItem) {
     settingsItem.onclick = handleSignOut
+  }
+
+  // 更新右侧进度面板
+  async function updateProgressPanel(userId) {
+    const [progress, streak] = await Promise.all([
+      loadProgress(userId),
+      loadStreak(userId)
+    ])
+
+    // 计算完成数
+    const completedCount = Object.values(progress).filter(p => p.reading_completed).length
+
+    // 更新进度条
+    const rows = document.querySelectorAll('.prow')
+    if (rows.length >= 4) {
+      // Lessons
+      rows[0].querySelector('.prp').textContent = completedCount
+      rows[0].querySelector('.prf').style.width = Math.min(completedCount * 10, 100) + '%'
+
+      // Streak
+      const currentStreak = streak?.current_streak || 0
+      rows[3].querySelector('.prp').textContent = currentStreak + 'd'
+      rows[3].querySelector('.prf').style.width = Math.min(currentStreak * 14, 100) + '%'
+    }
+
+    // 更新侧边栏进度
+    const sbFill = document.querySelector('.sbpf')
+    const sbMeta = document.querySelectorAll('.sbpm span')
+    if (sbFill && completedCount > 0) {
+      const pct = Math.min(Math.round(completedCount / 47 * 100), 100)
+      sbFill.style.width = pct + '%'
+      if (sbMeta[0]) sbMeta[0].textContent = pct + '%'
+      if (sbMeta[1]) sbMeta[1].textContent = completedCount + '/47'
+    }
   }
 
   // 进入 app view 时自动加载书库

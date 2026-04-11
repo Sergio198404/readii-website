@@ -400,3 +400,30 @@
 - VERSION (1.3.1 -> 1.3.2)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-11 | Session 14 (continued) | v1.3.3
+
+**Objective:** Real progress tracking, streak system, completion badges
+
+**Completed:**
+- [x] library.js: loadProgress, saveProgress, loadStreak, updateStreak
+- [x] openBook() ended listeners save reading_completed + commentary_completed
+- [x] Auto-save every 30 seconds during playback
+- [x] updateStreak() with consecutive day logic
+- [x] updateProgressPanel() updates sidebar + right panel with real data
+- [x] renderLibrary() shows Done badge and Re-read button for completed books
+- [x] initApp() loads progress on login
+
+**Pending:**
+- [ ] Pronunciation score integration
+- [ ] Weekly progress calculation (currently shows all-time)
+- [ ] 133 books with missing files to fix
+
+**Files changed:**
+- assets/js/library.js (added streak functions, updated progress)
+- index.html (v1.3.2 -> v1.3.3, progress tracking + badges)
+- VERSION (1.3.2 -> 1.3.3)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)
