@@ -128,6 +128,16 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.3.7] — 2026-04-11
+
+### Changed
+- Footer redesigned: dark background → light cream (var(--cream2)) with dark text
+- All footer text now uses theme ink/ink2/ink3 colors for consistency
+- Footer links hover to forest green instead of white
+- Grid divider and bottom border use var(--border) instead of rgba white
+
+---
+
 ## [1.3.6] — 2026-04-11
 
 ### Fixed

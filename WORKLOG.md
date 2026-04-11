@@ -460,3 +460,21 @@
 - VERSION (1.3.5 -> 1.3.6)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-11 | Session 15 (continued) | v1.3.7
+
+**Objective:** Footer redesign — light background with dark text
+
+**Completed:**
+- [x] Footer background: dark → var(--cream2) light
+- [x] All text colors switched to ink/ink2/ink3 theme vars
+- [x] Link hover: white → forest green
+- [x] Borders use var(--border) instead of rgba white
+
+**Files changed:**
+- index.html (v1.3.6 -> v1.3.7, footer light theme)
+- VERSION (1.3.6 -> 1.3.7)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)
