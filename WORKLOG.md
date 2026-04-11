@@ -359,3 +359,20 @@
 - VERSION (1.2.2 -> 1.3.0)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-11 | Session 13 (continued) | v1.3.1
+
+**Objective:** Fix player visibility — sticky bottom + scroll into view
+
+**Completed:**
+- [x] .aplayer CSS changed to position:sticky;bottom:0 with shadow
+- [x] openBook() scrolls to player and highlights with green border (2s)
+- [x] Player always visible at bottom of reading panel
+
+**Files changed:**
+- index.html (v1.3.0 -> v1.3.1, sticky player + scroll fix)
+- VERSION (1.3.0 -> 1.3.1)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

@@ -128,6 +128,18 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.3.1] — 2026-04-11
+
+### Fixed
+- Audio player now sticky at bottom of reading panel (always visible)
+- openBook() scrolls to player and highlights it briefly on open
+- Player background changed to white with forest-green top border + shadow
+
+### Changed
+- `.aplayer` CSS: position sticky, bottom 0, z-index 50, box-shadow
+
+---
+
 ## [1.3.0] — 2026-04-11
 
 ### Added
