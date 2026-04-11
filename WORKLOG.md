@@ -427,3 +427,20 @@
 - VERSION (1.3.2 -> 1.3.3)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-11 | Session 15 | v1.3.5
+
+**Objective:** Clean up landing page — fix copyright, update mock data
+
+**Completed:**
+- [x] Footer copyright 2025 → 2026
+- [x] For Children mock books replaced with real series names (GK, G1, History, Science)
+- [x] Confirmed Sign in button already working (showAuthModal binding intact)
+
+**Files changed:**
+- index.html (v1.3.3 -> v1.3.5, copyright + mock data)
+- VERSION (1.3.3 -> 1.3.5)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

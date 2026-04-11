@@ -128,6 +128,19 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.3.5] — 2026-04-11
+
+### Fixed
+- Footer copyright year corrected: 2025 → 2026
+- For Children section: replaced fake book titles with real series names (GK, G1, History, Science)
+- Removed specific fictional book references (The Very Hungry Caterpillar etc.) from landing page mockup
+
+### Notes
+- Sign in button already had correct showAuthModal() binding — no change needed
+- Social media links (WeChat, Douyin, Xiaohongshu) remain as # placeholder — to be added later
+
+---
+
 ## [1.3.3] — 2026-04-11
 
 ### Added
