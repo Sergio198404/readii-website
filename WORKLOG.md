@@ -278,3 +278,30 @@
 - VERSION (1.1.1 → 1.2.0)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-11 | Session 11 (continued) | v1.2.1
+
+**Objective:** Connect real audio playback to book player
+
+**Completed:**
+- [x] openBook() rewritten: fetches book lessons from Supabase, finds first lesson with audio
+- [x] HTML5 Audio element created/updated on book open
+- [x] Play/pause button connected to real audio stream
+- [x] Progress bar updates in real-time via timeupdate event
+- [x] Player UI (title, series, day) updates when book is opened
+- [x] Auto-saves progress to Supabase on audio ended (reading_completed)
+- [x] saveProgress imported from library.js module
+
+**Pending:**
+- [ ] Audio signed URLs for private Supabase Storage bucket
+- [ ] Commentary audio playback (second audio track)
+- [ ] Seek functionality connected to real audio
+- [ ] Speed control connected to real audio
+
+**Files changed:**
+- index.html (v1.2.0 → v1.2.1, real audio playback in openBook)
+- VERSION (1.2.0 → 1.2.1)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

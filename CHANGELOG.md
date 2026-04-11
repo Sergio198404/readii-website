@@ -128,6 +128,23 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.2.1] — 2026-04-11
+
+### Added
+- Real audio playback: openBook() fetches lesson audio from Supabase and plays via HTML5 Audio
+- Play/pause button connected to actual audio element
+- Progress bar updates in real-time during playback
+- Auto-save progress to Supabase when audio finishes (reading_completed + duration)
+- Player UI updates with book title, series, and day number on book open
+
+### Notes
+- Audio URLs come directly from Supabase `lessons.reading_audio_url`
+- If audio is missing, user sees alert message
+- Progress saved only for logged-in users
+- `fmt()` helper reused from existing player code for time display
+
+---
+
 ## [1.2.0] — 2026-04-11
 
 ### Added

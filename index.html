@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.2.0 | Updated: 2026-04-11 -->
+<!-- Readii v1.2.1 | Updated: 2026-04-11 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -591,7 +591,7 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/checkout.js"></script>
 <script type="module">
-  import { checkAccess, loadLibrary } from './assets/js/library.js'
+  import { checkAccess, loadLibrary, saveProgress } from './assets/js/library.js'
 
   // 支付按钮
   window.handleCheckout = function(type) {
@@ -667,9 +667,93 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
     }
   }
 
-  window.openBook = function(bookId) {
-    console.log('Opening book:', bookId)
-    // 后续连接真实音频播放器
+  window.openBook = async function(bookId) {
+    // 从 Supabase 拉这本书的课节和音频
+    const { data: book } = await _supabase
+      .from('books')
+      .select(`
+        id, title, title_zh, series, level,
+        lessons (
+          id, day_number, title,
+          reading_audio_url, commentary_audio_url,
+          reading_duration_seconds
+        )
+      `)
+      .eq('id', bookId)
+      .single()
+
+    if (!book) return
+
+    // 找第一个有音频的课节
+    const lesson = book.lessons?.sort((a,b) => a.day_number - b.day_number)[0]
+    if (!lesson) {
+      alert('No audio available for this book yet.')
+      return
+    }
+
+    // 更新播放器界面
+    document.querySelector('.rpbu').textContent = `${book.series} · Day ${lesson.day_number}`
+    document.querySelector('.rpbt').textContent = book.title
+    document.querySelector('.rpbtr').textContent = 'Native British teacher'
+
+    // 设置音频源
+    const audioUrl = lesson.reading_audio_url
+    if (!audioUrl) {
+      alert('Audio not available yet for this book.')
+      return
+    }
+
+    // 创建或更新 audio 元素
+    let audio = document.getElementById('main-audio')
+    if (!audio) {
+      audio = document.createElement('audio')
+      audio.id = 'main-audio'
+      document.body.appendChild(audio)
+    }
+
+    audio.src = audioUrl
+    audio.load()
+
+    // 连接播放按钮
+    const playBtn = document.getElementById('ap-btn')
+    playBtn.onclick = function() {
+      if (audio.paused) {
+        audio.play()
+        playBtn.textContent = '⏸'
+      } else {
+        audio.pause()
+        playBtn.textContent = '▶'
+      }
+    }
+
+    // 更新进度条
+    audio.addEventListener('timeupdate', () => {
+      const pct = (audio.currentTime / audio.duration) * 100
+      document.getElementById('ap-fill').style.width = pct + '%'
+      document.getElementById('ap-time').textContent =
+        fmt(Math.floor(audio.currentTime)) + ' / ' + fmt(Math.floor(audio.duration || 0))
+    })
+
+    // 获取当前用户用于保存进度
+    const { user } = await checkAccess()
+
+    audio.addEventListener('ended', () => {
+      playBtn.textContent = '▶'
+      // 保存进度
+      if (user) {
+        saveProgress(user.id, lesson.id, {
+          reading_completed: true,
+          reading_progress_seconds: Math.floor(audio.duration)
+        })
+      }
+    })
+
+    // 自动开始播放
+    audio.play().then(() => {
+      playBtn.textContent = '⏸'
+    }).catch(err => {
+      console.error('Playback error:', err)
+    })
   }
 
   // 登录/注册表单处理
