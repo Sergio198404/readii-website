@@ -128,6 +128,24 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.3.2] — 2026-04-11
+
+### Added
+- PDF viewer: iframe-based reader replaces mock text in reading panel
+- openBook() generates signed URL for `books/{id}/book.pdf` and loads into iframe
+- Placeholder state: "Select a book to start reading" with bilingual text
+- Fallback: "PDF not available" message if signed URL fails or PDF missing
+
+### Changed
+- `.rpbody` CSS: padding removed, flex column layout for PDF to fill space
+- Mock caterpillar text and vocabulary strip removed from reading panel
+
+### Notes
+- PDF path convention: `books/{book_id}/book.pdf` in Supabase Storage
+- Actual PDF filenames in Storage may differ — check and adjust path if needed
+
+---
+
 ## [1.3.1] — 2026-04-11
 
 ### Fixed

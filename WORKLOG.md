@@ -376,3 +376,27 @@
 - VERSION (1.3.0 -> 1.3.1)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-11 | Session 14 | v1.3.2
+
+**Objective:** Integrate PDF viewer into reading panel
+
+**Completed:**
+- [x] Mock caterpillar text replaced with iframe PDF viewer
+- [x] openBook() generates signed URL for books/{id}/book.pdf
+- [x] PDF loads in iframe, fills left panel space
+- [x] Placeholder and fallback states for missing PDFs
+- [x] rpbody CSS updated for flex layout
+
+**Pending:**
+- [ ] Confirm actual PDF path format in Supabase Storage
+- [ ] Handle different PDF naming conventions per book
+- [ ] 133 books with missing files to fix
+
+**Files changed:**
+- index.html (v1.3.1 -> v1.3.2, PDF viewer + CSS)
+- VERSION (1.3.1 -> 1.3.2)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

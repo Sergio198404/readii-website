@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.3.1 | Updated: 2026-04-11 -->
+<!-- Readii v1.3.2 | Updated: 2026-04-11 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -215,7 +215,9 @@ footer ul a:hover{color:rgba(255,255,255,.8)}
 .rpbu{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
 .rpbt{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--ink);margin-bottom:2px}
 .rpbtr{font-size:12px;color:var(--ink3)}
-.rpbody{padding:26px 30px;flex:1;overflow-y:auto}
+.rpbody{padding:0;flex:1;overflow:hidden;display:flex;flex-direction:column}
+#pdf-viewer-container{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+#pdf-frame{flex:1;min-height:0}
 .rtxt{font-family:var(--serif);font-size:19px;line-height:1.95;color:var(--ink);margin-bottom:22px}
 .hl{background:var(--gp);border-radius:3px;padding:0 3px;border-bottom:2px solid var(--gold);cursor:pointer;transition:background .15s}
 .hl:hover{background:rgba(196,154,56,.25)}
@@ -497,12 +499,20 @@ h1{animation:fu .6s ease both .15s}
       <div class="agr">
         <div class="rp">
           <div class="rph"><div class="rpbc">📗</div><div class="rpbi"><div class="rpbu"><span data-en>Heinemann · Level 2 · Unit 14</span><span data-zh>海尼曼 · 第2级 · 第14单元</span></div><div class="rpbt"><span data-en>The Very Hungry Caterpillar</span><span data-zh>好饿的毛毛虫</span></div><div class="rpbtr"><span data-en>Read by Emma · Native British teacher</span><span data-zh>Emma 朗读 · 英国外教</span></div></div></div>
-          <div class="rpbody">
-            <div class="rtxt">
-              <span data-en>In the light of the <span class="hl">moon</span>, a little egg lay on a leaf.<br><br>One Sunday morning the <span class="hl">warm</span> sun came up and — pop — out of the egg came a tiny and very <span class="ph">hungry</span> <span class="hl">caterpillar</span>.<br><br>He started to look for some food. On Monday he ate through one apple. But he was still <span class="ph">hungry</span>.<br><br>On Tuesday he ate through two <span class="hl">pears</span>, but he was still hungry.</span>
-              <span data-zh>月光下，一片叶子上<span class="hl">躺着</span>一颗小小的蛋。<br><br>星期天早晨，暖暖的<span class="hl">太阳</span>升起，"啪"的一声，从蛋里钻出一条又小又<span class="ph">饿</span>的<span class="hl">毛毛虫</span>。<br><br>他开始找东西吃。星期一吃了一个苹果，但还是<span class="ph">饿</span>。<br><br>星期二吃了两个<span class="hl">梨</span>，仍然很饿。</span>
+          <div class="rpbody" id="pdf-viewer-container">
+            <div id="pdf-placeholder" style="
+              display:flex;flex-direction:column;align-items:center;justify-content:center;
+              height:100%;min-height:400px;color:var(--ink3);gap:12px;
+            ">
+              <span style="font-size:48px;">📖</span>
+              <p style="font-size:14px;">Select a book to start reading</p>
+              <p style="font-size:12px;color:var(--ink3);">选择一本书开始阅读</p>
             </div>
-            <div class="vstrip"><span class="vpill">moon 月亮</span><span class="vpill">warm 温暖</span><span class="vpill">caterpillar 毛毛虫</span><span class="vpill">pears 梨</span><span class="vpill">leaf 树叶</span><span class="vpill">hungry 饥饿</span></div>
+            <iframe
+              id="pdf-frame"
+              style="display:none;width:100%;height:100%;min-height:500px;border:none;border-radius:8px;"
+              allowfullscreen
+            ></iframe>
           </div>
           <div class="aplayer">
             <div class="aptch"><div class="aptav">E</div><div><div class="aptn"><span data-en>Emma · British English teacher</span><span data-zh>Emma · 英国外教</span></div><div class="aptd"><span data-en>Native speaker · Southern England</span><span data-zh>母语者 · 英格兰南部</span></div></div></div>
@@ -719,6 +729,40 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
     }
 
     if (!readingUrl) { alert('Audio not available. Please try again.'); return }
+
+    // 生成 PDF 签名 URL
+    let pdfUrl = null
+    const pdfPath = `books/${bookId}/book.pdf`
+    pdfUrl = await getSignedUrl(pdfPath)
+
+    // 加载 PDF
+    const pdfFrame = document.getElementById('pdf-frame')
+    const pdfPlaceholder = document.getElementById('pdf-placeholder')
+
+    if (pdfUrl && pdfFrame) {
+      pdfFrame.src = pdfUrl
+      pdfFrame.style.display = 'block'
+      if (pdfPlaceholder) pdfPlaceholder.style.display = 'none'
+
+      pdfFrame.onerror = () => {
+        pdfFrame.style.display = 'none'
+        if (pdfPlaceholder) {
+          pdfPlaceholder.style.display = 'flex'
+          pdfPlaceholder.innerHTML = `
+            <span style="font-size:48px;">📄</span>
+            <p style="font-size:14px;">PDF not available for this book yet</p>
+          `
+        }
+      }
+    } else {
+      if (pdfPlaceholder) {
+        pdfPlaceholder.style.display = 'flex'
+        pdfPlaceholder.innerHTML = `
+          <span style="font-size:48px;">📄</span>
+          <p style="font-size:14px;">PDF not available for this book yet</p>
+        `
+      }
+    }
 
     // 创建两个 audio 元素
     let readingAudio = document.getElementById('audio-reading')
