@@ -478,3 +478,22 @@
 - VERSION (1.3.6 -> 1.3.7)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-13 | Session 16 | v1.3.8
+
+**Objective:** Working series filter tabs in library
+
+**Completed:**
+- [x] Library header redesigned with serif title + pill tabs
+- [x] .stab CSS with active state
+- [x] filterBooks() client-side filter using data-series attribute
+- [x] Book cards now include data-series attribute
+- [x] Subscribe banner hidden when filtering
+
+**Files changed:**
+- index.html (v1.3.7 -> v1.3.8, series filter tabs)
+- VERSION (1.3.7 -> 1.3.8)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

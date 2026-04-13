@@ -128,6 +128,20 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.3.8] — 2026-04-13
+
+### Added
+- Working series filter tabs in library: All / GK / G1 / G2 / History / Science
+- filterBooks() shows/hides book cards by series
+- Book cards now carry data-series attribute for client-side filtering
+- Subscribe banner auto-hides when filter is not "All"
+
+### Changed
+- Library header redesigned with serif title and pill-style tabs
+- Grid minimum column width reduced to 180px for denser layout
+
+---
+
 ## [1.3.7] — 2026-04-11
 
 ### Changed

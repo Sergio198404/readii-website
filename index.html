@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.3.7 | Updated: 2026-04-11 -->
+<!-- Readii v1.3.8 | Updated: 2026-04-13 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -289,6 +289,9 @@ h1{animation:fu .6s ease both .15s}
 .hbtns{animation:fu .6s ease both .38s}
 .htrust{animation:fu .6s ease both .46s}
 .hcard{animation:fu .65s ease both .28s}
+.stab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--cream);color:var(--ink2);transition:all .15s}
+.stab:hover{border-color:var(--border2);background:var(--white)}
+.stab.active{background:var(--forest);color:var(--white);border-color:var(--forest)}
 .book-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:16px;display:flex;flex-direction:column;gap:10px;transition:all .2s}
 .book-card:hover{box-shadow:var(--shm);transform:translateY(-2px)}
 .book-cover-img{height:80px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px}
@@ -473,26 +476,28 @@ h1{animation:fu .6s ease both .15s}
     </div>
     <div class="acon">
       <!-- 书库浏览面板 -->
-      <div id="library-panel" style="margin-bottom:18px;background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);overflow:hidden;">
-        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-size:13px;font-weight:500;color:var(--ink);"><span data-en>Reading Library</span><span data-zh>阅读书库</span> <span id="book-count" style="font-size:11px;color:var(--ink3);"></span></span>
-          <div style="display:flex;gap:4px;">
-            <button class="filter-btn on" data-series="all" onclick="filterBySeries('all')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:var(--fp);color:var(--forest);cursor:pointer;">All</button>
-            <button class="filter-btn" data-series="Heinemann GK" onclick="filterBySeries('Heinemann GK')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">GK</button>
-            <button class="filter-btn" data-series="Heinemann G1" onclick="filterBySeries('Heinemann G1')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">G1</button>
-            <button class="filter-btn" data-series="Heinemann G2" onclick="filterBySeries('Heinemann G2')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">G2</button>
-            <button class="filter-btn" data-series="History Series" onclick="filterBySeries('History Series')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">History</button>
-            <button class="filter-btn" data-series="Science Series" onclick="filterBySeries('Science Series')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;">Science</button>
+      <div id="library-panel" style="margin-bottom:18px;background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <h3 style="font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);">
+            <span data-en>Reading Library</span><span data-zh>阅读书库</span>
+          </h3>
+          <div id="series-tabs" style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="stab active" onclick="filterBooks('all')">All</button>
+            <button class="stab" onclick="filterBooks('Heinemann GK')">GK</button>
+            <button class="stab" onclick="filterBooks('Heinemann G1')">G1</button>
+            <button class="stab" onclick="filterBooks('Heinemann G2')">G2</button>
+            <button class="stab" onclick="filterBooks('History Series')">History</button>
+            <button class="stab" onclick="filterBooks('Science Series')">Science</button>
           </div>
         </div>
         <div class="library-grid" style="
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
-  gap:16px;
-  padding:4px;
-">
-          <div style="color:var(--ink3);font-size:14px;padding:20px;">
-            Loading library...加载书库中...
+          display:grid;
+          grid-template-columns:repeat(auto-fill, minmax(180px,1fr));
+          gap:14px;
+          padding:4px;
+        ">
+          <div style="color:var(--ink3);font-size:14px;padding:20px;grid-column:1/-1;">
+            <span data-en>Loading library...</span><span data-zh>加载书库中...</span>
           </div>
         </div>
       </div>
@@ -669,6 +674,7 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
 
       const card = document.createElement('div')
       card.className = 'book-card'
+      card.dataset.series = book.series || ''
       card.innerHTML = `
         <div class="book-cover-img" style="background:linear-gradient(135deg,var(--forest),var(--forest2));position:relative;">
           📗
@@ -975,6 +981,29 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
   const settingsItem = document.querySelector('.ni:last-child')
   if (settingsItem) {
     settingsItem.onclick = handleSignOut
+  }
+
+  // 书库筛选
+  window.filterBooks = function(series) {
+    document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'))
+    event.target.classList.add('active')
+
+    const container = document.querySelector('.library-grid')
+    if (!container) return
+
+    const cards = container.querySelectorAll('.book-card')
+    cards.forEach(card => {
+      const cardSeries = card.dataset.series || ''
+      if (series === 'all' || cardSeries === series) {
+        card.style.display = 'flex'
+      } else {
+        card.style.display = 'none'
+      }
+    })
+
+    // 订阅 banner 只在 All 显示
+    const banner = container.querySelector('.subscribe-banner')
+    if (banner) banner.style.display = series === 'all' ? 'flex' : 'none'
   }
 
   // 更新右侧进度面板
