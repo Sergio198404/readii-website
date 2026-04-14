@@ -549,3 +549,23 @@
 - VERSION (1.4.0 -> 1.4.1)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-14 | Session 18 | v1.4.2
+
+**Objective:** Create missing article pages (2 and 3)
+
+**Completed:**
+- [x] articles/uk-china-trade-communication-gap.html created
+- [x] articles/from-beijing-to-canterbury.html created (Shanghai origin)
+- [x] articles/index.html: Beijing -> Shanghai in title and excerpt
+
+**Files changed:**
+- articles/uk-china-trade-communication-gap.html (created)
+- articles/from-beijing-to-canterbury.html (created)
+- articles/index.html (Beijing -> Shanghai)
+- index.html (v1.4.1 -> v1.4.2)
+- VERSION (1.4.1 -> 1.4.2)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

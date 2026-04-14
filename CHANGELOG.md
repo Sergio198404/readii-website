@@ -128,6 +128,18 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.4.2] — 2026-04-14
+
+### Added
+- Article: uk-china-trade-communication-gap.html (UK-China Business)
+- Article: from-beijing-to-canterbury.html (Founder Story, Shanghai origin)
+
+### Fixed
+- Articles index: third article title changed from "Beijing" to "Shanghai"
+- Matching excerpt updated to reference Shanghai EdTech background
+
+---
+
 ## [1.4.1] — 2026-04-14
 
 ### Fixed
