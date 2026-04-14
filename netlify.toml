@@ -4,6 +4,18 @@
   command = "cd netlify/functions && npm install"
 
 [[redirects]]
+  from = "/articles/*"
+  to = "/articles/:splat"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/privacy-policy.html"
+  to = "/privacy-policy.html"
+  status = 200
+  force = false
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

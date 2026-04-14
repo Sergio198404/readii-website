@@ -128,6 +128,14 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.4.1] — 2026-04-14
+
+### Fixed
+- netlify.toml: `/articles/*` and `/privacy-policy.html` were being caught by the `/*` → `index.html` wildcard, returning the landing page instead of the actual files
+- Added specific redirect rules before the wildcard so Netlify matches static HTML paths first
+
+---
+
 ## [1.4.0] — 2026-04-14
 
 ### Changed

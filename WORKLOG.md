@@ -532,3 +532,20 @@
 - VERSION (1.3.9 -> 1.4.0)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-14 | Session 17 (continued) | v1.4.1
+
+**Objective:** Fix Netlify redirect catching static HTML pages
+
+**Completed:**
+- [x] netlify.toml: added /articles/* and /privacy-policy.html rules before /* wildcard
+- [x] Static HTML pages now served correctly instead of falling through to index.html
+
+**Files changed:**
+- netlify.toml (added specific redirects before wildcard)
+- index.html (v1.4.0 -> v1.4.1)
+- VERSION (1.4.0 -> 1.4.1)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)
