@@ -497,3 +497,21 @@
 - VERSION (1.3.7 -> 1.3.8)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-14 | Session 17 | v1.3.9
+
+**Objective:** About page AI transition narrative + Privacy Policy page
+
+**Completed:**
+- [x] Founder bio updated with AI pivot narrative (EN + ZH)
+- [x] privacy-policy.html created (UK GDPR compliant, 12 sections)
+- [x] Footer Privacy Policy link added (bilingual)
+
+**Files changed:**
+- index.html (v1.3.8 -> v1.3.9, About bio + footer link)
+- privacy-policy.html (created)
+- VERSION (1.3.8 -> 1.3.9)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

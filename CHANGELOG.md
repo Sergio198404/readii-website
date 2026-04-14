@@ -128,6 +128,19 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.3.9] — 2026-04-14
+
+### Added
+- About page: new paragraph on Readii's AI transition (teachers → AI delivery)
+- privacy-policy.html: full UK GDPR compliant privacy policy
+- Footer "Privacy Policy" link (EN/ZH bilingual)
+
+### Notes
+- AI narrative explains the pivot from live teacher sessions to scalable AI
+- Privacy policy covers: data collection, children's data, rights, retention, ICO complaints
+
+---
+
 ## [1.3.8] — 2026-04-13
 
 ### Added
