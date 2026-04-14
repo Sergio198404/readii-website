@@ -515,3 +515,20 @@
 - VERSION (1.3.8 -> 1.3.9)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-14 | Session 17 (continued) | v1.4.0
+
+**Objective:** Clean up footer Connect column
+
+**Completed:**
+- [x] Removed placeholder WeChat/Xiaohongshu/Douyin links
+- [x] Connect column now has only LinkedIn, email, Privacy Policy
+- [x] Privacy Policy moved from Company column to Connect column
+
+**Files changed:**
+- index.html (v1.3.9 -> v1.4.0, footer cleanup)
+- VERSION (1.3.9 -> 1.4.0)
+- CHANGELOG.md (updated)
+- WORKLOG.md (updated)

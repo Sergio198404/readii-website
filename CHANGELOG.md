@@ -128,6 +128,15 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.4.0] — 2026-04-14
+
+### Changed
+- Footer Connect column simplified: LinkedIn, email, Privacy Policy only
+- Removed placeholder WeChat/Xiaohongshu/Douyin links (# anchors)
+- Privacy Policy moved from Company column to Connect column
+
+---
+
 ## [1.3.9] — 2026-04-14
 
 ### Added
