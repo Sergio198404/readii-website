@@ -128,6 +128,18 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.4.3] — 2026-04-17
+
+### Changed
+- Replaced third-party brand references on all user-facing pages (index, About, Pricing, Articles)
+- `Heinemann GK/G1/G2` → `GK Series` / `G1 Series` / `G2 Series`
+- `Heinemann · Level …` → `British Reader · Level …`
+- Other `Heinemann` mentions → neutral descriptions (e.g. "British reader series"); Chinese `海尼曼` → `英式分级阅读`
+- Article bodies (from-beijing-to-canterbury, why-ai-is-changing-english-learning) updated accordingly
+- Added internal `displaySeriesName()` mapping in library JS so existing DB `series` values still render and filter correctly under the new names
+
+---
+
 ## [1.4.2] — 2026-04-14
 
 ### Added
