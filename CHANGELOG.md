@@ -128,6 +128,23 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.0.1] — 2026-04-29
+
+### Fixed
+- fix: Word Bank Practice retry now shows transcript and word-level diff from last attempt
+- The result panel now displays the full transcript ("You said: …") below each score — for word recordings as a single ✅/❌ check, for sentence recordings as a word-by-word diff using the v1.4.4 LCS alignment (green ✅ correct words, red ❌ missed/wrong words)
+- "Perfect match!" line shown when transcript exactly matches the target (case- and punctuation-tolerant)
+- Empty transcript ("No speech detected") gets a friendly inline retry hint instead of an empty score
+- Retry no longer wipes the result panel — instead it switches into a "Last attempt" reference mode (dimmed at 0.7 opacity, banner label) and re-enables recording. The next recording overwrites and returns the panel to normal styling
+- Card transitions and Exit/Next-Word continue to clear all state (last-attempt mode is per-card)
+
+### Changed
+- `ReadiiSpeech` public API: added `tokenize`, `wordDiff`, `computeScore` so practice mode can compute LCS-aligned diffs without duplicating the engine logic
+- Practice result layout restructured: removed the old `.wbp-score-row` grid in favour of `.wbp-attempt-block` cards (score + tier feedback + transcript + diff)
+- Mobile: attempt-block stacks score below kind label; diff scales down to 11px
+
+---
+
 ## [2.0.0] — 2026-04-29
 
 ### Added

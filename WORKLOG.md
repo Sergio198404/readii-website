@@ -699,6 +699,28 @@
 
 ---
 
+## 2026-04-29 | Session 26 | v2.0.1
+
+**Bug:** v2.0.0 Practice mode's "← Retry" button just nuked local state — user had no idea what they actually said vs. what the target was. Retry was a stamina test, not a learning step.
+
+**Fix:**
+- ReadiiSpeech public API extended with `tokenize`, `wordDiff`, `computeScore` so practice mode can call the same LCS aligner the Reading panel uses (no logic duplication)
+- New `_wbAttemptBlockHtml(kind, target, score, transcript)`: renders a card with score-tier value + bilingual one-line feedback + "You said: …" transcript echo + (for sentence recordings) word-by-word LCS diff using `.wbp-diff-w.ok` (green) / `.wbp-diff-w.miss` (red) inline spans
+- Word recordings (single token) skip the diff and show ✅ / ❌ next to the transcript; "Perfect match!" line appears when transcript tokens exactly match target tokens
+- Empty transcript handled gracefully with "No speech detected. Try again." inline (no zero-score row pretending nothing happened)
+- Retry semantics rewired: instead of clearing scores+transcripts, it now sets `sess.isLastAttemptView = true` which re-renders the same panel with `.is-last-attempt { opacity: .7 }` styling and a "Last attempt — re-record to update" banner. Bottom action buttons hide. Re-recording either kind clears the flag and returns the panel to normal styling
+- Session state extended with `currentWordTranscript`, `currentSentenceTranscript`, `isLastAttemptView`; reset on each new card and on session start (`_wbStartPractice` and `_wbStartSingleWordPractice`)
+
+**Files changed:**
+- index.html (v2.0.0 → v2.0.1): ReadiiSpeech public API additions, new attempt-block CSS + diff CSS + last-attempt dim treatment, new `_wbAttemptBlockHtml` helper, rewritten `_wbRenderPracticeResult`, transcript storage in `_wbHandlePracticeScore`, reset paths in `_wbRenderPracticeCard` / `_wbStartPractice` / `_wbStartSingleWordPractice`
+- VERSION (2.0.0 → 2.0.1)
+- CHANGELOG.md ([2.0.1] entry)
+- WORKLOG.md (this Session 26)
+
+**Verified by:** 23 structural checks pass (renderer present, tokenize/wordDiff exposed, isLastAttemptView wired, perfect-match path, empty-transcript path, mobile diff scaling).
+
+---
+
 ## 2026-04-29 | Session 25 | v2.0.0
 
 **Objective:** Turn Word Bank from a flat 291-card list into a full practice product loop — card-by-card AI scoring, automatic Review queue, session summaries — plus build the Review tab on top of it.

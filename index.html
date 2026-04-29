@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v2.0.0 | Updated: 2026-04-29 -->
+<!-- Readii v2.0.1 | Updated: 2026-04-29 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -525,16 +525,28 @@ h1{animation:fu .6s ease both .15s}
 .wbp-record-zone .sentence-card{padding:0;border:none;background:transparent}
 .wbp-record-zone .sentence-card.active{background:transparent}
 .wbp-record-btn{width:100%;justify-content:center;padding:12px 16px;font-size:13px;font-weight:500}
-.wbp-result{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.wbp-result{margin-bottom:14px}
 .wbp-result:empty{display:none}
-.wbp-score-row{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:10px 14px;align-items:center}
-.wbp-score-row-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
-.wbp-score-row-value{font-family:var(--serif);font-size:24px;line-height:1;font-weight:400;text-align:right}
-.wbp-score-row-value.t-forest{color:var(--forest)}
-.wbp-score-row-value.t-gold{color:var(--gold)}
-.wbp-score-row-value.t-amber{color:#B0463A}
-.wbp-score-row-value .wbp-score-suffix{font-size:13px;opacity:.55;font-family:var(--sans)}
-.wbp-score-fb{grid-column:1/-1;font-size:13px;color:var(--ink2);line-height:1.55;border-top:1px dashed var(--border);padding-top:10px;margin-top:4px;text-align:left}
+.wbp-attempt-wrap{display:flex;flex-direction:column;gap:10px;transition:opacity .2s}
+.wbp-attempt-wrap.is-last-attempt{opacity:.7}
+.wbp-attempt-banner{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);text-align:center;padding:6px 0;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);font-weight:500}
+.wbp-attempt-block{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:9px}
+.wbp-attempt-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
+.wbp-attempt-kind{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.wbp-attempt-score{font-family:var(--serif);font-size:24px;line-height:1;font-weight:400}
+.wbp-attempt-score.t-forest{color:var(--forest)}
+.wbp-attempt-score.t-gold{color:var(--gold)}
+.wbp-attempt-score.t-amber{color:#B0463A}
+.wbp-attempt-suffix{font-size:13px;opacity:.55;font-family:var(--sans);margin-left:1px}
+.wbp-attempt-fb{font-size:12px;color:var(--ink2);line-height:1.5}
+.wbp-said{font-size:13px;color:var(--ink2);font-family:var(--sans);line-height:1.6;word-break:break-word}
+.wbp-said-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500;margin-right:4px}
+.wbp-said-empty{color:#B0463A;font-style:italic}
+.wbp-perfect{font-size:13px;color:var(--forest);font-weight:500}
+.wbp-diff-row{display:flex;flex-wrap:wrap;gap:5px 6px;font-family:var(--mono);font-size:12px;line-height:1.7}
+.wbp-diff-w{padding:2px 7px;border-radius:4px;display:inline-block;white-space:nowrap}
+.wbp-diff-w.ok{color:#3B6D11;background:#EAF3DE}
+.wbp-diff-w.miss{color:#8C1D1D;background:#FCEBEB}
 .wbp-bottom{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
 .wbp-bottom-actions{display:flex;gap:8px;flex-wrap:wrap}
 .wbp-btn{font-family:var(--sans);font-size:13px;font-weight:500;padding:9px 16px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--ink2);transition:all .15s;letter-spacing:.02em}
@@ -581,6 +593,9 @@ h1{animation:fu .6s ease both .15s}
   .wbp-card{padding:20px 16px}
   .wbp-word{font-size:30px}
   .wbp-sentence{font-size:14px}
+  .wbp-attempt-head{flex-direction:column;align-items:flex-start;gap:4px}
+  .wbp-attempt-score{font-size:20px}
+  .wbp-diff-row{font-size:11px}
   .rv-row{grid-template-columns:1fr;gap:6px}
   .rv-row-go{justify-self:start}
 }
@@ -1858,7 +1873,9 @@ async function _wbStartPractice(mode){
     wordScoreSum: 0, wordScoreCount: 0,
     sentenceScoreSum: 0, sentenceScoreCount: 0,
     reviewAdded: 0,
-    currentWordScore: null, currentSentenceScore: null
+    currentWordScore: null, currentSentenceScore: null,
+    currentWordTranscript: null, currentSentenceTranscript: null,
+    isLastAttemptView: false
   };
   _wbShowSubView('practice');
   _wbBindPracticeOnce();
@@ -1946,6 +1963,9 @@ function _wbRenderPracticeCard(){
   if(recBtns[1]) recBtns[1].setAttribute('data-target', c.example_sentence);
   sess.currentWordScore = null;
   sess.currentSentenceScore = null;
+  sess.currentWordTranscript = null;
+  sess.currentSentenceTranscript = null;
+  sess.isLastAttemptView = false;
   document.getElementById('wbp-result').innerHTML = '';
   document.getElementById('wbp-bottom').innerHTML = '';
   document.getElementById('wbp-progress-cur').textContent = (sess.idx + 1);
@@ -1961,8 +1981,15 @@ async function _wbHandlePracticeScore(info){
   if(info.sentence === c.word) kind = 'word';
   else if(info.sentence === c.example_sentence) kind = 'sentence';
   else return;
-  if(kind === 'word') sess.currentWordScore = info.score;
-  else sess.currentSentenceScore = info.score;
+  if(kind === 'word'){
+    sess.currentWordScore = info.score;
+    sess.currentWordTranscript = info.transcript || '';
+  } else {
+    sess.currentSentenceScore = info.score;
+    sess.currentSentenceTranscript = info.transcript || '';
+  }
+  // A new recording always exits last-attempt review mode
+  sess.isLastAttemptView = false;
   await _wbLogAttempt(c.module_id, info.sentence, info.transcript, info.score);
   if(kind === 'word'){
     if(info.score < 50) await _wbAddToReviewAuto(c.id);
@@ -2028,36 +2055,99 @@ function _wbScoreFeedback(score){
   return { en: '🔄 This one needs more practice. Don\'t worry — every expert was once a beginner!', zh: '🔄 这个词需要多练练。别担心，每个高手都是从零开始的！' };
 }
 
+function _wbAttemptBlockHtml(kind, target, score, transcript){
+  const tier = _pgScoreTier(score);
+  const fb = _wbScoreFeedback(score);
+  const labelEn = (kind === 'word' ? 'Word score' : 'Sentence score');
+  const labelZh = (kind === 'word' ? '单词评分' : '例句评分');
+  const trim = String(transcript||'').trim();
+
+  let bodyHtml = '';
+  if(!trim){
+    bodyHtml = '<div class="wbp-said wbp-said-empty">'+
+      '<span data-en>No speech detected. Try again.</span>'+
+      '<span data-zh>未检测到语音，请再试一次。</span>'+
+    '</div>';
+  } else {
+    const escTrans = _wbEsc(trim);
+    if(window.ReadiiSpeech && window.ReadiiSpeech.tokenize && window.ReadiiSpeech.wordDiff){
+      const t = window.ReadiiSpeech.tokenize(target);
+      const s = window.ReadiiSpeech.tokenize(trim);
+      const isPerfect = (t.length === s.length && t.every(function(w,i){ return w === s[i]; }));
+      if(kind === 'word'){
+        const ok = (t[0] && s[0] && t[0] === s[0]);
+        bodyHtml = '<div class="wbp-said">'+
+          '<span class="wbp-said-label"><span data-en>You said:</span><span data-zh>你说的是：</span></span>'+
+          '"'+escTrans+'" '+(ok?'✅':'❌')+
+        '</div>';
+        if(isPerfect){
+          bodyHtml += '<div class="wbp-perfect">🎉 <span data-en>Perfect match!</span><span data-zh>完全正确！</span></div>';
+        }
+      } else {
+        bodyHtml = '<div class="wbp-said">'+
+          '<span class="wbp-said-label"><span data-en>You said:</span><span data-zh>你说的是：</span></span>'+
+          '"'+escTrans+'"'+
+        '</div>';
+        if(isPerfect){
+          bodyHtml += '<div class="wbp-perfect">🎉 <span data-en>Perfect match!</span><span data-zh>完全正确！</span></div>';
+        } else {
+          const wf = window.ReadiiSpeech.wordDiff(t, s);
+          const diffSpans = wf.tWords.map(function(w, i){
+            const ok = wf.tMark[i] === 'ok';
+            return '<span class="wbp-diff-w '+(ok?'ok':'miss')+'">'+_wbEsc(w)+' '+(ok?'✅':'❌')+'</span>';
+          }).join('');
+          bodyHtml += '<div class="wbp-diff-row">'+diffSpans+'</div>';
+        }
+      }
+    } else {
+      bodyHtml = '<div class="wbp-said"><span class="wbp-said-label"><span data-en>You said:</span><span data-zh>你说的是：</span></span>"'+escTrans+'"</div>';
+    }
+  }
+
+  return '<div class="wbp-attempt-block">'+
+    '<div class="wbp-attempt-head">'+
+      '<span class="wbp-attempt-kind"><span data-en>'+labelEn+'</span><span data-zh>'+labelZh+'</span></span>'+
+      '<span class="wbp-attempt-score t-'+tier+'">'+score+'<span class="wbp-attempt-suffix">/100</span></span>'+
+    '</div>'+
+    '<div class="wbp-attempt-fb"><span data-en>'+fb.en+'</span><span data-zh>'+fb.zh+'</span></div>'+
+    bodyHtml+
+  '</div>';
+}
+
 function _wbRenderPracticeResult(){
   const sess = _wbPracticeSession; if(!sess) return;
   const c = sess.cards[sess.idx]; if(!c) return;
   const result = document.getElementById('wbp-result');
-  let html = '';
-  if(sess.currentWordScore !== null){
-    const tier = _pgScoreTier(sess.currentWordScore);
-    const fb = _wbScoreFeedback(sess.currentWordScore);
-    html += '<div class="wbp-score-row">'+
-      '<div class="wbp-score-row-label"><span data-en>Word score</span><span data-zh>单词得分</span></div>'+
-      '<div class="wbp-score-row-value t-'+tier+'">'+sess.currentWordScore+'<span class="wbp-score-suffix">/100</span></div>'+
-      '<div class="wbp-score-fb"><span data-en>'+fb.en+'</span><span data-zh>'+fb.zh+'</span></div>'+
-    '</div>';
-  }
-  if(sess.currentSentenceScore !== null){
-    const tier = _pgScoreTier(sess.currentSentenceScore);
-    const fb = _wbScoreFeedback(sess.currentSentenceScore);
-    html += '<div class="wbp-score-row">'+
-      '<div class="wbp-score-row-label"><span data-en>Sentence score</span><span data-zh>例句得分</span></div>'+
-      '<div class="wbp-score-row-value t-'+tier+'">'+sess.currentSentenceScore+'<span class="wbp-score-suffix">/100</span></div>'+
-      '<div class="wbp-score-fb"><span data-en>'+fb.en+'</span><span data-zh>'+fb.zh+'</span></div>'+
-    '</div>';
-  }
-  result.innerHTML = html;
-  const oneDone = (sess.currentWordScore !== null || sess.currentSentenceScore !== null);
-  const bothDone = (sess.currentWordScore !== null && sess.currentSentenceScore !== null);
   const bottom = document.getElementById('wbp-bottom');
-  let bottomHtml = '';
-  if(oneDone){
+  const hasWord = sess.currentWordScore !== null;
+  const hasSentence = sess.currentSentenceScore !== null;
+  const isLast = !!sess.isLastAttemptView;
+
+  if(!hasWord && !hasSentence){
+    result.innerHTML = '';
+    bottom.innerHTML = '';
+    return;
+  }
+
+  let inner = '';
+  if(isLast){
+    inner += '<div class="wbp-attempt-banner"><span data-en>Last attempt — re-record to update</span><span data-zh>上次结果 — 再录制即可更新</span></div>';
+  }
+  if(hasWord){
+    inner += _wbAttemptBlockHtml('word', c.word, sess.currentWordScore, sess.currentWordTranscript || '');
+  }
+  if(hasSentence){
+    inner += _wbAttemptBlockHtml('sentence', c.example_sentence, sess.currentSentenceScore, sess.currentSentenceTranscript || '');
+  }
+  result.innerHTML = '<div class="wbp-attempt-wrap '+(isLast?'is-last-attempt':'')+'">'+inner+'</div>';
+
+  // Bottom action row
+  if(isLast){
+    bottom.innerHTML = '';
+  } else {
+    const bothDone = hasWord && hasSentence;
     const isFav = _wbFavSet.has(c.id);
+    let bottomHtml = '';
     bottomHtml += '<div class="wbp-bottom-actions">'+
       '<button class="wbp-btn '+(isFav?'on':'')+'" id="wbp-fav-btn" type="button">'+
         (isFav ? '⭐ <span data-en>Saved</span><span data-zh>已收藏</span>' : '☆ <span data-en>Save to Favorites</span><span data-zh>收藏</span>')+
@@ -2072,8 +2162,10 @@ function _wbRenderPracticeResult(){
       bottomHtml += '<button class="wbp-btn wbp-btn-primary" id="wbp-next-btn" type="button"><span data-en>Next Word →</span><span data-zh>下一个词 →</span></button>';
     }
     bottomHtml += '</div>';
+    bottom.innerHTML = bottomHtml;
   }
-  bottom.innerHTML = bottomHtml;
+
+  // Bind handlers
   const fbBtn = document.getElementById('wbp-fav-btn');
   if(fbBtn) fbBtn.addEventListener('click', async function(){
     await _wbToggleFavorite(c.id, fbBtn);
@@ -2090,10 +2182,12 @@ function _wbRenderPracticeResult(){
   });
   const rtBtn = document.getElementById('wbp-retry-btn');
   if(rtBtn) rtBtn.addEventListener('click', function(){
-    sess.currentWordScore = null;
-    sess.currentSentenceScore = null;
-    document.getElementById('wbp-result').innerHTML = '';
-    document.getElementById('wbp-bottom').innerHTML = '';
+    // Preserve scores + transcripts; switch into "last attempt" reference mode.
+    sess.isLastAttemptView = true;
+    if(window.ReadiiSpeech && window.ReadiiSpeech.isActive && window.ReadiiSpeech.isActive()){
+      window.ReadiiSpeech.stop();
+    }
+    _wbRenderPracticeResult();
   });
   const nbBtn = document.getElementById('wbp-next-btn');
   if(nbBtn) nbBtn.addEventListener('click', function(){
@@ -2262,7 +2356,10 @@ async function _wbStartSingleWordPractice(wordId){
       mode: 'single', cards: [word], idx: 0, startedAt: Date.now(),
       wordScoreSum: 0, wordScoreCount: 0,
       sentenceScoreSum: 0, sentenceScoreCount: 0,
-      reviewAdded: 0, currentWordScore: null, currentSentenceScore: null
+      reviewAdded: 0,
+      currentWordScore: null, currentSentenceScore: null,
+      currentWordTranscript: null, currentSentenceTranscript: null,
+      isLastAttemptView: false
     };
     _wbShowSubView('practice');
     _wbBindPracticeOnce();
@@ -3063,7 +3160,10 @@ async function renderSettings(){
     MIN_LESSON_EXCERPTS: MIN_LESSON_EXCERPTS,
     britishTips: britishTips,
     stop: stopRecognition,
-    isActive: function(){ return activeBtn !== null; }
+    isActive: function(){ return activeBtn !== null; },
+    tokenize: tokenize,
+    wordDiff: wordDiff,
+    computeScore: computeScore
   };
 
   // ---- Auto-attach to the Reading panel (preserves v1.5.0 behaviour) ----
