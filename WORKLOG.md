@@ -2,6 +2,45 @@
 
 ---
 
+## 2026-04-30 | Session 28 | v2.2.0
+
+**Objective:** Turn UK Business from a flat 4-scene tab into the **UK Culture Programme** — a multi-module, 5-level, progressive-unlock learning system that funnels engaged learners towards the £2,000 coaching programme. Restructure the sidebar around three coherent groups so the dual-engine model is visible from the nav.
+
+**Completed:**
+- [x] DB migration `database/migration-uk-culture-progress.sql` — `uk_culture_progress` table with `UNIQUE(user_id, module_id, level_num, sentence_idx)`, `user_module` index, RLS + 3 DROP-then-CREATE policies (the 42710-safe idiom we settled on for Word Bank v2.0.0)
+- [x] Sidebar nav restructured to 3 groups (LEARN / UK CULTURE PROGRAMME / ACCOUNT). Word Bank moved to LEARN; Review moved into UK Culture Programme; 4 new module entries (Business / Education / Daily Life / Setup & Establishment)
+- [x] `UK_CULTURE_MODULES`: 4 modules, 5 levels each, 10 sentences each = **200 British English sentences total**, all hard-coded in `index.html` (no extra fetch). Each level has bilingual title + sentence array
+- [x] `UK_CULTURE_GROUPS` map for group-level metadata (title / sub / icon, EN+ZH)
+- [x] `view-uk-culture` with three internal states: group-home (lists modules in active group + bottom CTA card) → module-home (5 levels with badge/status/CTA per row) → level-detail (10 sentence cards, each with 🔊 Listen + 🎤 Record + per-card result)
+- [x] Unlock logic: `isUkLevelUnlocked()` reads progress data, requires uniqueSentences ≥ 8 AND avgScore ≥ 60 on previous level. Level 1 always open
+- [x] Score writes are **dual**: upsert into `uk_culture_progress` (used for unlock + best-score display) AND insert into `pronunciation_attempts` with `source='uk_culture'`, `module_id='<id>_l<level>'` (used for My Progress page integration)
+- [x] Per-card result panel: score + tier feedback + transcript echo + LCS-aligned word diff (reuses `ReadiiSpeech.tokenize`/`wordDiff` from v2.0.1). Default `.speech-result` panel deliberately omitted from the level container so we don't render two result panels at once
+- [x] 🔊 Listen button is a placeholder: `data-audio-url=""` + `disabled` + "(soon)" suffix. Step 2 (TTS batch script) will populate URLs and re-enable the buttons
+- [x] My Progress upgrade banner CTA repointed from `uk-business` to `ukc-business`
+- [x] `_pgSourceLabel()` extended to recognise `uk_culture` source — parses `module_id='<id>_l<level>'` to display "Professional Email Writing · L2" in Recent Attempts
+
+**Removed:**
+- Old `view-uk-business` (4 flat scenes × 5 sentences = 20 sentences). Content folded into the new structure: email → email_l1-5, meeting → meeting_l1-5, daily → daily_l1-5, pitch → setup_l5 (Growth & Expansion)
+- `UK_BUSINESS_SCENES` constant, `loadUkBusinessStats` / `logUkBusinessAttempt` / `renderUkBusinessHome` / `openUkBusinessScene` / `renderUkSceneFooter` functions, all `.ukb-*` CSS (~40 lines)
+
+**Why this matters:**
+v2.1 added a single nav tab + a banner. v2.2 makes UK Culture the **second visible product surface** in the app, with a real progression mechanic that creates "earned upsell" moments. The £2,000 CTA now sits at the bottom of every group home, and a learner who unlocks Level 5 in a module has a clear narrative for why personalised coaching is the next step. The 3-group nav frames Readii correctly: free engagement (LEARN) and paid programme (UK CULTURE PROGRAMME) are visually separated in the sidebar.
+
+**Files changed:**
+- index.html (v2.1.0 → v2.2.0): nav restructure, new `view-uk-culture` markup (3 sub-states), `.ukc-*` CSS (~70 lines), `UK_CULTURE_MODULES` + `UK_CULTURE_GROUPS` constants (~280 lines), unlock + render functions, `showAppView` dispatch extension (4 new routes sharing one container), `_pgSourceLabel` extension, banner CTA target update. Old `.ukb-*` and `UK_BUSINESS_SCENES` removed
+- database/migration-uk-culture-progress.sql (new)
+- VERSION (2.1.0 → 2.2.0)
+- CHANGELOG.md ([2.2.0] entry)
+- WORKLOG.md (this Session 28)
+
+**Verified by:** inline `<script>` block parses cleanly via `new Function(code)` syntax check; no remaining `ukb-` / `UK_BUSINESS` / `uk_business` references in the file.
+
+**Pending:**
+- [ ] User must run `database/migration-uk-culture-progress.sql` in Supabase SQL Editor (writes silently fail until then; UI still works)
+- [ ] Step 2 (separate task): TTS audio batch generation in transcribe workspace + URL population for the 200 Listen buttons
+
+---
+
 ## 2026-04-29 | Session 27 | v2.1.0
 
 **Objective:** Make the dual-engine business model visible inside the product. Add a UK Business Communication Programme module so paying-tier conversion has an in-product surface, and add a Progress-page upgrade banner that fires when a user is clearly engaged (≥10 attempts, ≥60 avg).

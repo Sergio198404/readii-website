@@ -365,46 +365,87 @@ h1{animation:fu .6s ease both .15s}
   .vc-modules{grid-template-columns:1fr}
   .vc-detail-footer{flex-direction:column;align-items:flex-start;gap:6px}
 }
-/* ===== UK Business ===== */
-.ukb-page,.ukb-detail{padding:4px 4px 32px;max-width:980px;margin:0 auto}
-.ukb-header{margin-bottom:24px}
-.ukb-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);margin-bottom:6px;line-height:1.25}
-.ukb-sub{font-size:14px;color:var(--ink3);line-height:1.6;max-width:680px}
-.ukb-scenes{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:28px}
-.ukb-scene-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:22px;display:flex;flex-direction:column;gap:12px;cursor:pointer;transition:all .2s}
-.ukb-scene-card:hover{box-shadow:var(--shm);transform:translateY(-2px);border-color:var(--border2)}
-.ukb-sc-head{display:flex;align-items:center;gap:11px}
-.ukb-sc-icon{width:42px;height:42px;border-radius:10px;background:var(--fp);border:1px solid rgba(27,58,45,.15);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.ukb-sc-label{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);line-height:1.25}
-.ukb-sc-desc{font-size:13px;color:var(--ink2);line-height:1.6;flex:1}
-.ukb-sc-stats{font-size:12px;color:var(--ink3);padding-top:10px;border-top:1px solid var(--border)}
-.ukb-sc-best{font-weight:500;color:var(--forest)}
-.ukb-sc-cta{align-self:flex-start;background:var(--forest);color:var(--white);font-size:12px;font-weight:500;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em}
-.ukb-sc-cta:hover{background:var(--forest2)}
-.ukb-cta-card{background:var(--fp);border:1px solid rgba(27,58,45,.18);border-radius:var(--rxl);padding:28px 30px;display:flex;flex-direction:column;gap:10px}
-.ukb-cta-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);font-weight:500}
-.ukb-cta-title{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--forest);line-height:1.3;margin-top:2px}
-.ukb-cta-body{font-size:14px;color:var(--ink2);line-height:1.7;max-width:680px}
-.ukb-cta-price{font-family:var(--serif);font-size:16px;color:var(--forest);font-weight:400;margin-top:4px}
-.ukb-cta-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:var(--forest);color:var(--white);font-size:13px;font-weight:500;padding:10px 20px;border-radius:6px;text-decoration:none;font-family:var(--sans);letter-spacing:.02em;margin-top:8px;transition:background .15s}
-.ukb-cta-btn:hover{background:var(--forest2)}
-.ukb-cta-btn-ic{font-size:14px}
-.ukb-back{font-size:13px;color:var(--ink2);padding:6px 13px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;margin-bottom:18px;font-family:var(--sans);transition:all .15s}
-.ukb-back:hover{border-color:var(--border2);background:var(--white);color:var(--ink)}
-.ukb-detail-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);margin-bottom:14px;line-height:1.2}
-.ukb-intro{background:var(--cream2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;font-size:14px;line-height:1.7;color:var(--ink2);margin-bottom:22px}
-.ukb-speech{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:18px;margin-bottom:18px}
-.ukb-speech .sentence-list{display:flex;flex-direction:column;gap:9px}
-.ukb-detail-footer{background:var(--fp);border:1px solid rgba(27,58,45,.12);border-radius:var(--r);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:18px;font-size:13px;color:var(--forest2)}
-.ukb-detail-footer-eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);margin-bottom:3px;font-weight:500}
-.ukb-detail-footer .ukb-best{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--forest);line-height:1}
-.ukb-detail-footer .ukb-attempts{color:var(--ink3);font-size:12px}
+/* ===== UK Culture Programme ===== */
+.ukc-page{padding:4px 4px 32px;max-width:980px;margin:0 auto}
+.ukc-header{margin-bottom:24px}
+.ukc-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);font-weight:500;margin-bottom:8px}
+.ukc-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);margin-bottom:6px;line-height:1.25}
+.ukc-sub{font-size:14px;color:var(--ink3);line-height:1.7;max-width:720px}
+.ukc-back{font-size:13px;color:var(--ink2);padding:6px 13px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;margin-bottom:18px;font-family:var(--sans);transition:all .15s}
+.ukc-back:hover{border-color:var(--border2);background:var(--white);color:var(--ink)}
+.ukc-modules{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:28px}
+.ukc-module-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:22px;display:flex;flex-direction:column;gap:12px;cursor:pointer;transition:all .2s}
+.ukc-module-card:hover{box-shadow:var(--shm);transform:translateY(-2px);border-color:var(--border2)}
+.ukc-mc-head{display:flex;align-items:center;gap:11px}
+.ukc-mc-icon{width:42px;height:42px;border-radius:10px;background:var(--fp);border:1px solid rgba(27,58,45,.15);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ukc-mc-label{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);line-height:1.25}
+.ukc-mc-progress{font-size:12px;color:var(--ink3);padding-top:10px;border-top:1px solid var(--border);font-family:var(--mono)}
+.ukc-mc-progress b{color:var(--forest);font-weight:500}
+.ukc-mc-bar{height:6px;background:var(--cream2);border-radius:3px;overflow:hidden;margin-top:6px}
+.ukc-mc-bar-fill{height:100%;background:var(--forest);border-radius:3px;transition:width .4s ease}
+.ukc-mc-cta{align-self:flex-start;background:var(--forest);color:var(--white);font-size:12px;font-weight:500;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em}
+.ukc-mc-cta:hover{background:var(--forest2)}
+.ukc-levels{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.ukc-level-row{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 22px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;transition:all .15s}
+.ukc-level-row.unlocked{cursor:pointer}
+.ukc-level-row.unlocked:hover{border-color:var(--border2);box-shadow:var(--sh)}
+.ukc-level-row.done{background:var(--fp);border-color:rgba(27,58,45,.18)}
+.ukc-level-row.locked{opacity:.65;background:var(--cream2)}
+.ukc-lr-num{font-family:var(--serif);font-size:14px;color:var(--ink3);font-weight:400;letter-spacing:.05em;text-transform:uppercase;min-width:62px}
+.ukc-lr-title{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);line-height:1.3;margin-bottom:4px}
+.ukc-lr-meta{font-size:12px;color:var(--ink3);font-family:var(--mono)}
+.ukc-lr-meta b{color:var(--forest);font-weight:500}
+.ukc-lr-status{font-size:12px;font-weight:500;letter-spacing:.04em;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.ukc-lr-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;letter-spacing:.06em}
+.ukc-lr-badge.done{background:var(--forest);color:var(--white)}
+.ukc-lr-badge.active{background:var(--gp);color:#7A4A10;border:1px solid rgba(196,154,56,.3)}
+.ukc-lr-badge.locked{background:transparent;color:var(--ink3);border:1px solid var(--border)}
+.ukc-lr-cta{font-family:var(--sans);font-size:12px;font-weight:500;padding:6px 14px;border-radius:6px;border:1px solid var(--forest);background:transparent;color:var(--forest);cursor:pointer;letter-spacing:.02em;transition:all .15s}
+.ukc-lr-cta:hover{background:var(--forest);color:var(--white)}
+.ukc-lr-cta.primary{background:var(--forest);color:var(--white)}
+.ukc-lr-cta.primary:hover{background:var(--forest2)}
+.ukc-lr-locktext{font-size:11px;color:var(--ink3);font-style:italic}
+.ukc-level-meta{margin-top:14px;display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.ukc-level-meta b{color:var(--forest);font-weight:500}
+.ukc-speech{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:18px;margin-bottom:18px}
+.ukc-speech .sentence-list{display:flex;flex-direction:column;gap:11px}
+.ukc-speech .sentence-card{position:relative}
+.ukc-speech .sentence-card.is-done{border-color:rgba(27,58,45,.3);background:var(--fp)}
+.ukc-sc-num{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);font-weight:500;margin-bottom:4px;font-family:var(--mono)}
+.ukc-sc-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.ukc-listen-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:12px;font-weight:500;padding:7px 13px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--ink2);cursor:pointer;letter-spacing:.02em;transition:all .15s}
+.ukc-listen-btn:hover:not(:disabled){border-color:var(--forest3);color:var(--forest);background:var(--fp)}
+.ukc-listen-btn:disabled{opacity:.5;cursor:not-allowed}
+.ukc-sc-result{margin-top:12px;padding:12px 14px;border-radius:8px;background:var(--cream);border:1px solid var(--border);font-size:13px;line-height:1.65;display:none}
+.ukc-sc-result.show{display:block}
+.ukc-sc-result-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.ukc-sc-result-score{font-family:var(--serif);font-size:22px;font-weight:400;line-height:1}
+.ukc-sc-result-score.t-forest{color:var(--forest)}
+.ukc-sc-result-score.t-gold{color:var(--gold)}
+.ukc-sc-result-score.t-amber{color:#B0463A}
+.ukc-sc-result-tier{font-size:12px;color:var(--ink2);flex:1}
+.ukc-sc-result-tier b{font-family:var(--serif);font-weight:400}
+.ukc-sc-transcript{font-size:12px;color:var(--ink3);font-family:var(--mono);margin-top:6px;line-height:1.5}
+.ukc-sc-transcript b{color:var(--ink2);font-weight:500}
+.ukc-sc-diff{font-size:13px;font-family:var(--mono);margin-top:6px;line-height:1.7}
+.ukc-sc-diff-w{display:inline-block;padding:0 3px;border-radius:3px;margin:0 1px}
+.ukc-sc-diff-w.ok{color:var(--forest);background:rgba(27,58,45,.07)}
+.ukc-sc-diff-w.miss{color:#B0463A;background:rgba(176,70,58,.08);text-decoration:line-through}
+.ukc-cta-card{background:var(--fp);border:1px solid rgba(27,58,45,.18);border-radius:var(--rxl);padding:28px 30px;display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.ukc-cta-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);font-weight:500}
+.ukc-cta-title{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--forest);line-height:1.3;margin-top:2px}
+.ukc-cta-body{font-size:14px;color:var(--ink2);line-height:1.7;max-width:680px}
+.ukc-cta-price{font-family:var(--serif);font-size:16px;color:var(--forest);font-weight:400;margin-top:4px}
+.ukc-cta-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:var(--forest);color:var(--white);font-size:13px;font-weight:500;padding:10px 20px;border-radius:6px;text-decoration:none;font-family:var(--sans);letter-spacing:.02em;margin-top:8px;transition:background .15s}
+.ukc-cta-btn:hover{background:var(--forest2)}
+.ukc-cta-btn-ic{font-size:14px}
 @media (max-width:640px){
-  .ukb-detail-title,.ukb-title{font-size:24px}
-  .ukb-scenes{grid-template-columns:1fr}
-  .ukb-detail-footer{flex-direction:column;align-items:flex-start;gap:6px}
-  .ukb-cta-card{padding:22px}
-  .ukb-cta-title{font-size:20px}
+  .ukc-title{font-size:24px}
+  .ukc-modules{grid-template-columns:1fr}
+  .ukc-level-row{grid-template-columns:auto 1fr;gap:10px}
+  .ukc-lr-status{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;width:100%}
+  .ukc-cta-card{padding:22px}
+  .ukc-cta-title{font-size:20px}
 }
 /* ===== Progress upgrade banner ===== */
 .pg-upgrade-banner{position:relative;background:var(--fp);border:1px solid rgba(27,58,45,.22);border-radius:12px;padding:22px 26px;margin-top:24px;box-shadow:var(--sh)}
@@ -822,11 +863,14 @@ h1{animation:fu .6s ease both .15s}
     <div class="sbnav">
       <div class="nbgl"><span data-en>Learn</span><span data-zh>学习</span></div>
       <div class="ni act" id="ni-library" onclick="showAppView('library')"><span class="nic">📚</span><span data-en>Reading Library</span><span data-zh>阅读书库</span></div>
-      <div class="ni" id="ni-voice-coach" onclick="showAppView('voice-coach')"><span class="nic">🔊</span><span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span></div>
+      <div class="ni" id="ni-voice-coach" onclick="showAppView('voice-coach')"><span class="nic">🎤</span><span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span></div>
+      <div class="ni" id="ni-word-bank" onclick="showAppView('word-bank')"><span class="nic">📖</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
       <div class="ni" id="ni-progress" onclick="showAppView('progress')"><span class="nic">📊</span><span data-en>My Progress</span><span data-zh>我的进度</span></div>
-      <div class="nbgl"><span data-en>Vocabulary</span><span data-zh>词汇</span></div>
-      <div class="ni" id="ni-word-bank" onclick="showAppView('word-bank')"><span class="nic">📝</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
-      <div class="ni" id="ni-uk-business" onclick="showAppView('uk-business')"><span class="nic">🇬🇧</span><span data-en>UK Business</span><span data-zh>英国商务</span></div>
+      <div class="nbgl"><span data-en>UK Culture Programme</span><span data-zh>英国文化课程</span></div>
+      <div class="ni" id="ni-ukc-business" onclick="showAppView('ukc-business')"><span class="nic">💼</span><span data-en>Business</span><span data-zh>商务</span></div>
+      <div class="ni" id="ni-ukc-education" onclick="showAppView('ukc-education')"><span class="nic">🎓</span><span data-en>Education</span><span data-zh>教育</span></div>
+      <div class="ni" id="ni-ukc-daily" onclick="showAppView('ukc-daily')"><span class="nic">🏠</span><span data-en>Daily Life</span><span data-zh>日常生活</span></div>
+      <div class="ni" id="ni-ukc-setup" onclick="showAppView('ukc-setup')"><span class="nic">🏗️</span><span data-en>Setup &amp; Establishment</span><span data-zh>在英创业落地</span></div>
       <div class="ni" id="ni-review" onclick="showAppView('review')"><span class="nic">🔁</span><span data-en>Review</span><span data-zh>复习</span></div>
       <div class="nbgl"><span data-en>Account</span><span data-zh>账户</span></div>
       <div class="ni" id="ni-settings" onclick="showAppView('settings')"><span class="nic">⚙️</span><span data-en>Settings</span><span data-zh>设置</span></div>
@@ -1187,60 +1231,70 @@ h1{animation:fu .6s ease both .15s}
          </div>
        </div>
      </div><!-- /#view-review -->
-     <div id="view-uk-business" style="display:none">
-       <div id="ukb-home" class="ukb-page">
-         <div class="ukb-header">
-           <h2 class="ukb-title">
-             <span data-en>UK Business Communication Programme</span>
-             <span data-zh>英国商务沟通课程</span>
-           </h2>
-           <p class="ukb-sub">
-             <span data-en>Use your British English in real professional contexts — from emails to meetings to negotiations.</span>
-             <span data-zh>把你的英式英语用在真实职场场景——从邮件、会议到商务谈判。</span>
-           </p>
+     <div id="view-uk-culture" style="display:none">
+       <!-- Group home (lists modules in active group) -->
+       <div id="ukc-group-home" class="ukc-page">
+         <div class="ukc-header">
+           <div class="ukc-eyebrow"><span data-en>UK Culture Programme</span><span data-zh>英国文化课程</span></div>
+           <h2 class="ukc-title" id="ukc-group-title"></h2>
+           <p class="ukc-sub" id="ukc-group-sub"></p>
          </div>
-         <div id="ukb-scenes" class="ukb-scenes"></div>
-         <div class="ukb-cta-card">
-           <div class="ukb-cta-eyebrow">
-             <span data-en>Personalised Coaching</span><span data-zh>一对一辅导</span>
-           </div>
-           <h3 class="ukb-cta-title">
+         <div id="ukc-modules" class="ukc-modules"></div>
+         <div class="ukc-cta-card">
+           <div class="ukc-cta-eyebrow"><span data-en>Personalised Coaching</span><span data-zh>一对一辅导</span></div>
+           <h3 class="ukc-cta-title">
              <span data-en>Ready for personalised coaching?</span>
              <span data-zh>准备好接受一对一指导了吗？</span>
            </h3>
-           <p class="ukb-cta-body">
-             <span data-en>Our UK Business Communication Programme combines AI practice with expert one-to-one support — tailored to your industry and goals.</span>
-             <span data-zh>我们的英国商务沟通课程将 AI 练习与专家一对一支持结合，为你的行业和目标量身定制。</span>
+           <p class="ukc-cta-body">
+             <span data-en>Our UK Culture Programme combines AI practice with expert one-to-one support — tailored to your industry and goals.</span>
+             <span data-zh>我们的英国文化课程将 AI 练习与专家一对一支持结合，为你的行业和目标量身定制。</span>
            </p>
-           <p class="ukb-cta-price">
+           <p class="ukc-cta-price">
              <span data-en>From £2,000 per programme.</span>
              <span data-zh>课程起价 £2,000。</span>
            </p>
-           <a class="ukb-cta-btn" href="mailto:hello@readii.co.uk?subject=UK%20Business%20Communication%20Programme">
-             <span class="ukb-cta-btn-ic">📧</span>
+           <a class="ukc-cta-btn" href="mailto:hello@readii.co.uk?subject=UK%20Culture%20Programme">
+             <span class="ukc-cta-btn-ic">📧</span>
              <span data-en>Contact Us →</span>
              <span data-zh>联系我们 →</span>
            </a>
          </div>
        </div>
 
-       <div id="ukb-detail" class="ukb-detail" style="display:none">
-         <button class="ukb-back" id="ukb-back-btn" type="button">
-           <span data-en>← Back to all scenes</span><span data-zh>← 返回场景列表</span>
+       <!-- Module home (5 levels for active module) -->
+       <div id="ukc-module-home" class="ukc-page" style="display:none">
+         <button class="ukc-back" id="ukc-module-back-btn" type="button">
+           <span data-en>← Back</span><span data-zh>← 返回</span>
          </button>
-         <h2 class="ukb-detail-title" id="ukb-detail-title"></h2>
-         <div class="ukb-intro" id="ukb-detail-intro"></div>
-         <div class="ukb-speech" id="ukb-detail-speech">
+         <div class="ukc-header">
+           <div class="ukc-eyebrow" id="ukc-module-eyebrow"></div>
+           <h2 class="ukc-title" id="ukc-module-title"></h2>
+           <p class="ukc-sub" id="ukc-module-sub"></p>
+         </div>
+         <div id="ukc-levels" class="ukc-levels"></div>
+       </div>
+
+       <!-- Level detail (10 sentences with Listen + Record per card) -->
+       <div id="ukc-level-detail" class="ukc-page" style="display:none">
+         <button class="ukc-back" id="ukc-level-back-btn" type="button">
+           <span data-en>← Back to levels</span><span data-zh>← 返回等级列表</span>
+         </button>
+         <div class="ukc-header">
+           <div class="ukc-eyebrow" id="ukc-level-eyebrow"></div>
+           <h2 class="ukc-title" id="ukc-level-title"></h2>
+           <p class="ukc-sub" id="ukc-level-sub"></p>
+           <div class="ukc-level-meta" id="ukc-level-meta"></div>
+         </div>
+         <div class="ukc-speech" id="ukc-level-speech">
            <div class="speech-warn" style="display:none">
              <span data-en>For best experience, use Chrome or Edge.</span>
              <span data-zh>为获得最佳体验，请使用 Chrome 或 Edge。</span>
            </div>
-           <div class="sentence-list"></div>
-           <div class="speech-result" style="display:none"></div>
+           <div class="sentence-list" id="ukc-sentence-list"></div>
          </div>
-         <div class="ukb-detail-footer" id="ukb-detail-footer"></div>
        </div>
-     </div><!-- /#view-uk-business -->
+     </div><!-- /#view-uk-culture -->
      <div id="view-settings" style="display:none">
        <div class="st-page">
          <div class="st-header">
@@ -1584,21 +1638,75 @@ async function renderModuleFooter(moduleId){
   setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
 }
 
-/* ===== UK Business Communication Programme ===== */
-const UK_BUSINESS_SCENES = [
+/* ===== UK Culture Programme ===== */
+const UK_CULTURE_MODULES = [
   {
     id: 'email',
     icon: '📧',
     title: 'Professional Email Writing',
     title_zh: '商务邮件写作',
-    desc: 'Learn how British professionals write emails — tone, structure, and phrases that open doors.',
-    desc_zh: '学习英国职场人士的邮件风格——语气、结构和打开机会的表达方式。',
-    sentences: [
-      "I hope this email finds you well.",
-      "Please find attached the document for your review.",
-      "I would be grateful if you could let me know your thoughts.",
-      "I look forward to hearing from you at your earliest convenience.",
-      "Thank you for your time and consideration."
+    group: 'business',
+    levels: [
+      { level: 1, title: 'Greetings & Openings', title_zh: '开场问候', sentences: [
+        "I hope this email finds you well.",
+        "Thank you for getting back to me so promptly.",
+        "I am writing to follow up on our previous conversation.",
+        "I hope you had a pleasant weekend.",
+        "Thank you for taking the time to meet with me yesterday.",
+        "I am reaching out regarding the proposal we discussed last week.",
+        "I trust this message finds you in good health.",
+        "Many thanks for your email — I appreciate you keeping me in the loop.",
+        "I hope the new year has started well for you and your team.",
+        "I am writing on behalf of Readii Limited to introduce our services."
+      ]},
+      { level: 2, title: 'Making Requests', title_zh: '提出请求', sentences: [
+        "I would be grateful if you could let me know your thoughts on this.",
+        "Could you please send me the updated figures at your earliest convenience?",
+        "I would appreciate it if you could review the attached document.",
+        "Would it be possible to arrange a brief call this week?",
+        "I was wondering if you might be able to share the relevant contact details.",
+        "Please find attached the document for your review and approval.",
+        "Could you kindly confirm receipt of this email?",
+        "I would be very grateful if you could provide feedback by Friday.",
+        "Would you be available for a short meeting early next week?",
+        "I was hoping you might be able to advise on the next steps."
+      ]},
+      { level: 3, title: 'Following Up', title_zh: '跟进事项', sentences: [
+        "I just wanted to follow up on my previous email regarding this matter.",
+        "I understand you may be busy, but I wanted to check whether you had a chance to review our proposal.",
+        "As discussed, I am sending over the revised version for your consideration.",
+        "I would like to circle back on the points we raised in our last meeting.",
+        "Could you provide an update on where things stand at your end?",
+        "I wanted to touch base and see whether you need any further information from us.",
+        "Following our conversation on Tuesday, I have made the changes you suggested.",
+        "I am writing to confirm that everything is in order before we proceed.",
+        "Just a gentle reminder about the deadline approaching at the end of this week.",
+        "I look forward to your response and am happy to discuss further if needed."
+      ]},
+      { level: 4, title: 'Handling Difficult Topics', title_zh: '处理棘手话题', sentences: [
+        "I wanted to raise a concern about the timeline we had originally agreed upon.",
+        "I appreciate your patience while we worked through this issue.",
+        "I am sorry for any inconvenience this delay may have caused.",
+        "I would like to address the points raised in your previous message.",
+        "I understand this may not be the outcome you were hoping for.",
+        "We regret to inform you that we are unable to proceed on this occasion.",
+        "I hope we can resolve this matter in a way that works for both parties.",
+        "I would like to propose an alternative arrangement that may suit your needs.",
+        "Thank you for bringing this to our attention — we take all feedback seriously.",
+        "I am confident we can find a solution that works well for everyone involved."
+      ]},
+      { level: 5, title: 'Closing & Sign-off', title_zh: '结尾与署名', sentences: [
+        "I look forward to hearing from you at your earliest convenience.",
+        "Please do not hesitate to get in touch if you have any questions.",
+        "Thank you for your time and consideration — I really do appreciate it.",
+        "I look forward to working with you on this exciting project.",
+        "Kind regards and many thanks for your continued support.",
+        "I hope we can speak soon and move things forward together.",
+        "Thank you once again — your help has been greatly appreciated.",
+        "I remain available should you need any further information.",
+        "Looking forward to our next conversation and the opportunities ahead.",
+        "With warm regards and many thanks for your time."
+      ]}
     ]
   },
   {
@@ -1606,224 +1714,756 @@ const UK_BUSINESS_SCENES = [
     icon: '🤝',
     title: 'Business Meeting English',
     title_zh: '商务会议英语',
-    desc: 'How to contribute, agree, disagree, and follow up in British meetings.',
-    desc_zh: '如何在英国商务会议中发言、表达同意与异议，以及跟进事项。',
-    sentences: [
-      "Could I just come in here and add something?",
-      "That's a really interesting point — building on that idea.",
-      "I take your point, though I'd suggest we consider an alternative.",
-      "Shall we move on to the next item on the agenda?",
-      "Just to confirm, I'll follow up with the minutes by end of day."
+    group: 'business',
+    levels: [
+      { level: 1, title: 'Starting & Contributing', title_zh: '开场与发言', sentences: [
+        "Could I just come in here and add something to that point?",
+        "Before we begin, shall we quickly run through the agenda?",
+        "I think it would be helpful if we could clarify the objectives first.",
+        "Thank you for the introduction — I am delighted to be here today.",
+        "I would like to start by giving a brief overview of where we are.",
+        "Could I ask a quick question before we move on?",
+        "I think this is a really important point and worth exploring further.",
+        "May I share a few thoughts on what has been discussed so far?",
+        "I would like to build on what has just been said, if I may.",
+        "Thank you all for coming — let us make the most of our time together."
+      ]},
+      { level: 2, title: 'Agreeing & Disagreeing', title_zh: '表达同意与异议', sentences: [
+        "That is a really interesting point — I completely agree with your assessment.",
+        "I take your point, though I would suggest we consider an alternative approach.",
+        "I am broadly in agreement, though I do have one reservation worth mentioning.",
+        "I see where you are coming from, but I am not sure this is the right direction.",
+        "That is a fair point — I had not considered it from that angle before.",
+        "I would respectfully push back on that — the data suggests otherwise.",
+        "I think we are largely aligned, though the details need a bit more thought.",
+        "With respect, I think there may be a more effective way to approach this.",
+        "I could not agree more — this is exactly the right approach going forward.",
+        "That raises a valid concern which I think we need to address head on."
+      ]},
+      { level: 3, title: 'Asking & Clarifying', title_zh: '提问与澄清', sentences: [
+        "Could you elaborate a little on what you mean by that?",
+        "I am not sure I fully understood — could you take us through that again?",
+        "When you say efficiency, could you be more specific about what you have in mind?",
+        "I just want to make sure I have understood correctly — are you suggesting we pause?",
+        "Could you clarify the timeline you are working towards on this?",
+        "I wonder if we could unpack that point a little further before moving on.",
+        "Could you give us a practical example of how that would work in practice?",
+        "I want to make sure we are all on the same page — can we summarise where we are?",
+        "That is helpful context — could you share the figures behind that conclusion?",
+        "Before we move on, could someone clarify who is responsible for the next steps?"
+      ]},
+      { level: 4, title: 'Moving Forward', title_zh: '推进会议', sentences: [
+        "Shall we move on to the next item on the agenda?",
+        "I think we have covered this thoroughly — shall we agree to proceed?",
+        "Let us park this for now and return to it at the end of the meeting.",
+        "I suggest we take a five-minute break and reconvene shortly.",
+        "Could we set a clear action point before we leave this topic?",
+        "I think we are ready to make a decision — shall we put it to a vote?",
+        "Let us make sure we capture the key decisions before we move on.",
+        "I would like to propose that we schedule a follow-up call to finalise this.",
+        "Shall we agree on a deadline for this action point before we continue?",
+        "I think the next logical step is to bring in the relevant stakeholders."
+      ]},
+      { level: 5, title: 'Closing the Meeting', title_zh: '结束会议', sentences: [
+        "Just to confirm, I will follow up with the minutes by end of day.",
+        "Thank you all for a really productive session today — I feel we made good progress.",
+        "To summarise the key actions: please could each person confirm their responsibilities?",
+        "I will circulate the notes and action points within twenty-four hours.",
+        "Thank you for your contributions today — this has been a very useful discussion.",
+        "I will send a calendar invite for our next meeting before the end of the week.",
+        "It has been a pleasure — I look forward to working with you all going forward.",
+        "Let us reconvene in a fortnight to review the progress made on these actions.",
+        "Thank you everyone — please do reach out if anything comes up in the meantime.",
+        "I will make sure all the key decisions from today are documented and shared."
+      ]}
     ]
   },
   {
-    id: 'pitch',
-    icon: '🏢',
-    title: 'Introducing Your Business in the UK',
-    title_zh: '在英国介绍你的公司',
-    desc: 'Pitch your company clearly and confidently in British professional settings.',
-    desc_zh: '在英国职场场合清晰自信地介绍你的公司。',
-    sentences: [
-      "We're a Canterbury-based technology company focused on language learning.",
-      "Our platform uses AI to help non-native speakers develop confident British English.",
-      "We've worked with clients across the UK and China over the past two years.",
-      "What makes us different is the combination of native content and real-time AI feedback.",
-      "We'd love to explore how we might work together."
+    id: 'education',
+    icon: '🎓',
+    title: 'Communicating with UK Schools',
+    title_zh: '与英国学校沟通',
+    group: 'education',
+    levels: [
+      { level: 1, title: 'First Contact', title_zh: '初次联系', sentences: [
+        "I am writing to enquire about enrolling my child at your school.",
+        "Could you tell me a little about the admissions process, please?",
+        "We have recently moved to the area and are looking for a place for our daughter.",
+        "I would be grateful if you could send me information about the school.",
+        "Could you confirm which year group my child would be placed in?",
+        "I am keen to arrange a visit to the school at a convenient time.",
+        "Could you let me know who the best person to contact is regarding admissions?",
+        "We are new to the UK education system and would appreciate some guidance.",
+        "I look forward to hearing from you and learning more about the school.",
+        "Thank you so much for your time — we are very excited about this school."
+      ]},
+      { level: 2, title: 'Day-to-Day Communication', title_zh: '日常沟通', sentences: [
+        "I am writing to let you know that my son will be absent from school tomorrow.",
+        "Could you please confirm the dates of the upcoming half-term holiday?",
+        "I wanted to flag that my daughter has been feeling a little anxious recently.",
+        "Could you let me know what the school policy is on packed lunches?",
+        "I am writing to request a copy of my child's recent school report.",
+        "Could you advise on how I can support my child's reading at home?",
+        "I would like to speak to my son's class teacher at your earliest convenience.",
+        "Could you confirm the time of the school play and where parents should go?",
+        "I wanted to let you know that my child has a mild nut allergy.",
+        "Thank you for the newsletter — it is always very helpful and informative."
+      ]},
+      { level: 3, title: "Parents' Evening", title_zh: '家长会', sentences: [
+        "We would love to attend the parents' evening — could you confirm the date?",
+        "My daughter is finding maths a little challenging — is there support available?",
+        "We are very pleased with the progress our son has made this term.",
+        "Could you give us a sense of how our child is settling in socially?",
+        "We were hoping to discuss our daughter's progress in more detail.",
+        "Is there anything we can do at home to help with his reading and writing?",
+        "Thank you for your kind and thoughtful feedback this evening.",
+        "Could you recommend any additional resources to support her learning?",
+        "We really appreciate how much care and attention you give to your pupils.",
+        "Could we arrange a follow-up meeting to discuss this further next week?"
+      ]},
+      { level: 4, title: 'Raising Concerns', title_zh: '反映问题', sentences: [
+        "I wanted to raise a concern about something my child mentioned at home.",
+        "I understand these things can be complex, but I feel this needs addressing.",
+        "My son has mentioned that he is feeling left out — I wanted to flag this.",
+        "Could we arrange a meeting to discuss this matter in a little more detail?",
+        "I appreciate how busy you must be, but this has been weighing on my mind.",
+        "I am not writing to cause any difficulty — I simply want the best for my child.",
+        "Could you let me know what steps will be taken to address this situation?",
+        "I would appreciate a response within the next few days if at all possible.",
+        "Thank you for listening — I feel much better having raised this with you.",
+        "I hope we can work together to make sure my child feels happy and supported."
+      ]},
+      { level: 5, title: 'Special Circumstances', title_zh: '特殊情况', sentences: [
+        "I am writing to request that my child be considered for additional learning support.",
+        "Could you advise on how the school supports children with English as a second language?",
+        "My daughter has recently been diagnosed with dyslexia — who should I speak to?",
+        "We will be travelling abroad for three weeks — could you advise on the process?",
+        "I would like to understand how the school supports children who are new to the UK.",
+        "Could you tell me more about the gifted and talented programme at your school?",
+        "I wanted to discuss whether my son might benefit from some additional challenge.",
+        "Could you let me know whether there are any scholarships or bursaries available?",
+        "We are considering changing schools — could you advise on how to transfer records?",
+        "Thank you for everything the school has done for our family since we arrived."
+      ]}
     ]
   },
   {
     id: 'daily',
     icon: '🏠',
-    title: 'Navigating Daily Life in the UK',
-    title_zh: '在英国日常生活沟通',
-    desc: 'From renting a flat to visiting a GP — communicate confidently in everyday British contexts.',
-    desc_zh: '从租房到看医生——在英国日常场景中自信沟通。',
-    sentences: [
-      "I'm looking for a one-bedroom flat in the city centre.",
-      "Could you explain what this charge on my bill is for?",
-      "I'd like to register with this GP practice, please.",
-      "I'm not sure I fully understood — could you say that again more slowly?",
-      "That's very helpful, thank you so much for your patience."
+    title: 'Daily Life in the UK',
+    title_zh: '英国日常生活',
+    group: 'daily',
+    levels: [
+      { level: 1, title: 'Getting Started', title_zh: '初来乍到', sentences: [
+        "I am looking for a one-bedroom flat in the city centre.",
+        "I'd like to register with this GP practice, please.",
+        "Could you tell me how to set up a council tax account?",
+        "I am new to the area — could you point me in the right direction?",
+        "Could you explain how the bus routes work in this part of the city?",
+        "I would like to open a basic bank account — what do I need to bring?",
+        "Could you help me understand how the bin collection schedule works?",
+        "I am trying to find the nearest library — is it far from here?",
+        "Could you let me know the best way to get to the train station from here?",
+        "Thank you so much for your help — everyone has been incredibly welcoming."
+      ]},
+      { level: 2, title: 'Housing & Utilities', title_zh: '住房与水电', sentences: [
+        "Could you explain what this charge on my council tax bill is for?",
+        "I would like to report a problem with the heating in my flat.",
+        "Could you tell me how to transfer the utilities into my name?",
+        "I wanted to ask about the process for ending my tenancy agreement.",
+        "Could you confirm whether the rent includes water and council tax?",
+        "I have noticed a damp patch on the ceiling — could someone come and look?",
+        "I would like to understand the terms of my rental contract more clearly.",
+        "Could you advise on what notice period I need to give my landlord?",
+        "I am having trouble with the boiler — could you send someone to check?",
+        "Could you clarify what is included in the deposit protection scheme?"
+      ]},
+      { level: 3, title: 'Health & Wellbeing', title_zh: '健康与医疗', sentences: [
+        "I would like to make an appointment to see a GP, please.",
+        "Could you explain how the NHS prescription system works?",
+        "I am not feeling well and was wondering if I could see a doctor today.",
+        "Could you tell me whether I need a referral to see a specialist?",
+        "I would like to register my child with a local dentist — how do I do that?",
+        "Could you explain what an urgent care centre is and when I should use it?",
+        "I am not sure whether I am entitled to free prescriptions — could you advise?",
+        "Could you let me know the opening hours of the nearest walk-in centre?",
+        "I have a medical condition that requires regular check-ups — who should I contact?",
+        "Thank you for explaining everything so clearly — I feel much more confident now."
+      ]},
+      { level: 4, title: 'Banking & Finance', title_zh: '银行与财务', sentences: [
+        "I would like to open a current account — what documents do I need?",
+        "Could you explain how direct debits work in the UK?",
+        "I would like to set up a standing order to pay my rent each month.",
+        "Could you tell me what the process is for disputing a transaction?",
+        "I am trying to build my credit history in the UK — where should I start?",
+        "Could you explain the difference between a debit card and a credit card?",
+        "I would like to transfer money internationally — what are the charges?",
+        "Could you advise on the best way to manage my finances as a new arrival?",
+        "I am having difficulty accessing my online banking — could you help?",
+        "Could you clarify how the tax-free personal allowance works in the UK?"
+      ]},
+      { level: 5, title: 'Community & Social Life', title_zh: '社区与社交', sentences: [
+        "I am not sure I fully understood — could you say that again more slowly?",
+        "That is very kind of you — I really appreciate your patience.",
+        "Could you recommend any local community groups for people new to the area?",
+        "I would love to get involved in local volunteering — where should I start?",
+        "Could you tell me how to get a library card and what services are available?",
+        "I am looking for a local language exchange group — do you know of any?",
+        "Could you recommend any good places to meet people and make friends locally?",
+        "I wanted to thank you for making us feel so welcome in this community.",
+        "Could you tell me about any local events happening over the next few weeks?",
+        "It has been wonderful getting to know everyone here — thank you so much."
+      ]}
+    ]
+  },
+  {
+    id: 'setup',
+    icon: '🏗️',
+    title: 'Setup & Establishment',
+    title_zh: '在英创业落地',
+    group: 'setup',
+    levels: [
+      { level: 1, title: 'Company Formation', title_zh: '公司注册', sentences: [
+        "I'd like to register a limited company — could you walk me through the process?",
+        "Could you explain the difference between a sole trader and a limited company?",
+        "I need to choose a registered office address — what are my options?",
+        "Could you advise on what information I need to file with Companies House?",
+        "I would like to understand what my responsibilities are as a company director.",
+        "Could you explain what a confirmation statement is and when it is due?",
+        "I am thinking of setting up a company with a business partner — what do I need?",
+        "Could you advise on the most tax-efficient company structure for my situation?",
+        "I need to register my company for corporation tax — how do I do that?",
+        "Could you recommend a reliable company formation agent in the UK?"
+      ]},
+      { level: 2, title: 'Banking & Finance', title_zh: '商业银行与融资', sentences: [
+        "We are looking for a business bank account that suits a small startup.",
+        "Could you explain the difference between a business current account and a savings account?",
+        "I would like to set up a merchant account to accept card payments — how do I start?",
+        "Could you advise on how to manage cash flow in the early stages of a business?",
+        "I am looking for a startup loan — what options are available to new businesses?",
+        "Could you explain how invoice financing works and whether it suits my business?",
+        "I would like to understand my obligations around paying corporation tax.",
+        "Could you advise on the best accounting software for a small UK business?",
+        "I need to separate my personal and business finances — where should I begin?",
+        "Could you recommend a UK accountant with experience in cross-border businesses?"
+      ]},
+      { level: 3, title: 'Tax & Compliance', title_zh: '税务与合规', sentences: [
+        "I need to register for VAT — who should I speak to about this?",
+        "Could you explain when a business is required to register for VAT?",
+        "I would like to understand how PAYE works if I take on my first employee.",
+        "Could you advise on what expenses I can legitimately claim as a business owner?",
+        "I am not sure whether my business needs to register for Making Tax Digital.",
+        "Could you explain the difference between income tax and corporation tax?",
+        "I would like to understand the rules around claiming a home office as an expense.",
+        "Could you advise on how to handle VAT when trading with clients overseas?",
+        "I want to make sure my business is fully compliant — where should I start?",
+        "Could you recommend a tax adviser familiar with UK and Chinese business law?"
+      ]},
+      { level: 4, title: 'Hiring & HR', title_zh: '招聘与人事', sentences: [
+        "I am looking to hire my first employee — what are my legal responsibilities?",
+        "Could you explain the difference between an employee and a contractor?",
+        "I need to set up a payroll system — what options are available to small businesses?",
+        "Could you advise on the minimum wage requirements for UK employees?",
+        "I would like to understand the rules around employee holidays and sick leave.",
+        "Could you explain what an employment contract needs to include?",
+        "I am thinking of offering equity to a key team member — how does this work?",
+        "Could you advise on the process for applying for a Skilled Worker visa sponsor licence?",
+        "I want to make sure my hiring process is fair and legally compliant.",
+        "Could you recommend an HR consultant familiar with small and growing businesses?"
+      ]},
+      { level: 5, title: 'Growth & Expansion', title_zh: '成长与扩张', sentences: [
+        "We are looking to explore how we might work together on this opportunity.",
+        "Could you advise on the best way to find UK distribution partners for our product?",
+        "I would like to understand how to protect our intellectual property in the UK.",
+        "Could you explain what a shareholders' agreement is and why we might need one?",
+        "We are considering raising investment — what options are available to early-stage companies?",
+        "Could you advise on how to approach UK government grants and funding schemes?",
+        "I would like to understand the process for trademarking our brand in the UK.",
+        "Could you recommend any accelerator programmes suited to international founders?",
+        "We are planning to expand our team significantly over the next twelve months.",
+        "Could you advise on what we should consider before opening a second office location?"
+      ]}
     ]
   }
 ];
 
-let _ukbSpeechHandle = null;
-let _ukbCurrentSceneId = null;
-let _ukbStatsCache = null;
+const UK_CULTURE_GROUPS = {
+  business:  { title: 'Business',                title_zh: '商务',         icon: '💼', sub: 'Master British professional communication — emails, meetings, and beyond.', sub_zh: '掌握英国职场沟通——邮件、会议与商务谈判。' },
+  education: { title: 'Education',               title_zh: '教育',         icon: '🎓', sub: 'Confidently communicate with UK schools — from first contact to special circumstances.', sub_zh: '自信地与英国学校沟通——从初次联系到特殊情况。' },
+  daily:     { title: 'Daily Life',              title_zh: '日常生活',     icon: '🏠', sub: 'Navigate everyday British life — housing, NHS, banking, and community.', sub_zh: '应对英国日常生活——住房、医疗、银行与社区。' },
+  setup:     { title: 'Setup & Establishment',   title_zh: '在英创业落地', icon: '🏗️', sub: 'Build your UK business — from company formation through to growth and expansion.', sub_zh: '在英国建立你的事业——从公司注册到成长扩张。' }
+};
 
-function _ukbEsc(s){
+let _ukcProgressCache = null;
+let _ukcSpeechHandle = null;
+let _ukcCurrent = { group: null, moduleId: null, levelNum: null };
+
+function _ukcEsc(s){
   return String(s).replace(/[&<>"']/g, function(c){
     return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
   });
 }
 
-async function loadUkBusinessStats(force){
-  if(_ukbStatsCache && !force) return _ukbStatsCache;
-  try{
-    if(typeof _supabase === 'undefined') return {};
-    const { data: { user } } = await _supabase.auth.getUser();
-    if(!user){ _ukbStatsCache = {}; return {}; }
-    const { data, error } = await _supabase
-      .from('pronunciation_attempts')
-      .select('module_id, score')
-      .eq('user_id', user.id)
-      .eq('source', 'uk_business');
-    if(error){ console.warn('uk business stats fetch failed:', error.message); return {}; }
-    const stats = {};
-    for(const row of data || []){
-      if(!row.module_id) continue;
-      if(!stats[row.module_id]) stats[row.module_id] = { best: 0, attempts: 0 };
-      stats[row.module_id].best = Math.max(stats[row.module_id].best, row.score|0);
-      stats[row.module_id].attempts += 1;
-    }
-    _ukbStatsCache = stats;
-    return stats;
-  }catch(e){
-    console.warn('uk business stats error:', e);
-    return {};
-  }
+function _ukcEscAttr(s){ return _ukcEsc(s); }
+
+function _ukcScoreTier(s){
+  if(s >= 80) return 'forest';
+  if(s >= 50) return 'gold';
+  return 'amber';
 }
 
-async function logUkBusinessAttempt(payload){
+async function loadUkCultureProgress(force){
+  if(_ukcProgressCache && !force) return _ukcProgressCache;
+  try{
+    if(typeof _supabase === 'undefined'){ _ukcProgressCache = []; return []; }
+    const { data: { user } } = await _supabase.auth.getUser();
+    if(!user){ _ukcProgressCache = []; return []; }
+    const { data, error } = await _supabase
+      .from('uk_culture_progress')
+      .select('module_id, level_num, sentence_idx, score, transcript, created_at')
+      .eq('user_id', user.id);
+    if(error){
+      // Table may not exist yet — fail soft
+      console.warn('uk_culture_progress fetch failed:', error.message);
+      _ukcProgressCache = [];
+      return [];
+    }
+    _ukcProgressCache = data || [];
+    return _ukcProgressCache;
+  }catch(e){ console.warn('uk_culture_progress error:', e); _ukcProgressCache = []; return []; }
+}
+
+function _ukcLevelProgress(progressData, moduleId, levelNum){
+  // Returns { rows: [...], uniqueIdx: Set, avgScore: number, bestByIdx: {idx:bestScore} }
+  const rows = (progressData || []).filter(function(p){ return p.module_id === moduleId && p.level_num === levelNum; });
+  const bestByIdx = {};
+  let sum = 0;
+  for(let i=0;i<rows.length;i++){
+    const r = rows[i];
+    sum += (r.score|0);
+    if(bestByIdx[r.sentence_idx] === undefined || r.score > bestByIdx[r.sentence_idx]){
+      bestByIdx[r.sentence_idx] = r.score|0;
+    }
+  }
+  const uniqueIdx = new Set(Object.keys(bestByIdx).map(Number));
+  const avgScore = rows.length ? Math.round(sum / rows.length) : 0;
+  return { rows: rows, uniqueIdx: uniqueIdx, avgScore: avgScore, bestByIdx: bestByIdx };
+}
+
+function isUkLevelUnlocked(progressData, moduleId, levelNum){
+  if(levelNum === 1) return true;
+  const prev = _ukcLevelProgress(progressData, moduleId, levelNum - 1);
+  return prev.uniqueIdx.size >= 8 && prev.avgScore >= 60;
+}
+
+async function logUkCultureAttempt(payload){
+  // payload: { moduleId, levelNum, sentenceIdx, sentence, transcript, score }
   try{
     if(typeof _supabase === 'undefined') return;
     const { data: { user } } = await _supabase.auth.getUser();
-    if(!user){ return; }
-    const { error } = await _supabase.from('pronunciation_attempts').insert({
+    if(!user) return;
+
+    const { error: e1 } = await _supabase.from('uk_culture_progress').upsert({
       user_id: user.id,
-      source: 'uk_business',
-      module_id: payload.sceneId,
+      module_id: payload.moduleId,
+      level_num: payload.levelNum,
+      sentence_idx: payload.sentenceIdx,
+      score: payload.score | 0,
+      transcript: payload.transcript || null
+    }, { onConflict: 'user_id,module_id,level_num,sentence_idx' });
+    if(e1) console.warn('uk_culture_progress upsert failed:', e1.message);
+
+    const { error: e2 } = await _supabase.from('pronunciation_attempts').insert({
+      user_id: user.id,
+      source: 'uk_culture',
+      module_id: payload.moduleId + '_l' + payload.levelNum,
       sentence: payload.sentence,
       transcript: payload.transcript || null,
       score: payload.score | 0
     });
-    if(error){ console.warn('uk business attempt log failed:', error.message); return; }
-    _ukbStatsCache = null;
-  }catch(e){ console.warn('uk business log threw:', e); }
+    if(e2) console.warn('pronunciation_attempts insert failed:', e2.message);
+
+    _ukcProgressCache = null; // invalidate
+  }catch(e){ console.warn('uk_culture log threw:', e); }
 }
 
-async function renderUkBusinessHome(){
-  const stats = await loadUkBusinessStats(true);
-  const grid = document.getElementById('ukb-scenes');
+async function renderUkCultureGroupHome(groupKey){
+  _ukcCurrent.group = groupKey;
+  _ukcCurrent.moduleId = null;
+  _ukcCurrent.levelNum = null;
+
+  document.getElementById('ukc-group-home').style.display = 'block';
+  document.getElementById('ukc-module-home').style.display = 'none';
+  document.getElementById('ukc-level-detail').style.display = 'none';
+
+  const g = UK_CULTURE_GROUPS[groupKey];
+  if(!g) return;
+  const titleEl = document.getElementById('ukc-group-title');
+  if(titleEl) titleEl.innerHTML =
+    '<span data-en>'+_ukcEsc(g.title)+'</span>'+
+    '<span data-zh>'+_ukcEsc(g.title_zh)+'</span>';
+  const subEl = document.getElementById('ukc-group-sub');
+  if(subEl) subEl.innerHTML =
+    '<span data-en>'+_ukcEsc(g.sub)+'</span>'+
+    '<span data-zh>'+_ukcEsc(g.sub_zh)+'</span>';
+
+  const progressData = await loadUkCultureProgress(true);
+  const modules = UK_CULTURE_MODULES.filter(function(m){ return m.group === groupKey; });
+  const grid = document.getElementById('ukc-modules');
   if(!grid) return;
-  grid.innerHTML = UK_BUSINESS_SCENES.map(function(sc){
-    const s = stats[sc.id];
-    const statsLine = s
-      ? '<span class="ukb-sc-best">Best: '+s.best+'/100</span> · ' +
-        '<span data-en>Attempted: '+s.attempts+' '+(s.attempts===1?'time':'times')+'</span>' +
-        '<span data-zh>已尝试 '+s.attempts+' 次</span>'
-      : '<span data-en>Not yet attempted</span><span data-zh>尚未练习</span>';
+  grid.innerHTML = modules.map(function(m){
+    let totalSentences = 0, completedSentences = 0, sumBest = 0, bestCount = 0;
+    let unlockedLevels = 0;
+    for(let i=0;i<m.levels.length;i++){
+      const lvl = m.levels[i];
+      const lp = _ukcLevelProgress(progressData, m.id, lvl.level);
+      totalSentences += lvl.sentences.length;
+      completedSentences += lp.uniqueIdx.size;
+      const idxs = Object.keys(lp.bestByIdx);
+      for(let k=0;k<idxs.length;k++){ sumBest += lp.bestByIdx[idxs[k]]; bestCount += 1; }
+      if(isUkLevelUnlocked(progressData, m.id, lvl.level)) unlockedLevels += 1;
+    }
+    const pct = totalSentences ? Math.round(completedSentences / totalSentences * 100) : 0;
+    const avgBest = bestCount ? Math.round(sumBest / bestCount) : 0;
+    const progressLine = bestCount
+      ? '<span data-en><b>'+completedSentences+'</b>/'+totalSentences+' practised · Avg <b>'+avgBest+'</b>/100 · '+unlockedLevels+'/'+m.levels.length+' levels unlocked</span>'+
+        '<span data-zh><b>'+completedSentences+'</b>/'+totalSentences+' 已练 · 平均 <b>'+avgBest+'</b>/100 · '+unlockedLevels+'/'+m.levels.length+' 等级已解锁</span>'
+      : '<span data-en>'+m.levels.length+' levels · '+totalSentences+' sentences · not started</span>'+
+        '<span data-zh>'+m.levels.length+' 等级 · '+totalSentences+' 句 · 尚未开始</span>';
     return ''+
-      '<div class="ukb-scene-card" data-scene="'+sc.id+'">'+
-        '<div class="ukb-sc-head">'+
-          '<div class="ukb-sc-icon">'+_ukbEsc(sc.icon)+'</div>'+
-          '<div class="ukb-sc-label">'+
-            '<span data-en>'+_ukbEsc(sc.title)+'</span>'+
-            '<span data-zh>'+_ukbEsc(sc.title_zh)+'</span>'+
+      '<div class="ukc-module-card" data-module="'+_ukcEscAttr(m.id)+'">'+
+        '<div class="ukc-mc-head">'+
+          '<div class="ukc-mc-icon">'+_ukcEsc(m.icon)+'</div>'+
+          '<div class="ukc-mc-label">'+
+            '<span data-en>'+_ukcEsc(m.title)+'</span>'+
+            '<span data-zh>'+_ukcEsc(m.title_zh)+'</span>'+
           '</div>'+
         '</div>'+
-        '<p class="ukb-sc-desc">'+
-          '<span data-en>'+_ukbEsc(sc.desc)+'</span>'+
-          '<span data-zh>'+_ukbEsc(sc.desc_zh)+'</span>'+
-        '</p>'+
-        '<div class="ukb-sc-stats">'+statsLine+'</div>'+
-        '<button class="ukb-sc-cta" type="button">'+
-          '<span data-en>🎤 Practice Reading Aloud →</span>'+
-          '<span data-zh>🎤 朗读练习 →</span>'+
+        '<div class="ukc-mc-progress">'+progressLine+
+          '<div class="ukc-mc-bar"><div class="ukc-mc-bar-fill" style="width:'+pct+'%"></div></div>'+
+        '</div>'+
+        '<button class="ukc-mc-cta" type="button">'+
+          '<span data-en>Open Module →</span>'+
+          '<span data-zh>进入模块 →</span>'+
         '</button>'+
       '</div>';
   }).join('');
-  grid.querySelectorAll('.ukb-scene-card').forEach(function(card){
-    card.addEventListener('click', function(){ openUkBusinessScene(card.getAttribute('data-scene')); });
+  grid.querySelectorAll('.ukc-module-card').forEach(function(card){
+    card.addEventListener('click', function(){ openUkCultureModule(card.getAttribute('data-module')); });
   });
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
 }
 
-async function openUkBusinessScene(sceneId){
-  const sc = UK_BUSINESS_SCENES.find(function(x){ return x.id === sceneId; });
-  if(!sc) return;
-  _ukbCurrentSceneId = sceneId;
-  document.getElementById('ukb-home').style.display = 'none';
-  const detail = document.getElementById('ukb-detail');
-  detail.style.display = 'block';
-  const titleEl = document.getElementById('ukb-detail-title');
-  titleEl.innerHTML =
-    '<span data-en>'+_ukbEsc(sc.title)+'</span>'+
-    '<span data-zh>'+_ukbEsc(sc.title_zh)+'</span>';
-  const introEl = document.getElementById('ukb-detail-intro');
-  introEl.innerHTML =
-    '<span data-en>'+_ukbEsc(sc.desc)+'</span>'+
-    '<span data-zh>'+_ukbEsc(sc.desc_zh)+'</span>';
+async function openUkCultureModule(moduleId){
+  const m = UK_CULTURE_MODULES.find(function(x){ return x.id === moduleId; });
+  if(!m) return;
+  _ukcCurrent.moduleId = moduleId;
+  _ukcCurrent.levelNum = null;
+  document.getElementById('ukc-group-home').style.display = 'none';
+  document.getElementById('ukc-module-home').style.display = 'block';
+  document.getElementById('ukc-level-detail').style.display = 'none';
+
+  const g = UK_CULTURE_GROUPS[m.group];
+  const eyebrow = document.getElementById('ukc-module-eyebrow');
+  if(eyebrow) eyebrow.innerHTML =
+    '<span data-en>UK Culture · '+_ukcEsc(g.title)+'</span>'+
+    '<span data-zh>英国文化 · '+_ukcEsc(g.title_zh)+'</span>';
+  const titleEl = document.getElementById('ukc-module-title');
+  if(titleEl) titleEl.innerHTML =
+    '<span data-en>'+_ukcEsc(m.title)+'</span>'+
+    '<span data-zh>'+_ukcEsc(m.title_zh)+'</span>';
+  const subEl = document.getElementById('ukc-module-sub');
+  if(subEl) subEl.innerHTML =
+    '<span data-en>5 levels · 50 sentences · progressive unlock — complete 8/10 with average ≥60 to unlock the next level.</span>'+
+    '<span data-zh>5 个等级 · 50 句 · 渐进解锁——每个等级完成 8/10 句且平均分 ≥60 即可解锁下一等级。</span>';
+
   const bc = document.querySelector('.atbbc');
   if(bc) bc.innerHTML =
-    '<span data-en>UK Business · '+_ukbEsc(sc.title)+'</span>'+
-    '<span data-zh>英国商务 · '+_ukbEsc(sc.title_zh)+'</span>';
+    '<span data-en>UK Culture · '+_ukcEsc(g.title)+' · '+_ukcEsc(m.title)+'</span>'+
+    '<span data-zh>英国文化 · '+_ukcEsc(g.title_zh)+' · '+_ukcEsc(m.title_zh)+'</span>';
 
-  if(!_ukbSpeechHandle && window.ReadiiSpeech){
-    _ukbSpeechHandle = window.ReadiiSpeech.attach(document.getElementById('ukb-detail-speech'), {
+  const progressData = await loadUkCultureProgress(true);
+  const list = document.getElementById('ukc-levels');
+  if(!list) return;
+  list.innerHTML = m.levels.map(function(lvl){
+    const lp = _ukcLevelProgress(progressData, m.id, lvl.level);
+    const unlocked = isUkLevelUnlocked(progressData, m.id, lvl.level);
+    const total = lvl.sentences.length;
+    const done = lp.uniqueIdx.size;
+    const isDone = done >= total;
+    let badge, statusBlock;
+    let rowCls = unlocked ? (isDone ? 'unlocked done' : 'unlocked') : 'locked';
+    if(isDone){
+      badge = '<span class="ukc-lr-badge done">✓ <span data-en>Done</span><span data-zh>已完成</span></span>';
+      statusBlock = '<button class="ukc-lr-cta" type="button" data-level="'+lvl.level+'">'+
+        '<span data-en>Review</span><span data-zh>复习</span></button>';
+    } else if(unlocked){
+      badge = '<span class="ukc-lr-badge active">⚡ <span data-en>Active</span><span data-zh>进行中</span></span>';
+      statusBlock = '<button class="ukc-lr-cta primary" type="button" data-level="'+lvl.level+'">'+
+        (done > 0 ? '<span data-en>Continue</span><span data-zh>继续</span>' : '<span data-en>Start</span><span data-zh>开始</span>')+
+        '</button>';
+    } else {
+      badge = '<span class="ukc-lr-badge locked">🔒 <span data-en>Locked</span><span data-zh>未解锁</span></span>';
+      statusBlock = '<span class="ukc-lr-locktext">'+
+        '<span data-en>Complete Level '+(lvl.level-1)+' to unlock</span>'+
+        '<span data-zh>完成第 '+(lvl.level-1)+' 等级即可解锁</span></span>';
+    }
+    const metaLine = lp.rows.length
+      ? '<span data-en><b>'+done+'</b>/'+total+' sentences · Avg <b>'+lp.avgScore+'</b>/100</span>'+
+        '<span data-zh><b>'+done+'</b>/'+total+' 句 · 平均 <b>'+lp.avgScore+'</b>/100</span>'
+      : '<span data-en>'+total+' sentences</span><span data-zh>'+total+' 句</span>';
+    return ''+
+      '<div class="ukc-level-row '+rowCls+'" data-level="'+lvl.level+'">'+
+        '<div class="ukc-lr-num">Level '+lvl.level+'</div>'+
+        '<div class="ukc-lr-body">'+
+          '<div class="ukc-lr-title">'+
+            '<span data-en>'+_ukcEsc(lvl.title)+'</span>'+
+            '<span data-zh>'+_ukcEsc(lvl.title_zh)+'</span>'+
+          '</div>'+
+          '<div class="ukc-lr-meta">'+metaLine+'</div>'+
+        '</div>'+
+        '<div class="ukc-lr-status">'+badge+statusBlock+'</div>'+
+      '</div>';
+  }).join('');
+  list.querySelectorAll('.ukc-level-row').forEach(function(row){
+    if(!row.classList.contains('unlocked')) return;
+    row.addEventListener('click', function(e){
+      // Avoid re-handling button click bubbling (still routes to same handler)
+      const lvlNum = parseInt(row.getAttribute('data-level'), 10);
+      openUkCultureLevel(moduleId, lvlNum);
+    });
+  });
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+async function openUkCultureLevel(moduleId, levelNum){
+  const m = UK_CULTURE_MODULES.find(function(x){ return x.id === moduleId; });
+  if(!m) return;
+  const lvl = m.levels.find(function(x){ return x.level === levelNum; });
+  if(!lvl) return;
+
+  const progressData = await loadUkCultureProgress(true);
+  if(!isUkLevelUnlocked(progressData, moduleId, levelNum)) return;
+
+  _ukcCurrent.moduleId = moduleId;
+  _ukcCurrent.levelNum = levelNum;
+  document.getElementById('ukc-group-home').style.display = 'none';
+  document.getElementById('ukc-module-home').style.display = 'none';
+  document.getElementById('ukc-level-detail').style.display = 'block';
+
+  const g = UK_CULTURE_GROUPS[m.group];
+  const eyebrow = document.getElementById('ukc-level-eyebrow');
+  if(eyebrow) eyebrow.innerHTML =
+    '<span data-en>UK Culture · '+_ukcEsc(g.title)+' · '+_ukcEsc(m.title)+' · Level '+levelNum+'</span>'+
+    '<span data-zh>英国文化 · '+_ukcEsc(g.title_zh)+' · '+_ukcEsc(m.title_zh)+' · 第 '+levelNum+' 级</span>';
+  const titleEl = document.getElementById('ukc-level-title');
+  if(titleEl) titleEl.innerHTML =
+    '<span data-en>Level '+levelNum+' · '+_ukcEsc(lvl.title)+'</span>'+
+    '<span data-zh>第 '+levelNum+' 级 · '+_ukcEsc(lvl.title_zh)+'</span>';
+  const subEl = document.getElementById('ukc-level-sub');
+  if(subEl) subEl.innerHTML =
+    '<span data-en>10 sentences · 🎤 record each one · 🔊 native audio coming soon</span>'+
+    '<span data-zh>10 句 · 🎤 逐句录音 · 🔊 母语示范音频即将上线</span>';
+
+  const bc = document.querySelector('.atbbc');
+  if(bc) bc.innerHTML =
+    '<span data-en>UK Culture · '+_ukcEsc(m.title)+' · Level '+levelNum+'</span>'+
+    '<span data-zh>英国文化 · '+_ukcEsc(m.title_zh)+' · 第 '+levelNum+' 级</span>';
+
+  _ukcRenderLevelMeta(progressData, moduleId, levelNum);
+  _ukcRenderSentenceCards(m, lvl, progressData);
+
+  // Attach ReadiiSpeech (one-time, persistent across level changes)
+  const speechContainer = document.getElementById('ukc-level-speech');
+  if(!_ukcSpeechHandle && speechContainer && window.ReadiiSpeech){
+    _ukcSpeechHandle = window.ReadiiSpeech.attach(speechContainer, {
       onScore: async function(info){
-        await logUkBusinessAttempt({ sceneId: _ukbCurrentSceneId, sentence: info.sentence, transcript: info.transcript, score: info.score });
-        renderUkSceneFooter(_ukbCurrentSceneId);
+        // info: { score, transcript, sentence }
+        if(_ukcCurrent.moduleId == null || _ukcCurrent.levelNum == null) return;
+        const curMod = UK_CULTURE_MODULES.find(function(x){ return x.id === _ukcCurrent.moduleId; });
+        if(!curMod) return;
+        const curLvl = curMod.levels.find(function(x){ return x.level === _ukcCurrent.levelNum; });
+        if(!curLvl) return;
+        const idx = curLvl.sentences.indexOf(info.sentence);
+        if(idx < 0) return;
+        await logUkCultureAttempt({
+          moduleId: _ukcCurrent.moduleId,
+          levelNum: _ukcCurrent.levelNum,
+          sentenceIdx: idx,
+          sentence: info.sentence,
+          transcript: info.transcript,
+          score: info.score | 0
+        });
+        // Render result inside that specific card
+        _ukcRenderCardResult(idx, info);
+        // Refresh progress meta (does not re-render cards to preserve UI)
+        const fresh = await loadUkCultureProgress(true);
+        _ukcRenderLevelMeta(fresh, _ukcCurrent.moduleId, _ukcCurrent.levelNum);
       }
     });
   }
-  if(_ukbSpeechHandle) _ukbSpeechHandle.renderSentences(sc.sentences);
-  await renderUkSceneFooter(sceneId);
   setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
 }
 
-async function renderUkSceneFooter(sceneId){
-  const stats = (await loadUkBusinessStats(true))[sceneId];
-  const footer = document.getElementById('ukb-detail-footer');
-  if(!footer) return;
-  if(stats){
-    footer.innerHTML =
-      '<div>'+
-        '<div class="ukb-detail-footer-eyebrow"><span data-en>Your best on this scene</span><span data-zh>本场景最高分</span></div>'+
-        '<div class="ukb-best">'+stats.best+'<span style="font-size:13px;opacity:.6">/100</span></div>'+
-      '</div>'+
-      '<div class="ukb-attempts">'+
-        '<span data-en>'+stats.attempts+' '+(stats.attempts===1?'attempt':'attempts')+'</span>'+
-        '<span data-zh>共 '+stats.attempts+' 次</span>'+
+function _ukcRenderLevelMeta(progressData, moduleId, levelNum){
+  const meta = document.getElementById('ukc-level-meta');
+  if(!meta) return;
+  const lp = _ukcLevelProgress(progressData, moduleId, levelNum);
+  const m = UK_CULTURE_MODULES.find(function(x){ return x.id === moduleId; });
+  const lvl = m.levels.find(function(x){ return x.level === levelNum; });
+  const total = lvl.sentences.length;
+  const done = lp.uniqueIdx.size;
+  const unlocked8 = lp.uniqueIdx.size >= 8;
+  const avgPass = lp.avgScore >= 60;
+  meta.innerHTML =
+    '<span><span data-en>Sentences:</span><span data-zh>已练句子：</span> <b>'+done+'</b>/'+total+'</span>'+
+    '<span><span data-en>Average:</span><span data-zh>平均分：</span> <b>'+(lp.rows.length?lp.avgScore:'—')+'</b>/100</span>'+
+    '<span><span data-en>Unlock next:</span><span data-zh>解锁下一级：</span> '+
+      (unlocked8 ? '✓' : (8 - lp.uniqueIdx.size)+'<span data-en> more sentences</span><span data-zh> 句</span>')+
+      ' · '+(avgPass ? '✓' : '<span data-en>raise avg to 60</span><span data-zh>平均分需达 60</span>')+
+    '</span>';
+}
+
+function _ukcRenderSentenceCards(m, lvl, progressData){
+  const list = document.getElementById('ukc-sentence-list');
+  if(!list) return;
+  const lp = _ukcLevelProgress(progressData, m.id, lvl.level);
+  list.innerHTML = lvl.sentences.map(function(s, idx){
+    const isDone = lp.bestByIdx[idx] !== undefined;
+    return ''+
+      '<div class="sentence-card'+(isDone ? ' is-done' : '')+'" data-idx="'+idx+'">'+
+        '<div class="ukc-sc-num">'+
+          '<span data-en>Sentence '+(idx+1)+' / '+lvl.sentences.length+(isDone?' · best '+lp.bestByIdx[idx]+'/100':'')+'</span>'+
+          '<span data-zh>第 '+(idx+1)+' / '+lvl.sentences.length+' 句'+(isDone?' · 最高 '+lp.bestByIdx[idx]+'/100':'')+'</span>'+
+        '</div>'+
+        '<p class="sentence-target">'+_ukcEsc(s)+'</p>'+
+        '<div class="ukc-sc-actions">'+
+          '<button class="ukc-listen-btn" type="button" '+
+            'data-module="'+_ukcEscAttr(m.id)+'" '+
+            'data-level="'+lvl.level+'" '+
+            'data-idx="'+idx+'" '+
+            'data-audio-url="" '+
+            'disabled '+
+            'title="Audio coming soon">'+
+            '🔊 <span data-en>Listen</span><span data-zh>试听</span>'+
+            '<span style="margin-left:6px;font-size:10px;color:var(--ink3);">'+
+              '<span data-en>(soon)</span><span data-zh>(即将)</span>'+
+            '</span>'+
+          '</button>'+
+          '<button class="read-aloud-btn" type="button" data-target="'+_ukcEscAttr(s)+'">'+
+            '<span class="ralb-mic">🎤</span>'+
+            '<span class="ralb-l"><span data-en>Record</span><span data-zh>录音</span></span>'+
+          '</button>'+
+        '</div>'+
+        '<div class="ukc-sc-result" data-idx="'+idx+'"></div>'+
       '</div>';
-  } else {
-    footer.innerHTML =
-      '<div style="font-size:13px;color:var(--ink3);flex:1">'+
-        '<span data-en>No attempts yet — try a sentence above to see your score.</span>'+
-        '<span data-zh>还未练习，朗读上面任意一句即可获得评分。</span>'+
-      '</div>';
+  }).join('');
+}
+
+function _ukcRenderCardResult(idx, info){
+  const list = document.getElementById('ukc-sentence-list');
+  if(!list) return;
+  const card = list.querySelector('.sentence-card[data-idx="'+idx+'"]');
+  if(!card) return;
+  const result = card.querySelector('.ukc-sc-result');
+  if(!result) return;
+  const score = info.score | 0;
+  const tier = _ukcScoreTier(score);
+  let tierMsgEn, tierMsgZh;
+  if(score >= 80){ tierMsgEn = 'Excellent — that sounds very natural.'; tierMsgZh = '非常好——听起来很自然。'; }
+  else if(score >= 50){ tierMsgEn = 'Good — keep practising for fluency.'; tierMsgZh = '不错——多练习以提升流利度。'; }
+  else { tierMsgEn = 'Try again — focus on each word clearly.'; tierMsgZh = '再试一次——注意每个词的清晰度。'; }
+
+  let diffHtml = '';
+  if(info.transcript && window.ReadiiSpeech && window.ReadiiSpeech.tokenize && window.ReadiiSpeech.wordDiff){
+    const target = info.sentence || '';
+    const tWords = window.ReadiiSpeech.tokenize(target);
+    const sWords = window.ReadiiSpeech.tokenize(info.transcript);
+    if(tWords.length){
+      const wd = window.ReadiiSpeech.wordDiff(tWords, sWords);
+      diffHtml = '<div class="ukc-sc-diff">' +
+        wd.tWords.map(function(w, i){
+          const cls = wd.tMark[i] === 'ok' ? 'ok' : 'miss';
+          return '<span class="ukc-sc-diff-w '+cls+'">'+_ukcEsc(w)+'</span>';
+        }).join(' ') + '</div>';
+    }
   }
+
+  const transcriptStr = info.transcript ? info.transcript : '';
+  const transcriptHtml = transcriptStr
+    ? '<div class="ukc-sc-transcript"><b><span data-en>You said:</span><span data-zh>你说的：</span></b> '+_ukcEsc(transcriptStr)+'</div>'
+    : '<div class="ukc-sc-transcript"><span data-en>No speech detected. Try again.</span><span data-zh>未检测到语音，请再试一次。</span></div>';
+
+  result.classList.add('show');
+  result.innerHTML =
+    '<div class="ukc-sc-result-head">'+
+      '<div class="ukc-sc-result-score t-'+tier+'">'+score+'<span style="font-size:13px;opacity:.6">/100</span></div>'+
+      '<div class="ukc-sc-result-tier">'+
+        '<span data-en>'+_ukcEsc(tierMsgEn)+'</span>'+
+        '<span data-zh>'+_ukcEsc(tierMsgZh)+'</span>'+
+      '</div>'+
+    '</div>'+
+    transcriptHtml +
+    diffHtml;
+
+  // Update card "is-done" state and best-score in num line
+  card.classList.add('is-done');
   setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
 }
+
+const UKC_GROUP_BY_ROUTE = {
+  'ukc-business':  'business',
+  'ukc-education': 'education',
+  'ukc-daily':     'daily',
+  'ukc-setup':     'setup'
+};
 
 function showAppView(name){
+  const ukcView = document.getElementById('view-uk-culture');
   const views = {
-    'library':     document.getElementById('view-library'),
-    'voice-coach': document.getElementById('view-voice-coach'),
-    'progress':    document.getElementById('view-progress'),
-    'word-bank':   document.getElementById('view-word-bank'),
-    'uk-business': document.getElementById('view-uk-business'),
-    'review':      document.getElementById('view-review'),
-    'settings':    document.getElementById('view-settings')
+    'library':       document.getElementById('view-library'),
+    'voice-coach':   document.getElementById('view-voice-coach'),
+    'progress':      document.getElementById('view-progress'),
+    'word-bank':     document.getElementById('view-word-bank'),
+    'ukc-business':  ukcView,
+    'ukc-education': ukcView,
+    'ukc-daily':     ukcView,
+    'ukc-setup':     ukcView,
+    'review':        document.getElementById('view-review'),
+    'settings':      document.getElementById('view-settings')
   };
   const navs = {
-    'library':     document.getElementById('ni-library'),
-    'voice-coach': document.getElementById('ni-voice-coach'),
-    'progress':    document.getElementById('ni-progress'),
-    'word-bank':   document.getElementById('ni-word-bank'),
-    'uk-business': document.getElementById('ni-uk-business'),
-    'review':      document.getElementById('ni-review'),
-    'settings':    document.getElementById('ni-settings')
+    'library':       document.getElementById('ni-library'),
+    'voice-coach':   document.getElementById('ni-voice-coach'),
+    'progress':      document.getElementById('ni-progress'),
+    'word-bank':     document.getElementById('ni-word-bank'),
+    'ukc-business':  document.getElementById('ni-ukc-business'),
+    'ukc-education': document.getElementById('ni-ukc-education'),
+    'ukc-daily':     document.getElementById('ni-ukc-daily'),
+    'ukc-setup':     document.getElementById('ni-ukc-setup'),
+    'review':        document.getElementById('ni-review'),
+    'settings':      document.getElementById('ni-settings')
   };
   if(!views[name]) name = 'library';
-  Object.keys(views).forEach(function(k){ if(views[k]) views[k].style.display = (k===name?'block':'none'); });
+  // Hide all (dedupe ukcView so it isn't toggled multiple times)
+  const seen = new Set();
+  Object.keys(views).forEach(function(k){
+    const el = views[k]; if(!el || seen.has(el)) return;
+    seen.add(el);
+    el.style.display = (views[name] === el ? 'block' : 'none');
+  });
   Object.keys(navs).forEach(function(k){ if(navs[k]) navs[k].classList.toggle('act', k===name); });
   const bc = document.querySelector('.atbbc');
   if(bc){
     if(name === 'voice-coach') bc.innerHTML = '<span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span>';
     else if(name === 'progress') bc.innerHTML = '<span data-en>My Progress</span><span data-zh>我的进度</span>';
     else if(name === 'word-bank') bc.innerHTML = '<span data-en>Word Bank</span><span data-zh>词汇库</span>';
-    else if(name === 'uk-business') bc.innerHTML = '<span data-en>UK Business</span><span data-zh>英国商务</span>';
+    else if(UKC_GROUP_BY_ROUTE[name]){
+      const g = UK_CULTURE_GROUPS[UKC_GROUP_BY_ROUTE[name]];
+      bc.innerHTML =
+        '<span data-en>UK Culture · '+_ukcEsc(g.title)+'</span>'+
+        '<span data-zh>英国文化 · '+_ukcEsc(g.title_zh)+'</span>';
+    }
     else if(name === 'review') bc.innerHTML = '<span data-en>Review</span><span data-zh>复习</span>';
     else if(name === 'settings') bc.innerHTML = '<span data-en>Settings</span><span data-zh>设置</span>';
     else bc.innerHTML = '<span data-en>Reading Library</span><span data-zh>阅读书库</span>';
@@ -1838,12 +2478,8 @@ function showAppView(name){
     renderProgress();
   } else if(name === 'word-bank'){
     renderWordBank();
-  } else if(name === 'uk-business'){
-    const home = document.getElementById('ukb-home');
-    const detail = document.getElementById('ukb-detail');
-    if(home) home.style.display = 'block';
-    if(detail) detail.style.display = 'none';
-    renderUkBusinessHome();
+  } else if(UKC_GROUP_BY_ROUTE[name]){
+    renderUkCultureGroupHome(UKC_GROUP_BY_ROUTE[name]);
   } else if(name === 'review'){
     renderReviewPage();
   } else if(name === 'settings'){
@@ -1862,14 +2498,19 @@ function showAppView(name){
     renderVoiceCoachHome();
     setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
   });
-  const ukbBack = document.getElementById('ukb-back-btn');
-  if(ukbBack) ukbBack.addEventListener('click', function(){
-    document.getElementById('ukb-detail').style.display = 'none';
-    document.getElementById('ukb-home').style.display = 'block';
-    const bc = document.querySelector('.atbbc');
-    if(bc) bc.innerHTML = '<span data-en>UK Business</span><span data-zh>英国商务</span>';
-    renderUkBusinessHome();
-    setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+  const ukcModuleBack = document.getElementById('ukc-module-back-btn');
+  if(ukcModuleBack) ukcModuleBack.addEventListener('click', function(){
+    if(_ukcCurrent.group){
+      renderUkCultureGroupHome(_ukcCurrent.group);
+    }
+  });
+  const ukcLevelBack = document.getElementById('ukc-level-back-btn');
+  if(ukcLevelBack) ukcLevelBack.addEventListener('click', function(){
+    if(_ukcCurrent.moduleId){
+      openUkCultureModule(_ukcCurrent.moduleId);
+    } else if(_ukcCurrent.group){
+      renderUkCultureGroupHome(_ukcCurrent.group);
+    }
   });
 })();
 
@@ -2800,13 +3441,19 @@ function _pgSourceLabel(row){
     const m = VOICE_COACH_MODULES.find(function(x){ return x.id === row.module_id; });
     if(m) return { en: m.label, zh: m.label };
   }
-  if(row.source === 'uk_business' && row.module_id && Array.isArray(UK_BUSINESS_SCENES)){
-    const sc = UK_BUSINESS_SCENES.find(function(x){ return x.id === row.module_id; });
-    if(sc) return { en: sc.title, zh: sc.title_zh };
+  if(row.source === 'uk_culture' && row.module_id && Array.isArray(UK_CULTURE_MODULES)){
+    // module_id format: "<moduleId>_l<level>" e.g. "email_l2"
+    const parts = String(row.module_id).split('_l');
+    const m = UK_CULTURE_MODULES.find(function(x){ return x.id === parts[0]; });
+    if(m){
+      const lvlNum = parseInt(parts[1], 10);
+      const lvlSuffix = isNaN(lvlNum) ? '' : ' · L'+lvlNum;
+      return { en: m.title + lvlSuffix, zh: m.title_zh + lvlSuffix };
+    }
   }
   if(row.source === 'reading') return { en: 'Reading', zh: '阅读' };
   if(row.source === 'voice_coach') return { en: 'Voice Coach', zh: '语音指导' };
-  if(row.source === 'uk_business') return { en: 'UK Business', zh: '英国商务' };
+  if(row.source === 'uk_culture') return { en: 'UK Culture', zh: '英国文化' };
   if(row.source === 'word_bank') return { en: 'Word Bank', zh: '词汇库' };
   return { en: row.source || '—', zh: row.source || '—' };
 }
@@ -2890,7 +3537,7 @@ function _pgRenderUpgradeBanner(attempts){
   });
   const ctaBtn = document.getElementById('pg-upgrade-cta');
   if(ctaBtn) ctaBtn.addEventListener('click', function(){
-    showAppView('uk-business');
+    showAppView('ukc-business');
   });
 })();
 

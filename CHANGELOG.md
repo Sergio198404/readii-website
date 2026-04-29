@@ -128,6 +128,37 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.2.0] — 2026-04-30
+
+### Added
+- feat: **UK Culture Programme** — 4 modules (Email · Meeting · Education · Daily Life · Setup), 5 levels each, **200 British English sentences** with progressive unlock
+- New table `uk_culture_progress` (per-user, RLS-scoped, `UNIQUE(user_id, module_id, level_num, sentence_idx)`) — see `database/migration-uk-culture-progress.sql`
+- Progressive unlock logic: Level 1 always open; Level N unlocks when Level N-1 has ≥8 unique sentences attempted AND average score ≥60. The level row shows the lock status, what's needed, and links straight to the unlocked level
+- Level row badges: ✓ Done (10/10) · ⚡ Active (unlocked, in progress) · 🔒 Locked (with explanation)
+- Per-sentence cards: 🎤 Record button (reuses `ReadiiSpeech.attach()`), score + tier feedback + transcript + word-by-word diff (shares the `tokenize`/`wordDiff` helpers added in v2.0.1). Cards turn green and show best score once attempted
+- 🔊 Listen button on each card with `data-module` / `data-level` / `data-idx` / `data-audio-url` placeholders, currently `disabled` with "(soon)" suffix — Step 2 (separate task) will populate the audio URLs
+- Each scored attempt writes to **two** tables: `uk_culture_progress` (upsert on conflict, used for unlock logic) and `pronunciation_attempts` with `source='uk_culture'` and `module_id='<id>_l<level>'` (used for My Progress page)
+- New CTA card at the bottom of every group home: "Ready for personalised coaching?" + From £2,000 + mailto:hello@readii.co.uk
+
+### Changed
+- **Sidebar nav restructured** into 3 groups:
+  - **LEARN**: Reading Library · AI Voice Coach · Word Bank · My Progress (Word Bank moved here from Vocabulary)
+  - **UK CULTURE PROGRAMME**: Business · Education · Daily Life · Setup & Establishment · Review (4 new module entries + Review)
+  - **ACCOUNT**: Settings
+- Old `view-uk-business` (4 flat scenes × 5 sentences) removed — content reorganised into the new 5-level structure under Business and Daily Life modules. The "Pitch" scene is folded into Setup → Growth & Expansion
+- Old `UK_BUSINESS_SCENES` data, `loadUkBusinessStats`/`logUkBusinessAttempt`/`renderUkBusinessHome`/`openUkBusinessScene` functions, and `.ukb-*` CSS removed
+- `showAppView()` dispatch table extended with 4 new routes (`ukc-business`/`ukc-education`/`ukc-daily`/`ukc-setup`), all sharing one `view-uk-culture` container with internal sub-states (group home → module home → level detail)
+- Breadcrumb shows the full path: "UK Culture · Business · Professional Email Writing · Level 2"
+- My Progress upgrade banner CTA now routes to `ukc-business` (was `uk-business`)
+- `_pgSourceLabel()` extended to recognise `uk_culture` source — Recent Attempts shows e.g. "Professional Email Writing · L2"
+
+### Notes
+- The DB migration is non-blocking: code reads/writes are wrapped in try/catch, so the app remains functional before the SQL is run (writes silently fail until the table exists). Run `database/migration-uk-culture-progress.sql` in Supabase SQL Editor when ready
+- TTS audio URLs are deliberately blank in this release — the Step-2 batch script in the transcribe workspace will populate them
+- 200 sentences = 4 modules × 5 levels × 10 sentences. Setup & Establishment is the cross-border-founder play; Education targets visa-applicant parents; Daily Life is the broad onboarding funnel
+
+---
+
 ## [2.1.0] — 2026-04-29
 
 ### Added
