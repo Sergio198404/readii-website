@@ -658,3 +658,41 @@
 - [ ] Normalise the 139 `commentary_audio_url = ''` rows to NULL or 'EMPTY' so future tooling treats them consistently
 - [ ] Consider re-running the extractor whenever new commentary_text rows arrive (cron / webhook)
 - [ ] Hook pronunciation score result into Supabase progress (carried over from v1.4.4)
+
+---
+
+## 2026-04-29 | Session 21 | v1.6.0
+
+**Objective:** Build a standalone AI Voice Coach tab in the app — 5 British English pronunciation modules with progress tracking, reusing the v1.4.4 Web Speech scoring engine.
+
+**Completed:**
+- [x] DB migration: new `pronunciation_attempts` table (user_id, source, module_id, lesson_id, sentence, transcript, score, created_at) with composite indexes and RLS (users read/insert own rows only)
+- [x] Speech engine refactored from single-container IIFE → `window.ReadiiSpeech.attach(containerEl, { onScore })`. Recognition state stays global (only one mic at a time); each container has its own sentence list and result panel; recognition cleanly cancels if a render swap happens mid-recording
+- [x] Renamed score-related DOM IDs to classes (`.score-arc`, `.score-text`, `.sr-close-btn`) so multiple result panels can coexist without ID collisions
+- [x] Reading panel preserved: still mounts via `ReadiiSpeech.attach(#ai-pron-card)`; `window.setReadiiPracticeSentences()` from v1.5.0 still works
+- [x] Sidebar wiring: `Reading Library` and `AI Voice Coach` items now have IDs and `onclick="showAppView(...)"`; placeholder "3" badge removed; `setActiveNi()` toggles `.act` class
+- [x] Voice Coach view: home (5 module cards) + detail (intro + 6 sentence cards + footer with best/attempts) — both mounted in the same `.acon` and switched by toggling display
+- [x] 5 modules hardcoded into `VOICE_COACH_MODULES` (broad_a, non_rhotic_r, th_voiced, yod, short_o), each with 6 sentences from the brief, an intro paragraph, and an icon
+- [x] `loadVoiceCoachStats(force)` aggregates best/attempts per module via Supabase REST (`source='voice_coach'`); cached, invalidated after each insert
+- [x] `logVoiceCoachAttempt({ moduleId, sentence, transcript, score })` insert; silently no-ops for guest users
+- [x] Top breadcrumb updates with view (`Reading Library` / `AI Voice Coach` / `AI Voice Coach · Broad A`)
+- [x] Mobile-friendly: VC modules collapse to single column under 640px; detail title/footer adapt
+- [x] Smoke test: insert + readback + cleanup against a real auth user (huangemma60@foxmail.com) — passed
+
+**Findings (worth flagging):**
+- The `CHECK (score BETWEEN 0 AND 100)` constraint did not get applied during migration (the first run partially completed before the prose-line syntax error; second run hit `IF NOT EXISTS` and was a no-op). Frontend always produces 0–100 from `Math.round(...*100)`, so no runtime impact; just a missing defense-in-depth. Optional fix: `ALTER TABLE pronunciation_attempts ADD CONSTRAINT pa_score_check CHECK (score BETWEEN 0 AND 100);`
+
+**Files changed:**
+- index.html (v1.5.0 → v1.6.0): IIFE refactored, view-library wrap, view-voice-coach view, sidebar nav wiring, VC CSS, VC JS module + stats + logging
+- VERSION (1.5.0 → 1.6.0)
+- CHANGELOG.md ([1.6.0] entry)
+- WORKLOG.md (this Session 21)
+
+**Off-repo files (intentionally not in git):**
+- `C:\Users\sergi\readii-transcribe\migration-voice-coach.sql`
+
+**Pending / Next session:**
+- [ ] Apply the CHECK constraint (optional one-line ALTER) — see Findings
+- [ ] Mirror Voice Coach logging on the in-lesson Reading panel (`source='reading'` + `lesson_id`)
+- [ ] My Progress tab — would naturally consume `pronunciation_attempts` to chart improvement over time
+- [ ] Consider adding a "How-to-pronounce" audio sample per module (TTS or recorded)

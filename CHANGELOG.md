@@ -128,6 +128,32 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.6.0] — 2026-04-29
+
+### Added
+- feat: AI Voice Coach — 5 British English pronunciation modules with progress tracking
+- New left-sidebar tab "AI Voice Coach" — clickable, switches the main pane between the existing Reading Library and the new Voice Coach view
+- New table `pronunciation_attempts` — per-attempt log (user_id, source ['voice_coach' | 'reading'], module_id, lesson_id, sentence, transcript, score, created_at) with RLS (users read/insert only their own rows)
+- 5 modules, each with 6 sentences, an intro paragraph, and an icon: Broad A, Non-rhotic R, TH (voiced), Yod retention, Short O
+- Voice Coach home page: module cards showing best score and attempt count per module (or "Not yet attempted" for unpractised modules)
+- Voice Coach detail page: intro panel, 6 sentence cards, "Read aloud" mic button on each, score ring + word-level feedback + British tip (re-uses v1.4.4 Web Speech engine), footer with current best/attempts
+- Each completed attempt is logged to `pronunciation_attempts` with `source='voice_coach'` and the module id; module home + detail footer auto-refresh on return
+
+### Changed
+- Speech engine refactored from a single-container IIFE into `window.ReadiiSpeech.attach(containerEl, { onScore })` — multiple containers can share one engine; recognition state stays global so only one mic recording at a time across the whole app
+- Reading panel now mounts via `ReadiiSpeech.attach(#ai-pron-card)` — `window.setReadiiPracticeSentences()` from v1.5.0 still works exactly as before
+- Renamed score-related DOM IDs to classes (`.score-arc`, `.score-text`, `.sr-close-btn`) so multiple result panels can render simultaneously without ID collisions
+- Removed the placeholder "3" badge on the AI Voice Coach sidebar item (was static)
+- Top breadcrumb updates as the user navigates between Library / Voice Coach home / Voice Coach detail
+
+### Notes
+- Frontend-only change; no new npm dependencies
+- Migration SQL is off-repo (`C:\\Users\\sergi\\readii-transcribe\\migration-voice-coach.sql`) — run via Supabase SQL Editor before deploying
+- Sign-in is required to log attempts and see stats; guest users still see the Voice Coach UI but writes silently no-op
+- Other sidebar tabs (My Progress, Word Bank, Review, Settings) intentionally untouched in this release
+
+---
+
 ## [1.5.0] — 2026-04-29
 
 ### Added
