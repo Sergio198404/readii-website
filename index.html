@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.6.0 | Updated: 2026-04-29 -->
+<!-- Readii v1.7.0 | Updated: 2026-04-29 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -365,6 +365,43 @@ h1{animation:fu .6s ease both .15s}
   .vc-modules{grid-template-columns:1fr}
   .vc-detail-footer{flex-direction:column;align-items:flex-start;gap:6px}
 }
+/* ===== Settings ===== */
+.st-page{padding:4px 4px 32px;max-width:680px;margin:0 auto}
+.st-header{margin-bottom:24px}
+.st-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);line-height:1.2;margin-bottom:6px}
+.st-sub{font-size:14px;color:var(--ink3)}
+.st-card{background:var(--white);border:1px solid var(--border);border-radius:12px;box-shadow:var(--sh);margin-bottom:24px;overflow:hidden}
+.st-card-head{padding:16px 20px;border-bottom:1px solid var(--border)}
+.st-card-title{font-family:var(--serif);font-size:17px;font-weight:400;color:var(--ink)}
+.st-card-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.st-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.st-row-skel{color:var(--ink3);font-size:13px}
+.st-row-quiet{padding-top:14px;border-top:1px solid var(--border);color:var(--ink3);font-size:12px}
+.st-label{font-size:13px;color:var(--ink2);font-weight:500;letter-spacing:.01em}
+.st-value{font-size:13px;color:var(--ink);font-family:var(--sans);text-align:right;word-break:break-word}
+.st-value-mono{font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.st-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:.04em}
+.st-pill.free{background:var(--cream2);color:var(--ink3);border:1px solid var(--border)}
+.st-pill.active{background:var(--fp);color:var(--forest);border:1px solid rgba(27,58,45,.18)}
+.st-pill.cancelled{background:var(--gp);color:#7A4A10;border:1px solid rgba(196,154,56,.25)}
+.st-lang-radios{display:flex;gap:14px}
+.st-radio{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2);cursor:pointer;user-select:none}
+.st-radio input{accent-color:var(--forest);cursor:pointer}
+.st-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.st-btn{font-family:var(--sans);font-size:13px;font-weight:500;padding:8px 16px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--ink2);transition:all .15s;letter-spacing:.02em}
+.st-btn:hover{border-color:var(--border2)}
+.st-btn-primary{background:var(--forest);color:var(--white);border-color:var(--forest)}
+.st-btn-primary:hover{background:var(--forest2);border-color:var(--forest2)}
+.st-btn-danger{border-color:#B0463A;color:#B0463A;background:transparent}
+.st-btn-danger:hover{background:#FCEBEB;border-color:#8C1D1D;color:#8C1D1D}
+.st-btn-disabled{background:var(--cream2);color:var(--ink3);border-color:var(--border);cursor:not-allowed;font-size:11px;padding:6px 12px}
+.st-btn-disabled:hover{border-color:var(--border)}
+.st-saved{font-size:12px;color:var(--forest);font-style:italic}
+@media (max-width:640px){
+  .st-title{font-size:24px}
+  .st-row{flex-direction:column;align-items:flex-start;gap:6px}
+  .st-value{text-align:left}
+}
 </style></head>
 <body>
 <div id="view-landing">
@@ -524,7 +561,7 @@ h1{animation:fu .6s ease both .15s}
       <div class="ni"><span class="nic">📝</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
       <div class="ni"><span class="nic">🔁</span><span data-en>Review</span><span data-zh>复习</span></div>
       <div class="nbgl"><span data-en>Account</span><span data-zh>账户</span></div>
-      <div class="ni"><span class="nic">⚙️</span><span data-en>Settings</span><span data-zh>设置</span></div>
+      <div class="ni" id="ni-settings" onclick="showAppView('settings')"><span class="nic">⚙️</span><span data-en>Settings</span><span data-zh>设置</span></div>
     </div>
     <div class="sbprog"><div class="sbpl"><span data-en>Unit 14 progress</span><span data-zh>第14单元进度</span></div><div class="sbpt"><div class="sbpf"></div></div><div class="sbpm"><span>68%</span><span>32/47</span></div></div>
   </div>
@@ -661,20 +698,114 @@ h1{animation:fu .6s ease both .15s}
          <div class="vc-detail-footer" id="vc-detail-footer"></div>
        </div>
      </div><!-- /#view-voice-coach -->
+     <div id="view-settings" style="display:none">
+       <div class="st-page">
+         <div class="st-header">
+           <h2 class="st-title">
+             <span data-en>Settings</span><span data-zh>设置</span>
+           </h2>
+           <p class="st-sub">
+             <span data-en>Account, subscription, and preferences.</span>
+             <span data-zh>账户、订阅与偏好设置。</span>
+           </p>
+         </div>
+
+         <div class="st-card">
+           <div class="st-card-head">
+             <h3 class="st-card-title"><span data-en>Profile</span><span data-zh>个人资料</span></h3>
+           </div>
+           <div class="st-card-body" id="st-profile-body">
+             <div class="st-row st-row-skel">
+               <span data-en>Loading…</span><span data-zh>加载中…</span>
+             </div>
+           </div>
+         </div>
+
+         <div class="st-card">
+           <div class="st-card-head">
+             <h3 class="st-card-title"><span data-en>Subscription</span><span data-zh>订阅状态</span></h3>
+           </div>
+           <div class="st-card-body" id="st-subscription-body">
+             <div class="st-row st-row-skel">
+               <span data-en>Loading…</span><span data-zh>加载中…</span>
+             </div>
+           </div>
+         </div>
+
+         <div class="st-card">
+           <div class="st-card-head">
+             <h3 class="st-card-title"><span data-en>Preferences</span><span data-zh>偏好设置</span></h3>
+           </div>
+           <div class="st-card-body">
+             <div class="st-row">
+               <div class="st-label"><span data-en>Language</span><span data-zh>语言</span></div>
+               <div class="st-lang-radios">
+                 <label class="st-radio">
+                   <input type="radio" name="st-lang" value="en" id="st-lang-en">
+                   <span>English</span>
+                 </label>
+                 <label class="st-radio">
+                   <input type="radio" name="st-lang" value="zh" id="st-lang-zh">
+                   <span>中文</span>
+                 </label>
+               </div>
+             </div>
+             <div class="st-actions">
+               <button type="button" class="st-btn st-btn-primary" id="st-save-prefs">
+                 <span data-en>Save preferences</span><span data-zh>保存偏好</span>
+               </button>
+               <span class="st-saved" id="st-saved-toast" style="display:none">
+                 <span data-en>Saved — reloading…</span><span data-zh>已保存 — 正在刷新…</span>
+               </span>
+             </div>
+           </div>
+         </div>
+
+         <div class="st-card">
+           <div class="st-card-head">
+             <h3 class="st-card-title"><span data-en>Account</span><span data-zh>账号操作</span></h3>
+           </div>
+           <div class="st-card-body">
+             <div class="st-actions">
+               <button type="button" class="st-btn st-btn-danger" id="st-signout-btn">
+                 <span data-en>Sign out</span><span data-zh>退出登录</span>
+               </button>
+             </div>
+             <div class="st-row st-row-quiet">
+               <div class="st-label"><span data-en>Delete account</span><span data-zh>注销账号</span></div>
+               <button type="button" class="st-btn st-btn-disabled" disabled>
+                 <span data-en>Contact support to delete account</span>
+                 <span data-zh>请联系客服删除账号</span>
+               </button>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div><!-- /#view-settings -->
     </div>
   </div>
 </div>
 </div>
 
 <script>
-function setLang(l){
+function setLang(l, opts){
   const zh=l==='zh';
   document.body.classList.toggle('zh',zh);
   document.documentElement.lang=l;
   document.querySelectorAll('.lopt,.lopt2').forEach(b=>{
     b.classList.toggle('on',(b.textContent.trim()==='EN'&&!zh)||(b.textContent.trim()==='中文'&&zh));
   });
+  if(opts && opts.persist){
+    try{ localStorage.setItem('readii-lang', l); }catch(_){}
+  }
 }
+// Apply saved language preference on initial load (Settings > Preferences).
+(function(){
+  try{
+    const saved = localStorage.getItem('readii-lang');
+    if(saved === 'en' || saved === 'zh') setLang(saved);
+  }catch(_){}
+})();
 function openApp(){document.body.classList.add('app');document.body.style.overflow='hidden'}
 function closeApp(){document.body.classList.remove('app');document.body.style.overflow=''}
 let playing=false,prog=42;
@@ -911,28 +1042,33 @@ async function renderModuleFooter(moduleId){
 }
 
 function showAppView(name){
-  const lib = document.getElementById('view-library');
-  const vc = document.getElementById('view-voice-coach');
-  const niLib = document.getElementById('ni-library');
-  const niVc = document.getElementById('ni-voice-coach');
+  const views = {
+    'library':     document.getElementById('view-library'),
+    'voice-coach': document.getElementById('view-voice-coach'),
+    'settings':    document.getElementById('view-settings')
+  };
+  const navs = {
+    'library':     document.getElementById('ni-library'),
+    'voice-coach': document.getElementById('ni-voice-coach'),
+    'settings':    document.getElementById('ni-settings')
+  };
+  if(!views[name]) name = 'library';
+  Object.keys(views).forEach(function(k){ if(views[k]) views[k].style.display = (k===name?'block':'none'); });
+  Object.keys(navs).forEach(function(k){ if(navs[k]) navs[k].classList.toggle('act', k===name); });
   const bc = document.querySelector('.atbbc');
+  if(bc){
+    if(name === 'voice-coach') bc.innerHTML = '<span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span>';
+    else if(name === 'settings') bc.innerHTML = '<span data-en>Settings</span><span data-zh>设置</span>';
+    else bc.innerHTML = '<span data-en>Reading Library</span><span data-zh>阅读书库</span>';
+  }
   if(name === 'voice-coach'){
-    if(lib) lib.style.display = 'none';
-    if(vc) vc.style.display = 'block';
     const home = document.getElementById('vc-home');
     const detail = document.getElementById('vc-detail');
     if(home) home.style.display = 'block';
     if(detail) detail.style.display = 'none';
-    if(niLib) niLib.classList.remove('act');
-    if(niVc) niVc.classList.add('act');
-    if(bc) bc.innerHTML = '<span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span>';
     renderVoiceCoachHome();
-  } else {
-    if(vc) vc.style.display = 'none';
-    if(lib) lib.style.display = 'block';
-    if(niVc) niVc.classList.remove('act');
-    if(niLib) niLib.classList.add('act');
-    if(bc) bc.innerHTML = '<span data-en>Reading Library</span><span data-zh>阅读书库</span>';
+  } else if(name === 'settings'){
+    renderSettings();
   }
   setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
 }
@@ -946,6 +1082,162 @@ function showAppView(name){
     if(bc) bc.innerHTML = '<span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span>';
     renderVoiceCoachHome();
     setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+  });
+})();
+
+/* ===== Settings page ===== */
+function _stEsc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+}
+function _stFormatMonthYear(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  if(isNaN(d.getTime())) return '—';
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const monthsZh = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  return {
+    en: months[d.getMonth()] + ' ' + d.getFullYear(),
+    zh: d.getFullYear() + ' 年 ' + monthsZh[d.getMonth()]
+  };
+}
+
+async function renderSettings(){
+  const profileBody = document.getElementById('st-profile-body');
+  const subBody = document.getElementById('st-subscription-body');
+  if(!profileBody || !subBody) return;
+
+  let user = null;
+  try{
+    if(typeof _supabase !== 'undefined'){
+      const r = await _supabase.auth.getUser();
+      user = r && r.data ? r.data.user : null;
+    }
+  }catch(e){ console.warn('settings: getUser failed', e); }
+
+  // ---- Profile card ----
+  if(!user){
+    profileBody.innerHTML =
+      '<div class="st-row st-row-skel">'+
+        '<span data-en>You are not signed in. Please sign in to view account settings.</span>'+
+        '<span data-zh>您尚未登录。请先登录以查看账户设置。</span>'+
+      '</div>';
+    subBody.innerHTML =
+      '<div class="st-row st-row-skel">'+
+        '<span data-en>Sign in to see your subscription.</span>'+
+        '<span data-zh>登录后可查看订阅状态。</span>'+
+      '</div>';
+  } else {
+    const memberSince = _stFormatMonthYear(user.created_at);
+    profileBody.innerHTML =
+      '<div class="st-row">'+
+        '<div class="st-label"><span data-en>Email</span><span data-zh>邮箱</span></div>'+
+        '<div class="st-value">'+_stEsc(user.email||'—')+'</div>'+
+      '</div>'+
+      '<div class="st-row">'+
+        '<div class="st-label"><span data-en>Member since</span><span data-zh>注册时间</span></div>'+
+        '<div class="st-value">'+
+          '<span data-en>'+_stEsc(memberSince.en||'—')+'</span>'+
+          '<span data-zh>'+_stEsc(memberSince.zh||'—')+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="st-row">'+
+        '<div class="st-label"><span data-en>User ID</span><span data-zh>用户 ID</span></div>'+
+        '<div class="st-value st-value-mono">'+_stEsc(user.id||'—')+'</div>'+
+      '</div>';
+
+    // ---- Subscription card ----
+    let profile = null;
+    try{
+      if(typeof authGetSubscription === 'function') profile = await authGetSubscription(user.id);
+    }catch(e){ /* ignore — render free tier */ }
+    const status = (profile && profile.subscription_status) || 'free';
+    const since = profile && profile.subscription_end ? _stFormatMonthYear(profile.subscription_end) : null;
+
+    let pillCls = 'free', pillEn = 'Free', pillZh = '免费版';
+    if(status === 'active'){ pillCls = 'active'; pillEn = 'Subscriber'; pillZh = '订阅用户'; }
+    else if(status === 'cancelled'){ pillCls = 'cancelled'; pillEn = 'Cancelled'; pillZh = '已取消'; }
+
+    let subRows =
+      '<div class="st-row">'+
+        '<div class="st-label"><span data-en>Current plan</span><span data-zh>当前套餐</span></div>'+
+        '<div class="st-value"><span class="st-pill '+pillCls+'">'+
+          '<span data-en>'+pillEn+'</span><span data-zh>'+pillZh+'</span>'+
+        '</span></div>'+
+      '</div>';
+    if(status === 'free'){
+      subRows +=
+        '<div class="st-row st-row-quiet">'+
+          '<span data-en>Free tier — full access during beta.</span>'+
+          '<span data-zh>免费版 — 公测期间完整访问。</span>'+
+        '</div>';
+    } else if(since){
+      subRows +=
+        '<div class="st-row">'+
+          '<div class="st-label"><span data-en>Renewal / end date</span><span data-zh>续订 / 结束日期</span></div>'+
+          '<div class="st-value">'+
+            '<span data-en>'+_stEsc(since.en)+'</span>'+
+            '<span data-zh>'+_stEsc(since.zh)+'</span>'+
+          '</div>'+
+        '</div>';
+    }
+    subRows +=
+      '<div class="st-actions">'+
+        '<button type="button" class="st-btn" id="st-manage-sub-btn">'+
+          '<span data-en>Manage subscription →</span>'+
+          '<span data-zh>管理订阅 →</span>'+
+        '</button>'+
+        '<span class="st-saved" id="st-manage-toast" style="display:none">'+
+          '<span data-en>Coming soon</span><span data-zh>即将推出</span>'+
+        '</span>'+
+      '</div>';
+    subBody.innerHTML = subRows;
+
+    const manageBtn = document.getElementById('st-manage-sub-btn');
+    if(manageBtn) manageBtn.addEventListener('click', function(){
+      const t = document.getElementById('st-manage-toast');
+      if(t){ t.style.display = 'inline'; setTimeout(function(){ t.style.display = 'none'; }, 2200); }
+    });
+  }
+
+  // ---- Preferences (language radio) ----
+  const isZh = document.body.classList.contains('zh');
+  let savedLang = isZh ? 'zh' : 'en';
+  try{
+    const s = localStorage.getItem('readii-lang');
+    if(s === 'en' || s === 'zh') savedLang = s;
+  }catch(_){}
+  const enRadio = document.getElementById('st-lang-en');
+  const zhRadio = document.getElementById('st-lang-zh');
+  if(enRadio) enRadio.checked = (savedLang === 'en');
+  if(zhRadio) zhRadio.checked = (savedLang === 'zh');
+
+  // Re-apply current language to any newly-rendered data-en/data-zh spans
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+(function(){
+  const saveBtn = document.getElementById('st-save-prefs');
+  if(saveBtn) saveBtn.addEventListener('click', function(){
+    const enRadio = document.getElementById('st-lang-en');
+    const choice = (enRadio && enRadio.checked) ? 'en' : 'zh';
+    setLang(choice, { persist: true });
+    const toast = document.getElementById('st-saved-toast');
+    if(toast) toast.style.display = 'inline';
+    setTimeout(function(){ window.location.reload(); }, 700);
+  });
+
+  const signOutBtn = document.getElementById('st-signout-btn');
+  if(signOutBtn) signOutBtn.addEventListener('click', async function(){
+    try{
+      if(typeof _supabase !== 'undefined' && _supabase.auth && _supabase.auth.signOut){
+        await _supabase.auth.signOut();
+      }
+    }catch(e){ console.warn('signOut failed:', e); }
+    // Leave the app shell and reload to reset state
+    if(typeof closeApp === 'function') closeApp();
+    window.location.href = '/';
   });
 })();
 

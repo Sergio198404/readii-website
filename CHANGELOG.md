@@ -128,6 +128,30 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.7.0] — 2026-04-29
+
+### Added
+- feat: Settings page — profile, subscription status, language preference, sign out
+- New left-sidebar tab "Settings" — clickable, switches the main pane to a new `#view-settings`
+- **Profile card:** email, member-since (formatted as "April 2026" / "2026 年 4 月"), user ID (mono, full UUID, for support reference). All read-only this release
+- **Subscription card:** current plan pill (Free / Subscriber / Cancelled) — pulls `subscription_status` from `user_profiles` via the existing `authGetSubscription()` helper. Shows renewal/end date if available. "Manage subscription →" button currently shows a "Coming soon" toast (Stripe Customer Portal wiring deferred)
+- **Preferences card:** language radio (English / 中文) — saves to `localStorage` key `readii-lang` and reloads the page so all `data-en` / `data-zh` spans update
+- **Account card:** Sign out button (red border, calls `_supabase.auth.signOut()` then redirects to `/`); Delete account is disabled with "Contact support to delete account"
+
+### Changed
+- `setLang(l, opts)` now optionally persists to localStorage when called with `{ persist: true }`
+- A startup IIFE reads `readii-lang` and applies it before paint, so the user's language sticks across visits
+- `showAppView()` refactored from explicit branches to a small dispatch table — adding the third view (Settings) is one line
+- Top breadcrumb updates with the active view (`Reading Library` / `AI Voice Coach` / `Settings`)
+- Sidebar `Settings` item moved from no-op to clickable nav target
+
+### Notes
+- Frontend-only change; no new npm dependencies, no DB migration
+- Guest users see Settings UI but with a "please sign in" notice in Profile/Subscription cards (writes are no-ops)
+- Other sidebar tabs (My Progress, Word Bank, Review) still placeholders — out of scope this release
+
+---
+
 ## [1.6.0] — 2026-04-29
 
 ### Added

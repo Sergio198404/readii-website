@@ -696,3 +696,34 @@
 - [ ] Mirror Voice Coach logging on the in-lesson Reading panel (`source='reading'` + `lesson_id`)
 - [ ] My Progress tab — would naturally consume `pronunciation_attempts` to chart improvement over time
 - [ ] Consider adding a "How-to-pronounce" audio sample per module (TTS or recorded)
+
+---
+
+## 2026-04-29 | Session 22 | v1.7.0
+
+**Objective:** Build a Settings page so users can see their account info, subscription status, set language preference, and sign out — replacing the previously-inert sidebar item.
+
+**Completed:**
+- [x] Sidebar `Settings` item now has `id="ni-settings"` and `onclick="showAppView('settings')"`
+- [x] New `#view-settings` view inside `.acon` with 4 stacked cards: Profile, Subscription, Preferences, Account
+- [x] Profile reads `_supabase.auth.getUser()` → email, formatted member-since (e.g. "April 2026" / "2026 年 4 月"), full user UUID (mono font, for support reference)
+- [x] Subscription reuses existing `authGetSubscription()` from `assets/js/auth.js` → status pill (Free / Subscriber / Cancelled) with appropriate styling; renewal date shown if `subscription_end` is present; "Manage subscription →" button shows a "Coming soon" toast (Stripe Portal wiring deferred)
+- [x] Preferences card with English / 中文 radio buttons that read current `localStorage['readii-lang']` and pre-select; "Save preferences" button persists choice and reloads the page
+- [x] `setLang()` updated to accept `{ persist: true }` so saving from Settings writes to localStorage; a startup IIFE applies the saved language on page load before paint
+- [x] Account card: Sign out button (red-border treatment) calls `_supabase.auth.signOut()` then redirects to `/`; Delete account button disabled with "Contact support to delete account"
+- [x] `showAppView()` refactored from a 2-way branch to a small dispatch table (views/navs maps + breadcrumb switch) so adding more tabs later is a one-liner
+- [x] Bilingual (data-en / data-zh) labels throughout; Mobile-responsive (cards collapse to single-column rows under 640px)
+- [x] Guest-user fallback: Profile/Subscription show "please sign in" rather than crashing if `getUser()` returns null
+- [x] 21 structural checks pass on the merged index.html
+
+**Files changed:**
+- index.html (v1.6.0 → v1.7.0): #view-settings DOM + Settings CSS block + renderSettings() + sign-out/save-prefs handlers + setLang persistence + showAppView dispatch refactor
+- VERSION (1.6.0 → 1.7.0)
+- CHANGELOG.md ([1.7.0] entry)
+- WORKLOG.md (this Session 22)
+
+**Pending / Next session:**
+- [ ] Wire "Manage subscription →" to the actual Stripe Customer Portal session
+- [ ] Allow editing display name / child name / child age (would need a writable form against `user_profiles`)
+- [ ] Implement actual delete-account flow (auth user + cascade `user_profiles`/`pronunciation_attempts`/`progress`)
+- [ ] My Progress / Word Bank / Review tabs (still placeholders)
