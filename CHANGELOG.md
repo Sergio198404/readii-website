@@ -128,6 +128,27 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.8.0] — 2026-04-29
+
+### Added
+- feat: My Progress page — stats, trend chart, module breakdown, recent attempts
+- New left-sidebar tab "My Progress" — clickable, switches the main pane to a new `#view-progress`
+- **Stats Overview:** 4-up cards — Total attempts, Average score, Best score, Practice streak (4-up on desktop, 2x2 on mobile)
+- **Score Trend:** SVG line chart of last 30 days (no chart library). Y-axis 0/50/100 gridlines, only days with attempts get a point (no zero-interpolation), polyline in `--forest`, hover via native SVG `<title>` showing date + average + attempt count. Falls back to "Practise for a few more days to see your trend." hint when fewer than 3 distinct days have data
+- **By Module Breakdown:** 5 horizontal bars (one per Voice Coach module) showing average score and attempt count. Bar colour tier: ≥80 forest / ≥50 gold / <50 amber. Modules with no attempts render as a dashed empty bar with "Not yet attempted" label
+- **Recent Attempts:** last 10 rows, newest first — friendly time (Today / Yesterday / N days ago / `MMM D`), source label (Voice Coach module name OR "Reading"), score in tiered colour, sentence preview truncated to 50 chars with full text in `title` attribute. Hidden entirely if there are no attempts
+
+### Changed
+- `showAppView()` dispatch table extended with `progress` view and breadcrumb label
+- All Progress page content is bilingual via `data-en` / `data-zh`
+
+### Notes
+- Frontend-only — no DB migration; data source is the existing `pronunciation_attempts` table from v1.6.0 (RLS already restricts each user to their own rows)
+- Streak rule: counts consecutive days ending at today (or yesterday if today is empty); resets to 0 if neither today nor yesterday has an attempt
+- Guest users see a "Sign in to see your progress." hint instead of a half-rendered empty state
+
+---
+
 ## [1.7.1] — 2026-04-29
 
 ### Fixed

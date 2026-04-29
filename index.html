@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.7.1 | Updated: 2026-04-29 -->
+<!-- Readii v1.8.0 | Updated: 2026-04-29 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -402,6 +402,60 @@ h1{animation:fu .6s ease both .15s}
   .st-row{flex-direction:column;align-items:flex-start;gap:6px}
   .st-value{text-align:left}
 }
+/* ===== My Progress ===== */
+.pg-page{padding:4px 4px 32px;max-width:840px;margin:0 auto}
+.pg-header{margin-bottom:24px}
+.pg-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);line-height:1.2;margin-bottom:6px}
+.pg-sub{font-size:14px;color:var(--ink3)}
+.pg-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px}
+.pg-stat{background:var(--white);border:1px solid var(--border);border-radius:12px;box-shadow:var(--sh);padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.pg-stat-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.pg-stat-value{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--forest);line-height:1.1}
+.pg-stat-value.muted{color:var(--ink3)}
+.pg-empty-hint{font-size:13px;color:var(--ink3);text-align:center;padding:14px 0 6px;font-style:italic}
+.pg-card{background:var(--white);border:1px solid var(--border);border-radius:12px;box-shadow:var(--sh);margin-top:24px;overflow:hidden}
+.pg-card-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pg-card-title{font-family:var(--serif);font-size:17px;font-weight:400;color:var(--ink)}
+.pg-card-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.pg-card-body{padding:18px 20px}
+#pg-trend{width:100%;display:block}
+#pg-trend svg{width:100%;height:auto;display:block;overflow:visible}
+.pg-trend-hint{font-size:13px;color:var(--ink3);text-align:center;font-style:italic;padding:12px 0}
+.pg-modlist{display:flex;flex-direction:column;gap:11px}
+.pg-mod-row{display:grid;grid-template-columns:140px 1fr 130px;align-items:center;gap:14px}
+.pg-mod-name{font-family:var(--sans);font-size:13px;color:var(--ink);font-weight:500}
+.pg-mod-bar{height:9px;background:var(--cream2);border-radius:5px;overflow:hidden;position:relative}
+.pg-mod-bar.empty{background:transparent;border:1px dashed var(--border)}
+.pg-mod-fill{height:100%;border-radius:5px;transition:width .5s ease}
+.pg-mod-fill.t-forest{background:var(--forest)}
+.pg-mod-fill.t-gold{background:var(--gold)}
+.pg-mod-fill.t-amber{background:#B0463A}
+.pg-mod-stats{font-size:12px;color:var(--ink3);text-align:right;font-family:var(--mono)}
+.pg-mod-stats.empty{font-style:italic;color:var(--ink3);font-family:var(--sans)}
+.pg-recentlist{display:flex;flex-direction:column}
+.pg-recent-row{display:grid;grid-template-columns:120px 130px 70px 1fr;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--border);font-size:13px}
+.pg-recent-row:last-child{border-bottom:none}
+.pg-recent-when{color:var(--ink3);font-size:12px}
+.pg-recent-source{color:var(--ink2);font-weight:500;font-size:12px}
+.pg-recent-score{font-family:var(--serif);font-size:18px;font-weight:400}
+.pg-recent-score.t-forest{color:var(--forest)}
+.pg-recent-score.t-gold{color:var(--gold)}
+.pg-recent-score.t-amber{color:#B0463A}
+.pg-recent-sentence{color:var(--ink2);font-size:13px;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:640px){
+  .pg-title{font-size:24px}
+  .pg-stats{grid-template-columns:repeat(2,1fr)}
+  .pg-stat-value{font-size:24px}
+  .pg-mod-row{grid-template-columns:1fr 100px;grid-template-areas:'name stats' 'bar bar';gap:6px 10px}
+  .pg-mod-name{grid-area:name}
+  .pg-mod-stats{grid-area:stats}
+  .pg-mod-bar{grid-area:bar}
+  .pg-recent-row{grid-template-columns:1fr 70px;grid-template-areas:'when score' 'source score' 'sentence sentence';gap:2px 10px;padding:12px 4px}
+  .pg-recent-when{grid-area:when}
+  .pg-recent-source{grid-area:source}
+  .pg-recent-score{grid-area:score;text-align:right}
+  .pg-recent-sentence{grid-area:sentence;font-size:12px}
+}
 </style></head>
 <body>
 <div id="view-landing">
@@ -556,7 +610,7 @@ h1{animation:fu .6s ease both .15s}
       <div class="nbgl"><span data-en>Learn</span><span data-zh>学习</span></div>
       <div class="ni act" id="ni-library" onclick="showAppView('library')"><span class="nic">📚</span><span data-en>Reading Library</span><span data-zh>阅读书库</span></div>
       <div class="ni" id="ni-voice-coach" onclick="showAppView('voice-coach')"><span class="nic">🔊</span><span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span></div>
-      <div class="ni"><span class="nic">📊</span><span data-en>My Progress</span><span data-zh>我的进度</span></div>
+      <div class="ni" id="ni-progress" onclick="showAppView('progress')"><span class="nic">📊</span><span data-en>My Progress</span><span data-zh>我的进度</span></div>
       <div class="nbgl"><span data-en>Vocabulary</span><span data-zh>词汇</span></div>
       <div class="ni"><span class="nic">📝</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
       <div class="ni"><span class="nic">🔁</span><span data-en>Review</span><span data-zh>复习</span></div>
@@ -698,6 +752,64 @@ h1{animation:fu .6s ease both .15s}
          <div class="vc-detail-footer" id="vc-detail-footer"></div>
        </div>
      </div><!-- /#view-voice-coach -->
+     <div id="view-progress" style="display:none">
+       <div class="pg-page">
+         <div class="pg-header">
+           <h2 class="pg-title"><span data-en>My Progress</span><span data-zh>我的进度</span></h2>
+           <p class="pg-sub">
+             <span data-en>Your practice history and pronunciation improvement.</span>
+             <span data-zh>你的练习历史与发音进步。</span>
+           </p>
+         </div>
+
+         <!-- 1. Stats Overview -->
+         <div class="pg-stats" id="pg-stats">
+           <div class="pg-stat"><div class="pg-stat-label"><span data-en>Total attempts</span><span data-zh>总练习次数</span></div><div class="pg-stat-value" id="pg-stat-total">—</div></div>
+           <div class="pg-stat"><div class="pg-stat-label"><span data-en>Average score</span><span data-zh>平均分</span></div><div class="pg-stat-value" id="pg-stat-avg">—</div></div>
+           <div class="pg-stat"><div class="pg-stat-label"><span data-en>Best score</span><span data-zh>最高分</span></div><div class="pg-stat-value" id="pg-stat-best">—</div></div>
+           <div class="pg-stat"><div class="pg-stat-label"><span data-en>Practice streak</span><span data-zh>连续天数</span></div><div class="pg-stat-value" id="pg-stat-streak">—</div></div>
+         </div>
+         <p class="pg-empty-hint" id="pg-empty-hint" style="display:none">
+           <span data-en>Start practising to see your progress.</span>
+           <span data-zh>开始练习，查看你的进度。</span>
+         </p>
+
+         <!-- 2. Score Trend -->
+         <div class="pg-card" id="pg-trend-card">
+           <div class="pg-card-head">
+             <h3 class="pg-card-title"><span data-en>Score Trend</span><span data-zh>评分趋势</span></h3>
+             <span class="pg-card-eyebrow"><span data-en>Last 30 days</span><span data-zh>最近 30 天</span></span>
+           </div>
+           <div class="pg-card-body">
+             <div id="pg-trend"></div>
+             <p class="pg-trend-hint" id="pg-trend-hint" style="display:none">
+               <span data-en>Practise for a few more days to see your trend.</span>
+               <span data-zh>再练几天就能看到趋势了。</span>
+             </p>
+           </div>
+         </div>
+
+         <!-- 3. By Module Breakdown -->
+         <div class="pg-card" id="pg-bymod-card">
+           <div class="pg-card-head">
+             <h3 class="pg-card-title"><span data-en>By Module</span><span data-zh>各模块表现</span></h3>
+           </div>
+           <div class="pg-card-body">
+             <div class="pg-modlist" id="pg-modlist"></div>
+           </div>
+         </div>
+
+         <!-- 4. Recent Attempts -->
+         <div class="pg-card" id="pg-recent-card" style="display:none">
+           <div class="pg-card-head">
+             <h3 class="pg-card-title"><span data-en>Recent Attempts</span><span data-zh>最近练习</span></h3>
+           </div>
+           <div class="pg-card-body">
+             <div class="pg-recentlist" id="pg-recentlist"></div>
+           </div>
+         </div>
+       </div>
+     </div><!-- /#view-progress -->
      <div id="view-settings" style="display:none">
        <div class="st-page">
          <div class="st-header">
@@ -1045,11 +1157,13 @@ function showAppView(name){
   const views = {
     'library':     document.getElementById('view-library'),
     'voice-coach': document.getElementById('view-voice-coach'),
+    'progress':    document.getElementById('view-progress'),
     'settings':    document.getElementById('view-settings')
   };
   const navs = {
     'library':     document.getElementById('ni-library'),
     'voice-coach': document.getElementById('ni-voice-coach'),
+    'progress':    document.getElementById('ni-progress'),
     'settings':    document.getElementById('ni-settings')
   };
   if(!views[name]) name = 'library';
@@ -1058,6 +1172,7 @@ function showAppView(name){
   const bc = document.querySelector('.atbbc');
   if(bc){
     if(name === 'voice-coach') bc.innerHTML = '<span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span>';
+    else if(name === 'progress') bc.innerHTML = '<span data-en>My Progress</span><span data-zh>我的进度</span>';
     else if(name === 'settings') bc.innerHTML = '<span data-en>Settings</span><span data-zh>设置</span>';
     else bc.innerHTML = '<span data-en>Reading Library</span><span data-zh>阅读书库</span>';
   }
@@ -1067,6 +1182,8 @@ function showAppView(name){
     if(home) home.style.display = 'block';
     if(detail) detail.style.display = 'none';
     renderVoiceCoachHome();
+  } else if(name === 'progress'){
+    renderProgress();
   } else if(name === 'settings'){
     renderSettings();
   }
@@ -1084,6 +1201,318 @@ function showAppView(name){
     setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
   });
 })();
+
+/* ===== My Progress page ===== */
+function _pgEsc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+}
+function _pgScoreTier(s){
+  if(s >= 80) return 'forest';
+  if(s >= 50) return 'gold';
+  return 'amber';
+}
+function _pgDayKey(d){
+  // Local-time YYYY-MM-DD
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function _pgFormatRelative(iso){
+  if(!iso) return { en:'—', zh:'—' };
+  const then = new Date(iso);
+  if(isNaN(then.getTime())) return { en:'—', zh:'—' };
+  const now = new Date();
+  const todayKey = _pgDayKey(now);
+  const yesterday = new Date(now); yesterday.setDate(yesterday.getDate()-1);
+  const yKey = _pgDayKey(yesterday);
+  const tKey = _pgDayKey(then);
+  const hh = String(then.getHours()).padStart(2,'0');
+  const mm = String(then.getMinutes()).padStart(2,'0');
+  if(tKey === todayKey) return { en: 'Today, '+hh+':'+mm, zh: '今天 '+hh+':'+mm };
+  if(tKey === yKey)     return { en: 'Yesterday, '+hh+':'+mm, zh: '昨天 '+hh+':'+mm };
+  const msPerDay = 86400000;
+  const startOfThen = new Date(then.getFullYear(), then.getMonth(), then.getDate()).getTime();
+  const startOfNow  = new Date(now.getFullYear(),  now.getMonth(),  now.getDate()).getTime();
+  const days = Math.round((startOfNow - startOfThen) / msPerDay);
+  if(days < 7) return { en: days+' days ago', zh: days+' 天前' };
+  // Older: just a date
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return {
+    en: months[then.getMonth()]+' '+then.getDate(),
+    zh: (then.getMonth()+1)+'月'+then.getDate()+'日'
+  };
+}
+function _pgComputeStreak(attempts){
+  if(!attempts || !attempts.length) return 0;
+  const days = new Set();
+  for(let i=0;i<attempts.length;i++){
+    const d = new Date(attempts[i].created_at);
+    if(isNaN(d.getTime())) continue;
+    days.add(_pgDayKey(d));
+  }
+  if(!days.size) return 0;
+  // Walk from today backwards; if today missing, allow yesterday as start (forgiving)
+  const now = new Date();
+  let cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if(!days.has(_pgDayKey(cursor))){
+    cursor.setDate(cursor.getDate()-1);
+    if(!days.has(_pgDayKey(cursor))) return 0;
+  }
+  let streak = 0;
+  while(days.has(_pgDayKey(cursor))){
+    streak++;
+    cursor.setDate(cursor.getDate()-1);
+  }
+  return streak;
+}
+function _pgSourceLabel(row){
+  if(row.source === 'voice_coach' && row.module_id && Array.isArray(VOICE_COACH_MODULES)){
+    const m = VOICE_COACH_MODULES.find(function(x){ return x.id === row.module_id; });
+    if(m) return { en: m.label, zh: m.label };
+  }
+  if(row.source === 'reading') return { en: 'Reading', zh: '阅读' };
+  if(row.source === 'voice_coach') return { en: 'Voice Coach', zh: '语音指导' };
+  return { en: row.source || '—', zh: row.source || '—' };
+}
+
+async function renderProgress(){
+  const stats = document.getElementById('pg-stats');
+  if(!stats) return;
+  // Reset to placeholder state while loading
+  document.getElementById('pg-stat-total').textContent = '—';
+  document.getElementById('pg-stat-avg').textContent = '—';
+  document.getElementById('pg-stat-best').textContent = '—';
+  document.getElementById('pg-stat-streak').textContent = '—';
+
+  let user = null, attempts = [];
+  try{
+    if(typeof _supabase !== 'undefined'){
+      const r = await _supabase.auth.getUser();
+      user = r && r.data ? r.data.user : null;
+    }
+  }catch(e){ /* not signed in */ }
+
+  if(!user){
+    _pgRenderEmptyState();
+    document.getElementById('pg-empty-hint').innerHTML =
+      '<span data-en>Sign in to see your progress.</span><span data-zh>登录后可查看你的进度。</span>';
+    document.getElementById('pg-empty-hint').style.display = 'block';
+    setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+    return;
+  }
+
+  try{
+    const { data, error } = await _supabase
+      .from('pronunciation_attempts')
+      .select('id, source, module_id, sentence, transcript, score, created_at')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    if(error) throw error;
+    attempts = data || [];
+  }catch(e){
+    console.warn('progress: fetch failed', e);
+    attempts = [];
+  }
+
+  _pgRenderStats(attempts);
+  _pgRenderTrend(attempts);
+  _pgRenderByModule(attempts);
+  _pgRenderRecent(attempts);
+
+  // Re-apply current language to all data-en/data-zh spans we just inserted
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+function _pgRenderEmptyState(){
+  document.getElementById('pg-stat-total').textContent = '—';
+  document.getElementById('pg-stat-avg').textContent = '—';
+  document.getElementById('pg-stat-best').textContent = '—';
+  document.getElementById('pg-stat-streak').textContent = '—';
+  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak'].forEach(function(id){
+    const el = document.getElementById(id); if(el) el.classList.add('muted');
+  });
+  const trend = document.getElementById('pg-trend'); if(trend) trend.innerHTML = '';
+  const trendHint = document.getElementById('pg-trend-hint'); if(trendHint) trendHint.style.display = 'block';
+  const modlist = document.getElementById('pg-modlist'); if(modlist){
+    // Show all 5 modules as "not yet attempted"
+    if(typeof VOICE_COACH_MODULES !== 'undefined'){
+      modlist.innerHTML = VOICE_COACH_MODULES.map(function(m){
+        return ''+
+        '<div class="pg-mod-row">'+
+          '<div class="pg-mod-name">'+_pgEsc(m.label)+'</div>'+
+          '<div class="pg-mod-bar empty"></div>'+
+          '<div class="pg-mod-stats empty"><span data-en>Not yet attempted</span><span data-zh>还未练习</span></div>'+
+        '</div>';
+      }).join('');
+    }
+  }
+  const recent = document.getElementById('pg-recent-card'); if(recent) recent.style.display = 'none';
+}
+
+function _pgRenderStats(attempts){
+  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak'].forEach(function(id){
+    const el = document.getElementById(id); if(el) el.classList.remove('muted');
+  });
+  const hint = document.getElementById('pg-empty-hint');
+  if(!attempts.length){
+    _pgRenderEmptyState();
+    if(hint){ hint.innerHTML = '<span data-en>Start practising to see your progress.</span><span data-zh>开始练习，查看你的进度。</span>'; hint.style.display = 'block'; }
+    return;
+  }
+  if(hint) hint.style.display = 'none';
+  const total = attempts.length;
+  let sum = 0, best = 0;
+  for(let i=0;i<attempts.length;i++){
+    const s = attempts[i].score|0;
+    sum += s;
+    if(s > best) best = s;
+  }
+  const avg = Math.round(sum / total);
+  const streak = _pgComputeStreak(attempts);
+  document.getElementById('pg-stat-total').textContent = String(total);
+  document.getElementById('pg-stat-avg').textContent = String(avg);
+  document.getElementById('pg-stat-best').textContent = String(best);
+  document.getElementById('pg-stat-streak').textContent = streak === 1 ? '1 day' : (streak + ' days');
+  // Localise "days" — set bilingual for streak only
+  const streakEl = document.getElementById('pg-stat-streak');
+  if(streakEl){
+    streakEl.innerHTML =
+      '<span data-en>'+streak+' '+(streak===1?'day':'days')+'</span>'+
+      '<span data-zh>'+streak+' 天</span>';
+  }
+}
+
+function _pgRenderTrend(attempts){
+  const host = document.getElementById('pg-trend');
+  const hint = document.getElementById('pg-trend-hint');
+  if(!host) return;
+  // Group attempts by local day for the last 30 days
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = []; // [{ date: Date, key: 'YYYY-MM-DD' }]
+  for(let i=29;i>=0;i--){
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    days.push({ date: d, key: _pgDayKey(d) });
+  }
+  const buckets = {};
+  for(let i=0;i<attempts.length;i++){
+    const d = new Date(attempts[i].created_at);
+    if(isNaN(d.getTime())) continue;
+    const k = _pgDayKey(d);
+    if(!buckets[k]) buckets[k] = { sum: 0, count: 0 };
+    buckets[k].sum += (attempts[i].score|0);
+    buckets[k].count += 1;
+  }
+  const points = []; // { x, y, label, count, avg, dateLabelEn, dateLabelZh }
+  const W = 600, H = 180;
+  const padL = 28, padR = 12, padT = 14, padB = 22;
+  const innerW = W - padL - padR;
+  const innerH = H - padT - padB;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  for(let i=0;i<days.length;i++){
+    const k = days[i].key;
+    const b = buckets[k];
+    if(!b) continue;
+    const avg = Math.round(b.sum / b.count);
+    const x = padL + (i / (days.length-1)) * innerW;
+    const y = padT + (1 - avg/100) * innerH;
+    points.push({
+      x: x, y: y,
+      avg: avg,
+      count: b.count,
+      dateLabelEn: months[days[i].date.getMonth()] + ' ' + days[i].date.getDate(),
+      dateLabelZh: (days[i].date.getMonth()+1) + '月' + days[i].date.getDate() + '日'
+    });
+  }
+  if(points.length < 3){
+    host.innerHTML = '';
+    if(hint) hint.style.display = 'block';
+    return;
+  }
+  if(hint) hint.style.display = 'none';
+  // Build SVG
+  const polyPts = points.map(function(p){ return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' ');
+  let svg = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" aria-label="Score trend last 30 days">';
+  // Y-axis gridlines + labels at 0/50/100
+  [0, 50, 100].forEach(function(v){
+    const y = padT + (1 - v/100) * innerH;
+    svg += '<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y.toFixed(1)+'" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 4"/>';
+    svg += '<text x="'+(padL-6)+'" y="'+(y+3).toFixed(1)+'" text-anchor="end" font-size="10" font-family="DM Mono, monospace" fill="var(--ink3)">'+v+'</text>';
+  });
+  // X-axis: today + 30 days ago labels
+  svg += '<text x="'+padL+'" y="'+(H-6)+'" text-anchor="start" font-size="10" font-family="DM Mono, monospace" fill="var(--ink3)">'+(months[days[0].date.getMonth()]+' '+days[0].date.getDate())+'</text>';
+  svg += '<text x="'+(W-padR)+'" y="'+(H-6)+'" text-anchor="end" font-size="10" font-family="DM Mono, monospace" fill="var(--ink3)">'+(months[days[days.length-1].date.getMonth()]+' '+days[days.length-1].date.getDate())+'</text>';
+  // Polyline
+  svg += '<polyline points="'+polyPts+'" fill="none" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+  // Points with native title tooltip
+  for(let i=0;i<points.length;i++){
+    const p = points[i];
+    const tipEn = p.dateLabelEn + ' · ' + p.avg + '/100 · ' + p.count + (p.count===1?' attempt':' attempts');
+    const tipZh = p.dateLabelZh + ' · ' + p.avg + '/100 · ' + p.count + ' 次';
+    const tip = (document.body.classList.contains('zh') ? tipZh : tipEn);
+    svg += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="3.5" fill="var(--forest)" stroke="var(--white)" stroke-width="1.5">'+
+      '<title>'+_pgEsc(tip)+'</title></circle>';
+  }
+  svg += '</svg>';
+  host.innerHTML = svg;
+}
+
+function _pgRenderByModule(attempts){
+  const host = document.getElementById('pg-modlist');
+  if(!host) return;
+  if(typeof VOICE_COACH_MODULES === 'undefined') return;
+  // Aggregate VC attempts by module
+  const agg = {};
+  for(let i=0;i<attempts.length;i++){
+    const a = attempts[i];
+    if(a.source !== 'voice_coach' || !a.module_id) continue;
+    if(!agg[a.module_id]) agg[a.module_id] = { sum: 0, count: 0 };
+    agg[a.module_id].sum += (a.score|0);
+    agg[a.module_id].count += 1;
+  }
+  host.innerHTML = VOICE_COACH_MODULES.map(function(m){
+    const s = agg[m.id];
+    if(!s){
+      return '<div class="pg-mod-row">'+
+        '<div class="pg-mod-name">'+_pgEsc(m.label)+'</div>'+
+        '<div class="pg-mod-bar empty"></div>'+
+        '<div class="pg-mod-stats empty"><span data-en>Not yet attempted</span><span data-zh>还未练习</span></div>'+
+      '</div>';
+    }
+    const avg = Math.round(s.sum / s.count);
+    const tier = _pgScoreTier(avg);
+    return '<div class="pg-mod-row">'+
+      '<div class="pg-mod-name">'+_pgEsc(m.label)+'</div>'+
+      '<div class="pg-mod-bar"><div class="pg-mod-fill t-'+tier+'" style="width:'+avg+'%"></div></div>'+
+      '<div class="pg-mod-stats">'+avg+'/100 · '+
+        '<span data-en>'+s.count+' '+(s.count===1?'attempt':'attempts')+'</span>'+
+        '<span data-zh>'+s.count+' 次</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function _pgRenderRecent(attempts){
+  const card = document.getElementById('pg-recent-card');
+  const list = document.getElementById('pg-recentlist');
+  if(!card || !list) return;
+  if(!attempts.length){ card.style.display = 'none'; return; }
+  card.style.display = '';
+  const recent = attempts.slice(0, 10);
+  list.innerHTML = recent.map(function(row){
+    const when = _pgFormatRelative(row.created_at);
+    const src = _pgSourceLabel(row);
+    const tier = _pgScoreTier(row.score|0);
+    let s = String(row.sentence||'').replace(/\s+/g,' ').trim();
+    if(s.length > 50) s = s.slice(0, 49) + '…';
+    return '<div class="pg-recent-row">'+
+      '<div class="pg-recent-when"><span data-en>'+_pgEsc(when.en)+'</span><span data-zh>'+_pgEsc(when.zh)+'</span></div>'+
+      '<div class="pg-recent-source"><span data-en>'+_pgEsc(src.en)+'</span><span data-zh>'+_pgEsc(src.zh)+'</span></div>'+
+      '<div class="pg-recent-score t-'+tier+'">'+(row.score|0)+'</div>'+
+      '<div class="pg-recent-sentence" title="'+_pgEsc(String(row.sentence||''))+'">'+_pgEsc(s||'—')+'</div>'+
+    '</div>';
+  }).join('');
+}
 
 /* ===== Settings page ===== */
 function _stEsc(s){

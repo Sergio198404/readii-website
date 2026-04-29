@@ -699,6 +699,37 @@
 
 ---
 
+## 2026-04-29 | Session 23 | v1.8.0
+
+**Objective:** Build a "My Progress" tab so users can see their practice history and improvement, sourcing from the v1.6.0 `pronunciation_attempts` table.
+
+**Completed:**
+- [x] Sidebar `My Progress` item now has `id="ni-progress"` and `onclick="showAppView('progress')"`
+- [x] `showAppView()` dispatch table extended with `progress` (one-line addition to views/navs maps + breadcrumb switch)
+- [x] New `#view-progress` view inside `.acon` with header + 4 stacked sections
+- [x] **Stats Overview** (Section 1): 4-up grid (Total / Avg / Best / Streak), collapses to 2x2 below 640px. Empty state shows `—` with a "Start practising to see your progress." hint
+- [x] **Score Trend** (Section 2): hand-rolled SVG, viewBox 600x180, no chart library. 30-day window. Only days with ≥1 attempt get a data point (no zero-interpolation per spec). Y gridlines at 0/50/100, polyline in `--forest`, points have native `<title>` tooltip with localised date + avg + attempt count. <3 distinct days → hint text instead
+- [x] **By Module Breakdown** (Section 3): 5 horizontal bars (one per VC module) using div+width per spec. Colour tier ≥80 forest / ≥50 gold / <50 amber; empty bars are dashed with "Not yet attempted" label
+- [x] **Recent Attempts** (Section 4): last 10 rows, newest first. Friendly time (Today, HH:MM / Yesterday, HH:MM / N days ago / `MMM D`), source = VC module label or "Reading", score in tiered colour, sentence truncated to 50 chars with full text on hover (`title` attr). Card hidden entirely when there are no attempts
+- [x] Streak helper `_pgComputeStreak` walks back from today (or yesterday if today's empty) counting consecutive day-keys; resets to 0 if neither today nor yesterday has data
+- [x] Guest-user fallback: shows "Sign in to see your progress." instead of a partially-rendered state
+- [x] All copy bilingual via `data-en`/`data-zh`; mobile-responsive across all 4 sections (recent attempts collapse from 4-col grid to 2-col stacked layout)
+- [x] Sanity-checked against the live DB (currently 13 real attempts, all `voice_coach broad_a` from earlier testing)
+- [x] 23 structural checks pass
+
+**Files changed:**
+- index.html (v1.7.1 → v1.8.0): #view-progress DOM + Progress CSS block + renderProgress() and 4 sub-renderers + showAppView dispatch addition
+- VERSION (1.7.1 → 1.8.0)
+- CHANGELOG.md ([1.8.0] entry)
+- WORKLOG.md (this Session 23)
+
+**Pending / Next session:**
+- [ ] Add Reading-page logging too so the "By source" view distinguishes Reading vs Voice Coach attempts
+- [ ] Consider per-module trend (small-multiple sparkline) once users have ~30+ attempts per module
+- [ ] Word Bank / Review tabs (still placeholders)
+
+---
+
 ## 2026-04-29 | Session 22.1 | v1.7.1 (hotfix)
 
 **Bug:** After v1.7.0 deploy, clicking `Settings` in the sidebar signed the user out and redirected to the homepage instead of opening the Settings view.
