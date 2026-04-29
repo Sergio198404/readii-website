@@ -128,6 +128,13 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.7.1] — 2026-04-29
+
+### Fixed
+- Settings click no longer signs the user out and redirects to the homepage. A v1.2.0 module-script line `document.querySelector('.ni:last-child').onclick = handleSignOut` was still active and overriding the new inline `onclick="showAppView('settings')"` on the Settings sidebar item. Removed that binding (sign-out lives inside the Settings view itself in v1.7.0).
+
+---
+
 ## [1.7.0] — 2026-04-29
 
 ### Added

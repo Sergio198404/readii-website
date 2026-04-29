@@ -699,6 +699,27 @@
 
 ---
 
+## 2026-04-29 | Session 22.1 | v1.7.1 (hotfix)
+
+**Bug:** After v1.7.0 deploy, clicking `Settings` in the sidebar signed the user out and redirected to the homepage instead of opening the Settings view.
+
+**Root cause:** A v1.2.0 line in the inline `<script type="module">` block did:
+```js
+const settingsItem = document.querySelector('.ni:last-child')
+if (settingsItem) settingsItem.onclick = handleSignOut
+```
+That ran *after* the inline HTML attribute `onclick="showAppView('settings')"` was parsed. Setting `.onclick` (the property) replaces an HTML-attribute onclick, so my new binding was silently overwritten and `handleSignOut` fired on every click.
+
+**Fix:** Deleted the `handleSignOut` function and the `.ni:last-child` binding from the module script. Sign-out now lives only inside the Settings view (`#st-signout-btn`).
+
+**Files changed:**
+- index.html (v1.7.0 → v1.7.1): removed the stale handleSignOut + binding (~10 lines, replaced with a short explanatory comment)
+- VERSION (1.7.0 → 1.7.1)
+- CHANGELOG.md
+- WORKLOG.md (this entry)
+
+---
+
 ## 2026-04-29 | Session 22 | v1.7.0
 
 **Objective:** Build a Settings page so users can see their account info, subscription status, set language preference, and sign out — replacing the previously-inert sidebar item.

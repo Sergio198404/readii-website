@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.7.0 | Updated: 2026-04-29 -->
+<!-- Readii v1.7.1 | Updated: 2026-04-29 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -1970,16 +1970,10 @@ async function renderSettings(){
     }
   }
 
-  window.handleSignOut = async function() {
-    await authSignOut()
-    window.location.reload()
-  }
-
-  // 在 app view 的侧边栏加退出按钮
-  const settingsItem = document.querySelector('.ni:last-child')
-  if (settingsItem) {
-    settingsItem.onclick = handleSignOut
-  }
+  // v1.7.0: Sign-out moved into the new Settings page (#st-signout-btn).
+  // The Settings sidebar item now opens the Settings view via showAppView('settings').
+  // Old `.ni:last-child → handleSignOut` binding removed — it was overriding the
+  // inline onclick on the Settings item and causing immediate sign-out + redirect.
 
   // 将数据库中的 series 值映射为对外展示名（避免暴露第三方品牌名）
   function displaySeriesName(s) {
