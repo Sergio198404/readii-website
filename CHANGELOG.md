@@ -128,6 +128,35 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.9.0] — 2026-04-29
+
+### Added
+- feat: Word Bank — 291 British English pronunciation words with TTS audio, search, filters, and favorites
+- New left-sidebar tab "Word Bank" — clickable, switches the main pane to a new `#view-word-bank`
+- New tables: `word_bank` (curated list, public-readable) and `user_word_favorites` (user-scoped via RLS)
+- 291 words seeded from `words.json` across the 5 Voice Coach modules: Broad A (60), Non-rhotic R (59), Short O (61), TH voiced (53), Yod (58)
+- Per-word TTS audio: word.mp3 + sentence.mp3, OpenAI `tts-1-hd` with `fable` voice (British accent), uploaded to `readii-content/word-audio/{word_id}/{word|sentence}.mp3`
+- 7 filter tabs (All / Broad A / Non-rhotic R / TH / Yod / Short O / ★ Favorites) — sticky on desktop scroll
+- Live search filter — matches word, IPA, Chinese meaning, or example sentence (case-insensitive, debounced 80ms)
+- Word card layout: word (serif), IPA (mono), Chinese meaning, italic example sentence, two play buttons (🔊 Word / 🔊 Sentence) and ⭐ favourite toggle
+- Single-audio playback: clicking a play button stops any currently-playing clip across all cards; button enters a "Playing…" state with `--gold` highlight; resets on `ended` / `error`
+- Favorites: persists per user via `user_word_favorites` (RLS); ⭐ becomes filled and gold once saved; if filter='Favorites' and the row is unfavourited, it disappears from view immediately
+- Empty states: "Tap ★ on any word card to save it here" (Favorites empty) / "No words match …" (search empty)
+- Audio buttons gracefully disabled (with tooltip "Audio not ready yet") until the corresponding storage URL lands in DB
+
+### Changed
+- `showAppView()` dispatch table extended with `word-bank` view + breadcrumb label
+- Sidebar `Word Bank` item moved from no-op to clickable nav target
+- All copy bilingual via `data-en` / `data-zh`
+
+### Notes
+- Frontend-only on the website side; word seeding and TTS generation done by off-repo scripts (`seed-words.js`, `generate-tts.js`)
+- Migration SQL file: `C:\\Users\\sergi\\readii-transcribe\\migration-word-bank.sql`
+- TTS run cost ~$0.50–0.90 (291 × 2 = 582 clips, ~16–20k characters, `tts-1-hd` @ $30/1M chars)
+- Audio is private (signed URL on request, 1-hour expiry, `cacheControl: max-age=31536000`); same flow as Reading audio
+
+---
+
 ## [1.8.0] — 2026-04-29
 
 ### Added

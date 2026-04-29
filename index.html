@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.8.0 | Updated: 2026-04-29 -->
+<!-- Readii v1.9.0 | Updated: 2026-04-29 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -442,6 +442,47 @@ h1{animation:fu .6s ease both .15s}
 .pg-recent-score.t-gold{color:var(--gold)}
 .pg-recent-score.t-amber{color:#B0463A}
 .pg-recent-sentence{color:var(--ink2);font-size:13px;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ===== Word Bank ===== */
+.wb-page{padding:4px 4px 32px;max-width:1080px;margin:0 auto}
+.wb-header{margin-bottom:18px}
+.wb-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);line-height:1.2;margin-bottom:6px}
+.wb-sub{font-size:14px;color:var(--ink3)}
+.wb-controls{display:flex;flex-direction:column;gap:12px;margin-bottom:18px;position:sticky;top:0;background:var(--cream);padding:8px 0;z-index:10}
+.wb-tabs{display:flex;gap:7px;flex-wrap:wrap}
+.wb-tab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--ink2);transition:all .15s;font-family:var(--sans)}
+.wb-tab:hover{border-color:var(--border2);color:var(--ink)}
+.wb-tab.active{background:var(--forest);color:var(--white);border-color:var(--forest)}
+.wb-search-wrap{display:flex;align-items:center}
+.wb-search{flex:1;padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--white);color:var(--ink);font-family:var(--sans);transition:border-color .15s}
+.wb-search:focus{outline:none;border-color:var(--forest3)}
+.wb-empty{font-size:14px;color:var(--ink3);text-align:center;padding:40px 20px;font-style:italic;background:var(--white);border:1px dashed var(--border);border-radius:12px}
+.wb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.wb-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:all .15s}
+.wb-card:hover{box-shadow:var(--sh);border-color:var(--border2)}
+.wb-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.wb-word{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--ink);line-height:1.15;word-break:break-word;flex:1}
+.wb-fav{flex-shrink:0;background:transparent;border:none;cursor:pointer;font-size:18px;color:var(--ink3);padding:2px 4px;line-height:1;transition:all .15s}
+.wb-fav:hover{color:var(--gold)}
+.wb-fav.on{color:var(--gold)}
+.wb-fav:disabled{opacity:.35;cursor:not-allowed}
+.wb-ipa{font-family:var(--mono);font-size:13px;color:var(--ink3)}
+.wb-zh{font-size:13px;color:var(--ink2);line-height:1.5}
+.wb-sentence{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--ink2);line-height:1.55;border-left:2px solid var(--border);padding-left:9px;margin:4px 0}
+.wb-actions{display:flex;gap:7px;margin-top:auto;padding-top:6px}
+.wb-play{flex:1;font-family:var(--sans);font-size:11px;font-weight:500;padding:7px 10px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all .15s;letter-spacing:.02em}
+.wb-play:hover:not(:disabled){border-color:var(--forest3);color:var(--forest);background:var(--fp)}
+.wb-play:disabled{opacity:.45;cursor:not-allowed}
+.wb-play.playing{background:var(--gp);border-color:var(--gold);color:#7A4A10}
+.wb-play .wb-play-icon{font-size:11px}
+.wb-mod-tag{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:500}
+@media (max-width:900px){
+  .wb-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:600px){
+  .wb-grid{grid-template-columns:1fr}
+  .wb-title{font-size:24px}
+  .wb-controls{position:relative;top:auto}
+}
 @media (max-width:640px){
   .pg-title{font-size:24px}
   .pg-stats{grid-template-columns:repeat(2,1fr)}
@@ -612,7 +653,7 @@ h1{animation:fu .6s ease both .15s}
       <div class="ni" id="ni-voice-coach" onclick="showAppView('voice-coach')"><span class="nic">🔊</span><span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span></div>
       <div class="ni" id="ni-progress" onclick="showAppView('progress')"><span class="nic">📊</span><span data-en>My Progress</span><span data-zh>我的进度</span></div>
       <div class="nbgl"><span data-en>Vocabulary</span><span data-zh>词汇</span></div>
-      <div class="ni"><span class="nic">📝</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
+      <div class="ni" id="ni-word-bank" onclick="showAppView('word-bank')"><span class="nic">📝</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
       <div class="ni"><span class="nic">🔁</span><span data-en>Review</span><span data-zh>复习</span></div>
       <div class="nbgl"><span data-en>Account</span><span data-zh>账户</span></div>
       <div class="ni" id="ni-settings" onclick="showAppView('settings')"><span class="nic">⚙️</span><span data-en>Settings</span><span data-zh>设置</span></div>
@@ -810,6 +851,35 @@ h1{animation:fu .6s ease both .15s}
          </div>
        </div>
      </div><!-- /#view-progress -->
+     <div id="view-word-bank" style="display:none">
+       <div class="wb-page">
+         <div class="wb-header">
+           <h2 class="wb-title"><span data-en>Word Bank</span><span data-zh>词汇库</span></h2>
+           <p class="wb-sub">
+             <span data-en>Essential words for British English pronunciation.</span>
+             <span data-zh>英式英语发音核心词汇库。</span>
+           </p>
+         </div>
+
+         <div class="wb-controls">
+           <div class="wb-tabs" id="wb-tabs">
+             <button class="wb-tab active" data-filter="all" type="button"><span data-en>All</span><span data-zh>全部</span></button>
+             <button class="wb-tab" data-filter="broad_a"      type="button">Broad A</button>
+             <button class="wb-tab" data-filter="non_rhotic_r" type="button">Non-rhotic R</button>
+             <button class="wb-tab" data-filter="th_voiced"    type="button">TH</button>
+             <button class="wb-tab" data-filter="yod"          type="button">Yod</button>
+             <button class="wb-tab" data-filter="short_o"      type="button">Short O</button>
+             <button class="wb-tab" data-filter="favorites"    type="button">★ <span data-en>Favorites</span><span data-zh>收藏</span></button>
+           </div>
+           <div class="wb-search-wrap">
+             <input id="wb-search" type="search" autocomplete="off" placeholder="Search words, IPA, meaning, sentence…" class="wb-search">
+           </div>
+         </div>
+
+         <div id="wb-empty" class="wb-empty" style="display:none"></div>
+         <div id="wb-grid" class="wb-grid"></div>
+       </div>
+     </div><!-- /#view-word-bank -->
      <div id="view-settings" style="display:none">
        <div class="st-page">
          <div class="st-header">
@@ -1158,12 +1228,14 @@ function showAppView(name){
     'library':     document.getElementById('view-library'),
     'voice-coach': document.getElementById('view-voice-coach'),
     'progress':    document.getElementById('view-progress'),
+    'word-bank':   document.getElementById('view-word-bank'),
     'settings':    document.getElementById('view-settings')
   };
   const navs = {
     'library':     document.getElementById('ni-library'),
     'voice-coach': document.getElementById('ni-voice-coach'),
     'progress':    document.getElementById('ni-progress'),
+    'word-bank':   document.getElementById('ni-word-bank'),
     'settings':    document.getElementById('ni-settings')
   };
   if(!views[name]) name = 'library';
@@ -1173,6 +1245,7 @@ function showAppView(name){
   if(bc){
     if(name === 'voice-coach') bc.innerHTML = '<span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span>';
     else if(name === 'progress') bc.innerHTML = '<span data-en>My Progress</span><span data-zh>我的进度</span>';
+    else if(name === 'word-bank') bc.innerHTML = '<span data-en>Word Bank</span><span data-zh>词汇库</span>';
     else if(name === 'settings') bc.innerHTML = '<span data-en>Settings</span><span data-zh>设置</span>';
     else bc.innerHTML = '<span data-en>Reading Library</span><span data-zh>阅读书库</span>';
   }
@@ -1184,6 +1257,8 @@ function showAppView(name){
     renderVoiceCoachHome();
   } else if(name === 'progress'){
     renderProgress();
+  } else if(name === 'word-bank'){
+    renderWordBank();
   } else if(name === 'settings'){
     renderSettings();
   }
@@ -1201,6 +1276,285 @@ function showAppView(name){
     setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
   });
 })();
+
+/* ===== Word Bank page ===== */
+let _wbCache = null;
+let _wbFavSet = new Set();
+let _wbActiveFilter = 'all';
+let _wbSearchTerm = '';
+let _wbCurrentAudio = null;     // single audio at a time
+let _wbCurrentBtn = null;       // currently-playing button (for state reset)
+let _wbInited = false;
+
+function _wbEsc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+}
+
+function _wbModuleLabel(mid){
+  if(typeof VOICE_COACH_MODULES !== 'undefined'){
+    const m = VOICE_COACH_MODULES.find(function(x){ return x.id === mid; });
+    if(m) return m.label;
+  }
+  return mid || '';
+}
+
+async function _wbLoadAll(){
+  if(_wbCache) return _wbCache;
+  if(typeof _supabase === 'undefined') return [];
+  const { data, error } = await _supabase
+    .from('word_bank')
+    .select('id, word, ipa_gb, meaning_zh, example_sentence, module_id, audio_word_url, audio_sentence_url, display_order')
+    .order('module_id', { ascending: true })
+    .order('display_order', { ascending: true });
+  if(error){ console.warn('word_bank load failed:', error.message); return []; }
+  _wbCache = data || [];
+  return _wbCache;
+}
+
+async function _wbLoadFavorites(){
+  _wbFavSet = new Set();
+  if(typeof _supabase === 'undefined') return;
+  try{
+    const { data: { user } } = await _supabase.auth.getUser();
+    if(!user) return;
+    const { data, error } = await _supabase
+      .from('user_word_favorites')
+      .select('word_id')
+      .eq('user_id', user.id);
+    if(error){ console.warn('favorites load failed:', error.message); return; }
+    for(const r of data||[]) _wbFavSet.add(r.word_id);
+  }catch(e){ /* not signed in */ }
+}
+
+async function _wbToggleFavorite(wordId, btn){
+  if(typeof _supabase === 'undefined') return;
+  try{
+    const { data: { user } } = await _supabase.auth.getUser();
+    if(!user){
+      // Visual hint only
+      btn.disabled = true;
+      btn.title = 'Sign in to save favorites';
+      return;
+    }
+    if(_wbFavSet.has(wordId)){
+      const { error } = await _supabase.from('user_word_favorites').delete()
+        .eq('user_id', user.id).eq('word_id', wordId);
+      if(error){ console.warn('unfav failed:', error.message); return; }
+      _wbFavSet.delete(wordId);
+      btn.classList.remove('on');
+      btn.textContent = '☆';
+    } else {
+      const { error } = await _supabase.from('user_word_favorites').insert({
+        user_id: user.id, word_id: wordId
+      });
+      if(error){ console.warn('fav failed:', error.message); return; }
+      _wbFavSet.add(wordId);
+      btn.classList.add('on');
+      btn.textContent = '★';
+    }
+    // If we're currently filtered to favorites, re-render so removed items disappear
+    if(_wbActiveFilter === 'favorites') _wbRenderGrid();
+  }catch(e){ console.warn('fav toggle threw', e); }
+}
+
+function _wbStopCurrentAudio(){
+  if(_wbCurrentAudio){
+    try{ _wbCurrentAudio.pause(); }catch(_){}
+    _wbCurrentAudio = null;
+  }
+  if(_wbCurrentBtn){
+    _wbCurrentBtn.classList.remove('playing');
+    const lbl = _wbCurrentBtn.querySelector('.wb-play-text');
+    const orig = _wbCurrentBtn.getAttribute('data-orig');
+    if(lbl && orig) lbl.innerHTML = orig;
+    _wbCurrentBtn = null;
+  }
+}
+
+async function _wbPlay(btn, storagePath){
+  if(!storagePath){ return; }
+  // If clicking the currently-playing button, stop instead
+  if(_wbCurrentBtn === btn){
+    _wbStopCurrentAudio();
+    return;
+  }
+  _wbStopCurrentAudio();
+  try{
+    let url = storagePath;
+    // Storage paths are relative; need a signed URL for the private bucket
+    if(!/^https?:\/\//.test(storagePath) && typeof getSignedUrl === 'function'){
+      url = await getSignedUrl(storagePath);
+    }
+    if(!url){ return; }
+    const audio = new Audio();
+    audio.src = url;
+    audio.preload = 'auto';
+    _wbCurrentAudio = audio;
+    _wbCurrentBtn = btn;
+    btn.classList.add('playing');
+    const lbl = btn.querySelector('.wb-play-text');
+    if(lbl){
+      btn.setAttribute('data-orig', lbl.innerHTML);
+      lbl.innerHTML = '<span data-en>Playing…</span><span data-zh>播放中…</span>';
+      setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+    }
+    audio.onended = function(){ _wbStopCurrentAudio(); };
+    audio.onerror = function(){ _wbStopCurrentAudio(); };
+    await audio.play().catch(function(e){ console.warn('audio play failed', e); _wbStopCurrentAudio(); });
+  }catch(e){
+    console.warn('wb play threw', e);
+    _wbStopCurrentAudio();
+  }
+}
+
+function _wbCardHtml(row){
+  const fav = _wbFavSet.has(row.id);
+  const wordReady = !!row.audio_word_url;
+  const sentReady = !!row.audio_sentence_url;
+  const playWordHtml =
+    '<button class="wb-play" type="button" data-play="word" data-id="'+row.id+'"'+(wordReady?'':' disabled title="Audio not ready yet"')+'>'+
+      '<span class="wb-play-icon">🔊</span>'+
+      '<span class="wb-play-text"><span data-en>Word</span><span data-zh>单词</span></span>'+
+    '</button>';
+  const playSentHtml =
+    '<button class="wb-play" type="button" data-play="sentence" data-id="'+row.id+'"'+(sentReady?'':' disabled title="Audio not ready yet"')+'>'+
+      '<span class="wb-play-icon">🔊</span>'+
+      '<span class="wb-play-text"><span data-en>Sentence</span><span data-zh>例句</span></span>'+
+    '</button>';
+  return ''+
+    '<div class="wb-card" data-id="'+row.id+'">'+
+      '<div class="wb-card-top">'+
+        '<div style="flex:1;min-width:0">'+
+          '<div class="wb-mod-tag">'+_wbEsc(_wbModuleLabel(row.module_id))+'</div>'+
+          '<div class="wb-word">'+_wbEsc(row.word)+'</div>'+
+        '</div>'+
+        '<button class="wb-fav'+(fav?' on':'')+'" type="button" data-fav="'+row.id+'" aria-label="favorite">'+(fav?'★':'☆')+'</button>'+
+      '</div>'+
+      '<div class="wb-ipa">'+_wbEsc(row.ipa_gb)+'</div>'+
+      '<div class="wb-zh">'+_wbEsc(row.meaning_zh)+'</div>'+
+      '<div class="wb-sentence">'+_wbEsc(row.example_sentence)+'</div>'+
+      '<div class="wb-actions">'+
+        playWordHtml + playSentHtml +
+      '</div>'+
+    '</div>';
+}
+
+function _wbApplyFilters(){
+  const all = _wbCache || [];
+  let filtered = all;
+  if(_wbActiveFilter === 'favorites'){
+    filtered = all.filter(function(r){ return _wbFavSet.has(r.id); });
+  } else if(_wbActiveFilter !== 'all'){
+    filtered = all.filter(function(r){ return r.module_id === _wbActiveFilter; });
+  }
+  if(_wbSearchTerm){
+    const q = _wbSearchTerm.toLowerCase();
+    filtered = filtered.filter(function(r){
+      return (
+        (r.word||'').toLowerCase().indexOf(q) >= 0 ||
+        (r.ipa_gb||'').toLowerCase().indexOf(q) >= 0 ||
+        (r.meaning_zh||'').toLowerCase().indexOf(q) >= 0 ||
+        (r.example_sentence||'').toLowerCase().indexOf(q) >= 0
+      );
+    });
+  }
+  return filtered;
+}
+
+function _wbRenderGrid(){
+  const grid = document.getElementById('wb-grid');
+  const empty = document.getElementById('wb-empty');
+  if(!grid || !empty) return;
+  _wbStopCurrentAudio();
+  const rows = _wbApplyFilters();
+  if(rows.length === 0){
+    grid.innerHTML = '';
+    let msgEn = 'No words match this filter.';
+    let msgZh = '没有匹配的词条。';
+    if(_wbActiveFilter === 'favorites'){
+      // Detect signed-in vs not by checking _wbFavSet was loaded; can't be 100% sure,
+      // but if cache is non-empty and user has zero favs we show the call-to-action
+      if(_wbFavSet.size === 0){
+        msgEn = 'Tap ★ on any word card to save it here.';
+        msgZh = '在词卡上点击 ★ 即可加入收藏。';
+      }
+    } else if(_wbSearchTerm){
+      msgEn = 'No words match "'+_wbEsc(_wbSearchTerm)+'".';
+      msgZh = '没有匹配 "'+_wbEsc(_wbSearchTerm)+'" 的词条。';
+    }
+    empty.innerHTML = '<span data-en>'+msgEn+'</span><span data-zh>'+msgZh+'</span>';
+    empty.style.display = 'block';
+    setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = rows.map(_wbCardHtml).join('');
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+function _wbInit(){
+  if(_wbInited) return;
+  _wbInited = true;
+  // Tab clicks
+  const tabs = document.getElementById('wb-tabs');
+  if(tabs) tabs.addEventListener('click', function(e){
+    const btn = e.target.closest('.wb-tab');
+    if(!btn) return;
+    const f = btn.getAttribute('data-filter');
+    if(!f) return;
+    _wbActiveFilter = f;
+    tabs.querySelectorAll('.wb-tab').forEach(function(t){ t.classList.toggle('active', t === btn); });
+    _wbRenderGrid();
+  });
+  // Search input
+  const search = document.getElementById('wb-search');
+  if(search){
+    let timer = null;
+    search.addEventListener('input', function(){
+      const v = search.value.trim();
+      clearTimeout(timer);
+      timer = setTimeout(function(){
+        _wbSearchTerm = v;
+        _wbRenderGrid();
+      }, 80);
+    });
+  }
+  // Delegated clicks for play + favorite buttons
+  const grid = document.getElementById('wb-grid');
+  if(grid) grid.addEventListener('click', function(e){
+    const playBtn = e.target.closest('[data-play]');
+    if(playBtn){
+      const id = playBtn.getAttribute('data-id');
+      const kind = playBtn.getAttribute('data-play');
+      const row = (_wbCache||[]).find(function(r){ return r.id === id; });
+      if(!row) return;
+      const url = kind === 'word' ? row.audio_word_url : row.audio_sentence_url;
+      _wbPlay(playBtn, url);
+      return;
+    }
+    const favBtn = e.target.closest('[data-fav]');
+    if(favBtn){
+      const id = favBtn.getAttribute('data-fav');
+      _wbToggleFavorite(id, favBtn);
+      return;
+    }
+  });
+}
+
+async function renderWordBank(){
+  _wbInit();
+  const grid = document.getElementById('wb-grid');
+  if(grid && !grid.innerHTML){
+    grid.innerHTML = '<div style="grid-column:1/-1;color:var(--ink3);font-size:13px;padding:20px;text-align:center;">'+
+      '<span data-en>Loading…</span><span data-zh>加载中…</span></div>';
+    setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+  }
+  await _wbLoadAll();
+  await _wbLoadFavorites();
+  _wbRenderGrid();
+}
 
 /* ===== My Progress page ===== */
 function _pgEsc(s){

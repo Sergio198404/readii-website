@@ -699,6 +699,51 @@
 
 ---
 
+## 2026-04-29 | Session 24 | v1.9.0
+
+**Objective:** Build a Word Bank tab — curated reference list of British English pronunciation words, organised by Voice Coach module, each playable via TTS, searchable, with per-user favourites.
+
+**Completed (off-repo data pipeline):**
+- [x] Migration SQL: `word_bank` + `user_word_favorites` tables, indexes, RLS on favourites (`migration-word-bank.sql`)
+- [x] Hit a transient `42710 policy already exists` from Supabase SQL Editor — switched to `DROP POLICY IF EXISTS` + `CREATE POLICY` pattern; ran clean
+- [x] `seed-words.js` (idempotent upsert on `(word, module_id)`); ingested `words.json` (291 entries from user)
+- [x] Per-module counts: broad_a 60 · non_rhotic_r 59 · short_o 61 · th_voiced 53 · yod 58 (target was 300 even-split; close enough)
+- [x] `generate-tts.js`: OpenAI `tts-1-hd` with voice `fable` (British accent — replaced spec's `alloy` after flagging that alloy is the neutral/American-leaning voice; user agreed). Uploads to `readii-content/word-audio/{word_id}/word.mp3` and `sentence.mp3`. Resumable via `IS NULL` filter; 500ms throttle; 429-retry x3 with 30s wait
+- [x] 1-row smoke test passed end-to-end (TTS 3s/clip, upload ok, DB writeback ok, signed URL retrievable)
+- [x] Full TTS batch kicked off in background (~25-30 min, ~$0.50-0.90 budget)
+
+**Completed (frontend Word Bank page):**
+- [x] Sidebar `Word Bank` item now has `id="ni-word-bank"` and `onclick="showAppView('word-bank')"`
+- [x] `showAppView()` dispatch table extended with `word-bank` (one-line addition + breadcrumb switch)
+- [x] New `#view-word-bank` view: header, sticky filter bar (7 tabs + search input), card grid
+- [x] 7 filter tabs (All / 5 modules / ★ Favorites) — pill-style matching existing `.stab` design
+- [x] Live search across `word`, `ipa_gb`, `meaning_zh`, `example_sentence` (case-insensitive, 80ms debounce)
+- [x] Word card design: serif word + mono IPA + zh meaning + italic-quoted example sentence (with left rule), 🔊 Word / 🔊 Sentence buttons, ⭐ favourite toggle. Mobile collapses to 1 col, tablet to 2, desktop 3
+- [x] Single-audio playback: clicking play on one card stops any other playing clip; "Playing…" state with `--gold` highlight; resets on `ended` / `error`
+- [x] Audio loaded as signed URLs via existing `getSignedUrl()` helper (1-hour expiry); buttons gracefully disabled with tooltip "Audio not ready yet" until TTS fills in URLs
+- [x] Favorites: `user_word_favorites` insert/delete via RLS; when filter='Favorites' the unfavourited row disappears immediately; empty state shows "Tap ★ on any word card to save it here"
+- [x] All copy bilingual via `data-en`/`data-zh`
+- [x] 22 structural checks pass
+
+**Files changed:**
+- index.html (v1.8.0 → v1.9.0): #view-word-bank DOM + Word Bank CSS block + renderWordBank() + audio/favorite handlers + showAppView dispatch addition
+- VERSION (1.8.0 → 1.9.0)
+- CHANGELOG.md ([1.9.0] entry)
+- WORKLOG.md (this Session 24)
+
+**Off-repo files (intentionally not in git):**
+- `C:\Users\sergi\readii-transcribe\migration-word-bank.sql`
+- `C:\Users\sergi\readii-transcribe\seed-words.js`
+- `C:\Users\sergi\readii-transcribe\generate-tts.js`
+- `C:\Users\sergi\readii-transcribe\words.json`
+
+**Pending / Next session:**
+- [ ] Top up `th_voiced` / `non_rhotic_r` to ~60 each so all modules have parity (just append to words.json and re-run seed + generate-tts)
+- [ ] Add Voice Coach module detail "Practice this word" deep-link (open Word Bank with module pre-filtered)
+- [ ] Track "play count" per word as a passive engagement metric
+
+---
+
 ## 2026-04-29 | Session 23 | v1.8.0
 
 **Objective:** Build a "My Progress" tab so users can see their practice history and improvement, sourcing from the v1.6.0 `pronunciation_attempts` table.
