@@ -128,6 +128,28 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.5.0] — 2026-04-29
+
+### Added
+- feat: AI pronunciation practice now uses lesson-specific English excerpts extracted from commentary (242 lessons)
+- New `lessons.english_excerpts` JSONB column — array of 0–8 English practice sentences per lesson, mined from `commentary_text`
+- Reading page: when a book is opened, the AI Pronunciation panel re-renders with sentences from that lesson's commentary instead of the static sample pool
+- New panel hint label: "Practice with sentences from this lesson's commentary." (lesson-specific) / "Practice with British English sample sentences." (fallback)
+- Public window hook `setReadiiPracticeSentences(excerpts)` — called by `openBook()` to swap the practice list when a lesson loads
+
+### Changed
+- `openBook()` SELECT now includes `english_excerpts` alongside the existing lesson fields
+- Pronunciation IIFE refactored: sentence rendering factored into a reusable `renderSentences()`; default sample pool retained as `defaultPool`
+- Fallback threshold: lessons with fewer than 2 excerpts fall back to the 5-sentence sample pool so the practice block is never sparse
+
+### Notes
+- 242/242 transcribed lessons processed by the off-repo extractor; 1 328 sentences total (avg 5.49/lesson, max 8)
+- Extractor lives in a separate workspace (`C:\\Users\\sergi\\readii-transcribe\\extract-english.js`) — not part of the website repo
+- Quality filters: drops trivial-only ("ok / yeah"), spelling-runs (>20% single-letter tokens), number-heavy runs (<70% alphabetic tokens); auto-attaches sentence-end period when Whisper drops it adjacent to Chinese
+- 18 lessons yielded only the Larry-intro line; those use the fallback pool at runtime
+
+---
+
 ## [1.4.4] — 2026-04-29
 
 ### Added

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.4.4 | Updated: 2026-04-29 -->
+<!-- Readii v1.5.0 | Updated: 2026-04-29 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -304,6 +304,7 @@ h1{animation:fu .6s ease both .15s}
 .subscribe-banner{background:var(--forest-pale,var(--fp));border:1px solid rgba(27,58,45,.15);border-radius:var(--rl);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;grid-column:1/-1;margin-bottom:8px}
 .subscribe-banner p{font-size:14px;color:var(--forest2);font-weight:500}
 .speech-warn{font-size:12px;padding:9px 12px;border-radius:8px;background:var(--gp);color:#7A4A10;margin-bottom:11px;border:1px solid rgba(196,154,56,.25);line-height:1.5}
+.speech-source-label{font-size:11px;color:var(--ink3);margin-bottom:10px;line-height:1.45}
 .sentence-list{display:flex;flex-direction:column;gap:9px}
 .sentence-card{padding:11px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--cream);display:flex;flex-direction:column;gap:8px;transition:all .15s}
 .sentence-card.active{border-color:var(--forest3);background:var(--fp)}
@@ -567,6 +568,9 @@ h1{animation:fu .6s ease both .15s}
               <div id="speech-warn" class="speech-warn" style="display:none">
                 <span data-en>For best experience, use Chrome or Edge.</span><span data-zh>为获得最佳体验，请使用 Chrome 或 Edge。</span>
               </div>
+              <p class="speech-source-label" id="speech-source-label">
+                <span data-en>Practice with British English sample sentences.</span><span data-zh>朗读英式英语示范句子。</span>
+              </p>
               <div class="sentence-list" id="sentence-list"></div>
               <div class="speech-result" id="speech-result" style="display:none"></div>
             </div>
@@ -630,13 +634,14 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
 
 /* ===== AI pronunciation assessment — Web Speech API (en-GB) ===== */
 (function(){
-  const sentencePool = [
+  const defaultPool = [
     "The very hungry caterpillar ate through one apple.",
     "On Monday, he was still hungry.",
     "He looked for some food.",
     "On Saturday, he ate a lot of food.",
     "The next day was Sunday again."
   ];
+  const MIN_LESSON_EXCERPTS = 2;
   const britishTips = [
     "Try softening the 't' sound — British English uses lighter t's.",
     "The 'r' sound is silent at the end of words like 'caterpillar' in British accent.",
@@ -648,6 +653,7 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
   const list = document.getElementById('sentence-list');
   const warn = document.getElementById('speech-warn');
   const result = document.getElementById('speech-result');
+  const sourceLabel = document.getElementById('speech-source-label');
   if(!list) return;
 
   const ua = navigator.userAgent;
@@ -657,20 +663,55 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
     if(warn) warn.style.display = 'block';
   }
 
-  list.innerHTML = sentencePool.map((s,i) => (
-    '<div class="sentence-card" data-idx="'+i+'">'+
-      '<p class="sentence-target">'+escHtml(s)+'</p>'+
-      '<button class="read-aloud-btn" type="button" data-target="'+escAttr(s)+'">'+
-        '<span class="ralb-mic">🎙</span>'+
-        '<span class="ralb-l"><span data-en>Read aloud</span><span data-zh>朗读</span></span>'+
-      '</button>'+
-    '</div>'
-  )).join('');
-
   let activeBtn = null;
   let recognition = null;
   let stopTimer = null;
   let gotResult = false;
+
+  function renderSentences(sentences){
+    if(activeBtn){ try{ stopRecognition(); }catch(_){} resetBtn(); }
+    if(result){ result.style.display = 'none'; result.innerHTML = ''; }
+    list.innerHTML = sentences.map((s,i) => (
+      '<div class="sentence-card" data-idx="'+i+'">'+
+        '<p class="sentence-target">'+escHtml(s)+'</p>'+
+        '<button class="read-aloud-btn" type="button" data-target="'+escAttr(s)+'">'+
+          '<span class="ralb-mic">🎙</span>'+
+          '<span class="ralb-l"><span data-en>Read aloud</span><span data-zh>朗读</span></span>'+
+        '</button>'+
+      '</div>'
+    )).join('');
+  }
+
+  function setLabel(source){
+    if(!sourceLabel) return;
+    if(source === 'lesson'){
+      sourceLabel.innerHTML =
+        '<span data-en>Practice with sentences from this lesson’s commentary.</span>'+
+        '<span data-zh>朗读这一课讲解中提取的英文句子。</span>';
+    } else {
+      sourceLabel.innerHTML =
+        '<span data-en>Practice with British English sample sentences.</span>'+
+        '<span data-zh>朗读英式英语示范句子。</span>';
+    }
+  }
+
+  // Public hook: library.openBook() calls this with the lesson's english_excerpts.
+  // If fewer than MIN_LESSON_EXCERPTS sentences are available we fall back to the
+  // default sample pool so users always see a usable practice block.
+  window.setReadiiPracticeSentences = function(excerpts){
+    const arr = Array.isArray(excerpts) ? excerpts.filter(s => typeof s === 'string' && s.trim().length > 0) : [];
+    if(arr.length >= MIN_LESSON_EXCERPTS){
+      renderSentences(arr);
+      setLabel('lesson');
+    } else {
+      renderSentences(defaultPool);
+      setLabel('sample');
+    }
+  };
+
+  // Initial render — landing/app view before any book is opened
+  renderSentences(defaultPool);
+  setLabel('sample');
 
   list.addEventListener('click', function(e){
     const btn = e.target.closest('.read-aloud-btn');
@@ -1023,7 +1064,7 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
         lessons (
           id, day_number, title,
           reading_audio_url, commentary_audio_url,
-          reading_duration_seconds
+          reading_duration_seconds, english_excerpts
         )
       `)
       .eq('id', bookId)
@@ -1038,6 +1079,12 @@ function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textConten
     document.querySelector('.rpbu').textContent = `${displaySeriesName(book.series)} · Day ${lesson.day_number}`
     document.querySelector('.rpbt').textContent = book.title
     document.querySelector('.rpbtr').textContent = 'Native British teacher'
+
+    // Feed lesson-specific English excerpts into the AI pronunciation panel.
+    // The hook falls back to the sample pool if fewer than 2 excerpts are present.
+    if (typeof window.setReadiiPracticeSentences === 'function') {
+      window.setReadiiPracticeSentences(lesson.english_excerpts)
+    }
 
     // 获取签名 URL
     let readingUrl = lesson.reading_audio_url

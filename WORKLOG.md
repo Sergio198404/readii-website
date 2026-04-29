@@ -601,3 +601,60 @@
 - [ ] Hook score result into Supabase progress (save pronunciation_score per lesson)
 - [ ] Source target sentences from the actual book PDF / lesson rather than a static pool
 - [ ] iOS / Safari fallback path (e.g. record-and-upload + server-side scoring) — currently shows browser warning only
+
+---
+
+## 2026-04-29 | Session 19.5 (off-repo) | Whisper batch transcription
+
+**Objective:** Populate `lessons.commentary_text` for all books using OpenAI Whisper, so subsequent features (pronunciation, search, content audit) can reference the spoken commentary as data.
+
+**Workspace:** `C:\Users\sergi\readii-transcribe\` (deliberately outside the website repo — one-shot tooling, not part of the deploy).
+
+**Completed:**
+- [x] One-shot script `transcribe.js` (Node, no new website deps): downloads from Supabase Storage `readii-content` bucket, calls Whisper with `lang=en`, brand-aware prompt, `response_format=verbose_json` to capture duration without ffmpeg
+- [x] 242 lessons transcribed (238 first pass + 4 retry after format sniffing)
+- [x] 4 mis-extensioned files (M4A bytes labelled .mp3) handled by adding magic-byte container detection
+- [x] Total cost: $3.564 (whisper-1 @ $0.006/min, 9h45m of audio); wall clock 28 min
+- [x] Brand-name audit: 240/242 transcripts contain "Readii" correctly spelled, 0 contain phonetic mis-spellings
+- [x] 139 unprocessed lessons all have `commentary_audio_url = ''` (empty string) — neither NULL nor 'EMPTY'; flagged to user as data-hygiene cleanup
+
+**Notes:**
+- Script is self-contained: `.env` with API keys lives only in the workspace; no secret ever entered the website repo or git history
+- Re-runnable: `commentary_text IS NULL` filter means a re-run automatically picks up any rows that fail or are added later
+
+---
+
+## 2026-04-29 | Session 20 | v1.5.0
+
+**Objective:** Replace the static 5-sentence sample pool in the AI Pronunciation panel with lesson-specific English practice sentences mined from `commentary_text`.
+
+**Completed (Phase 1 — off-repo data):**
+- [x] Migration: `ALTER TABLE lessons ADD COLUMN english_excerpts JSONB` (run by user via Supabase SQL Editor)
+- [x] Off-repo extractor `C:\Users\sergi\readii-transcribe\extract-english.js`
+- [x] Tokeniser: replaces all CJK characters and CJK punctuation with hard splits, then sentence-splits each English run on `[.!?]\s+`, then filters
+- [x] Quality filters (kept all 4 from the proposal): trivial-only ("ok / yeah" etc) drop, spelling-run drop (>20% single-letter tokens), number-heavy drop (<70% alphabetic tokens), auto-attach sentence-end period when Whisper truncated it next to Chinese
+- [x] Result: 242/242 processed, 0 errors, 1 328 sentences total, avg 5.49 per lesson (max 8); 1 lesson had 0 (Baby Pictures — pure Chinese commentary), 18 lessons had only the Larry intro
+
+**Completed (Phase 2 — frontend):**
+- [x] Added `english_excerpts` to the `openBook()` SELECT in index.html
+- [x] Refactored the v1.4.4 pronunciation IIFE: extracted rendering into `renderSentences()`; renamed `sentencePool` → `defaultPool` to clarify it's now a fallback
+- [x] New public hook `window.setReadiiPracticeSentences(excerpts)` — falls back to the 5-sentence sample pool if `excerpts.length < 2` (chosen by user over strict spec to avoid sparse single-line panels)
+- [x] `openBook()` calls the hook after loading the lesson — panel re-renders with that lesson's excerpts, label updates accordingly
+- [x] Added small hint label above the sentence list ("Practice with sentences from this lesson's commentary." / "Practice with British English sample sentences.") — bilingual EN/ZH, uses existing `--ink3` token
+
+**Verified end-to-end:** Bubbles (Heinemann G1) Day 1 → 7 lesson-specific excerpts render, label switches to lesson-specific.
+
+**Files changed:**
+- index.html (v1.4.4 → v1.5.0): SELECT extended, IIFE refactored with public hook, source-label element + CSS
+- VERSION (1.4.4 → 1.5.0)
+- CHANGELOG.md (added [1.5.0] entry)
+- WORKLOG.md (this session + the off-repo Session 19.5)
+
+**Off-repo files (not in git, intentionally):**
+- `C:\Users\sergi\readii-transcribe\extract-english.js`
+- `C:\Users\sergi\readii-transcribe\migration.sql`
+
+**Pending / Next session:**
+- [ ] Normalise the 139 `commentary_audio_url = ''` rows to NULL or 'EMPTY' so future tooling treats them consistently
+- [ ] Consider re-running the extractor whenever new commentary_text rows arrive (cron / webhook)
+- [ ] Hook pronunciation score result into Supabase progress (carried over from v1.4.4)
