@@ -128,6 +128,34 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.0.0] — 2026-04-29
+
+### Added
+- feat: Word Bank 2.0 — card practice mode with AI scoring, Review queue, session summary
+- New table `review_queue` (per-user spaced-repetition queue, RLS-scoped) with auto-add on score <50 and auto-graduate on best ≥80
+- New `word_bank.tags TEXT[]` column (reserved for later category/source tagging)
+- New left-sidebar tab **Review** — clickable, switches to a new `#view-review` showing the current user's review queue with metadata (added when, current best score) and a "Practice All" CTA
+- **Word Bank hub** (`#wb-home`): two entry cards — "Practice" (random with review-priority) and "Browse" (existing 291-card grid). Footer line shows live counts of Favorites and Review queue
+- **Practice mode** (`#wb-practice`): single card display with word, IPA, meaning_zh, italic example sentence, and 🔊 Hear-Word / 🔊 Hear-Sentence buttons. Two record buttons (🎤 Record Word / 🎤 Record Sentence) reuse the v1.4.4 Web Speech engine via `ReadiiSpeech.attach()`. Each scored attempt logs to `pronunciation_attempts` with `source='word_bank'`
+- Score tier feedback (≥80 / ≥50 / <50) with bilingual messages and emoji tone
+- Auto-add to Review when word score <50; manual "Add to Review" button always available
+- Score graduation: when `best_score_since_added` reaches 80, the row is deleted from `review_queue` (proxy: rendered as "mastered" count on the Review page)
+- "Save to Favorites" inline in practice flow (re-uses `user_word_favorites` from v1.9.0)
+- 20-card session by default (5 from review queue + 15 random in 'random' mode; full queue in 'review' mode); session-complete summary with avg word score, avg sentence score, count added to review
+- Single-word practice path: ▶ Go on a Review row launches a 1-card practice for just that word
+- TTS-vs-recording mutex: clicking a 🔊 button stops any active mic recording; clicking a 🎤 button stops any playing TTS
+
+### Changed
+- Browse mode (291-card grid) is now a sub-view inside Word Bank, accessed via the hub's "Browse All →" card. All v1.9.0 features (filters, search, favorites, audio) intact
+- `ReadiiSpeech` public API extended with `stop()` and `isActive()` for the mutex
+- `showAppView()` dispatch table extended with `review`; breadcrumb updates per active view
+
+### Notes
+- Frontend-only on the website side; off-repo migration `migration-review-queue.sql` (DROP-then-CREATE policy idiom to avoid the 42710 error pattern)
+- Major version bump (1.x → 2.0.0) per the user's "产品闭环完整" call: Reading + Voice Coach + Progress + Word Bank (browse + practice) + Review + Settings is the complete v1 product loop
+
+---
+
 ## [1.9.0] — 2026-04-29
 
 ### Added

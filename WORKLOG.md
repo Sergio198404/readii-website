@@ -699,6 +699,44 @@
 
 ---
 
+## 2026-04-29 | Session 25 | v2.0.0
+
+**Objective:** Turn Word Bank from a flat 291-card list into a full practice product loop — card-by-card AI scoring, automatic Review queue, session summaries — plus build the Review tab on top of it.
+
+**Completed (off-repo):**
+- [x] `migration-review-queue.sql`: ADD COLUMN tags TEXT[]; CREATE review_queue with composite UNIQUE(user_id,word_id), index, RLS, 4 policies. Used DROP-then-CREATE for policies after the 42710 error pattern we hit on Word Bank v1.9.0 — ran clean
+
+**Completed (frontend):**
+- [x] `#view-word-bank` restructured into 4 sub-views: `#wb-home` (hub), `#wb-browse` (existing v1.9.0 grid, untouched logic, just wrapped + Back button), `#wb-practice` (card flow), `#wb-summary` (session complete). Internal navigator `_wbShowSubView()` toggles display
+- [x] Hub page: 2 entry cards (Practice / Browse), live counters for Favorites and Review queue
+- [x] Practice flow: single card with word, IPA, zh meaning, italic example sentence, 🔊 Hear-Word / 🔊 Hear-Sentence buttons; record zone with 🎤 Record-Word and 🎤 Record-Sentence buttons sharing one `ReadiiSpeech.attach()` instance
+- [x] Speech engine reused with no rendering side-effects: practice container has no `.speech-result`, so engine's renderResult bails and only fires `onScore` callback. Custom result panel renders both scores + tier feedback once captured
+- [x] `_wbHandlePracticeScore` distinguishes word vs sentence by matching `info.sentence` to the current card's word/example_sentence; logs to `pronunciation_attempts` with `source='word_bank'`; auto-adds to `review_queue` when word score <50 (upsert ignoreDuplicates so re-adds don't churn); updates `best_score_since_added`; graduates (deletes row) when best ≥80
+- [x] Tier feedback messages bilingual (≥80 / ≥50 / <50); ≥50 line uses 💪 + "Good try!", <50 uses 🔄 + "every expert was once a beginner"
+- [x] Bottom actions appear after first score: ⭐ Save / 🔁 Add to Review / ← Retry; Next Word → enables only when both scored
+- [x] Session: random mode = up to 5 review queue + fill to 20 random; review mode = full queue (capped 20). Single-word mode for ▶ Go from Review list
+- [x] Session-complete card: emoji + "You practised N words" + word avg / sentence avg / words-added-to-review counts; Practice Again / Back to Word Bank
+- [x] **Review tab** (`#view-review`): list with word, IPA, zh, "Added Xd ago", "Best: N/100", ▶ Go button per row; "Practice All Review Words" CTA; "🎓 N words mastered" footer (proxy: distinct word_bank words with any ≥80 score from word_bank source)
+- [x] Sidebar `Review` item now has `id="ni-review"` and `onclick="showAppView('review')"`; `showAppView()` dispatch table extended with `review` + breadcrumb
+- [x] **TTS-vs-recording mutex**: `ReadiiSpeech.stop()` + `isActive()` exposed; capture-phase listener on practice sentence-list stops TTS before engine starts recording; `_wbPlayHear` checks `ReadiiSpeech.isActive()` and stops any active mic before TTS plays
+- [x] Mobile-responsive: hub grid collapses to 1-col under 600px; practice card padding/word size scaled down; review row collapses
+
+**Files changed:**
+- index.html (v1.9.0 → v2.0.0): 4 sub-views, #view-review, hub CSS, practice CSS, summary CSS, review CSS, ~600 lines of new JS (hub, browse refactor, practice flow, review tab, single-word path, mutex)
+- VERSION (1.9.0 → 2.0.0)
+- CHANGELOG.md ([2.0.0] entry)
+- WORKLOG.md (this Session 25)
+
+**Off-repo files (intentionally not in git):**
+- `C:\Users\sergi\readii-transcribe\migration-review-queue.sql`
+
+**Pending / Next session:**
+- [ ] Surface "graduated from review" count distinct from "mastered" — would need a soft-delete `graduated_at` column on review_queue if we want strict semantics
+- [ ] Wire `tags TEXT[]` to a tag UI in Browse mode
+- [ ] Per-card retry that re-fetches Whisper feedback details (currently retry just clears local scores)
+
+---
+
 ## 2026-04-29 | Session 24 | v1.9.0
 
 **Objective:** Build a Word Bank tab — curated reference list of British English pronunciation words, organised by Voice Coach module, each playable via TTS, searchable, with per-user favourites.

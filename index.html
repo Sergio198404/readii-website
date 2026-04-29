@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.9.0 | Updated: 2026-04-29 -->
+<!-- Readii v2.0.0 | Updated: 2026-04-29 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -483,6 +483,107 @@ h1{animation:fu .6s ease both .15s}
   .wb-title{font-size:24px}
   .wb-controls{position:relative;top:auto}
 }
+/* ===== Word Bank — hub / practice / summary / review ===== */
+.wb-hub-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
+.wb-hub-card{background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:var(--sh);padding:24px 22px;display:flex;flex-direction:column;gap:10px;transition:all .15s}
+.wb-hub-card:hover{box-shadow:var(--shm);border-color:var(--border2)}
+.wb-hub-icon{font-size:28px;line-height:1;margin-bottom:4px}
+.wb-hub-title{font-family:var(--serif);font-size:21px;font-weight:400;color:var(--ink)}
+.wb-hub-desc{font-size:13px;color:var(--ink2);line-height:1.6;flex:1}
+.wb-hub-cta{align-self:flex-start;margin-top:6px;background:var(--forest);color:var(--white);font-size:13px;font-weight:500;padding:9px 18px;border-radius:6px;border:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em}
+.wb-hub-cta:hover{background:var(--forest2)}
+.wb-hub-cta-secondary{background:var(--white);color:var(--ink2);border:1px solid var(--border)}
+.wb-hub-cta-secondary:hover{background:var(--cream);border-color:var(--border2);color:var(--ink)}
+.wb-hub-footer{display:flex;flex-direction:column;gap:6px;background:var(--cream2);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--ink2)}
+.wb-hub-foot-line b{color:var(--forest);font-family:var(--serif);font-weight:400;font-size:15px}
+.wb-back-btn{font-size:13px;color:var(--ink2);padding:6px 13px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:transparent;font-family:var(--sans);transition:all .15s}
+.wb-back-btn:hover{border-color:var(--border2);background:var(--white);color:var(--ink)}
+
+/* Practice page */
+.wb-practice-page{max-width:680px}
+.wbp-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.wbp-exit{font-size:13px;color:var(--ink2);padding:6px 13px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:transparent;font-family:var(--sans)}
+.wbp-exit:hover{border-color:#B0463A;color:#B0463A}
+.wbp-progress{font-size:13px;color:var(--ink3);font-family:var(--mono)}
+.wbp-progress span:last-child,.wbp-progress span:first-child + span{color:var(--ink2);font-weight:500}
+#wbp-progress-cur{color:var(--forest);font-weight:500}
+.wbp-card{background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:var(--sh);padding:28px 24px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;margin-bottom:14px}
+.wbp-mod-tag{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.wbp-word{font-family:var(--serif);font-size:36px;font-weight:400;color:var(--ink);line-height:1.1;word-break:break-word}
+.wbp-ipa{font-family:var(--mono);font-size:15px;color:var(--ink3);margin-top:-2px}
+.wbp-zh{font-size:14px;color:var(--ink2);margin-bottom:6px}
+.wbp-hear-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px;margin-bottom:4px}
+.wbp-hear-btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.wbp-hear-btn:hover:not(:disabled){border-color:var(--forest3);color:var(--forest);background:var(--fp)}
+.wbp-hear-btn:disabled{opacity:.4;cursor:not-allowed}
+.wbp-hear-btn.playing{background:var(--gp);border-color:var(--gold);color:#7A4A10}
+.wbp-sentence-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-top:10px;font-weight:500}
+.wbp-sentence{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink);line-height:1.55;border-left:2px solid var(--border);padding-left:11px;margin-top:2px;text-align:left;max-width:100%;word-break:break-word}
+.wbp-record-zone{background:var(--cream2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.wbp-record-label{font-size:13px;color:var(--ink2);margin-bottom:11px;font-weight:500}
+.wbp-record-zone .sentence-list{display:flex;flex-direction:column;gap:8px}
+.wbp-record-zone .sentence-card{padding:0;border:none;background:transparent}
+.wbp-record-zone .sentence-card.active{background:transparent}
+.wbp-record-btn{width:100%;justify-content:center;padding:12px 16px;font-size:13px;font-weight:500}
+.wbp-result{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.wbp-result:empty{display:none}
+.wbp-score-row{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:10px 14px;align-items:center}
+.wbp-score-row-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.wbp-score-row-value{font-family:var(--serif);font-size:24px;line-height:1;font-weight:400;text-align:right}
+.wbp-score-row-value.t-forest{color:var(--forest)}
+.wbp-score-row-value.t-gold{color:var(--gold)}
+.wbp-score-row-value.t-amber{color:#B0463A}
+.wbp-score-row-value .wbp-score-suffix{font-size:13px;opacity:.55;font-family:var(--sans)}
+.wbp-score-fb{grid-column:1/-1;font-size:13px;color:var(--ink2);line-height:1.55;border-top:1px dashed var(--border);padding-top:10px;margin-top:4px;text-align:left}
+.wbp-bottom{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
+.wbp-bottom-actions{display:flex;gap:8px;flex-wrap:wrap}
+.wbp-btn{font-family:var(--sans);font-size:13px;font-weight:500;padding:9px 16px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--ink2);transition:all .15s;letter-spacing:.02em}
+.wbp-btn:hover{border-color:var(--border2);color:var(--ink)}
+.wbp-btn.wbp-btn-primary{background:var(--forest);color:var(--white);border-color:var(--forest)}
+.wbp-btn.wbp-btn-primary:hover{background:var(--forest2);border-color:var(--forest2)}
+.wbp-btn.on{background:var(--gp);border-color:var(--gold);color:#7A4A10}
+.wbp-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Summary */
+.wbs-card{background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:var(--sh);padding:34px 28px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center;max-width:540px;margin:0 auto}
+.wbs-emoji{font-size:46px;line-height:1}
+.wbs-title{font-family:var(--serif);font-size:26px;font-weight:400;color:var(--ink)}
+.wbs-stats{width:100%;display:grid;grid-template-columns:1fr;gap:8px;background:var(--cream2);border-radius:10px;padding:14px 18px}
+.wbs-stat-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink2)}
+.wbs-stat-row b{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--forest)}
+.wbs-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* Review page */
+.rv-page{padding:4px 4px 32px;max-width:780px;margin:0 auto}
+.rv-header{margin-bottom:18px}
+.rv-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);line-height:1.2;margin-bottom:6px}
+.rv-sub{font-size:14px;color:var(--ink3)}
+.rv-empty{font-size:14px;color:var(--ink3);text-align:center;padding:40px 20px;font-style:italic;background:var(--white);border:1px dashed var(--border);border-radius:12px}
+.rv-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.rv-row{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:center}
+.rv-row-main{display:flex;flex-direction:column;gap:3px;min-width:0}
+.rv-row-line1{display:flex;gap:12px;flex-wrap:wrap;align-items:baseline}
+.rv-row-word{font-family:var(--serif);font-size:18px;color:var(--ink);font-weight:400}
+.rv-row-ipa{font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.rv-row-zh{font-size:13px;color:var(--ink2)}
+.rv-row-meta{font-size:11px;color:var(--ink3);font-family:var(--mono);display:flex;gap:14px;flex-wrap:wrap;margin-top:2px}
+.rv-row-meta b{color:var(--ink2);font-family:var(--serif);font-size:13px;font-weight:400}
+.rv-row-go{align-self:start;font-size:12px;font-weight:500;padding:7px 14px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--ink2);cursor:pointer;font-family:var(--sans);transition:all .15s}
+.rv-row-go:hover{border-color:var(--forest3);color:var(--forest);background:var(--fp)}
+.rv-cta-row{display:flex;justify-content:center;margin-bottom:24px}
+.rv-cta{background:var(--forest);color:var(--white);font-size:14px;font-weight:500;padding:11px 22px;border-radius:8px;border:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em}
+.rv-cta:hover{background:var(--forest2)}
+.rv-completed{display:flex;flex-direction:column;gap:10px;padding-top:18px;border-top:1px dashed var(--border);font-size:13px;color:var(--ink3);text-align:center}
+.rv-completed b{color:var(--forest);font-family:var(--serif);font-size:16px;font-weight:400}
+
+@media (max-width:600px){
+  .wb-hub-grid{grid-template-columns:1fr}
+  .wbp-card{padding:20px 16px}
+  .wbp-word{font-size:30px}
+  .wbp-sentence{font-size:14px}
+  .rv-row{grid-template-columns:1fr;gap:6px}
+  .rv-row-go{justify-self:start}
+}
 @media (max-width:640px){
   .pg-title{font-size:24px}
   .pg-stats{grid-template-columns:repeat(2,1fr)}
@@ -654,7 +755,7 @@ h1{animation:fu .6s ease both .15s}
       <div class="ni" id="ni-progress" onclick="showAppView('progress')"><span class="nic">📊</span><span data-en>My Progress</span><span data-zh>我的进度</span></div>
       <div class="nbgl"><span data-en>Vocabulary</span><span data-zh>词汇</span></div>
       <div class="ni" id="ni-word-bank" onclick="showAppView('word-bank')"><span class="nic">📝</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
-      <div class="ni"><span class="nic">🔁</span><span data-en>Review</span><span data-zh>复习</span></div>
+      <div class="ni" id="ni-review" onclick="showAppView('review')"><span class="nic">🔁</span><span data-en>Review</span><span data-zh>复习</span></div>
       <div class="nbgl"><span data-en>Account</span><span data-zh>账户</span></div>
       <div class="ni" id="ni-settings" onclick="showAppView('settings')"><span class="nic">⚙️</span><span data-en>Settings</span><span data-zh>设置</span></div>
     </div>
@@ -852,15 +953,55 @@ h1{animation:fu .6s ease both .15s}
        </div>
      </div><!-- /#view-progress -->
      <div id="view-word-bank" style="display:none">
-       <div class="wb-page">
+       <!-- HUB -->
+       <div id="wb-home" class="wb-page">
          <div class="wb-header">
            <h2 class="wb-title"><span data-en>Word Bank</span><span data-zh>词汇库</span></h2>
            <p class="wb-sub">
-             <span data-en>Essential words for British English pronunciation.</span>
-             <span data-zh>英式英语发音核心词汇库。</span>
+             <span data-en>British English pronunciation · 291 words · 5 modules</span>
+             <span data-zh>英式英语发音 · 291 个词 · 5 个模块</span>
            </p>
          </div>
+         <div class="wb-hub-grid">
+           <div class="wb-hub-card" id="wb-hub-practice">
+             <div class="wb-hub-icon">🎯</div>
+             <div class="wb-hub-title"><span data-en>Practice</span><span data-zh>练习</span></div>
+             <div class="wb-hub-desc">
+               <span data-en>Random cards · AI pronunciation scoring · build your Review list.</span>
+               <span data-zh>随机出词 · AI 发音评分 · 自动整理复习列表。</span>
+             </div>
+             <button class="wb-hub-cta" type="button"><span data-en>Start Practice →</span><span data-zh>开始练习 →</span></button>
+           </div>
+           <div class="wb-hub-card" id="wb-hub-browse">
+             <div class="wb-hub-icon">📖</div>
+             <div class="wb-hub-title"><span data-en>Browse</span><span data-zh>浏览</span></div>
+             <div class="wb-hub-desc">
+               <span data-en>View all 291 words by module, with audio and favorites.</span>
+               <span data-zh>按模块浏览全部 291 个词，可试听并收藏。</span>
+             </div>
+             <button class="wb-hub-cta wb-hub-cta-secondary" type="button"><span data-en>Browse All →</span><span data-zh>浏览全部 →</span></button>
+           </div>
+         </div>
+         <div class="wb-hub-footer" id="wb-hub-footer">
+           <span class="wb-hub-foot-line">⭐ <span data-en>Favorites: <b id="wb-fav-count">—</b> words saved</span><span data-zh>收藏：<b class="wb-fav-count-zh">—</b> 个词</span></span>
+           <span class="wb-hub-foot-line">🔁 <span data-en>Review: <b id="wb-review-count">—</b> words need practice</span><span data-zh>复习：<b class="wb-review-count-zh">—</b> 个词待练习</span></span>
+         </div>
+       </div>
 
+       <!-- BROWSE -->
+       <div id="wb-browse" class="wb-page" style="display:none">
+         <div class="wb-header" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+           <div>
+             <h2 class="wb-title"><span data-en>Browse Words</span><span data-zh>浏览词汇</span></h2>
+             <p class="wb-sub">
+               <span data-en>All 291 words. Tap ★ to save · Tap 🔊 to hear British pronunciation.</span>
+               <span data-zh>共 291 个词。点 ★ 收藏 · 点 🔊 试听英式发音。</span>
+             </p>
+           </div>
+           <button class="wb-back-btn" id="wb-browse-back" type="button">
+             <span data-en>← Back</span><span data-zh>← 返回</span>
+           </button>
+         </div>
          <div class="wb-controls">
            <div class="wb-tabs" id="wb-tabs">
              <button class="wb-tab active" data-filter="all" type="button"><span data-en>All</span><span data-zh>全部</span></button>
@@ -875,11 +1016,81 @@ h1{animation:fu .6s ease both .15s}
              <input id="wb-search" type="search" autocomplete="off" placeholder="Search words, IPA, meaning, sentence…" class="wb-search">
            </div>
          </div>
-
          <div id="wb-empty" class="wb-empty" style="display:none"></div>
          <div id="wb-grid" class="wb-grid"></div>
        </div>
+
+       <!-- PRACTICE -->
+       <div id="wb-practice" class="wb-page wb-practice-page" style="display:none">
+         <div class="wbp-topbar">
+           <button class="wbp-exit" id="wbp-exit-btn" type="button">
+             <span data-en>✕ Exit</span><span data-zh>✕ 退出</span>
+           </button>
+           <div class="wbp-progress">
+             <span data-en>Progress:</span><span data-zh>进度：</span>
+             <span id="wbp-progress-cur">0</span><span> / </span><span id="wbp-progress-total">0</span>
+           </div>
+         </div>
+         <div class="wbp-card" id="wbp-card-display">
+           <div class="wbp-mod-tag" id="wbp-mod-tag"></div>
+           <div class="wbp-word" id="wbp-word"></div>
+           <div class="wbp-ipa" id="wbp-ipa"></div>
+           <div class="wbp-zh" id="wbp-zh"></div>
+           <div class="wbp-hear-row">
+             <button class="wbp-hear-btn" type="button" data-hear="word"><span class="wbp-hear-ic">🔊</span><span data-en>Hear Word</span><span data-zh>听单词发音</span></button>
+             <button class="wbp-hear-btn" type="button" data-hear="sentence"><span class="wbp-hear-ic">🔊</span><span data-en>Hear Sentence</span><span data-zh>听例句</span></button>
+           </div>
+           <div class="wbp-sentence-label"><span data-en>Example:</span><span data-zh>例句：</span></div>
+           <div class="wbp-sentence" id="wbp-sentence"></div>
+         </div>
+         <div class="wbp-record-zone">
+           <div class="wbp-record-label"><span data-en>Read aloud — record both:</span><span data-zh>朗读以下两项：</span></div>
+           <div class="sentence-list" id="wbp-sentence-list">
+             <div class="sentence-card">
+               <button class="read-aloud-btn wbp-record-btn" type="button" data-target="" data-kind="word">
+                 <span class="ralb-mic">🎤</span>
+                 <span class="ralb-l"><span data-en>Record Word</span><span data-zh>录制单词</span></span>
+               </button>
+             </div>
+             <div class="sentence-card">
+               <button class="read-aloud-btn wbp-record-btn" type="button" data-target="" data-kind="sentence">
+                 <span class="ralb-mic">🎤</span>
+                 <span class="ralb-l"><span data-en>Record Sentence</span><span data-zh>录制例句</span></span>
+               </button>
+             </div>
+           </div>
+         </div>
+         <div class="wbp-result" id="wbp-result"></div>
+         <div class="wbp-bottom" id="wbp-bottom"></div>
+       </div>
+
+       <!-- SESSION COMPLETE -->
+       <div id="wb-summary" class="wb-page" style="display:none">
+         <div class="wbs-card" id="wbs-card-content"></div>
+       </div>
      </div><!-- /#view-word-bank -->
+     <div id="view-review" style="display:none">
+       <div class="rv-page">
+         <div class="rv-header">
+           <h2 class="rv-title"><span data-en>Review</span><span data-zh>复习</span></h2>
+           <p class="rv-sub" id="rv-sub">
+             <span data-en>Loading…</span><span data-zh>加载中…</span>
+           </p>
+         </div>
+         <div id="rv-empty" class="rv-empty" style="display:none"></div>
+         <div id="rv-list" class="rv-list"></div>
+         <div id="rv-cta-row" class="rv-cta-row" style="display:none">
+           <button class="rv-cta" id="rv-practice-all" type="button">
+             <span data-en>Practice All Review Words →</span>
+             <span data-zh>开始复习所有词 →</span>
+           </button>
+         </div>
+         <div id="rv-completed" class="rv-completed" style="display:none">
+           <span class="rv-completed-rule"></span>
+           <span class="rv-completed-text">🎓 <b id="rv-mastered-count">0</b> <span data-en>words mastered through Word Bank practice</span><span data-zh>个词已通过词汇库练习掌握</span></span>
+         </div>
+       </div>
+     </div><!-- /#view-review -->
      <div id="view-settings" style="display:none">
        <div class="st-page">
          <div class="st-header">
@@ -1229,6 +1440,7 @@ function showAppView(name){
     'voice-coach': document.getElementById('view-voice-coach'),
     'progress':    document.getElementById('view-progress'),
     'word-bank':   document.getElementById('view-word-bank'),
+    'review':      document.getElementById('view-review'),
     'settings':    document.getElementById('view-settings')
   };
   const navs = {
@@ -1236,6 +1448,7 @@ function showAppView(name){
     'voice-coach': document.getElementById('ni-voice-coach'),
     'progress':    document.getElementById('ni-progress'),
     'word-bank':   document.getElementById('ni-word-bank'),
+    'review':      document.getElementById('ni-review'),
     'settings':    document.getElementById('ni-settings')
   };
   if(!views[name]) name = 'library';
@@ -1246,6 +1459,7 @@ function showAppView(name){
     if(name === 'voice-coach') bc.innerHTML = '<span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span>';
     else if(name === 'progress') bc.innerHTML = '<span data-en>My Progress</span><span data-zh>我的进度</span>';
     else if(name === 'word-bank') bc.innerHTML = '<span data-en>Word Bank</span><span data-zh>词汇库</span>';
+    else if(name === 'review') bc.innerHTML = '<span data-en>Review</span><span data-zh>复习</span>';
     else if(name === 'settings') bc.innerHTML = '<span data-en>Settings</span><span data-zh>设置</span>';
     else bc.innerHTML = '<span data-en>Reading Library</span><span data-zh>阅读书库</span>';
   }
@@ -1259,6 +1473,8 @@ function showAppView(name){
     renderProgress();
   } else if(name === 'word-bank'){
     renderWordBank();
+  } else if(name === 'review'){
+    renderReviewPage();
   } else if(name === 'settings'){
     renderSettings();
   }
@@ -1543,7 +1759,14 @@ function _wbInit(){
   });
 }
 
-async function renderWordBank(){
+function _wbShowSubView(name){
+  ['wb-home','wb-browse','wb-practice','wb-summary'].forEach(function(id){
+    const el = document.getElementById(id);
+    if(el) el.style.display = (id === 'wb-' + name) ? 'block' : 'none';
+  });
+}
+
+async function _wbRenderBrowse(){
   _wbInit();
   const grid = document.getElementById('wb-grid');
   if(grid && !grid.innerHTML){
@@ -1554,6 +1777,497 @@ async function renderWordBank(){
   await _wbLoadAll();
   await _wbLoadFavorites();
   _wbRenderGrid();
+}
+
+async function _wbCountReviewQueue(){
+  if(typeof _supabase === 'undefined') return 0;
+  try{
+    const { data: { user } } = await _supabase.auth.getUser();
+    if(!user) return 0;
+    const { count } = await _supabase.from('review_queue').select('*', { count:'exact', head:true }).eq('user_id', user.id);
+    return count || 0;
+  }catch(e){ return 0; }
+}
+
+let _wbHubBound = false;
+async function _wbRenderHub(){
+  await _wbLoadAll();
+  await _wbLoadFavorites();
+  const reviewCount = await _wbCountReviewQueue();
+  const favCount = _wbFavSet.size;
+  document.querySelectorAll('#wb-fav-count, .wb-fav-count-zh').forEach(function(el){ el.textContent = favCount; });
+  document.querySelectorAll('#wb-review-count, .wb-review-count-zh').forEach(function(el){ el.textContent = reviewCount; });
+  if(!_wbHubBound){
+    _wbHubBound = true;
+    const practiceBtn = document.getElementById('wb-hub-practice');
+    if(practiceBtn) practiceBtn.addEventListener('click', function(){ _wbStartPractice('random'); });
+    const browseBtn = document.getElementById('wb-hub-browse');
+    if(browseBtn) browseBtn.addEventListener('click', function(){ _wbShowSubView('browse'); _wbRenderBrowse(); });
+    const browseBack = document.getElementById('wb-browse-back');
+    if(browseBack) browseBack.addEventListener('click', function(){ _wbShowSubView('home'); _wbRenderHub(); });
+  }
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+async function renderWordBank(){
+  _wbShowSubView('home');
+  await _wbRenderHub();
+}
+
+/* --- Practice mode --- */
+let _wbPracticeSession = null;
+let _wbPracticeBound = false;
+let _wbPracticeSpeechBound = false;
+
+async function _wbBuildSession(mode){
+  await _wbLoadAll();
+  if(typeof _supabase === 'undefined') return [];
+  let user = null;
+  try{ const r = await _supabase.auth.getUser(); user = r && r.data ? r.data.user : null; }catch(e){}
+  let reviewIds = [];
+  if(user){
+    const { data: rq } = await _supabase.from('review_queue').select('word_id').eq('user_id', user.id).order('added_at',{ascending:true}).limit(50);
+    if(rq) for(const r of rq) reviewIds.push(r.word_id);
+  }
+  const all = _wbCache || [];
+  const reviewWords = reviewIds.map(function(id){ return all.find(function(w){ return w.id === id; }); }).filter(Boolean);
+  if(mode === 'review') return reviewWords.slice(0, 20);
+  // 'random' mode: up to 5 review + fill to 20 random
+  const reviewSlice = reviewWords.slice(0, 5);
+  const reviewSet = new Set(reviewSlice.map(function(w){ return w.id; }));
+  const remaining = all.filter(function(w){ return !reviewSet.has(w.id); });
+  for(let i = remaining.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    const tmp = remaining[i]; remaining[i] = remaining[j]; remaining[j] = tmp;
+  }
+  const fillCount = Math.max(0, 20 - reviewSlice.length);
+  return reviewSlice.concat(remaining.slice(0, fillCount));
+}
+
+async function _wbStartPractice(mode){
+  const cards = await _wbBuildSession(mode);
+  if(cards.length === 0){
+    const msg = (document.body.classList.contains('zh'))
+      ? (mode === 'review' ? '复习队列为空。先去练习模式让低分词进入复习。' : '没有可练习的词。')
+      : (mode === 'review' ? 'Your review queue is empty. Practice some words first — low scores will land here.' : 'No words available to practice.');
+    alert(msg);
+    return;
+  }
+  _wbPracticeSession = {
+    mode: mode, cards: cards, idx: 0, startedAt: Date.now(),
+    wordScoreSum: 0, wordScoreCount: 0,
+    sentenceScoreSum: 0, sentenceScoreCount: 0,
+    reviewAdded: 0,
+    currentWordScore: null, currentSentenceScore: null
+  };
+  _wbShowSubView('practice');
+  _wbBindPracticeOnce();
+  _wbRenderPracticeCard();
+}
+
+function _wbBindPracticeOnce(){
+  if(_wbPracticeBound) return;
+  _wbPracticeBound = true;
+  const exitBtn = document.getElementById('wbp-exit-btn');
+  if(exitBtn) exitBtn.addEventListener('click', function(){
+    if(confirm((document.body.classList.contains('zh')) ? '退出本轮练习？已完成的词已自动保存。' : 'Exit this practice session? Each completed word is already saved.')){
+      _wbPracticeSession = null;
+      _wbStopCurrentAudio();
+      _wbShowSubView('home');
+      _wbRenderHub();
+    }
+  });
+  const card = document.getElementById('wbp-card-display');
+  if(card) card.addEventListener('click', function(e){
+    const hearBtn = e.target.closest('[data-hear]');
+    if(!hearBtn) return;
+    const sess = _wbPracticeSession; if(!sess) return;
+    const c = sess.cards[sess.idx]; if(!c) return;
+    const kind = hearBtn.getAttribute('data-hear');
+    const url = (kind === 'word') ? c.audio_word_url : c.audio_sentence_url;
+    _wbPlayHear(hearBtn, url);
+  });
+  if(!_wbPracticeSpeechBound && window.ReadiiSpeech){
+    const container = document.getElementById('wb-practice');
+    window.ReadiiSpeech.attach(container, { onScore: _wbHandlePracticeScore });
+    _wbPracticeSpeechBound = true;
+    // TTS-vs-recording mutex: stop any playing TTS before the engine
+    // begins capturing audio (capture phase fires before the engine's bubble
+    // handler).
+    const list = document.getElementById('wbp-sentence-list');
+    if(list) list.addEventListener('click', function(e){
+      if(e.target.closest('.read-aloud-btn')) _wbStopCurrentAudio();
+    }, true);
+  }
+}
+
+// Practice "Hear" buttons need to integrate with the same single-audio guard
+// that the Browse-mode play buttons use. Per spec, TTS playback and mic
+// recording are mutually exclusive.
+async function _wbPlayHear(btn, storagePath){
+  if(!storagePath) return;
+  if(window.ReadiiSpeech && window.ReadiiSpeech.isActive && window.ReadiiSpeech.isActive()){
+    window.ReadiiSpeech.stop();
+  }
+  if(_wbCurrentBtn === btn){ _wbStopCurrentAudio(); return; }
+  _wbStopCurrentAudio();
+  try{
+    let url = storagePath;
+    if(!/^https?:\/\//.test(storagePath) && typeof getSignedUrl === 'function'){
+      url = await getSignedUrl(storagePath);
+    }
+    if(!url) return;
+    const audio = new Audio();
+    audio.src = url; audio.preload = 'auto';
+    _wbCurrentAudio = audio;
+    _wbCurrentBtn = btn;
+    btn.classList.add('playing');
+    audio.onended = function(){ _wbStopCurrentAudio(); };
+    audio.onerror = function(){ _wbStopCurrentAudio(); };
+    await audio.play().catch(function(){ _wbStopCurrentAudio(); });
+  }catch(e){ _wbStopCurrentAudio(); }
+}
+
+function _wbRenderPracticeCard(){
+  const sess = _wbPracticeSession; if(!sess) return;
+  const c = sess.cards[sess.idx];
+  if(!c){ _wbShowSummary(); return; }
+  document.getElementById('wbp-mod-tag').textContent = _wbModuleLabel(c.module_id);
+  document.getElementById('wbp-word').textContent = c.word;
+  document.getElementById('wbp-ipa').textContent = c.ipa_gb || '';
+  document.getElementById('wbp-zh').textContent = c.meaning_zh || '';
+  document.getElementById('wbp-sentence').textContent = '"' + (c.example_sentence || '') + '"';
+  const hearWord = document.querySelector('[data-hear="word"]');
+  const hearSent = document.querySelector('[data-hear="sentence"]');
+  if(hearWord) hearWord.disabled = !c.audio_word_url;
+  if(hearSent) hearSent.disabled = !c.audio_sentence_url;
+  const recBtns = document.querySelectorAll('#wbp-sentence-list .read-aloud-btn');
+  if(recBtns[0]) recBtns[0].setAttribute('data-target', c.word);
+  if(recBtns[1]) recBtns[1].setAttribute('data-target', c.example_sentence);
+  sess.currentWordScore = null;
+  sess.currentSentenceScore = null;
+  document.getElementById('wbp-result').innerHTML = '';
+  document.getElementById('wbp-bottom').innerHTML = '';
+  document.getElementById('wbp-progress-cur').textContent = (sess.idx + 1);
+  document.getElementById('wbp-progress-total').textContent = sess.cards.length;
+  _wbStopCurrentAudio();
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+async function _wbHandlePracticeScore(info){
+  const sess = _wbPracticeSession; if(!sess) return;
+  const c = sess.cards[sess.idx]; if(!c) return;
+  let kind = null;
+  if(info.sentence === c.word) kind = 'word';
+  else if(info.sentence === c.example_sentence) kind = 'sentence';
+  else return;
+  if(kind === 'word') sess.currentWordScore = info.score;
+  else sess.currentSentenceScore = info.score;
+  await _wbLogAttempt(c.module_id, info.sentence, info.transcript, info.score);
+  if(kind === 'word'){
+    if(info.score < 50) await _wbAddToReviewAuto(c.id);
+    await _wbUpdateReviewBest(c.id, info.score);
+  }
+  _wbRenderPracticeResult();
+}
+
+async function _wbLogAttempt(moduleId, sentence, transcript, score){
+  if(typeof _supabase === 'undefined') return;
+  try{
+    const { data: { user } } = await _supabase.auth.getUser();
+    if(!user) return;
+    const { error } = await _supabase.from('pronunciation_attempts').insert({
+      user_id: user.id,
+      source: 'word_bank',
+      module_id: moduleId,
+      sentence: sentence,
+      transcript: transcript || null,
+      score: score | 0
+    });
+    if(error) console.warn('log attempt failed:', error.message);
+  }catch(e){ console.warn('log attempt threw', e); }
+}
+
+async function _wbAddToReviewAuto(wordId){
+  if(typeof _supabase === 'undefined') return false;
+  try{
+    const { data: { user } } = await _supabase.auth.getUser();
+    if(!user) return false;
+    const { error } = await _supabase.from('review_queue').upsert({
+      user_id: user.id, word_id: wordId, added_at: new Date().toISOString(), best_score_since_added: 0
+    }, { onConflict: 'user_id,word_id', ignoreDuplicates: true });
+    if(error){ console.warn('auto-add review failed:', error.message); return false; }
+    if(_wbPracticeSession) _wbPracticeSession.reviewAdded += 1;
+    return true;
+  }catch(e){ return false; }
+}
+
+async function _wbUpdateReviewBest(wordId, score){
+  if(typeof _supabase === 'undefined') return;
+  try{
+    const { data: { user } } = await _supabase.auth.getUser();
+    if(!user) return;
+    const { data: row } = await _supabase.from('review_queue')
+      .select('best_score_since_added').eq('user_id', user.id).eq('word_id', wordId).maybeSingle();
+    if(!row) return;
+    const newBest = Math.max(row.best_score_since_added || 0, score);
+    if(newBest >= 80){
+      await _supabase.from('review_queue').delete().eq('user_id', user.id).eq('word_id', wordId);
+    } else {
+      await _supabase.from('review_queue').update({
+        best_score_since_added: newBest,
+        last_practiced_at: new Date().toISOString()
+      }).eq('user_id', user.id).eq('word_id', wordId);
+    }
+  }catch(e){ console.warn('update review best threw', e); }
+}
+
+function _wbScoreFeedback(score){
+  if(score >= 80) return { en: '🎉 Excellent! Great British pronunciation!', zh: '🎉 太棒了！发音很地道！' };
+  if(score >= 50) return { en: '💪 Good try! A little more practice will help.', zh: '💪 不错！再练几次会更好。' };
+  return { en: '🔄 This one needs more practice. Don\'t worry — every expert was once a beginner!', zh: '🔄 这个词需要多练练。别担心，每个高手都是从零开始的！' };
+}
+
+function _wbRenderPracticeResult(){
+  const sess = _wbPracticeSession; if(!sess) return;
+  const c = sess.cards[sess.idx]; if(!c) return;
+  const result = document.getElementById('wbp-result');
+  let html = '';
+  if(sess.currentWordScore !== null){
+    const tier = _pgScoreTier(sess.currentWordScore);
+    const fb = _wbScoreFeedback(sess.currentWordScore);
+    html += '<div class="wbp-score-row">'+
+      '<div class="wbp-score-row-label"><span data-en>Word score</span><span data-zh>单词得分</span></div>'+
+      '<div class="wbp-score-row-value t-'+tier+'">'+sess.currentWordScore+'<span class="wbp-score-suffix">/100</span></div>'+
+      '<div class="wbp-score-fb"><span data-en>'+fb.en+'</span><span data-zh>'+fb.zh+'</span></div>'+
+    '</div>';
+  }
+  if(sess.currentSentenceScore !== null){
+    const tier = _pgScoreTier(sess.currentSentenceScore);
+    const fb = _wbScoreFeedback(sess.currentSentenceScore);
+    html += '<div class="wbp-score-row">'+
+      '<div class="wbp-score-row-label"><span data-en>Sentence score</span><span data-zh>例句得分</span></div>'+
+      '<div class="wbp-score-row-value t-'+tier+'">'+sess.currentSentenceScore+'<span class="wbp-score-suffix">/100</span></div>'+
+      '<div class="wbp-score-fb"><span data-en>'+fb.en+'</span><span data-zh>'+fb.zh+'</span></div>'+
+    '</div>';
+  }
+  result.innerHTML = html;
+  const oneDone = (sess.currentWordScore !== null || sess.currentSentenceScore !== null);
+  const bothDone = (sess.currentWordScore !== null && sess.currentSentenceScore !== null);
+  const bottom = document.getElementById('wbp-bottom');
+  let bottomHtml = '';
+  if(oneDone){
+    const isFav = _wbFavSet.has(c.id);
+    bottomHtml += '<div class="wbp-bottom-actions">'+
+      '<button class="wbp-btn '+(isFav?'on':'')+'" id="wbp-fav-btn" type="button">'+
+        (isFav ? '⭐ <span data-en>Saved</span><span data-zh>已收藏</span>' : '☆ <span data-en>Save to Favorites</span><span data-zh>收藏</span>')+
+      '</button>'+
+      '<button class="wbp-btn" id="wbp-add-review-btn" type="button">'+
+        '🔁 <span data-en>Add to Review</span><span data-zh>加入复习</span>'+
+      '</button>'+
+    '</div>';
+    bottomHtml += '<div class="wbp-bottom-actions">'+
+      '<button class="wbp-btn" id="wbp-retry-btn" type="button"><span data-en>← Retry</span><span data-zh>← 再试一次</span></button>';
+    if(bothDone){
+      bottomHtml += '<button class="wbp-btn wbp-btn-primary" id="wbp-next-btn" type="button"><span data-en>Next Word →</span><span data-zh>下一个词 →</span></button>';
+    }
+    bottomHtml += '</div>';
+  }
+  bottom.innerHTML = bottomHtml;
+  const fbBtn = document.getElementById('wbp-fav-btn');
+  if(fbBtn) fbBtn.addEventListener('click', async function(){
+    await _wbToggleFavorite(c.id, fbBtn);
+    _wbRenderPracticeResult();
+  });
+  const arBtn = document.getElementById('wbp-add-review-btn');
+  if(arBtn) arBtn.addEventListener('click', async function(){
+    const ok = await _wbAddToReviewAuto(c.id);
+    if(ok){
+      arBtn.disabled = true;
+      arBtn.innerHTML = '✓ <span data-en>Added to Review</span><span data-zh>已加入复习</span>';
+      setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+    }
+  });
+  const rtBtn = document.getElementById('wbp-retry-btn');
+  if(rtBtn) rtBtn.addEventListener('click', function(){
+    sess.currentWordScore = null;
+    sess.currentSentenceScore = null;
+    document.getElementById('wbp-result').innerHTML = '';
+    document.getElementById('wbp-bottom').innerHTML = '';
+  });
+  const nbBtn = document.getElementById('wbp-next-btn');
+  if(nbBtn) nbBtn.addEventListener('click', function(){
+    if(sess.currentWordScore !== null){ sess.wordScoreSum += sess.currentWordScore; sess.wordScoreCount++; }
+    if(sess.currentSentenceScore !== null){ sess.sentenceScoreSum += sess.currentSentenceScore; sess.sentenceScoreCount++; }
+    sess.idx++;
+    _wbRenderPracticeCard();
+  });
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+function _wbShowSummary(){
+  const sess = _wbPracticeSession; if(!sess) return;
+  if(sess.currentWordScore !== null){ sess.wordScoreSum += sess.currentWordScore; sess.wordScoreCount++; }
+  if(sess.currentSentenceScore !== null){ sess.sentenceScoreSum += sess.currentSentenceScore; sess.sentenceScoreCount++; }
+  const wordAvg = sess.wordScoreCount ? Math.round(sess.wordScoreSum / sess.wordScoreCount) : 0;
+  const sentAvg = sess.sentenceScoreCount ? Math.round(sess.sentenceScoreSum / sess.sentenceScoreCount) : 0;
+  const completed = sess.idx;
+  const html = ''+
+    '<div class="wbs-emoji">🎉</div>'+
+    '<div class="wbs-title"><span data-en>Session complete!</span><span data-zh>本轮完成！</span></div>'+
+    '<div style="font-size:14px;color:var(--ink2);">'+
+      '<span data-en>You practised '+completed+' word'+(completed===1?'':'s')+' today.</span>'+
+      '<span data-zh>本轮练习了 '+completed+' 个词。</span>'+
+    '</div>'+
+    '<div class="wbs-stats">'+
+      '<div class="wbs-stat-row"><span><span data-en>Word avg score</span><span data-zh>单词平均分</span></span><b>'+(sess.wordScoreCount?wordAvg+'/100':'—')+'</b></div>'+
+      '<div class="wbs-stat-row"><span><span data-en>Sentence avg score</span><span data-zh>例句平均分</span></span><b>'+(sess.sentenceScoreCount?sentAvg+'/100':'—')+'</b></div>'+
+      '<div class="wbs-stat-row"><span><span data-en>Words added to Review</span><span data-zh>本轮加入复习</span></span><b>'+sess.reviewAdded+'</b></div>'+
+    '</div>'+
+    '<div class="wbs-actions">'+
+      '<button class="wbp-btn wbp-btn-primary" id="wbs-again-btn" type="button"><span data-en>Practice Again</span><span data-zh>再练一轮</span></button>'+
+      '<button class="wbp-btn" id="wbs-back-btn" type="button"><span data-en>Back to Word Bank</span><span data-zh>返回词汇库</span></button>'+
+    '</div>';
+  document.getElementById('wbs-card-content').innerHTML = html;
+  _wbShowSubView('summary');
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+  document.getElementById('wbs-again-btn').addEventListener('click', function(){ _wbStartPractice(sess.mode === 'single' ? 'random' : sess.mode); });
+  document.getElementById('wbs-back-btn').addEventListener('click', function(){
+    _wbPracticeSession = null;
+    _wbShowSubView('home');
+    _wbRenderHub();
+  });
+}
+
+/* ===== Review tab ===== */
+let _rvBound = false;
+async function renderReviewPage(){
+  const sub = document.getElementById('rv-sub');
+  const empty = document.getElementById('rv-empty');
+  const list = document.getElementById('rv-list');
+  const cta = document.getElementById('rv-cta-row');
+  const completed = document.getElementById('rv-completed');
+  if(!sub || !empty || !list) return;
+  list.innerHTML = '';
+  empty.style.display = 'none';
+  if(cta) cta.style.display = 'none';
+  if(completed) completed.style.display = 'none';
+
+  let user = null;
+  try{
+    if(typeof _supabase !== 'undefined'){
+      const r = await _supabase.auth.getUser();
+      user = r && r.data ? r.data.user : null;
+    }
+  }catch(e){}
+
+  if(!user){
+    empty.innerHTML = '<span data-en>Sign in to use Review.</span><span data-zh>登录后使用复习功能。</span>';
+    empty.style.display = 'block';
+    sub.innerHTML = '';
+    setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+    return;
+  }
+
+  let queue = [];
+  try{
+    const { data, error } = await _supabase.from('review_queue')
+      .select('word_id, added_at, last_practiced_at, best_score_since_added')
+      .eq('user_id', user.id)
+      .order('added_at', { ascending: true });
+    if(error) throw error;
+    queue = data || [];
+  }catch(e){
+    sub.innerHTML = '<span data-en>Could not load review queue.</span><span data-zh>无法加载复习列表。</span>';
+    return;
+  }
+
+  await _wbLoadAll();
+  const wordById = {};
+  for(const w of (_wbCache||[])) wordById[w.id] = w;
+  const rows = queue.map(function(q){
+    const w = wordById[q.word_id]; if(!w) return null;
+    return Object.assign({}, q, w);
+  }).filter(Boolean);
+
+  // Mastered count: distinct word_bank words with at least one >=80 score from word_bank source
+  let masteredCount = 0;
+  try{
+    const { data: pa } = await _supabase.from('pronunciation_attempts')
+      .select('sentence').eq('user_id', user.id).eq('source','word_bank').gte('score', 80);
+    const knownWords = new Set();
+    for(const w of (_wbCache||[])) knownWords.add(w.word);
+    const mastered = new Set();
+    for(const r of pa || []) if(knownWords.has(r.sentence)) mastered.add(r.sentence);
+    masteredCount = mastered.size;
+  }catch(e){}
+
+  if(rows.length === 0){
+    empty.innerHTML = '<span data-en>Nothing in review yet. Words land here automatically when your Word Bank score drops below 50.</span>'+
+      '<span data-zh>暂无复习内容。当词汇库练习评分低于 50 时，词会自动加入这里。</span>';
+    empty.style.display = 'block';
+    sub.innerHTML = '<span data-en>0 words need practice</span><span data-zh>没有需要复习的词</span>';
+  } else {
+    sub.innerHTML = '<span data-en>'+rows.length+' word'+(rows.length===1?'':'s')+' need practice</span>'+
+      '<span data-zh>'+rows.length+' 个词需要练习</span>';
+    list.innerHTML = rows.map(function(r){
+      const since = _pgFormatRelative(r.added_at);
+      const best = r.best_score_since_added || 0;
+      return '<div class="rv-row" data-id="'+r.id+'">'+
+        '<div class="rv-row-main">'+
+          '<div class="rv-row-line1">'+
+            '<span class="rv-row-word">'+_pgEsc(r.word)+'</span>'+
+            '<span class="rv-row-ipa">'+_pgEsc(r.ipa_gb||'')+'</span>'+
+            '<span class="rv-row-zh">'+_pgEsc(r.meaning_zh||'')+'</span>'+
+          '</div>'+
+          '<div class="rv-row-meta">'+
+            '<span><span data-en>Added '+_pgEsc(since.en)+'</span><span data-zh>'+_pgEsc(since.zh)+' 加入</span></span>'+
+            '<span><span data-en>Best</span><span data-zh>最高</span>: <b>'+best+'/100</b></span>'+
+          '</div>'+
+        '</div>'+
+        '<button class="rv-row-go" type="button" data-go="'+r.id+'"><span data-en>▶ Go</span><span data-zh>▶ 练习</span></button>'+
+      '</div>';
+    }).join('');
+    if(cta) cta.style.display = 'flex';
+  }
+  if(masteredCount > 0 && completed){
+    document.getElementById('rv-mastered-count').textContent = masteredCount;
+    completed.style.display = 'flex';
+  }
+
+  if(!_rvBound){
+    _rvBound = true;
+    const all = document.getElementById('rv-practice-all');
+    if(all) all.addEventListener('click', function(){
+      showAppView('word-bank');
+      setTimeout(function(){ _wbStartPractice('review'); }, 30);
+    });
+    list.addEventListener('click', function(e){
+      const goBtn = e.target.closest('[data-go]');
+      if(!goBtn) return;
+      const wordId = goBtn.getAttribute('data-go');
+      _wbStartSingleWordPractice(wordId);
+    });
+  }
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+async function _wbStartSingleWordPractice(wordId){
+  await _wbLoadAll();
+  const word = (_wbCache||[]).find(function(w){ return w.id === wordId; });
+  if(!word) return;
+  showAppView('word-bank');
+  setTimeout(function(){
+    _wbPracticeSession = {
+      mode: 'single', cards: [word], idx: 0, startedAt: Date.now(),
+      wordScoreSum: 0, wordScoreCount: 0,
+      sentenceScoreSum: 0, sentenceScoreCount: 0,
+      reviewAdded: 0, currentWordScore: null, currentSentenceScore: null
+    };
+    _wbShowSubView('practice');
+    _wbBindPracticeOnce();
+    _wbRenderPracticeCard();
+  }, 30);
 }
 
 /* ===== My Progress page ===== */
@@ -2347,7 +3061,9 @@ async function renderSettings(){
     attach: attach,
     defaultPool: defaultPool,
     MIN_LESSON_EXCERPTS: MIN_LESSON_EXCERPTS,
-    britishTips: britishTips
+    britishTips: britishTips,
+    stop: stopRecognition,
+    isActive: function(){ return activeBtn !== null; }
   };
 
   // ---- Auto-attach to the Reading panel (preserves v1.5.0 behaviour) ----
