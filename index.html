@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Readii v1.4.2 | Updated: 2026-04-14 -->
+<!-- Readii v1.4.4 | Updated: 2026-04-29 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
 <meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
@@ -303,6 +303,36 @@ h1{animation:fu .6s ease both .15s}
 .subscribe-btn{background:var(--cream2);color:var(--ink3);border:1px solid var(--border);padding:8px 14px;border-radius:6px;font-size:12px;cursor:pointer}
 .subscribe-banner{background:var(--forest-pale,var(--fp));border:1px solid rgba(27,58,45,.15);border-radius:var(--rl);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;grid-column:1/-1;margin-bottom:8px}
 .subscribe-banner p{font-size:14px;color:var(--forest2);font-weight:500}
+.speech-warn{font-size:12px;padding:9px 12px;border-radius:8px;background:var(--gp);color:#7A4A10;margin-bottom:11px;border:1px solid rgba(196,154,56,.25);line-height:1.5}
+.sentence-list{display:flex;flex-direction:column;gap:9px}
+.sentence-card{padding:11px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--cream);display:flex;flex-direction:column;gap:8px;transition:all .15s}
+.sentence-card.active{border-color:var(--forest3);background:var(--fp)}
+.sentence-target{font-family:var(--serif);font-size:14px;line-height:1.5;color:var(--ink)}
+.read-aloud-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border:1px solid var(--border);border-radius:20px;background:var(--white);color:var(--ink2);font-size:12px;cursor:pointer;font-family:var(--sans);transition:all .15s}
+.read-aloud-btn:hover{border-color:var(--forest3);color:var(--forest)}
+.read-aloud-btn.listening{border-color:var(--gold);background:var(--gp);color:#7A4A10}
+.read-aloud-btn.listening .ralb-mic{animation:micpulse 1.2s ease-in-out infinite}
+.read-aloud-btn:disabled{opacity:.55;cursor:not-allowed}
+@keyframes micpulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.22);opacity:.65}}
+.speech-error{font-size:12px;padding:9px 12px;border-radius:8px;background:#FCEBEB;color:#8C1D1D;margin-top:6px;border:1px solid rgba(140,29,29,.18);display:flex;flex-direction:column;gap:7px;align-items:flex-start;line-height:1.5}
+.speech-error .retry-btn{font-size:11px;padding:4px 11px;border:1px solid rgba(140,29,29,.35);border-radius:14px;background:transparent;color:#8C1D1D;cursor:pointer;font-family:var(--sans)}
+.speech-error .retry-btn:hover{background:#FCEBEB}
+.speech-result{margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:var(--r);background:var(--white);display:flex;flex-direction:column;gap:11px}
+.speech-result .sr-target{font-family:var(--serif);font-size:13px;color:var(--ink2);font-style:italic;text-align:center;line-height:1.5}
+.score-ring{display:flex;justify-content:center;align-items:center}
+.score-ring svg{width:96px;height:96px}
+.score-ring text{font-family:var(--serif);font-weight:400}
+.transcript-row{font-size:12px}
+.trc-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
+.trc-text{font-family:var(--mono);font-size:13px;color:var(--ink2);background:var(--cream);padding:8px 10px;border-radius:6px;border:1px solid var(--border);line-height:1.5;word-break:break-word}
+.word-feedback{font-family:var(--mono);font-size:13px;line-height:2}
+.wfw{padding:2px 5px;border-radius:3px;margin:0 2px;display:inline-block;white-space:nowrap}
+.wfw.ok{color:#3B6D11;background:#EAF3DE}
+.wfw.miss{color:#8C1D1D;background:#FCEBEB}
+.wfw.extra{color:var(--ink3);background:var(--cream2);font-style:italic}
+.british-tip{font-size:12px;padding:9px 12px;border-radius:8px;background:var(--fp);color:var(--forest2);border:1px solid rgba(27,58,45,.12);line-height:1.55}
+.try-again-btn{align-self:flex-start;font-size:12px;padding:6px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--ink2);cursor:pointer;font-family:var(--sans);transition:all .15s}
+.try-again-btn:hover{border-color:var(--forest3);color:var(--forest)}
 </style></head>
 <body>
 <div id="view-landing">
@@ -531,16 +561,14 @@ h1{animation:fu .6s ease both .15s}
           </div>
         </div>
         <div class="rpan">
-          <div class="pc">
-            <div class="pch"><span class="pctit"><span data-en>AI Pronunciation</span><span data-zh>AI 发音评估</span></span><span class="pctag">AI</span></div>
+          <div class="pc" id="ai-pron-card">
+            <div class="pch"><span class="pctit"><span data-en>AI Pronunciation</span><span data-zh>AI 发音评估</span></span><span class="pctag">en-GB</span></div>
             <div class="pcb">
-              <button class="recbtn" onclick="this.innerHTML='<span class=reci>⏹</span><div class=recl>Recording...</div><div class=recs>Tap to stop</div>';this.style.borderColor='#C49A38';this.style.background='#FBF3E0'"><span class="reci">🎙</span><div class="recl"><span data-en>Tap to read aloud</span><span data-zh>点击朗读</span></div><div class="recs"><span data-en>AI will score your pronunciation</span><span data-zh>AI 为发音打分</span></div></button>
-              <div class="scored"><div class="sctop"><span class="scl"><span data-en>Last score</span><span data-zh>上次得分</span></span><span class="scv">72</span></div><div class="scbars"><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb on"></div><div class="scb"></div><div class="scb"></div><div class="scb"></div></div></div>
-              <div class="fblist">
-                <div class="fbi fbg"><span class="fbic">✓</span><span><span data-en>Good rhythm on "caterpillar"</span><span data-zh>"caterpillar" 节奏很好</span></span></div>
-                <div class="fbi fbt"><span class="fbic">→</span><span><span data-en>Softer "th" in "the" — tongue between teeth</span><span data-zh>"the" 中 "th" 更轻柔，舌尖放牙间</span></span></div>
-                <div class="fbi fbt"><span class="fbic">→</span><span><span data-en>"hungry" — stress first syllable: HUN-gry</span><span data-zh>"hungry" 重音在第一音节：HUN-gry</span></span></div>
+              <div id="speech-warn" class="speech-warn" style="display:none">
+                <span data-en>For best experience, use Chrome or Edge.</span><span data-zh>为获得最佳体验，请使用 Chrome 或 Edge。</span>
               </div>
+              <div class="sentence-list" id="sentence-list"></div>
+              <div class="speech-result" id="speech-result" style="display:none"></div>
             </div>
           </div>
           <div class="pc">
@@ -599,6 +627,281 @@ function animProg(){
 function fmt(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60}
 function seekAudio(e){const r=e.currentTarget.getBoundingClientRect();prog=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));document.getElementById('ap-fill').style.width=prog+'%';}
 function cycleSpeed(b){const s=[0.75,1,1.25,1.5];const c=parseFloat(b.textContent);const i=s.indexOf(c);b.textContent=s[(i+1)%s.length]+'×';}
+
+/* ===== AI pronunciation assessment — Web Speech API (en-GB) ===== */
+(function(){
+  const sentencePool = [
+    "The very hungry caterpillar ate through one apple.",
+    "On Monday, he was still hungry.",
+    "He looked for some food.",
+    "On Saturday, he ate a lot of food.",
+    "The next day was Sunday again."
+  ];
+  const britishTips = [
+    "Try softening the 't' sound — British English uses lighter t's.",
+    "The 'r' sound is silent at the end of words like 'caterpillar' in British accent.",
+    "Watch the 'a' sound — British 'apple' has a flatter vowel than American.",
+    "The 'th' should be voiced — tongue between teeth, slight friction.",
+    "British rhythm: stress falls earlier in the sentence."
+  ];
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const list = document.getElementById('sentence-list');
+  const warn = document.getElementById('speech-warn');
+  const result = document.getElementById('speech-result');
+  if(!list) return;
+
+  const ua = navigator.userAgent;
+  const isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(ua);
+  const isIOS = /iPad|iPhone|iPod/.test(ua);
+  if(!SR || isSafari || isIOS){
+    if(warn) warn.style.display = 'block';
+  }
+
+  list.innerHTML = sentencePool.map((s,i) => (
+    '<div class="sentence-card" data-idx="'+i+'">'+
+      '<p class="sentence-target">'+escHtml(s)+'</p>'+
+      '<button class="read-aloud-btn" type="button" data-target="'+escAttr(s)+'">'+
+        '<span class="ralb-mic">🎙</span>'+
+        '<span class="ralb-l"><span data-en>Read aloud</span><span data-zh>朗读</span></span>'+
+      '</button>'+
+    '</div>'
+  )).join('');
+
+  let activeBtn = null;
+  let recognition = null;
+  let stopTimer = null;
+  let gotResult = false;
+
+  list.addEventListener('click', function(e){
+    const btn = e.target.closest('.read-aloud-btn');
+    if(!btn) return;
+    if(activeBtn){ stopRecognition(); return; }
+    if(!SR){
+      showError(btn, 'Voice recognition is not supported in this browser. Please use Chrome or Edge.', false);
+      return;
+    }
+    startRecognition(btn);
+  });
+
+  function startRecognition(btn){
+    activeBtn = btn;
+    gotResult = false;
+    btn.classList.add('listening');
+    const lbl = btn.querySelector('.ralb-l');
+    if(lbl) lbl.innerHTML = '<span data-en>Listening...</span><span data-zh>正在聆听...</span>';
+    btn.closest('.sentence-card').classList.add('active');
+    clearError(btn);
+
+    try{
+      recognition = new SR();
+    }catch(err){
+      showError(btn, 'Could not start microphone. Please check browser permissions.', false);
+      resetBtn();
+      return;
+    }
+    recognition.lang = 'en-GB';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = function(ev){
+      gotResult = true;
+      const transcript = (ev.results && ev.results[0] && ev.results[0][0]) ? ev.results[0][0].transcript : '';
+      handleResult(btn, transcript);
+    };
+
+    recognition.onerror = function(ev){
+      const code = ev && ev.error;
+      let msg = 'Something went wrong. Please try again.';
+      let retry = true;
+      if(code === 'not-allowed' || code === 'service-not-allowed'){
+        msg = 'Microphone permission was denied. Allow microphone access in your browser settings, then try again.';
+      } else if(code === 'no-speech'){
+        msg = "We didn't hear anything. Try again and read the sentence aloud.";
+      } else if(code === 'audio-capture'){
+        msg = 'No microphone found. Please connect a microphone and try again.';
+      } else if(code === 'aborted'){
+        msg = '';
+      }
+      if(msg) showError(btn, msg, retry);
+    };
+
+    recognition.onend = function(){
+      if(stopTimer){ clearTimeout(stopTimer); stopTimer = null; }
+      if(activeBtn === btn) resetBtn();
+    };
+
+    try{
+      recognition.start();
+    }catch(err){
+      showError(btn, 'Microphone is already in use or could not start.', false);
+      resetBtn();
+      return;
+    }
+
+    stopTimer = setTimeout(function(){ stopRecognition(); }, 10000);
+  }
+
+  function stopRecognition(){
+    if(recognition){ try{ recognition.stop(); }catch(_){} }
+  }
+
+  function resetBtn(){
+    if(!activeBtn) return;
+    activeBtn.classList.remove('listening');
+    const lbl = activeBtn.querySelector('.ralb-l');
+    if(lbl) lbl.innerHTML = '<span data-en>Read aloud</span><span data-zh>朗读</span>';
+    const card = activeBtn.closest('.sentence-card');
+    if(card) card.classList.remove('active');
+    activeBtn = null;
+    if(stopTimer){ clearTimeout(stopTimer); stopTimer = null; }
+  }
+
+  function handleResult(btn, transcript){
+    const target = btn.getAttribute('data-target') || '';
+    const tWords = tokenize(target);
+    const sWords = tokenize(transcript);
+    const score = computeScore(tWords, sWords);
+    const wf = wordDiff(tWords, sWords);
+    const tip = britishTips[Math.floor(Math.random()*britishTips.length)];
+    renderResult({score: score, transcript: transcript, target: target, wf: wf, tip: tip});
+  }
+
+  function tokenize(s){
+    return (s || '').toLowerCase().replace(/[^a-z0-9\s']/g,' ').split(/\s+/).filter(Boolean);
+  }
+
+  function computeScore(tWords, sWords){
+    if(!tWords.length) return 0;
+    const sCount = {};
+    for(let i=0;i<sWords.length;i++){ sCount[sWords[i]] = (sCount[sWords[i]]||0)+1; }
+    let correct = 0;
+    for(let i=0;i<tWords.length;i++){
+      const w = tWords[i];
+      if(sCount[w] && sCount[w] > 0){ correct++; sCount[w]--; }
+    }
+    return Math.round(correct / tWords.length * 100);
+  }
+
+  function wordDiff(tWords, sWords){
+    const n = tWords.length, m = sWords.length;
+    const dp = [];
+    for(let i=0;i<=n;i++){ dp.push(new Array(m+1).fill(0)); }
+    for(let i=1;i<=n;i++){
+      for(let j=1;j<=m;j++){
+        if(tWords[i-1] === sWords[j-1]) dp[i][j] = dp[i-1][j-1] + 1;
+        else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+      }
+    }
+    let i = n, j = m;
+    const tMark = new Array(n).fill('miss');
+    const sMark = new Array(m).fill('extra');
+    while(i > 0 && j > 0){
+      if(tWords[i-1] === sWords[j-1]){ tMark[i-1] = 'ok'; sMark[j-1] = 'ok'; i--; j--; }
+      else if(dp[i-1][j] >= dp[i][j-1]) i--;
+      else j--;
+    }
+    return {tWords: tWords, tMark: tMark, sWords: sWords, sMark: sMark};
+  }
+
+  function renderResult(o){
+    if(!result) return;
+    const score = o.score;
+    const colour = scoreColor(score);
+    const targetHtml = o.wf.tWords.map(function(w,i){
+      const cls = o.wf.tMark[i] === 'ok' ? 'ok' : 'miss';
+      const icon = o.wf.tMark[i] === 'ok' ? '✓' : '✗';
+      return '<span class="wfw '+cls+'">'+icon+' '+escHtml(w)+'</span>';
+    }).join(' ');
+    const extras = o.wf.sWords.map(function(w,i){
+      return o.wf.sMark[i] === 'extra' ? '<span class="wfw extra">? '+escHtml(w)+'</span>' : '';
+    }).filter(Boolean).join(' ');
+    const transcriptHtml = o.transcript ? escHtml(o.transcript) : '<em style="color:var(--ink3)">(nothing heard)</em>';
+
+    result.style.display = 'block';
+    result.innerHTML =
+      '<div class="sr-target">"'+escHtml(o.target)+'"</div>'+
+      '<div class="score-ring">'+
+        '<svg viewBox="0 0 80 80" aria-label="score">'+
+          '<circle cx="40" cy="40" r="34" stroke="var(--cream2)" stroke-width="6" fill="none"></circle>'+
+          '<circle id="score-arc" cx="40" cy="40" r="34" stroke="'+colour+'" stroke-width="6" fill="none" stroke-dasharray="0 213.6" stroke-linecap="round" transform="rotate(-90 40 40)" style="transition:stroke-dasharray 1s ease"></circle>'+
+          '<text x="40" y="47" text-anchor="middle" font-size="22" id="score-text" fill="'+colour+'">0</text>'+
+        '</svg>'+
+      '</div>'+
+      '<div class="transcript-row">'+
+        '<div class="trc-label"><span data-en>You said</span><span data-zh>你说的</span></div>'+
+        '<div class="trc-text">'+transcriptHtml+'</div>'+
+      '</div>'+
+      '<div class="word-feedback">'+targetHtml+(extras ? '<br>'+extras : '')+'</div>'+
+      '<div class="british-tip">💡 '+escHtml(o.tip)+'</div>'+
+      '<button class="try-again-btn" type="button" id="sr-close-btn">'+
+        '<span data-en>Close</span><span data-zh>关闭</span>'+
+      '</button>';
+
+    const closeBtn = document.getElementById('sr-close-btn');
+    if(closeBtn) closeBtn.addEventListener('click', function(){ result.style.display = 'none'; });
+
+    requestAnimationFrame(function(){
+      const circ = 2 * Math.PI * 34;
+      const arc = document.getElementById('score-arc');
+      const txt = document.getElementById('score-text');
+      if(arc) arc.setAttribute('stroke-dasharray', (circ*score/100)+' '+circ);
+      const start = performance.now();
+      function tick(now){
+        const t = Math.min(1, (now - start) / 1000);
+        if(txt) txt.textContent = Math.round(score * t);
+        if(t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+
+    if(typeof result.scrollIntoView === 'function'){
+      result.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+    }
+  }
+
+  function scoreColor(s){
+    if(s >= 80) return '#1B3A2D';
+    if(s >= 50) return '#C49A38';
+    return '#B0463A';
+  }
+
+  function escHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
+  function escAttr(s){ return escHtml(s); }
+
+  function showError(btn, msg, withRetry){
+    clearError(btn);
+    const card = btn.closest('.sentence-card');
+    if(!card) return;
+    const div = document.createElement('div');
+    div.className = 'speech-error';
+    const span = document.createElement('span');
+    span.textContent = msg;
+    div.appendChild(span);
+    if(withRetry){
+      const r = document.createElement('button');
+      r.type = 'button';
+      r.className = 'retry-btn';
+      r.textContent = 'Retry';
+      r.addEventListener('click', function(){
+        clearError(btn);
+        if(SR) startRecognition(btn);
+      });
+      div.appendChild(r);
+    }
+    card.appendChild(div);
+  }
+  function clearError(btn){
+    const card = btn.closest('.sentence-card');
+    if(!card) return;
+    const e = card.querySelector('.speech-error');
+    if(e) e.remove();
+  }
+})();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="assets/js/supabase-client.js"></script>

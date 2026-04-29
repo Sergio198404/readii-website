@@ -128,6 +128,28 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [1.4.4] — 2026-04-29
+
+### Added
+- feat: AI pronunciation assessment using Web Speech API (browser-native, en-GB)
+- Reading page: 5 preset British English sentences (Level 2 reader, hungry-caterpillar pool) under the AI Pronunciation panel
+- Each sentence has a "Read aloud" mic button — uses `SpeechRecognition` (`webkitSpeechRecognition` fallback) with `lang='en-GB'`
+- Listening UI: pulsing mic animation, 10-second max capture, auto-stop on silence/end
+- Scoring: case- and punctuation-insensitive exact-word match against target → 0–100 score
+- Word-level diff via LCS alignment: green ✓ correct, red ✗ missed, grey ? extra
+- Animated SVG score ring (0 → score over 1s) with score-tier colour (forest / gold / amber)
+- Transcript shown in monospace ("You said …") plus the original target sentence
+- British-English coaching tip randomised from a 5-item pool (t/r/a/th/rhythm)
+- Browser compatibility: Safari + iOS show "For best experience, use Chrome or Edge" notice
+- Microphone-permission failures (`not-allowed`, `no-speech`, `audio-capture`) show inline error with Retry button
+
+### Notes
+- Fully client-side, no backend, no new npm dependencies, single-file HTML structure preserved
+- Replaces the previous static demo recbtn / scored / fblist mockup in the AI Pronunciation panel
+- Uses existing design tokens (`--forest`, `--gold`, `--cream`, `--mono`, etc.) for visual consistency
+
+---
+
 ## [1.4.3] — 2026-04-17
 
 ### Changed

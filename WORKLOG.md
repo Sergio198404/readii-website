@@ -569,3 +569,35 @@
 - VERSION (1.4.1 -> 1.4.2)
 - CHANGELOG.md (updated)
 - WORKLOG.md (updated)
+
+---
+
+## 2026-04-29 | Session 19 | v1.4.4
+
+**Objective:** Replace the static "Tap to read aloud" demo on the reading page with a real AI pronunciation assessment using the browser-native Web Speech API (en-GB), no backend, no paid API.
+
+**Completed:**
+- [x] AI Pronunciation panel rebuilt: 5 preset Level-2 British sentences (hungry caterpillar pool) each with own "Read aloud" mic button
+- [x] `SpeechRecognition` / `webkitSpeechRecognition` integration, `lang='en-GB'`, `continuous=false`, `interimResults=false`
+- [x] Listening state: pulsing mic icon (CSS keyframes), 10s max-capture safety timer, auto-stop on browser end-of-speech
+- [x] Scoring: tokenise target + transcript (lowercased, punctuation stripped), exact-match count → 0–100
+- [x] Word-level alignment via LCS — green ✓ correct, red ✗ missed/wrong, grey ? extras
+- [x] Animated SVG score ring (radius 34, circumference ~213.6) with stroke-dasharray transition + counting digit (0 → score over 1s)
+- [x] Score-tier colour: forest ≥80, gold ≥50, amber otherwise
+- [x] Transcript echoed back in monospace ("You said …"), with original target shown above the ring
+- [x] Random British-English tip drawn from 5-item pool (t / r / a / th / rhythm) under the result
+- [x] Safari + iOS detection → shows "For best experience, use Chrome or Edge" notice
+- [x] Microphone-permission errors handled (`not-allowed`, `no-speech`, `audio-capture`, `aborted`) with friendly inline error + Retry button
+- [x] No new npm dependencies, no backend changes, single-file index.html structure preserved
+- [x] Reuses existing design tokens (forest/gold/cream/mono) so the panel matches the rest of the reading page
+
+**Files changed:**
+- index.html (v1.4.2 -> v1.4.4, AI Pronunciation panel rewritten + new CSS + new IIFE script)
+- VERSION (1.4.2 -> 1.4.4)
+- CHANGELOG.md (added v1.4.4 entry)
+- WORKLOG.md (added Session 19)
+
+**Pending / Next session:**
+- [ ] Hook score result into Supabase progress (save pronunciation_score per lesson)
+- [ ] Source target sentences from the actual book PDF / lesson rather than a static pool
+- [ ] iOS / Safari fallback path (e.g. record-and-upload + server-side scoring) — currently shows browser warning only
