@@ -128,6 +128,27 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.1.0] — 2026-04-29
+
+### Added
+- feat: UK Business Communication Programme tab — 4 scenes (Email / Meeting / Pitch / Daily Life), each with 5 British professional sentences scored via existing Web Speech API (`source='uk_business'` in `pronunciation_attempts`)
+- New left-sidebar tab **UK Business** (🇬🇧) between Word Bank and Review, switching to `#view-uk-business`
+- Scene home grid mirrors Voice Coach card pattern: per-scene best score + attempt count, hover lift, bilingual title/description
+- Scene detail page reuses `ReadiiSpeech.attach()` — same scoring, transcript echo, retry, last-attempt diff as Voice Coach
+- Bottom CTA card on Scene home: "Ready for personalised coaching?" with mailto:hello@readii.co.uk and From £2,000 price line
+- feat: My Progress upgrade banner — appears between Score Trend and By Module when total attempts ≥ 10 AND average score ≥ 60. Shows the user's actual N and X stats, links to UK Business tab via in-app navigation (not mailto), dismissible via ✕ which writes `localStorage.readii-upgrade-dismissed=true`
+
+### Changed
+- `_pgSourceLabel()` extended to recognise `uk_business` (with per-scene title) and `word_bank` sources for the Recent Attempts list
+- `showAppView()` dispatch table extended with `uk-business`; breadcrumb updates per active view
+
+### Notes
+- No new tables — all UK Business attempts log to existing `pronunciation_attempts` with `source='uk_business'`, `module_id=scene.id` ('email' / 'meeting' / 'pitch' / 'daily')
+- Banner condition is computed client-side from already-fetched attempts; no extra round-trip
+- This connects the AI practice flywheel to the high-margin UK Business Programme — Readii's dual-engine business model now has a visible in-product path
+
+---
+
 ## [2.0.1] — 2026-04-29
 
 ### Fixed

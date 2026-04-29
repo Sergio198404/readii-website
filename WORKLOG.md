@@ -2,6 +2,34 @@
 
 ---
 
+## 2026-04-29 | Session 27 | v2.1.0
+
+**Objective:** Make the dual-engine business model visible inside the product. Add a UK Business Communication Programme module so paying-tier conversion has an in-product surface, and add a Progress-page upgrade banner that fires when a user is clearly engaged (≥10 attempts, ≥60 avg).
+
+**Completed:**
+- [x] New left-sidebar tab "UK Business" (🇬🇧) inserted between Word Bank and Review, wired through `showAppView('uk-business')`
+- [x] `#view-uk-business` with home (4 scene cards + bottom CTA) and detail (5 sentences + ReadiiSpeech) views
+- [x] `UK_BUSINESS_SCENES` array with hard-coded content for the 4 scenarios: Email Writing, Business Meetings, Pitching, Daily Life — each 5 British-professional sentences
+- [x] `loadUkBusinessStats()` / `logUkBusinessAttempt()` — read & write `pronunciation_attempts` with `source='uk_business'`, `module_id=scene.id`
+- [x] Scene cards render best-score + attempt-count footer, identical pattern to Voice Coach
+- [x] CTA card on home: "Ready for personalised coaching?" + From £2,000 + mailto:hello@readii.co.uk
+- [x] My Progress upgrade banner inserted between Score Trend and By Module, fires when `attempts.length >= 10 && avg >= 60`
+- [x] Banner ✕ writes `localStorage.readii-upgrade-dismissed=true` and stays dismissed; "Learn More →" routes to `showAppView('uk-business')`
+- [x] `_pgSourceLabel()` extended to recognise `uk_business` (with per-scene title) and `word_bank` so Recent Attempts displays the right label
+
+**Why this matters:**
+The product has had no path from "AI practice" to "high-value services" — all five existing tabs (Reading / Voice Coach / Progress / Word Bank / Review) sit on the low-margin engagement side. v2.1 adds the first in-product surface for the £2,000 programme, and uses real engagement signals (≥10 attempts, ≥60 avg) to gate the upsell so it appears earned, not pushy.
+
+**Files changed:**
+- index.html (v2.0.1 → v2.1.0): new sidebar nav item, `#view-uk-business` markup (home + detail), CSS block (`.ukb-*` and `.pg-upgrade-*`), `UK_BUSINESS_SCENES` constant + render functions, `showAppView` dispatch extension, banner injection in `renderProgress`, `_pgSourceLabel` extension
+- VERSION (2.0.1 → 2.1.0)
+- CHANGELOG.md ([2.1.0] entry)
+- WORKLOG.md (this Session 27)
+
+**Verified by:** inline `<script>` block parses cleanly via `new Function(code)` syntax check.
+
+---
+
 ## 2026-04-09 | Session 1 | v1.0.0
 
 **Objective:** Build complete website from scratch for Home Office visa settlement visibility

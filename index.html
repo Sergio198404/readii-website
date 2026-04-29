@@ -365,6 +365,62 @@ h1{animation:fu .6s ease both .15s}
   .vc-modules{grid-template-columns:1fr}
   .vc-detail-footer{flex-direction:column;align-items:flex-start;gap:6px}
 }
+/* ===== UK Business ===== */
+.ukb-page,.ukb-detail{padding:4px 4px 32px;max-width:980px;margin:0 auto}
+.ukb-header{margin-bottom:24px}
+.ukb-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);margin-bottom:6px;line-height:1.25}
+.ukb-sub{font-size:14px;color:var(--ink3);line-height:1.6;max-width:680px}
+.ukb-scenes{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:28px}
+.ukb-scene-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:22px;display:flex;flex-direction:column;gap:12px;cursor:pointer;transition:all .2s}
+.ukb-scene-card:hover{box-shadow:var(--shm);transform:translateY(-2px);border-color:var(--border2)}
+.ukb-sc-head{display:flex;align-items:center;gap:11px}
+.ukb-sc-icon{width:42px;height:42px;border-radius:10px;background:var(--fp);border:1px solid rgba(27,58,45,.15);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ukb-sc-label{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);line-height:1.25}
+.ukb-sc-desc{font-size:13px;color:var(--ink2);line-height:1.6;flex:1}
+.ukb-sc-stats{font-size:12px;color:var(--ink3);padding-top:10px;border-top:1px solid var(--border)}
+.ukb-sc-best{font-weight:500;color:var(--forest)}
+.ukb-sc-cta{align-self:flex-start;background:var(--forest);color:var(--white);font-size:12px;font-weight:500;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em}
+.ukb-sc-cta:hover{background:var(--forest2)}
+.ukb-cta-card{background:var(--fp);border:1px solid rgba(27,58,45,.18);border-radius:var(--rxl);padding:28px 30px;display:flex;flex-direction:column;gap:10px}
+.ukb-cta-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);font-weight:500}
+.ukb-cta-title{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--forest);line-height:1.3;margin-top:2px}
+.ukb-cta-body{font-size:14px;color:var(--ink2);line-height:1.7;max-width:680px}
+.ukb-cta-price{font-family:var(--serif);font-size:16px;color:var(--forest);font-weight:400;margin-top:4px}
+.ukb-cta-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:var(--forest);color:var(--white);font-size:13px;font-weight:500;padding:10px 20px;border-radius:6px;text-decoration:none;font-family:var(--sans);letter-spacing:.02em;margin-top:8px;transition:background .15s}
+.ukb-cta-btn:hover{background:var(--forest2)}
+.ukb-cta-btn-ic{font-size:14px}
+.ukb-back{font-size:13px;color:var(--ink2);padding:6px 13px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;margin-bottom:18px;font-family:var(--sans);transition:all .15s}
+.ukb-back:hover{border-color:var(--border2);background:var(--white);color:var(--ink)}
+.ukb-detail-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);margin-bottom:14px;line-height:1.2}
+.ukb-intro{background:var(--cream2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;font-size:14px;line-height:1.7;color:var(--ink2);margin-bottom:22px}
+.ukb-speech{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:18px;margin-bottom:18px}
+.ukb-speech .sentence-list{display:flex;flex-direction:column;gap:9px}
+.ukb-detail-footer{background:var(--fp);border:1px solid rgba(27,58,45,.12);border-radius:var(--r);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:18px;font-size:13px;color:var(--forest2)}
+.ukb-detail-footer-eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);margin-bottom:3px;font-weight:500}
+.ukb-detail-footer .ukb-best{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--forest);line-height:1}
+.ukb-detail-footer .ukb-attempts{color:var(--ink3);font-size:12px}
+@media (max-width:640px){
+  .ukb-detail-title,.ukb-title{font-size:24px}
+  .ukb-scenes{grid-template-columns:1fr}
+  .ukb-detail-footer{flex-direction:column;align-items:flex-start;gap:6px}
+  .ukb-cta-card{padding:22px}
+  .ukb-cta-title{font-size:20px}
+}
+/* ===== Progress upgrade banner ===== */
+.pg-upgrade-banner{position:relative;background:var(--fp);border:1px solid rgba(27,58,45,.22);border-radius:12px;padding:22px 26px;margin-top:24px;box-shadow:var(--sh)}
+.pg-upgrade-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);font-weight:500;margin-bottom:6px}
+.pg-upgrade-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--forest);line-height:1.3;margin-bottom:8px}
+.pg-upgrade-stats{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:12px}
+.pg-upgrade-body{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:6px;max-width:640px}
+.pg-upgrade-price{font-family:var(--serif);font-size:14px;color:var(--forest);font-weight:400;margin-bottom:14px}
+.pg-upgrade-btn{display:inline-flex;align-items:center;gap:6px;background:var(--forest);color:var(--white);font-size:13px;font-weight:500;padding:9px 18px;border-radius:6px;border:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em;transition:background .15s}
+.pg-upgrade-btn:hover{background:var(--forest2)}
+.pg-upgrade-close{position:absolute;top:12px;right:14px;background:transparent;border:none;font-size:16px;color:var(--ink3);cursor:pointer;padding:4px 8px;line-height:1;border-radius:4px;transition:all .15s}
+.pg-upgrade-close:hover{color:var(--ink);background:rgba(0,0,0,.04)}
+@media (max-width:640px){
+  .pg-upgrade-banner{padding:18px 20px}
+  .pg-upgrade-title{font-size:18px}
+}
 /* ===== Settings ===== */
 .st-page{padding:4px 4px 32px;max-width:680px;margin:0 auto}
 .st-header{margin-bottom:24px}
@@ -770,6 +826,7 @@ h1{animation:fu .6s ease both .15s}
       <div class="ni" id="ni-progress" onclick="showAppView('progress')"><span class="nic">📊</span><span data-en>My Progress</span><span data-zh>我的进度</span></div>
       <div class="nbgl"><span data-en>Vocabulary</span><span data-zh>词汇</span></div>
       <div class="ni" id="ni-word-bank" onclick="showAppView('word-bank')"><span class="nic">📝</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
+      <div class="ni" id="ni-uk-business" onclick="showAppView('uk-business')"><span class="nic">🇬🇧</span><span data-en>UK Business</span><span data-zh>英国商务</span></div>
       <div class="ni" id="ni-review" onclick="showAppView('review')"><span class="nic">🔁</span><span data-en>Review</span><span data-zh>复习</span></div>
       <div class="nbgl"><span data-en>Account</span><span data-zh>账户</span></div>
       <div class="ni" id="ni-settings" onclick="showAppView('settings')"><span class="nic">⚙️</span><span data-en>Settings</span><span data-zh>设置</span></div>
@@ -946,6 +1003,30 @@ h1{animation:fu .6s ease both .15s}
            </div>
          </div>
 
+         <!-- 2.5 Upgrade Banner (shown when attempts >= 10 && avg >= 60) -->
+         <div class="pg-upgrade-banner" id="pg-upgrade-banner" style="display:none">
+           <button class="pg-upgrade-close" id="pg-upgrade-close" type="button" aria-label="Dismiss">✕</button>
+           <div class="pg-upgrade-eyebrow">
+             <span data-en>UK Business Programme</span><span data-zh>英国商务课程</span>
+           </div>
+           <h3 class="pg-upgrade-title">
+             🎯 <span data-en>Your pronunciation is getting stronger!</span>
+             <span data-zh>你的发音越来越好了！</span>
+           </h3>
+           <p class="pg-upgrade-stats" id="pg-upgrade-stats"></p>
+           <p class="pg-upgrade-body">
+             <span data-en>Ready to use your English in real UK professional contexts? Our UK Business Communication Programme combines AI practice with expert one-to-one support — tailored to your industry and goals.</span>
+             <span data-zh>准备好在英国真实职场环境中运用你的英语了吗？我们的英国商务沟通课程将 AI 练习与专家一对一支持结合，为你的行业和目标量身定制。</span>
+           </p>
+           <p class="pg-upgrade-price">
+             <span data-en>From £2,000 per programme.</span>
+             <span data-zh>课程起价 £2,000。</span>
+           </p>
+           <button class="pg-upgrade-btn" id="pg-upgrade-cta" type="button">
+             <span data-en>Learn More →</span><span data-zh>了解更多 →</span>
+           </button>
+         </div>
+
          <!-- 3. By Module Breakdown -->
          <div class="pg-card" id="pg-bymod-card">
            <div class="pg-card-head">
@@ -1106,6 +1187,60 @@ h1{animation:fu .6s ease both .15s}
          </div>
        </div>
      </div><!-- /#view-review -->
+     <div id="view-uk-business" style="display:none">
+       <div id="ukb-home" class="ukb-page">
+         <div class="ukb-header">
+           <h2 class="ukb-title">
+             <span data-en>UK Business Communication Programme</span>
+             <span data-zh>英国商务沟通课程</span>
+           </h2>
+           <p class="ukb-sub">
+             <span data-en>Use your British English in real professional contexts — from emails to meetings to negotiations.</span>
+             <span data-zh>把你的英式英语用在真实职场场景——从邮件、会议到商务谈判。</span>
+           </p>
+         </div>
+         <div id="ukb-scenes" class="ukb-scenes"></div>
+         <div class="ukb-cta-card">
+           <div class="ukb-cta-eyebrow">
+             <span data-en>Personalised Coaching</span><span data-zh>一对一辅导</span>
+           </div>
+           <h3 class="ukb-cta-title">
+             <span data-en>Ready for personalised coaching?</span>
+             <span data-zh>准备好接受一对一指导了吗？</span>
+           </h3>
+           <p class="ukb-cta-body">
+             <span data-en>Our UK Business Communication Programme combines AI practice with expert one-to-one support — tailored to your industry and goals.</span>
+             <span data-zh>我们的英国商务沟通课程将 AI 练习与专家一对一支持结合，为你的行业和目标量身定制。</span>
+           </p>
+           <p class="ukb-cta-price">
+             <span data-en>From £2,000 per programme.</span>
+             <span data-zh>课程起价 £2,000。</span>
+           </p>
+           <a class="ukb-cta-btn" href="mailto:hello@readii.co.uk?subject=UK%20Business%20Communication%20Programme">
+             <span class="ukb-cta-btn-ic">📧</span>
+             <span data-en>Contact Us →</span>
+             <span data-zh>联系我们 →</span>
+           </a>
+         </div>
+       </div>
+
+       <div id="ukb-detail" class="ukb-detail" style="display:none">
+         <button class="ukb-back" id="ukb-back-btn" type="button">
+           <span data-en>← Back to all scenes</span><span data-zh>← 返回场景列表</span>
+         </button>
+         <h2 class="ukb-detail-title" id="ukb-detail-title"></h2>
+         <div class="ukb-intro" id="ukb-detail-intro"></div>
+         <div class="ukb-speech" id="ukb-detail-speech">
+           <div class="speech-warn" style="display:none">
+             <span data-en>For best experience, use Chrome or Edge.</span>
+             <span data-zh>为获得最佳体验，请使用 Chrome 或 Edge。</span>
+           </div>
+           <div class="sentence-list"></div>
+           <div class="speech-result" style="display:none"></div>
+         </div>
+         <div class="ukb-detail-footer" id="ukb-detail-footer"></div>
+       </div>
+     </div><!-- /#view-uk-business -->
      <div id="view-settings" style="display:none">
        <div class="st-page">
          <div class="st-header">
@@ -1449,12 +1584,225 @@ async function renderModuleFooter(moduleId){
   setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
 }
 
+/* ===== UK Business Communication Programme ===== */
+const UK_BUSINESS_SCENES = [
+  {
+    id: 'email',
+    icon: '📧',
+    title: 'Professional Email Writing',
+    title_zh: '商务邮件写作',
+    desc: 'Learn how British professionals write emails — tone, structure, and phrases that open doors.',
+    desc_zh: '学习英国职场人士的邮件风格——语气、结构和打开机会的表达方式。',
+    sentences: [
+      "I hope this email finds you well.",
+      "Please find attached the document for your review.",
+      "I would be grateful if you could let me know your thoughts.",
+      "I look forward to hearing from you at your earliest convenience.",
+      "Thank you for your time and consideration."
+    ]
+  },
+  {
+    id: 'meeting',
+    icon: '🤝',
+    title: 'Business Meeting English',
+    title_zh: '商务会议英语',
+    desc: 'How to contribute, agree, disagree, and follow up in British meetings.',
+    desc_zh: '如何在英国商务会议中发言、表达同意与异议，以及跟进事项。',
+    sentences: [
+      "Could I just come in here and add something?",
+      "That's a really interesting point — building on that idea.",
+      "I take your point, though I'd suggest we consider an alternative.",
+      "Shall we move on to the next item on the agenda?",
+      "Just to confirm, I'll follow up with the minutes by end of day."
+    ]
+  },
+  {
+    id: 'pitch',
+    icon: '🏢',
+    title: 'Introducing Your Business in the UK',
+    title_zh: '在英国介绍你的公司',
+    desc: 'Pitch your company clearly and confidently in British professional settings.',
+    desc_zh: '在英国职场场合清晰自信地介绍你的公司。',
+    sentences: [
+      "We're a Canterbury-based technology company focused on language learning.",
+      "Our platform uses AI to help non-native speakers develop confident British English.",
+      "We've worked with clients across the UK and China over the past two years.",
+      "What makes us different is the combination of native content and real-time AI feedback.",
+      "We'd love to explore how we might work together."
+    ]
+  },
+  {
+    id: 'daily',
+    icon: '🏠',
+    title: 'Navigating Daily Life in the UK',
+    title_zh: '在英国日常生活沟通',
+    desc: 'From renting a flat to visiting a GP — communicate confidently in everyday British contexts.',
+    desc_zh: '从租房到看医生——在英国日常场景中自信沟通。',
+    sentences: [
+      "I'm looking for a one-bedroom flat in the city centre.",
+      "Could you explain what this charge on my bill is for?",
+      "I'd like to register with this GP practice, please.",
+      "I'm not sure I fully understood — could you say that again more slowly?",
+      "That's very helpful, thank you so much for your patience."
+    ]
+  }
+];
+
+let _ukbSpeechHandle = null;
+let _ukbCurrentSceneId = null;
+let _ukbStatsCache = null;
+
+function _ukbEsc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+}
+
+async function loadUkBusinessStats(force){
+  if(_ukbStatsCache && !force) return _ukbStatsCache;
+  try{
+    if(typeof _supabase === 'undefined') return {};
+    const { data: { user } } = await _supabase.auth.getUser();
+    if(!user){ _ukbStatsCache = {}; return {}; }
+    const { data, error } = await _supabase
+      .from('pronunciation_attempts')
+      .select('module_id, score')
+      .eq('user_id', user.id)
+      .eq('source', 'uk_business');
+    if(error){ console.warn('uk business stats fetch failed:', error.message); return {}; }
+    const stats = {};
+    for(const row of data || []){
+      if(!row.module_id) continue;
+      if(!stats[row.module_id]) stats[row.module_id] = { best: 0, attempts: 0 };
+      stats[row.module_id].best = Math.max(stats[row.module_id].best, row.score|0);
+      stats[row.module_id].attempts += 1;
+    }
+    _ukbStatsCache = stats;
+    return stats;
+  }catch(e){
+    console.warn('uk business stats error:', e);
+    return {};
+  }
+}
+
+async function logUkBusinessAttempt(payload){
+  try{
+    if(typeof _supabase === 'undefined') return;
+    const { data: { user } } = await _supabase.auth.getUser();
+    if(!user){ return; }
+    const { error } = await _supabase.from('pronunciation_attempts').insert({
+      user_id: user.id,
+      source: 'uk_business',
+      module_id: payload.sceneId,
+      sentence: payload.sentence,
+      transcript: payload.transcript || null,
+      score: payload.score | 0
+    });
+    if(error){ console.warn('uk business attempt log failed:', error.message); return; }
+    _ukbStatsCache = null;
+  }catch(e){ console.warn('uk business log threw:', e); }
+}
+
+async function renderUkBusinessHome(){
+  const stats = await loadUkBusinessStats(true);
+  const grid = document.getElementById('ukb-scenes');
+  if(!grid) return;
+  grid.innerHTML = UK_BUSINESS_SCENES.map(function(sc){
+    const s = stats[sc.id];
+    const statsLine = s
+      ? '<span class="ukb-sc-best">Best: '+s.best+'/100</span> · ' +
+        '<span data-en>Attempted: '+s.attempts+' '+(s.attempts===1?'time':'times')+'</span>' +
+        '<span data-zh>已尝试 '+s.attempts+' 次</span>'
+      : '<span data-en>Not yet attempted</span><span data-zh>尚未练习</span>';
+    return ''+
+      '<div class="ukb-scene-card" data-scene="'+sc.id+'">'+
+        '<div class="ukb-sc-head">'+
+          '<div class="ukb-sc-icon">'+_ukbEsc(sc.icon)+'</div>'+
+          '<div class="ukb-sc-label">'+
+            '<span data-en>'+_ukbEsc(sc.title)+'</span>'+
+            '<span data-zh>'+_ukbEsc(sc.title_zh)+'</span>'+
+          '</div>'+
+        '</div>'+
+        '<p class="ukb-sc-desc">'+
+          '<span data-en>'+_ukbEsc(sc.desc)+'</span>'+
+          '<span data-zh>'+_ukbEsc(sc.desc_zh)+'</span>'+
+        '</p>'+
+        '<div class="ukb-sc-stats">'+statsLine+'</div>'+
+        '<button class="ukb-sc-cta" type="button">'+
+          '<span data-en>🎤 Practice Reading Aloud →</span>'+
+          '<span data-zh>🎤 朗读练习 →</span>'+
+        '</button>'+
+      '</div>';
+  }).join('');
+  grid.querySelectorAll('.ukb-scene-card').forEach(function(card){
+    card.addEventListener('click', function(){ openUkBusinessScene(card.getAttribute('data-scene')); });
+  });
+}
+
+async function openUkBusinessScene(sceneId){
+  const sc = UK_BUSINESS_SCENES.find(function(x){ return x.id === sceneId; });
+  if(!sc) return;
+  _ukbCurrentSceneId = sceneId;
+  document.getElementById('ukb-home').style.display = 'none';
+  const detail = document.getElementById('ukb-detail');
+  detail.style.display = 'block';
+  const titleEl = document.getElementById('ukb-detail-title');
+  titleEl.innerHTML =
+    '<span data-en>'+_ukbEsc(sc.title)+'</span>'+
+    '<span data-zh>'+_ukbEsc(sc.title_zh)+'</span>';
+  const introEl = document.getElementById('ukb-detail-intro');
+  introEl.innerHTML =
+    '<span data-en>'+_ukbEsc(sc.desc)+'</span>'+
+    '<span data-zh>'+_ukbEsc(sc.desc_zh)+'</span>';
+  const bc = document.querySelector('.atbbc');
+  if(bc) bc.innerHTML =
+    '<span data-en>UK Business · '+_ukbEsc(sc.title)+'</span>'+
+    '<span data-zh>英国商务 · '+_ukbEsc(sc.title_zh)+'</span>';
+
+  if(!_ukbSpeechHandle && window.ReadiiSpeech){
+    _ukbSpeechHandle = window.ReadiiSpeech.attach(document.getElementById('ukb-detail-speech'), {
+      onScore: async function(info){
+        await logUkBusinessAttempt({ sceneId: _ukbCurrentSceneId, sentence: info.sentence, transcript: info.transcript, score: info.score });
+        renderUkSceneFooter(_ukbCurrentSceneId);
+      }
+    });
+  }
+  if(_ukbSpeechHandle) _ukbSpeechHandle.renderSentences(sc.sentences);
+  await renderUkSceneFooter(sceneId);
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+async function renderUkSceneFooter(sceneId){
+  const stats = (await loadUkBusinessStats(true))[sceneId];
+  const footer = document.getElementById('ukb-detail-footer');
+  if(!footer) return;
+  if(stats){
+    footer.innerHTML =
+      '<div>'+
+        '<div class="ukb-detail-footer-eyebrow"><span data-en>Your best on this scene</span><span data-zh>本场景最高分</span></div>'+
+        '<div class="ukb-best">'+stats.best+'<span style="font-size:13px;opacity:.6">/100</span></div>'+
+      '</div>'+
+      '<div class="ukb-attempts">'+
+        '<span data-en>'+stats.attempts+' '+(stats.attempts===1?'attempt':'attempts')+'</span>'+
+        '<span data-zh>共 '+stats.attempts+' 次</span>'+
+      '</div>';
+  } else {
+    footer.innerHTML =
+      '<div style="font-size:13px;color:var(--ink3);flex:1">'+
+        '<span data-en>No attempts yet — try a sentence above to see your score.</span>'+
+        '<span data-zh>还未练习，朗读上面任意一句即可获得评分。</span>'+
+      '</div>';
+  }
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
 function showAppView(name){
   const views = {
     'library':     document.getElementById('view-library'),
     'voice-coach': document.getElementById('view-voice-coach'),
     'progress':    document.getElementById('view-progress'),
     'word-bank':   document.getElementById('view-word-bank'),
+    'uk-business': document.getElementById('view-uk-business'),
     'review':      document.getElementById('view-review'),
     'settings':    document.getElementById('view-settings')
   };
@@ -1463,6 +1811,7 @@ function showAppView(name){
     'voice-coach': document.getElementById('ni-voice-coach'),
     'progress':    document.getElementById('ni-progress'),
     'word-bank':   document.getElementById('ni-word-bank'),
+    'uk-business': document.getElementById('ni-uk-business'),
     'review':      document.getElementById('ni-review'),
     'settings':    document.getElementById('ni-settings')
   };
@@ -1474,6 +1823,7 @@ function showAppView(name){
     if(name === 'voice-coach') bc.innerHTML = '<span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span>';
     else if(name === 'progress') bc.innerHTML = '<span data-en>My Progress</span><span data-zh>我的进度</span>';
     else if(name === 'word-bank') bc.innerHTML = '<span data-en>Word Bank</span><span data-zh>词汇库</span>';
+    else if(name === 'uk-business') bc.innerHTML = '<span data-en>UK Business</span><span data-zh>英国商务</span>';
     else if(name === 'review') bc.innerHTML = '<span data-en>Review</span><span data-zh>复习</span>';
     else if(name === 'settings') bc.innerHTML = '<span data-en>Settings</span><span data-zh>设置</span>';
     else bc.innerHTML = '<span data-en>Reading Library</span><span data-zh>阅读书库</span>';
@@ -1488,6 +1838,12 @@ function showAppView(name){
     renderProgress();
   } else if(name === 'word-bank'){
     renderWordBank();
+  } else if(name === 'uk-business'){
+    const home = document.getElementById('ukb-home');
+    const detail = document.getElementById('ukb-detail');
+    if(home) home.style.display = 'block';
+    if(detail) detail.style.display = 'none';
+    renderUkBusinessHome();
   } else if(name === 'review'){
     renderReviewPage();
   } else if(name === 'settings'){
@@ -1504,6 +1860,15 @@ function showAppView(name){
     const bc = document.querySelector('.atbbc');
     if(bc) bc.innerHTML = '<span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span>';
     renderVoiceCoachHome();
+    setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+  });
+  const ukbBack = document.getElementById('ukb-back-btn');
+  if(ukbBack) ukbBack.addEventListener('click', function(){
+    document.getElementById('ukb-detail').style.display = 'none';
+    document.getElementById('ukb-home').style.display = 'block';
+    const bc = document.querySelector('.atbbc');
+    if(bc) bc.innerHTML = '<span data-en>UK Business</span><span data-zh>英国商务</span>';
+    renderUkBusinessHome();
     setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
   });
 })();
@@ -2435,8 +2800,14 @@ function _pgSourceLabel(row){
     const m = VOICE_COACH_MODULES.find(function(x){ return x.id === row.module_id; });
     if(m) return { en: m.label, zh: m.label };
   }
+  if(row.source === 'uk_business' && row.module_id && Array.isArray(UK_BUSINESS_SCENES)){
+    const sc = UK_BUSINESS_SCENES.find(function(x){ return x.id === row.module_id; });
+    if(sc) return { en: sc.title, zh: sc.title_zh };
+  }
   if(row.source === 'reading') return { en: 'Reading', zh: '阅读' };
   if(row.source === 'voice_coach') return { en: 'Voice Coach', zh: '语音指导' };
+  if(row.source === 'uk_business') return { en: 'UK Business', zh: '英国商务' };
+  if(row.source === 'word_bank') return { en: 'Word Bank', zh: '词汇库' };
   return { en: row.source || '—', zh: row.source || '—' };
 }
 
@@ -2481,12 +2852,47 @@ async function renderProgress(){
 
   _pgRenderStats(attempts);
   _pgRenderTrend(attempts);
+  _pgRenderUpgradeBanner(attempts);
   _pgRenderByModule(attempts);
   _pgRenderRecent(attempts);
 
   // Re-apply current language to all data-en/data-zh spans we just inserted
   setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
 }
+
+function _pgRenderUpgradeBanner(attempts){
+  const banner = document.getElementById('pg-upgrade-banner');
+  if(!banner) return;
+  let dismissed = false;
+  try{ dismissed = localStorage.getItem('readii-upgrade-dismissed') === 'true'; }catch(_){}
+  if(dismissed){ banner.style.display = 'none'; return; }
+  const total = attempts.length;
+  if(total < 10){ banner.style.display = 'none'; return; }
+  let sum = 0;
+  for(let i=0;i<attempts.length;i++) sum += (attempts[i].score|0);
+  const avg = Math.round(sum / total);
+  if(avg < 60){ banner.style.display = 'none'; return; }
+  const stats = document.getElementById('pg-upgrade-stats');
+  if(stats){
+    stats.innerHTML =
+      '<span data-en>You&#39;ve completed <b>'+total+'</b> practice sessions with an average score of <b>'+avg+'</b>/100.</span>'+
+      '<span data-zh>你已经完成了 <b>'+total+'</b> 次练习，平均得分 <b>'+avg+'</b>/100。</span>';
+  }
+  banner.style.display = '';
+}
+
+(function(){
+  const closeBtn = document.getElementById('pg-upgrade-close');
+  if(closeBtn) closeBtn.addEventListener('click', function(){
+    try{ localStorage.setItem('readii-upgrade-dismissed', 'true'); }catch(_){}
+    const banner = document.getElementById('pg-upgrade-banner');
+    if(banner) banner.style.display = 'none';
+  });
+  const ctaBtn = document.getElementById('pg-upgrade-cta');
+  if(ctaBtn) ctaBtn.addEventListener('click', function(){
+    showAppView('uk-business');
+  });
+})();
 
 function _pgRenderEmptyState(){
   document.getElementById('pg-stat-total').textContent = '—';
