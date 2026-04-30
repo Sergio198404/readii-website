@@ -2,6 +2,28 @@
 
 ---
 
+## 2026-04-30 | Session 31 | v2.3.1
+
+**Objective:** Small follow-up to v2.3.0 — add a "Reading level" stat card to My Progress so users see their current adaptive tier (1/2/3) at a glance, alongside the existing Reading streak card.
+
+**Why this matters:**
+The reading_level value drives tomorrow's daily book selection but was only visible indirectly (via the difficulty of the book that arrived). Surfacing it on My Progress closes the feedback loop — users can now confirm their level dropped after a "too hard" rating, or watch it climb after several "too easy" runs.
+
+**Completed:**
+- [x] Added 7th stat card `#pg-stat-rlevel` to the Stats Overview grid (auto-fit grid handles the new column without CSS changes)
+- [x] `_pgRenderDailyBookStats()` extended to fetch `user_profiles.reading_level` in parallel with the daily-book completion data; renders "Level N" / "第 N 级"
+- [x] Empty state + render helpers updated to include the new id
+
+**Files changed:**
+- index.html (v2.3.0 → v2.3.1): Stats Overview HTML +1 card, `_pgRenderEmptyState` / `_pgRenderStats` / `_pgRenderDailyBookStats` extended
+- VERSION (2.3.0 → 2.3.1)
+- CHANGELOG.md ([2.3.1] entry)
+- WORKLOG.md (this Session 31)
+
+**Verified by:** inline JS parses cleanly; no breakage to existing renderers — new id is purely additive.
+
+---
+
 ## 2026-04-30 | Session 30 | v2.2.1
 
 **Objective:** Activate the 200 Listen buttons in UK Culture Programme. The transcribe workspace finished generating fable mp3s and populated `uk_culture_audio`; this session is the website-side wiring.

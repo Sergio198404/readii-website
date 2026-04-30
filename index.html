@@ -1147,6 +1147,7 @@ h1{animation:fu .6s ease both .15s}
            <div class="pg-stat"><div class="pg-stat-label"><span data-en>Practice streak</span><span data-zh>练习连续</span></div><div class="pg-stat-value" id="pg-stat-streak">—</div></div>
            <div class="pg-stat"><div class="pg-stat-label"><span data-en>Books read</span><span data-zh>已读书数</span></div><div class="pg-stat-value" id="pg-stat-books">—</div></div>
            <div class="pg-stat"><div class="pg-stat-label"><span data-en>Reading streak</span><span data-zh>阅读连续</span></div><div class="pg-stat-value" id="pg-stat-rstreak">—</div></div>
+           <div class="pg-stat"><div class="pg-stat-label"><span data-en>Reading level</span><span data-zh>阅读级别</span></div><div class="pg-stat-value" id="pg-stat-rlevel">—</div></div>
          </div>
          <p class="pg-empty-hint" id="pg-empty-hint" style="display:none">
            <span data-en>Start practising to see your progress.</span>
@@ -3864,46 +3865,65 @@ async function renderProgress(){
 async function _pgRenderDailyBookStats(user){
   const booksEl = document.getElementById('pg-stat-books');
   const rstreakEl = document.getElementById('pg-stat-rstreak');
-  if(!booksEl || !rstreakEl) return;
+  const rlevelEl = document.getElementById('pg-stat-rlevel');
+  if(!booksEl || !rstreakEl || !rlevelEl) return;
+
+  // Reading level lives on user_profiles — fetch in parallel with completion data
+  const dailyP = _supabase
+    .from('user_daily_book')
+    .select('assigned_date, completed')
+    .eq('user_id', user.id)
+    .eq('completed', true)
+    .order('assigned_date', { ascending: false });
+  const profileP = _supabase
+    .from('user_profiles')
+    .select('reading_level')
+    .eq('id', user.id)
+    .maybeSingle();
+
   try{
-    const { data, error } = await _supabase
-      .from('user_daily_book')
-      .select('assigned_date, completed')
-      .eq('user_id', user.id)
-      .eq('completed', true)
-      .order('assigned_date', { ascending: false });
+    const { data, error } = await dailyP;
     if(error){
-      // table may not exist yet — leave the cards muted
       booksEl.textContent = '0';
       rstreakEl.innerHTML = '<span data-en>0 days</span><span data-zh>0 天</span>';
-      return;
-    }
-    const rows = data || [];
-    booksEl.textContent = String(rows.length);
-    // Streak: consecutive days where assigned_date is in the set, walking back from today (or yesterday)
-    const days = new Set();
-    for(let i=0;i<rows.length;i++){
-      if(rows[i].assigned_date) days.add(rows[i].assigned_date);
-    }
-    let streak = 0;
-    if(days.size){
-      const now = new Date();
-      let cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      if(!days.has(_pgDayKey(cursor))){
-        cursor.setDate(cursor.getDate()-1);
+    } else {
+      const rows = data || [];
+      booksEl.textContent = String(rows.length);
+      const days = new Set();
+      for(let i=0;i<rows.length;i++){
+        if(rows[i].assigned_date) days.add(rows[i].assigned_date);
       }
-      while(days.has(_pgDayKey(cursor))){
-        streak++;
-        cursor.setDate(cursor.getDate()-1);
+      let streak = 0;
+      if(days.size){
+        const now = new Date();
+        let cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        if(!days.has(_pgDayKey(cursor))){
+          cursor.setDate(cursor.getDate()-1);
+        }
+        while(days.has(_pgDayKey(cursor))){
+          streak++;
+          cursor.setDate(cursor.getDate()-1);
+        }
       }
+      rstreakEl.innerHTML =
+        '<span data-en>'+streak+' '+(streak===1?'day':'days')+'</span>'+
+        '<span data-zh>'+streak+' 天</span>';
     }
-    rstreakEl.innerHTML =
-      '<span data-en>'+streak+' '+(streak===1?'day':'days')+'</span>'+
-      '<span data-zh>'+streak+' 天</span>';
   }catch(e){
     console.warn('daily book stats failed:', e);
     booksEl.textContent = '0';
     rstreakEl.innerHTML = '<span data-en>0 days</span><span data-zh>0 天</span>';
+  }
+
+  try{
+    const { data: profile } = await profileP;
+    const lvl = (profile && profile.reading_level) || 1;
+    rlevelEl.innerHTML =
+      '<span data-en>Level '+lvl+'</span>'+
+      '<span data-zh>第 '+lvl+' 级</span>';
+  }catch(e){
+    console.warn('reading level fetch failed:', e);
+    rlevelEl.innerHTML = '<span data-en>Level 1</span><span data-zh>第 1 级</span>';
   }
 }
 
@@ -3948,7 +3968,8 @@ function _pgRenderEmptyState(){
   document.getElementById('pg-stat-streak').textContent = '—';
   const booksEl = document.getElementById('pg-stat-books'); if(booksEl) booksEl.textContent = '—';
   const rstreakEl = document.getElementById('pg-stat-rstreak'); if(rstreakEl) rstreakEl.textContent = '—';
-  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak','pg-stat-books','pg-stat-rstreak'].forEach(function(id){
+  const rlevelEl = document.getElementById('pg-stat-rlevel'); if(rlevelEl) rlevelEl.textContent = '—';
+  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak','pg-stat-books','pg-stat-rstreak','pg-stat-rlevel'].forEach(function(id){
     const el = document.getElementById(id); if(el) el.classList.add('muted');
   });
   const trend = document.getElementById('pg-trend'); if(trend) trend.innerHTML = '';
@@ -3970,7 +3991,7 @@ function _pgRenderEmptyState(){
 }
 
 function _pgRenderStats(attempts){
-  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak','pg-stat-books','pg-stat-rstreak'].forEach(function(id){
+  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak','pg-stat-books','pg-stat-rstreak','pg-stat-rlevel'].forEach(function(id){
     const el = document.getElementById(id); if(el) el.classList.remove('muted');
   });
   const hint = document.getElementById('pg-empty-hint');

@@ -128,6 +128,20 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.3.1] — 2026-04-30
+
+### Added
+- feat: My Progress — new **Reading level** stat card (📖) showing the user's current `user_profiles.reading_level` as "Level 1/2/3" (bilingual: "第 N 级"). Sits alongside the existing Reading streak card so users see both their adaptive level and their daily-book consistency at a glance
+- Total Stats Overview cards: 7 (`auto-fit minmax(140px, 1fr)` grid already wraps cleanly)
+
+### Changed
+- `_pgRenderDailyBookStats(user)` now fetches `user_daily_book` and `user_profiles.reading_level` in parallel (`Promise.all`-style — both queries dispatched together and awaited separately so a failure in one doesn't block the other)
+
+### Notes
+- Defaults to "Level 1" if the profile row is missing or the column is null (consistent with `getDailyBook()` fallback)
+
+---
+
 ## [2.2.1] — 2026-04-30
 
 ### Added
