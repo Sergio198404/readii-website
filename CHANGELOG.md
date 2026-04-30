@@ -128,6 +128,32 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.3.0] — 2026-04-30
+
+### Added
+- feat: **Reading Library — daily-book mode** (the new default landing). One book per day, per user, with adaptive difficulty
+- New table `user_daily_book` (user_id + assigned_date PK, RLS-scoped, 3 policies) — see `database/migration-daily-book.sql`
+- New `user_profiles` columns: `reading_level INT 1-3 DEFAULT 1`, `books_read_count INT DEFAULT 0`
+- Daily card on `view-library`: shows today's date, book cover, title (EN+ZH), series, total days, "▶ Start Reading" CTA. After completion the CTA flips to "↺ Re-read" with a "completed today" badge
+- Daily-book stats line below the card: 📚 Books read · 🔥 Streak (n days)
+- "Browse all books →" secondary link on the daily card switches to the original library grid (unchanged); "← Back to today" returns
+- **Difficulty feedback panel** revealed in the reading panel after the user records their first sentence for today's book. Three buttons: 😓 Too hard / 👍 Just right / 😊 Too easy. After submit: card shows "Thanks! Come back tomorrow for your next book."
+- Difficulty feedback adjusts `user_profiles.reading_level` (clamped 1-3): too_hard → −1, too_easy → +1, just_right → unchanged. Tomorrow's `getDailyBook()` reads the new level
+- `getDailyBook()` selects from `books WHERE level IN (...) AND is_published = true AND id NOT IN (already-assigned)`, random pick from up to 20 candidates. Fallback when the tier is exhausted: re-pick the earliest book (no error state)
+- **Reading-panel pronunciation logging**: previously the Reading panel's `ReadiiSpeech.attach()` had `onScore: null` and recorded nothing to `pronunciation_attempts`. Now it logs with `source='reading'`, `module_id=<current_book_id>`. This both feeds My Progress and is what triggers the daily-book completion flag
+- My Progress: two new stat cards — **Books read** (count of `user_daily_book.completed=true`) and **Reading streak** (consecutive days walking back from today/yesterday). Stats grid switched to `auto-fit minmax(140px,1fr)` so 6 cards wrap cleanly on any width
+
+### Changed
+- `view-library` restructured into two sub-views: `#library-daily` (default) and `#library-browse` (existing grid, preserved). `showAppView('library')` always lands on daily mode and refreshes the card on entry (handles day rollover)
+- `window.openBook(bookId)` now records `_currentReadingBookId` so subsequent reading-panel attempts know which book they belong to
+
+### Notes
+- The DB migration (`database/migration-daily-book.sql`) is non-blocking: code reads/writes are wrapped in try/catch. The app remains functional before the SQL is run; the daily card will show "Daily book is not set up yet" until the table exists
+- The level mapping `{1:[1], 2:[2], 3:[3]}` assumes `books.level` is already a 1/2/3 tier. If your seed uses a different distribution, edit `levelMap` in the inline script and the new card content will adapt
+- Existing "Practice streak" stat preserved as-is (sourced from `pronunciation_attempts.created_at` distinct days). Reading streak is independent and counts only daily-book completion days
+
+---
+
 ## [2.2.0] — 2026-04-30
 
 ### Added

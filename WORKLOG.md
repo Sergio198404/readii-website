@@ -2,6 +2,40 @@
 
 ---
 
+## 2026-04-30 | Session 29 | v2.3.0
+
+**Objective:** Reframe Reading Library around a "one book a day" model with adaptive difficulty. The 242-book grid stays as a secondary browse mode, but the default landing is a single curated book that adapts to the user's self-reported difficulty.
+
+**Why this matters:**
+The 242-book grid is a choice paralysis machine — users browse, don't pick, leave. Daily-book mode shifts the surface from "library catalogue" to "today's reading", removes the choice burden, and creates a return-visit loop ("come back tomorrow"). Difficulty feedback closes the loop: the system learns from each completion, so a user who fails will see easier books, a user who breezes through gets harder ones. This also generates the streak signal that compounds across days.
+
+**Completed:**
+- [x] DB migration `database/migration-daily-book.sql`: `user_daily_book` table + RLS + 3 policies; `user_profiles.reading_level` (1-3) and `books_read_count` columns
+- [x] Restructured `#view-library` into `#library-daily` (default) and `#library-browse` (existing grid wrapped untouched). New "Browse all books →" / "← Back to today" link toggles between them
+- [x] `getDailyBook(userId)`: queries today's row; if missing, picks a never-assigned book at the user's `reading_level` from `books` (random of up to 20 candidates), inserts the assignment, returns `{book, completed, feedback}`. Has a fallback when the tier is exhausted
+- [x] `submitDifficultyFeedback(userId, feedback)`: marks today complete, captures feedback, adjusts `reading_level` (−1/0/+1, clamped 1-3), increments `books_read_count`
+- [x] Daily card UI: cover (placeholder 📗 for now since `cover_image_url` may not be populated), series + level eyebrow, title (EN+ZH from `book.title`/`book.title_zh`), days metadata, ▶ Start / ↺ Re-read CTA
+- [x] Reading-panel pronunciation logging: bridge from inline script's `ReadiiSpeech.attach()` to module-script `window.handleReadingPanelScore` which inserts into `pronunciation_attempts` with `source='reading'` and `module_id=_currentReadingBookId`. This was missing before — Reading attempts were never recorded
+- [x] Difficulty feedback panel: hidden until the user records ≥1 sentence for today's book, then revealed in the reading panel area. Three buttons (Too hard / Just right / Too easy), one-shot submission, "Thanks!" line after submit
+- [x] My Progress: two new stat cards — Books read + Reading streak. Stats grid switched to `auto-fit minmax(140px,1fr)` so 6 cards wrap cleanly. Renamed "Practice streak" zh label from "连续天数" to "练习连续" to disambiguate from the new "阅读连续"
+- [x] Day rollover: `showAppView('library')` always re-runs `renderLibraryDailyMode()` so the card stays current
+- [x] Bilingual coverage: every visible string has `data-en`/`data-zh` spans; `_formatDateLong()` produces locale-appropriate header date
+
+**Files changed:**
+- index.html (v2.2.0 → v2.3.0): library HTML restructure, daily-book CSS (~50 lines), inline-script ReadiiSpeech bridge, showAppView library hook, module-script daily-book functions (~280 lines), My Progress new cards + render helper, openBook() book-id tracking
+- database/migration-daily-book.sql (new)
+- VERSION (2.2.0 → 2.3.0)
+- CHANGELOG.md ([2.3.0] entry)
+- WORKLOG.md (this Session 29)
+
+**Verified by:** inline + module scripts both parse cleanly via `new Function(code)` syntax check; no dangling references to removed identifiers.
+
+**Pending:**
+- [ ] User must run `database/migration-daily-book.sql` in Supabase SQL Editor (writes silently fail until then; daily card shows "not set up yet")
+- [ ] v2.2.1 (UK Culture audio activation) still on hold — waiting for transcribe workspace report
+
+---
+
 ## 2026-04-30 | Session 28 | v2.2.0
 
 **Objective:** Turn UK Business from a flat 4-scene tab into the **UK Culture Programme** — a multi-module, 5-level, progressive-unlock learning system that funnels engaged learners towards the £2,000 coaching programme. Restructure the sidebar around three coherent groups so the dual-engine model is visible from the nav.

@@ -334,6 +334,55 @@ h1{animation:fu .6s ease both .15s}
 .british-tip{font-size:12px;padding:9px 12px;border-radius:8px;background:var(--fp);color:var(--forest2);border:1px solid rgba(27,58,45,.12);line-height:1.55}
 .try-again-btn{align-self:flex-start;font-size:12px;padding:6px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--ink2);cursor:pointer;font-family:var(--sans);transition:all .15s}
 .try-again-btn:hover{border-color:var(--forest3);color:var(--forest)}
+/* ===== Reading Library — daily-book mode (v2.3.0) ===== */
+.lib-daily{padding:4px 4px 24px;max-width:720px;margin:0 auto 18px}
+.lib-daily-header{margin-bottom:18px}
+.lib-daily-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);font-weight:500;margin-bottom:6px}
+.lib-daily-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);margin-bottom:6px;line-height:1.2}
+.lib-daily-sub{font-size:14px;color:var(--ink3);line-height:1.6}
+.lib-daily-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);box-shadow:var(--sh);padding:28px;display:flex;gap:22px;align-items:center;margin-bottom:14px;min-height:160px}
+.lib-daily-cover{width:128px;height:160px;border-radius:10px;background:linear-gradient(135deg,var(--forest),var(--forest2));display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0;box-shadow:0 4px 14px rgba(26,23,20,.18)}
+.lib-daily-info{flex:1;display:flex;flex-direction:column;gap:8px}
+.lib-daily-series{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.lib-daily-bt{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--ink);line-height:1.25}
+.lib-daily-meta{font-size:12px;color:var(--ink3);font-family:var(--mono)}
+.lib-daily-cta{align-self:flex-start;margin-top:8px;background:var(--forest);color:var(--white);font-size:14px;font-weight:500;padding:11px 22px;border-radius:7px;border:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em;display:inline-flex;align-items:center;gap:8px;transition:background .15s}
+.lib-daily-cta:hover{background:var(--forest2)}
+.lib-daily-cta.done{background:var(--cream2);color:var(--ink2);border:1px solid var(--border)}
+.lib-daily-cta.done:hover{background:var(--cream3);color:var(--ink)}
+.lib-daily-loading{color:var(--ink3);font-size:14px;font-style:italic;text-align:center;width:100%}
+.lib-daily-empty{color:var(--ink3);font-size:14px;text-align:center;line-height:1.7;width:100%}
+.lib-daily-empty b{color:var(--forest);font-weight:500}
+.lib-daily-stats{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;font-size:13px;color:var(--ink2);padding:8px 0;font-family:var(--mono)}
+.lib-daily-stat b{color:var(--forest);font-weight:500;font-family:var(--mono)}
+.lib-daily-browse-link{text-align:center;margin-top:10px}
+.lib-browse-link-btn,.lib-back-link-btn{font-family:var(--sans);font-size:13px;color:var(--ink3);background:transparent;border:none;cursor:pointer;padding:6px 12px;letter-spacing:.02em;transition:color .15s}
+.lib-browse-link-btn:hover,.lib-back-link-btn:hover{color:var(--forest)}
+.lib-back-link-btn{margin-bottom:14px;border:1px solid var(--border);border-radius:6px;padding:6px 14px;color:var(--ink2)}
+.lib-back-link-btn:hover{background:var(--white);border-color:var(--border2);color:var(--ink)}
+.lib-feedback-panel{background:var(--fp);border:1px solid rgba(27,58,45,.22);border-radius:14px;padding:24px 26px;margin-top:18px;max-width:720px;margin-left:auto;margin-right:auto;box-shadow:var(--sh)}
+.lib-fb-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);font-weight:500;margin-bottom:8px}
+.lib-fb-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--forest);line-height:1.3;margin-bottom:14px}
+.lib-fb-q{font-family:var(--serif);font-size:16px;color:var(--ink);font-weight:400;margin-bottom:14px}
+.lib-fb-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.lib-fb-btn{flex:1;min-width:120px;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;font-family:var(--sans);transition:all .15s}
+.lib-fb-btn:hover{border-color:var(--forest3);background:var(--white);transform:translateY(-1px)}
+.lib-fb-btn.primary{border-color:rgba(27,58,45,.4)}
+.lib-fb-btn.selected{background:var(--forest);border-color:var(--forest);color:var(--white)}
+.lib-fb-btn.selected .lib-fb-label{color:var(--white)}
+.lib-fb-emoji{font-size:24px;line-height:1}
+.lib-fb-label{font-size:12px;color:var(--ink2);font-weight:500;letter-spacing:.02em}
+.lib-fb-help{font-size:12px;color:var(--ink3);font-style:italic;line-height:1.6}
+.lib-fb-thanks{font-family:var(--serif);font-size:15px;color:var(--forest);text-align:center;padding:8px 0}
+@media (max-width:640px){
+  .lib-daily-title{font-size:24px}
+  .lib-daily-card{flex-direction:column;align-items:center;text-align:center;padding:22px}
+  .lib-daily-cover{width:104px;height:130px;font-size:38px}
+  .lib-daily-info{align-items:center}
+  .lib-daily-cta{align-self:center}
+  .lib-fb-buttons{flex-direction:column}
+  .lib-fb-btn{flex-direction:row;justify-content:center;min-width:0}
+}
 /* ===== Voice Coach ===== */
 .vc-home,.vc-detail{padding:4px 4px 32px;max-width:980px;margin:0 auto}
 .vc-header{margin-bottom:24px}
@@ -504,7 +553,7 @@ h1{animation:fu .6s ease both .15s}
 .pg-header{margin-bottom:24px}
 .pg-title{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);line-height:1.2;margin-bottom:6px}
 .pg-sub{font-size:14px;color:var(--ink3)}
-.pg-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px}
+.pg-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:8px}
 .pg-stat{background:var(--white);border:1px solid var(--border);border-radius:12px;box-shadow:var(--sh);padding:16px 18px;display:flex;flex-direction:column;gap:6px}
 .pg-stat-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
 .pg-stat-value{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--forest);line-height:1.1}
@@ -887,8 +936,41 @@ h1{animation:fu .6s ease both .15s}
     </div>
     <div class="acon">
      <div id="view-library">
-      <!-- 书库浏览面板 -->
-      <div id="library-panel" style="margin-bottom:18px;background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:20px;">
+      <!-- v2.3.0: Daily-book mode (default landing) -->
+      <div id="library-daily" class="lib-daily">
+        <div class="lib-daily-header">
+          <div class="lib-daily-eyebrow" id="lib-daily-date"></div>
+          <h2 class="lib-daily-title">
+            <span data-en>Today's Reading</span><span data-zh>今日阅读</span>
+          </h2>
+          <p class="lib-daily-sub">
+            <span data-en>One book a day — your level adapts to how you find it.</span>
+            <span data-zh>每天一本书——根据你的反馈自动调整难度。</span>
+          </p>
+        </div>
+        <div id="lib-daily-card" class="lib-daily-card">
+          <div class="lib-daily-loading">
+            <span data-en>Loading today's book…</span><span data-zh>正在准备今天的书…</span>
+          </div>
+        </div>
+        <div class="lib-daily-stats" id="lib-daily-stats" style="display:none">
+          <span class="lib-daily-stat">📚 <span data-en>Books read:</span><span data-zh>已读书数：</span> <b id="lib-stat-books">0</b></span>
+          <span class="lib-daily-stat">🔥 <span data-en>Streak:</span><span data-zh>连续：</span> <b id="lib-stat-streak">0</b><span data-en> day</span><span data-zh> 天</span><span id="lib-stat-streak-s" data-en>s</span></span>
+        </div>
+        <div class="lib-daily-browse-link">
+          <button type="button" class="lib-browse-link-btn" onclick="switchLibraryMode('browse')">
+            <span data-en>Browse all books →</span><span data-zh>浏览全部书籍 →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- v2.3.0: Browse mode (secondary) — wraps the original grid -->
+      <div id="library-browse" style="display:none">
+        <button type="button" class="lib-back-link-btn" onclick="switchLibraryMode('daily')">
+          <span data-en>← Back to today</span><span data-zh>← 返回今日阅读</span>
+        </button>
+        <!-- 书库浏览面板 -->
+        <div id="library-panel" style="margin-bottom:18px;background:var(--white);border:1px solid var(--border);border-radius:var(--rxl);padding:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
           <h3 style="font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);">
             <span data-en>Reading Library</span><span data-zh>阅读书库</span>
@@ -913,6 +995,7 @@ h1{animation:fu .6s ease both .15s}
           </div>
         </div>
       </div>
+      </div><!-- /#library-browse -->
       <div class="agr">
         <div class="rp">
           <div class="rph"><div class="rpbc">📗</div><div class="rpbi"><div class="rpbu"><span data-en>British Reader · Level 2 · Unit 14</span><span data-zh>英式分级阅读 · 第2级 · 第14单元</span></div><div class="rpbt"><span data-en>The Very Hungry Caterpillar</span><span data-zh>好饿的毛毛虫</span></div><div class="rpbtr"><span data-en>Read by Emma · Native British teacher</span><span data-zh>Emma 朗读 · 英国外教</span></div></div></div>
@@ -978,6 +1061,42 @@ h1{animation:fu .6s ease both .15s}
           </div>
         </div>
       </div>
+      <!-- v2.3.0: Difficulty feedback panel (revealed after first reading attempt for today's book) -->
+      <div id="lib-feedback-panel" class="lib-feedback-panel" style="display:none">
+        <div class="lib-fb-eyebrow">
+          <span data-en>Today's book</span><span data-zh>今天的书</span>
+        </div>
+        <h3 class="lib-fb-title">
+          🎉 <span data-en>Great job! You finished today's book.</span>
+          <span data-zh>太棒了！你完成了今天的书。</span>
+        </h3>
+        <p class="lib-fb-q">
+          <span data-en>How was the difficulty?</span>
+          <span data-zh>今天的难度怎么样？</span>
+        </p>
+        <div class="lib-fb-buttons">
+          <button type="button" class="lib-fb-btn" data-feedback="too_hard">
+            <span class="lib-fb-emoji">😓</span>
+            <span class="lib-fb-label"><span data-en>Too hard</span><span data-zh>太难了</span></span>
+          </button>
+          <button type="button" class="lib-fb-btn primary" data-feedback="just_right">
+            <span class="lib-fb-emoji">👍</span>
+            <span class="lib-fb-label"><span data-en>Just right</span><span data-zh>刚刚好</span></span>
+          </button>
+          <button type="button" class="lib-fb-btn" data-feedback="too_easy">
+            <span class="lib-fb-emoji">😊</span>
+            <span class="lib-fb-label"><span data-en>Too easy</span><span data-zh>太简单了</span></span>
+          </button>
+        </div>
+        <p class="lib-fb-help">
+          <span data-en>Your feedback helps us choose tomorrow's book for you.</span>
+          <span data-zh>你的反馈帮助我们为你选择明天的书。</span>
+        </p>
+        <div class="lib-fb-thanks" id="lib-fb-thanks" style="display:none">
+          <span data-en>Thanks! Come back tomorrow for your next book.</span>
+          <span data-zh>谢谢！明天再来读下一本书。</span>
+        </div>
+      </div>
      </div><!-- /#view-library -->
      <div id="view-voice-coach" style="display:none">
        <div id="vc-home" class="vc-home">
@@ -1025,7 +1144,9 @@ h1{animation:fu .6s ease both .15s}
            <div class="pg-stat"><div class="pg-stat-label"><span data-en>Total attempts</span><span data-zh>总练习次数</span></div><div class="pg-stat-value" id="pg-stat-total">—</div></div>
            <div class="pg-stat"><div class="pg-stat-label"><span data-en>Average score</span><span data-zh>平均分</span></div><div class="pg-stat-value" id="pg-stat-avg">—</div></div>
            <div class="pg-stat"><div class="pg-stat-label"><span data-en>Best score</span><span data-zh>最高分</span></div><div class="pg-stat-value" id="pg-stat-best">—</div></div>
-           <div class="pg-stat"><div class="pg-stat-label"><span data-en>Practice streak</span><span data-zh>连续天数</span></div><div class="pg-stat-value" id="pg-stat-streak">—</div></div>
+           <div class="pg-stat"><div class="pg-stat-label"><span data-en>Practice streak</span><span data-zh>练习连续</span></div><div class="pg-stat-value" id="pg-stat-streak">—</div></div>
+           <div class="pg-stat"><div class="pg-stat-label"><span data-en>Books read</span><span data-zh>已读书数</span></div><div class="pg-stat-value" id="pg-stat-books">—</div></div>
+           <div class="pg-stat"><div class="pg-stat-label"><span data-en>Reading streak</span><span data-zh>阅读连续</span></div><div class="pg-stat-value" id="pg-stat-rstreak">—</div></div>
          </div>
          <p class="pg-empty-hint" id="pg-empty-hint" style="display:none">
            <span data-en>Start practising to see your progress.</span>
@@ -2468,7 +2589,11 @@ function showAppView(name){
     else if(name === 'settings') bc.innerHTML = '<span data-en>Settings</span><span data-zh>设置</span>';
     else bc.innerHTML = '<span data-en>Reading Library</span><span data-zh>阅读书库</span>';
   }
-  if(name === 'voice-coach'){
+  if(name === 'library'){
+    // v2.3.0: refresh daily-book card on every library entry (handles day rollover)
+    if(typeof window.renderLibraryDailyMode === 'function') window.renderLibraryDailyMode();
+    if(typeof window.switchLibraryMode === 'function') window.switchLibraryMode('daily');
+  } else if(name === 'voice-coach'){
     const home = document.getElementById('vc-home');
     const detail = document.getElementById('vc-detail');
     if(home) home.style.display = 'block';
@@ -3502,9 +3627,56 @@ async function renderProgress(){
   _pgRenderUpgradeBanner(attempts);
   _pgRenderByModule(attempts);
   _pgRenderRecent(attempts);
+  await _pgRenderDailyBookStats(user);
 
   // Re-apply current language to all data-en/data-zh spans we just inserted
   setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+async function _pgRenderDailyBookStats(user){
+  const booksEl = document.getElementById('pg-stat-books');
+  const rstreakEl = document.getElementById('pg-stat-rstreak');
+  if(!booksEl || !rstreakEl) return;
+  try{
+    const { data, error } = await _supabase
+      .from('user_daily_book')
+      .select('assigned_date, completed')
+      .eq('user_id', user.id)
+      .eq('completed', true)
+      .order('assigned_date', { ascending: false });
+    if(error){
+      // table may not exist yet — leave the cards muted
+      booksEl.textContent = '0';
+      rstreakEl.innerHTML = '<span data-en>0 days</span><span data-zh>0 天</span>';
+      return;
+    }
+    const rows = data || [];
+    booksEl.textContent = String(rows.length);
+    // Streak: consecutive days where assigned_date is in the set, walking back from today (or yesterday)
+    const days = new Set();
+    for(let i=0;i<rows.length;i++){
+      if(rows[i].assigned_date) days.add(rows[i].assigned_date);
+    }
+    let streak = 0;
+    if(days.size){
+      const now = new Date();
+      let cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      if(!days.has(_pgDayKey(cursor))){
+        cursor.setDate(cursor.getDate()-1);
+      }
+      while(days.has(_pgDayKey(cursor))){
+        streak++;
+        cursor.setDate(cursor.getDate()-1);
+      }
+    }
+    rstreakEl.innerHTML =
+      '<span data-en>'+streak+' '+(streak===1?'day':'days')+'</span>'+
+      '<span data-zh>'+streak+' 天</span>';
+  }catch(e){
+    console.warn('daily book stats failed:', e);
+    booksEl.textContent = '0';
+    rstreakEl.innerHTML = '<span data-en>0 days</span><span data-zh>0 天</span>';
+  }
 }
 
 function _pgRenderUpgradeBanner(attempts){
@@ -3546,7 +3718,9 @@ function _pgRenderEmptyState(){
   document.getElementById('pg-stat-avg').textContent = '—';
   document.getElementById('pg-stat-best').textContent = '—';
   document.getElementById('pg-stat-streak').textContent = '—';
-  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak'].forEach(function(id){
+  const booksEl = document.getElementById('pg-stat-books'); if(booksEl) booksEl.textContent = '—';
+  const rstreakEl = document.getElementById('pg-stat-rstreak'); if(rstreakEl) rstreakEl.textContent = '—';
+  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak','pg-stat-books','pg-stat-rstreak'].forEach(function(id){
     const el = document.getElementById(id); if(el) el.classList.add('muted');
   });
   const trend = document.getElementById('pg-trend'); if(trend) trend.innerHTML = '';
@@ -3568,7 +3742,7 @@ function _pgRenderEmptyState(){
 }
 
 function _pgRenderStats(attempts){
-  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak'].forEach(function(id){
+  ['pg-stat-total','pg-stat-avg','pg-stat-best','pg-stat-streak','pg-stat-books','pg-stat-rstreak'].forEach(function(id){
     const el = document.getElementById(id); if(el) el.classList.remove('muted');
   });
   const hint = document.getElementById('pg-empty-hint');
@@ -4223,7 +4397,17 @@ async function renderSettings(){
   const readingPanel = document.getElementById('ai-pron-card');
   let readingHandle = null;
   if(readingPanel){
-    readingHandle = attach(readingPanel, { onScore: null });
+    readingHandle = attach(readingPanel, {
+      onScore: function(info){
+        // v2.3.0: bridge into module script so reading attempts log + trigger
+        // daily-book completion check. Module script defines this on window
+        // after its imports resolve; before then this is a no-op.
+        if(typeof window.handleReadingPanelScore === 'function'){
+          try{ window.handleReadingPanelScore(info); }
+          catch(e){ console.warn('handleReadingPanelScore threw:', e); }
+        }
+      }
+    });
     if(readingHandle){
       readingHandle.renderSentences(defaultPool);
       readingHandle.setLabel('sample');
@@ -4340,7 +4524,12 @@ async function renderSettings(){
     })
   }
 
+  // v2.3.0: tracked so reading-panel pronunciation attempts know which book they belong to
+  let _currentReadingBookId = null
+
   window.openBook = async function(bookId) {
+    _currentReadingBookId = bookId
+
     // 确保在 app view 里
     if (!document.body.classList.contains('app')) {
       document.body.classList.add('app')
@@ -4694,15 +4883,365 @@ async function renderSettings(){
     }
   }
 
+  // ═══════════════════════════════════════════════════════════════
+  // v2.3.0: Reading Library — daily-book mode
+  // ═══════════════════════════════════════════════════════════════
+
+  // Cache: { book, completed, feedback } — populated by getDailyBook
+  let _todayDaily = null
+
+  function _localDateKey() {
+    // YYYY-MM-DD in local time (matches DEFAULT CURRENT_DATE which is server-tz)
+    const d = new Date()
+    return d.getFullYear() + '-' +
+           String(d.getMonth() + 1).padStart(2, '0') + '-' +
+           String(d.getDate()).padStart(2, '0')
+  }
+
+  function _formatDateLong(zh) {
+    const d = new Date()
+    if (zh) {
+      const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六']
+      return weekdays[d.getDay()] + '，' + (d.getMonth() + 1) + '月' + d.getDate() + '日'
+    }
+    const weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    return weekdays[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()]
+  }
+
+  async function getDailyBook(userId) {
+    const today = _localDateKey()
+
+    // 1. Check today's existing assignment
+    const { data: existing } = await _supabase
+      .from('user_daily_book')
+      .select('book_id, completed, difficulty_feedback')
+      .eq('user_id', userId)
+      .eq('assigned_date', today)
+      .maybeSingle()
+
+    if (existing) {
+      const { data: book } = await _supabase
+        .from('books')
+        .select('id, title, title_zh, series, level, total_days, cover_image_url')
+        .eq('id', existing.book_id)
+        .single()
+      return { book, completed: !!existing.completed, feedback: existing.difficulty_feedback || null }
+    }
+
+    // 2. Need a new book — read user's reading_level
+    const { data: profile } = await _supabase
+      .from('user_profiles')
+      .select('reading_level, books_read_count')
+      .eq('id', userId)
+      .maybeSingle()
+
+    const level = (profile && profile.reading_level) || 1
+    // books.level is already a tier (1/2/3) per the data model; tweak the map if your seed differs.
+    const levelMap = { 1: [1], 2: [2], 3: [3] }
+    const targetLevels = levelMap[level] || [1]
+
+    // 3. Books the user has already been assigned (any status)
+    const { data: readBooks } = await _supabase
+      .from('user_daily_book')
+      .select('book_id')
+      .eq('user_id', userId)
+
+    const readIds = (readBooks || []).map(r => r.book_id)
+
+    let candidatesQuery = _supabase
+      .from('books')
+      .select('id, title, title_zh, series, level, total_days, cover_image_url')
+      .eq('is_published', true)
+      .in('level', targetLevels)
+      .limit(20)
+
+    if (readIds.length) {
+      // Supabase `not('id','in', '(uuid1,uuid2,...)')` — UUIDs are valid bare in the IN list
+      candidatesQuery = candidatesQuery.not('id', 'in', '(' + readIds.join(',') + ')')
+    }
+
+    const { data: candidates } = await candidatesQuery
+
+    let selectedBook
+    if (!candidates || candidates.length === 0) {
+      // Fallback: every book in this tier already read — recycle the earliest
+      const { data: fallback } = await _supabase
+        .from('books')
+        .select('id, title, title_zh, series, level, total_days, cover_image_url')
+        .eq('is_published', true)
+        .in('level', targetLevels)
+        .limit(1)
+        .maybeSingle()
+      selectedBook = fallback
+    } else {
+      selectedBook = candidates[Math.floor(Math.random() * candidates.length)]
+    }
+
+    if (!selectedBook) {
+      // No books at this level at all — caller will render an empty state
+      return { book: null, completed: false, feedback: null }
+    }
+
+    // 4. Persist today's assignment
+    await _supabase.from('user_daily_book').insert({
+      user_id: userId,
+      book_id: selectedBook.id,
+      assigned_date: today
+    })
+
+    return { book: selectedBook, completed: false, feedback: null }
+  }
+
+  async function submitDifficultyFeedback(userId, feedback) {
+    const today = _localDateKey()
+
+    // Mark today's row complete + capture feedback
+    const { error: e1 } = await _supabase.from('user_daily_book')
+      .update({ completed: true, difficulty_feedback: feedback })
+      .eq('user_id', userId)
+      .eq('assigned_date', today)
+    if (e1) console.warn('feedback update failed:', e1.message)
+
+    // Adjust reading_level (clamp 1-3) + bump lifetime count
+    const { data: profile } = await _supabase
+      .from('user_profiles')
+      .select('reading_level, books_read_count')
+      .eq('id', userId)
+      .maybeSingle()
+
+    let newLevel = (profile && profile.reading_level) || 1
+    if (feedback === 'too_hard' && newLevel > 1) newLevel--
+    if (feedback === 'too_easy' && newLevel < 3) newLevel++
+
+    const { error: e2 } = await _supabase.from('user_profiles')
+      .update({
+        reading_level: newLevel,
+        books_read_count: ((profile && profile.books_read_count) || 0) + 1
+      })
+      .eq('id', userId)
+    if (e2) console.warn('profile update failed:', e2.message)
+
+    if (_todayDaily) {
+      _todayDaily.completed = true
+      _todayDaily.feedback = feedback
+    }
+  }
+
+  window.switchLibraryMode = function(mode) {
+    const daily = document.getElementById('library-daily')
+    const browse = document.getElementById('library-browse')
+    if (mode === 'browse') {
+      if (daily) daily.style.display = 'none'
+      if (browse) browse.style.display = 'block'
+    } else {
+      if (daily) daily.style.display = 'block'
+      if (browse) browse.style.display = 'none'
+    }
+  }
+
+  window.renderLibraryDailyMode = async function() {
+    const dateEl = document.getElementById('lib-daily-date')
+    if (dateEl) {
+      const isZh = document.body.classList.contains('zh')
+      dateEl.textContent = _formatDateLong(isZh)
+    }
+
+    const card = document.getElementById('lib-daily-card')
+    if (!card) return
+
+    const user = await authGetCurrentUser()
+    if (!user) {
+      card.innerHTML =
+        '<div class="lib-daily-empty">' +
+          '<span data-en>Sign in to receive your daily book.</span>' +
+          '<span data-zh>登录后即可领取你的每日一书。</span>' +
+        '</div>'
+      const stats = document.getElementById('lib-daily-stats')
+      if (stats) stats.style.display = 'none'
+      if (typeof setLang === 'function') setLang(document.body.classList.contains('zh') ? 'zh' : 'en')
+      return
+    }
+
+    card.innerHTML =
+      '<div class="lib-daily-loading">' +
+        '<span data-en>Loading today’s book…</span>' +
+        '<span data-zh>正在准备今天的书…</span>' +
+      '</div>'
+
+    let res
+    try { res = await getDailyBook(user.id) }
+    catch (e) {
+      console.warn('getDailyBook failed (table may not exist yet):', e)
+      card.innerHTML =
+        '<div class="lib-daily-empty">' +
+          '<span data-en>Daily book is not set up yet. Try again soon, or use Browse below.</span>' +
+          '<span data-zh>每日一书功能即将上线。可在下方浏览全部书籍。</span>' +
+        '</div>'
+      if (typeof setLang === 'function') setLang(document.body.classList.contains('zh') ? 'zh' : 'en')
+      return
+    }
+
+    _todayDaily = res
+
+    if (!res.book) {
+      card.innerHTML =
+        '<div class="lib-daily-empty">' +
+          '<span data-en>No books available at your current level yet. Try Browse to pick one manually.</span>' +
+          '<span data-zh>当前级别暂无可用书籍，可去浏览页手动选择。</span>' +
+        '</div>'
+      if (typeof setLang === 'function') setLang(document.body.classList.contains('zh') ? 'zh' : 'en')
+      return
+    }
+
+    const book = res.book
+    const seriesEn = window.displaySeriesName ? window.displaySeriesName(book.series) : (book.series || '')
+    const titleZh = book.title_zh || book.title
+
+    const ctaHtml = res.completed
+      ? '<button class="lib-daily-cta done" type="button" onclick="window.openBook(\'' + book.id + '\')">' +
+          '<span data-en>↺ Re-read</span><span data-zh>↺ 再读一次</span>' +
+        '</button>'
+      : '<button class="lib-daily-cta" type="button" onclick="window.openBook(\'' + book.id + '\')">' +
+          '<span data-en>▶ Start Reading</span><span data-zh>▶ 开始阅读</span>' +
+        '</button>'
+
+    card.innerHTML =
+      '<div class="lib-daily-cover">📗</div>' +
+      '<div class="lib-daily-info">' +
+        '<div class="lib-daily-series">' + seriesEn + ' · Level ' + (book.level || 1) + '</div>' +
+        '<div class="lib-daily-bt">' +
+          '<span data-en>' + (book.title || '—') + '</span>' +
+          '<span data-zh>' + titleZh + '</span>' +
+        '</div>' +
+        '<div class="lib-daily-meta">' +
+          '<span data-en>' + (book.total_days || 1) + ' day' + ((book.total_days || 1) > 1 ? 's' : '') + '</span>' +
+          '<span data-zh>共 ' + (book.total_days || 1) + ' 天</span>' +
+          (res.completed ? ' · <span style="color:var(--forest);font-weight:500">' +
+            '<span data-en>completed today</span><span data-zh>今天已完成</span></span>' : '') +
+        '</div>' +
+        ctaHtml +
+      '</div>'
+
+    // Stats line
+    const stats = document.getElementById('lib-daily-stats')
+    if (stats) {
+      const { data: profile } = await _supabase
+        .from('user_profiles')
+        .select('books_read_count')
+        .eq('id', user.id)
+        .maybeSingle()
+      const streak = await loadStreak(user.id)
+      const booksEl = document.getElementById('lib-stat-books')
+      const streakEl = document.getElementById('lib-stat-streak')
+      const streakSEl = document.getElementById('lib-stat-streak-s')
+      if (booksEl) booksEl.textContent = (profile && profile.books_read_count) || 0
+      const sn = (streak && streak.current_streak) || 0
+      if (streakEl) streakEl.textContent = sn
+      if (streakSEl) streakSEl.textContent = sn === 1 ? '' : 's'
+      stats.style.display = 'flex'
+    }
+
+    // If already completed + feedback given → leave the feedback panel hidden.
+    // If completed but no feedback yet → reveal it. If not completed → hide it; will reveal after first reading attempt.
+    const fbPanel = document.getElementById('lib-feedback-panel')
+    if (fbPanel) {
+      if (res.completed && !res.feedback) {
+        fbPanel.style.display = 'block'
+      } else if (res.completed && res.feedback) {
+        fbPanel.style.display = 'block'
+        const thanks = document.getElementById('lib-fb-thanks')
+        if (thanks) thanks.style.display = 'block'
+        const buttons = fbPanel.querySelectorAll('.lib-fb-btn')
+        buttons.forEach(b => {
+          b.disabled = true
+          if (b.getAttribute('data-feedback') === res.feedback) b.classList.add('selected')
+        })
+        const help = fbPanel.querySelector('.lib-fb-help')
+        if (help) help.style.display = 'none'
+      } else {
+        fbPanel.style.display = 'none'
+      }
+    }
+
+    if (typeof setLang === 'function') setLang(document.body.classList.contains('zh') ? 'zh' : 'en')
+  }
+
+  // Called by ReadiiSpeech onScore on the Reading panel (bridged from inline script)
+  window.handleReadingPanelScore = async function(info) {
+    try {
+      const user = await authGetCurrentUser()
+      if (!user) return
+
+      // Log to pronunciation_attempts so My Progress sees reading attempts and we can detect completion
+      const bookId = _currentReadingBookId
+      if (bookId) {
+        await _supabase.from('pronunciation_attempts').insert({
+          user_id: user.id,
+          source: 'reading',
+          module_id: bookId,
+          sentence: info.sentence,
+          transcript: info.transcript || null,
+          score: (info.score | 0)
+        })
+      }
+
+      // If this attempt is for today's book, reveal the feedback panel (once)
+      if (_todayDaily && _todayDaily.book && bookId === _todayDaily.book.id && !_todayDaily.feedback) {
+        const fbPanel = document.getElementById('lib-feedback-panel')
+        if (fbPanel && fbPanel.style.display === 'none') {
+          fbPanel.style.display = 'block'
+          fbPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        }
+      }
+    } catch (e) {
+      console.warn('handleReadingPanelScore error:', e)
+    }
+  }
+
+  // Wire up feedback buttons (one-time)
+  ;(function() {
+    const fbPanel = document.getElementById('lib-feedback-panel')
+    if (!fbPanel) return
+    fbPanel.addEventListener('click', async function(e) {
+      const btn = e.target.closest('.lib-fb-btn')
+      if (!btn || btn.disabled) return
+      const feedback = btn.getAttribute('data-feedback')
+      if (!feedback) return
+      const user = await authGetCurrentUser()
+      if (!user) return
+
+      // Visual: mark selected, disable all
+      fbPanel.querySelectorAll('.lib-fb-btn').forEach(b => {
+        b.disabled = true
+        b.classList.toggle('selected', b === btn)
+      })
+      const help = fbPanel.querySelector('.lib-fb-help')
+      if (help) help.style.display = 'none'
+
+      try { await submitDifficultyFeedback(user.id, feedback) }
+      catch (err) { console.warn('submitDifficultyFeedback failed:', err) }
+
+      const thanks = document.getElementById('lib-fb-thanks')
+      if (thanks) thanks.style.display = 'block'
+    })
+  })()
+
   // 进入 app view 时自动加载书库
   const origOpenApp = window.openApp
   window.openApp = async function() {
     if (origOpenApp) origOpenApp()
     const { hasAccess } = await checkAccess()
     await renderLibrary(hasAccess)
+    // v2.3.0: also render daily-book card on app open
+    if (typeof window.renderLibraryDailyMode === 'function') window.renderLibraryDailyMode()
   }
 
   initApp()
+  // v2.3.0: render daily card on initial load too (if user is signed in and view-library is visible)
+  if (typeof window.renderLibraryDailyMode === 'function') {
+    setTimeout(() => window.renderLibraryDailyMode(), 200)
+  }
 </script>
 </body>
 </html>
