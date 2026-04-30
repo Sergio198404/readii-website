@@ -128,6 +128,16 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.4.2] — 2026-04-30
+
+### Fixed
+- fix: default landing view changed from Reading Library to My Progress
+- `window.openApp` override now calls `showAppView('progress')` after the existing setup, so the user lands on Progress on every app entry
+- `showAppView` fallback default switched from `'library'` to `'progress'` (covers the unknown-view-name edge case)
+- Sidebar `act` highlight initial-state class moved from `ni-library` to `ni-progress` so the nav matches the displayed view on first paint (no library-then-progress flash)
+
+---
+
 ## [2.4.1] — 2026-04-30
 
 ### Fixed

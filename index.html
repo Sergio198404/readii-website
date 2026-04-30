@@ -943,10 +943,10 @@ h1{animation:fu .6s ease both .15s}
     <div class="sbu"><div class="sbui"><div class="sbuav">小</div><div><div class="sbun"><span data-en>Xiaoming</span><span data-zh>小明</span></div><div class="sbulv"><span data-en>Level 2 · British Reader</span><span data-zh>第2级 · 英式分级阅读</span></div></div></div></div>
     <div class="sbnav">
       <div class="nbgl"><span data-en>Learn</span><span data-zh>学习</span></div>
-      <div class="ni act" id="ni-library" onclick="showAppView('library')"><span class="nic">📚</span><span data-en>Reading Library</span><span data-zh>阅读书库</span></div>
+      <div class="ni" id="ni-library" onclick="showAppView('library')"><span class="nic">📚</span><span data-en>Reading Library</span><span data-zh>阅读书库</span></div>
       <div class="ni" id="ni-voice-coach" onclick="showAppView('voice-coach')"><span class="nic">🎤</span><span data-en>AI Voice Coach</span><span data-zh>AI 语音指导</span></div>
       <div class="ni" id="ni-word-bank" onclick="showAppView('word-bank')"><span class="nic">📖</span><span data-en>Word Bank</span><span data-zh>词汇库</span></div>
-      <div class="ni" id="ni-progress" onclick="showAppView('progress')"><span class="nic">📊</span><span data-en>My Progress</span><span data-zh>我的进度</span></div>
+      <div class="ni act" id="ni-progress" onclick="showAppView('progress')"><span class="nic">📊</span><span data-en>My Progress</span><span data-zh>我的进度</span></div>
       <div class="nbgl"><span data-en>UK Culture Programme</span><span data-zh>英国文化课程</span></div>
       <div class="ni" id="ni-ukc-business" onclick="showAppView('ukc-business')"><span class="nic">💼</span><span data-en>Business</span><span data-zh>商务</span></div>
       <div class="ni" id="ni-ukc-education" onclick="showAppView('ukc-education')"><span class="nic">🎓</span><span data-en>Education</span><span data-zh>教育</span></div>
@@ -3144,7 +3144,8 @@ function showAppView(name){
     'review':        document.getElementById('ni-review'),
     'settings':      document.getElementById('ni-settings')
   };
-  if(!views[name]) name = 'library';
+  // v2.4.2: default landing fallback is My Progress (was 'library')
+  if(!views[name]) name = 'progress';
   // v2.2.1: stop any playing UK Culture audio when leaving a UK Culture view
   if(!UKC_GROUP_BY_ROUTE[name] && typeof _ukcStopAudio === 'function'){
     _ukcStopAudio();
@@ -5846,6 +5847,8 @@ async function renderSettings(){
     await renderLibrary(hasAccess)
     // v2.3.0: also render daily-book card on app open
     if (typeof window.renderLibraryDailyMode === 'function') window.renderLibraryDailyMode()
+    // v2.4.2: default landing view is My Progress
+    if (typeof showAppView === 'function') showAppView('progress')
   }
 
   initApp()
