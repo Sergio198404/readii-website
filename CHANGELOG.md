@@ -128,6 +128,14 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.4.1] — 2026-04-30
+
+### Fixed
+- fix: Formspree endpoint configured — replaced `YOUR_FORMSPREE_ID` placeholder with the live form ID `mzdopqda`. Lead submissions now trigger email-on-submit to hello@readii.co.uk
+- Added `_replyto: lead.contact` to the email POST body so replying to the notification email goes back to the lead's WeChat/email rather than to Formspree's no-reply address
+
+---
+
 ## [2.4.0] — 2026-04-30
 
 ### Added

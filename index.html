@@ -2859,7 +2859,7 @@ function _ukcBindListenHandler(){
 //   2. Create a form pointing at hello@readii.co.uk
 //   3. Replace YOUR_FORMSPREE_ID below with the real form ID (e.g. 'mxyzwabc')
 // If left as the placeholder, leads still save to the leads table — only the email step is skipped.
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORMSPREE_ID';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mzdopqda';
 
 const UKC_LEAD_TRIGGERS = {
   'setup_l1': {
@@ -3004,6 +3004,7 @@ async function _ukcNotifyLeadByEmail(lead){
         service: lead.service_type,
         source: (lead.source_module || '?') + ' Level ' + (lead.source_level || '?'),
         contact_time: lead.message || 'Any time',
+        _replyto: lead.contact,
         _subject: 'New Readii Lead — ' + lead.service_type
       })
     });
