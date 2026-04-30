@@ -2,6 +2,36 @@
 
 ---
 
+## 2026-04-30 | Session 30 | v2.2.1
+
+**Objective:** Activate the 200 Listen buttons in UK Culture Programme. The transcribe workspace finished generating fable mp3s and populated `uk_culture_audio`; this session is the website-side wiring.
+
+**Why this matters:**
+v2.2.0 shipped Listen buttons in a permanent "(soon)" state — placeholder UX waiting on TTS audio. With the audio in place, Listen + Record on the same card creates the full hear → speak → score loop, which is the actual differentiator vs. plain reading apps.
+
+**Completed:**
+- [x] `_ukcLoadAudioUrls(moduleId, levelNum)`: batch query `uk_culture_audio` for the 10 rows; `Promise.all` over `createSignedUrl(path, 60)`; populate `_ukcAudioUrlMap[idx] = signedUrl`. Wrapped in try/catch — table-missing or sign-failure paths just leave the map empty
+- [x] `_ukcActivateListenButtons()`: walks `.ukc-listen-btn` in current sentence list; if a URL exists for the idx, sets `data-audio-url` + flips to idle (🔊 Listen). Buttons without URLs keep the "(soon)" state
+- [x] Render helpers `_ukcRenderListenBtnIdle/Playing/Soon`: rebuild button innerHTML from scratch per state. Cleaner than juggling display:none on multiple inner spans
+- [x] One-time delegated click handler on `#ukc-sentence-list`: routes 🔊 clicks to `_ukcHandleListenClick`, and on 🎤 clicks calls `_ukcStopAudio()` first to enforce the TTS-vs-recording mutex (the existing Word Bank pattern)
+- [x] `_ukcPlayUrl(btn, url)`: returns a Promise that resolves on `ended` and rejects on `error` or `play()` rejection. Updates button to playing state and tracks `_ukcCurrentAudio` / `_ukcCurrentBtn`
+- [x] `_ukcRefreshAndPlay(btn, moduleId, levelNum, idx)`: re-fetches the relative path from `uk_culture_audio`, re-signs with 60s TTL, retries playback. Triggered when `_ukcPlayUrl` rejects (URL expired or transient error). One retry max — if still fails, button drops back to idle
+- [x] `_ukcStopAudio()`: pauses + clears the active audio, restores the active button's idle state. Called from: same-button second click, different-button click (replace), 🎤 click, level back button, module back button, and showAppView when leaving UK Culture
+- [x] openUkCultureLevel wired: after `_ukcRenderSentenceCards`, calls `_ukcBindListenHandler()` (no-op after first call), `_ukcStopAudio()` (clean slate), then `_ukcLoadAudioUrls(...).then(...)` activates buttons. The `.then` re-checks `_ukcCurrent.moduleId/levelNum` so a fast user navigating away mid-load doesn't get stale URLs applied to the wrong level
+
+**Files changed:**
+- index.html (v2.3.0 → v2.2.1): UK Culture audio infrastructure (~210 lines: state, helpers, load, activate, click, refresh, mutex, back-button cleanup)
+- VERSION (2.3.0 → 2.2.1)
+- CHANGELOG.md ([2.2.1] entry)
+- WORKLOG.md (this Session 30)
+
+**Verified by:** inline + module scripts both parse cleanly; `_ukcStopAudio` defensively guarded with `typeof === 'function'` checks at every external call site
+
+**Notes:**
+- 2.2.1 lands AFTER 2.3.0 chronologically — the version number reflects the "v2.2 family closure" not the temporal sequence. CHANGELOG ordering preserved (2.2.1 sits below 2.3.0 since 2.3.0 was published first)
+
+---
+
 ## 2026-04-30 | Session 29 | v2.3.0
 
 **Objective:** Reframe Reading Library around a "one book a day" model with adaptive difficulty. The 242-book grid stays as a secondary browse mode, but the default landing is a single curated book that adapts to the user's self-reported difficulty.

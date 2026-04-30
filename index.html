@@ -2394,6 +2394,16 @@ async function openUkCultureLevel(moduleId, levelNum){
   _ukcRenderLevelMeta(progressData, moduleId, levelNum);
   _ukcRenderSentenceCards(m, lvl, progressData);
 
+  // v2.2.1: bind listen-button delegation (one-time) and load audio URLs in parallel
+  _ukcBindListenHandler();
+  _ukcStopAudio();
+  _ukcLoadAudioUrls(moduleId, levelNum).then(function(){
+    // Re-check that the user hasn't navigated to a different level meanwhile
+    if(_ukcCurrent.moduleId === moduleId && _ukcCurrent.levelNum === levelNum){
+      _ukcActivateListenButtons();
+    }
+  });
+
   // Attach ReadiiSpeech (one-time, persistent across level changes)
   const speechContainer = document.getElementById('ukc-level-speech');
   if(!_ukcSpeechHandle && speechContainer && window.ReadiiSpeech){
@@ -2532,6 +2542,218 @@ function _ukcRenderCardResult(idx, info){
   setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
 }
 
+/* ───────── v2.2.1: 🔊 Listen audio playback (signed-URL based) ───────── */
+let _ukcAudioUrlMap = {};      // sentence_idx → signedUrl (60s TTL)
+let _ukcCurrentAudio = null;
+let _ukcCurrentBtn = null;
+let _ukcListenBound = false;
+
+function _ukcRenderListenBtnIdle(btn){
+  btn.classList.remove('is-playing');
+  btn.disabled = false;
+  btn.innerHTML =
+    '🔊 <span data-en>Listen</span><span data-zh>试听</span>';
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+function _ukcRenderListenBtnPlaying(btn){
+  btn.classList.add('is-playing');
+  btn.disabled = false;
+  btn.innerHTML =
+    '⏸ <span data-en>Playing…</span><span data-zh>播放中…</span>';
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+function _ukcRenderListenBtnSoon(btn){
+  btn.classList.remove('is-playing');
+  btn.disabled = true;
+  btn.innerHTML =
+    '🔊 <span data-en>Listen</span><span data-zh>试听</span>'+
+    '<span style="margin-left:6px;font-size:10px;color:var(--ink3);">'+
+      '<span data-en>(soon)</span><span data-zh>(即将)</span>'+
+    '</span>';
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+function _ukcStopAudio(){
+  if(_ukcCurrentAudio){
+    try{ _ukcCurrentAudio.pause(); _ukcCurrentAudio.src = ''; }catch(_){}
+    _ukcCurrentAudio = null;
+  }
+  if(_ukcCurrentBtn){
+    if(_ukcCurrentBtn.dataset.audioUrl){
+      _ukcRenderListenBtnIdle(_ukcCurrentBtn);
+    } else {
+      _ukcRenderListenBtnSoon(_ukcCurrentBtn);
+    }
+    _ukcCurrentBtn = null;
+  }
+}
+
+async function _ukcLoadAudioUrls(moduleId, levelNum){
+  _ukcAudioUrlMap = {};
+  if(typeof _supabase === 'undefined') return;
+  try{
+    const { data, error } = await _supabase
+      .from('uk_culture_audio')
+      .select('sentence_idx, audio_url')
+      .eq('module_id', moduleId)
+      .eq('level_num', levelNum)
+      .order('sentence_idx');
+    if(error){
+      // Table may not exist yet (audio not generated) — leave map empty
+      console.warn('uk_culture_audio fetch failed:', error.message);
+      return;
+    }
+    if(!data || !data.length) return;
+    await Promise.all(data.map(async function(row){
+      try{
+        const { data: signed, error: se } = await _supabase.storage
+          .from('readii-content')
+          .createSignedUrl(row.audio_url, 60);
+        if(se){ console.warn('sign failed for '+row.audio_url+':', se.message); return; }
+        if(signed && signed.signedUrl){
+          _ukcAudioUrlMap[row.sentence_idx] = signed.signedUrl;
+        }
+      }catch(e){ console.warn('sign threw:', e); }
+    }));
+  }catch(e){ console.warn('uk_culture_audio load error:', e); }
+}
+
+function _ukcActivateListenButtons(){
+  const list = document.getElementById('ukc-sentence-list');
+  if(!list) return;
+  list.querySelectorAll('.ukc-listen-btn').forEach(function(btn){
+    const idx = parseInt(btn.getAttribute('data-idx'), 10);
+    const url = _ukcAudioUrlMap[idx];
+    if(url){
+      btn.dataset.audioUrl = url;
+      _ukcRenderListenBtnIdle(btn);
+    }
+    // else: leave the (soon) state as-is
+  });
+}
+
+function _ukcPlayUrl(btn, url){
+  return new Promise(function(resolve, reject){
+    const audio = new Audio(url);
+    _ukcCurrentAudio = audio;
+    _ukcCurrentBtn = btn;
+    _ukcRenderListenBtnPlaying(btn);
+
+    let settled = false;
+    audio.addEventListener('ended', function(){
+      if(settled) return;
+      settled = true;
+      if(_ukcCurrentBtn === btn) _ukcRenderListenBtnIdle(btn);
+      if(_ukcCurrentAudio === audio){
+        _ukcCurrentAudio = null;
+        _ukcCurrentBtn = null;
+      }
+      resolve();
+    });
+    audio.addEventListener('error', function(){
+      if(settled) return;
+      settled = true;
+      reject(new Error('audio error'));
+    });
+
+    const playPromise = audio.play();
+    if(playPromise && typeof playPromise.catch === 'function'){
+      playPromise.catch(function(err){
+        if(settled) return;
+        settled = true;
+        reject(err);
+      });
+    }
+  });
+}
+
+async function _ukcRefreshAndPlay(btn, moduleId, levelNum, idx){
+  if(typeof _supabase === 'undefined') return;
+  try{
+    const { data: row } = await _supabase
+      .from('uk_culture_audio')
+      .select('audio_url')
+      .eq('module_id', moduleId)
+      .eq('level_num', levelNum)
+      .eq('sentence_idx', idx)
+      .maybeSingle();
+    if(!row || !row.audio_url){
+      _ukcRenderListenBtnSoon(btn);
+      return;
+    }
+    const { data: signed, error: se } = await _supabase.storage
+      .from('readii-content')
+      .createSignedUrl(row.audio_url, 60);
+    if(se || !signed || !signed.signedUrl){
+      console.warn('refresh sign failed:', se && se.message);
+      _ukcRenderListenBtnIdle(btn);
+      return;
+    }
+    btn.dataset.audioUrl = signed.signedUrl;
+    _ukcAudioUrlMap[idx] = signed.signedUrl;
+    try{ await _ukcPlayUrl(btn, signed.signedUrl); }
+    catch(e){
+      console.warn('play after refresh failed:', e);
+      _ukcRenderListenBtnIdle(btn);
+    }
+  }catch(e){
+    console.warn('refresh audio failed:', e);
+    _ukcRenderListenBtnIdle(btn);
+  }
+}
+
+async function _ukcHandleListenClick(btn){
+  const moduleId = btn.getAttribute('data-module');
+  const levelNum = parseInt(btn.getAttribute('data-level'), 10);
+  const idx = parseInt(btn.getAttribute('data-idx'), 10);
+
+  // Click while playing → stop
+  if(_ukcCurrentBtn === btn){
+    _ukcStopAudio();
+    return;
+  }
+  // Stop any other playing audio
+  _ukcStopAudio();
+  // Stop active mic recording (mutex)
+  if(window.ReadiiSpeech && window.ReadiiSpeech.isActive && window.ReadiiSpeech.isActive()){
+    try{ window.ReadiiSpeech.stop(); }catch(_){}
+  }
+
+  const url = btn.dataset.audioUrl;
+  if(!url){
+    // No URL captured — try a fresh refresh path
+    await _ukcRefreshAndPlay(btn, moduleId, levelNum, idx);
+    return;
+  }
+  try{
+    await _ukcPlayUrl(btn, url);
+  }catch(e){
+    // Likely TTL expired or transient error — refresh signed URL and retry once
+    await _ukcRefreshAndPlay(btn, moduleId, levelNum, idx);
+  }
+}
+
+function _ukcBindListenHandler(){
+  if(_ukcListenBound) return;
+  const list = document.getElementById('ukc-sentence-list');
+  if(!list) return;
+  _ukcListenBound = true;
+  list.addEventListener('click', function(e){
+    // Mic 🎤 click → stop any playing audio (let ReadiiSpeech handle the rest)
+    if(e.target.closest('.read-aloud-btn')){
+      _ukcStopAudio();
+      return;
+    }
+    // 🔊 Listen click
+    const btn = e.target.closest('.ukc-listen-btn');
+    if(btn && !btn.disabled){
+      _ukcHandleListenClick(btn);
+    }
+  });
+}
+
 const UKC_GROUP_BY_ROUTE = {
   'ukc-business':  'business',
   'ukc-education': 'education',
@@ -2566,6 +2788,10 @@ function showAppView(name){
     'settings':      document.getElementById('ni-settings')
   };
   if(!views[name]) name = 'library';
+  // v2.2.1: stop any playing UK Culture audio when leaving a UK Culture view
+  if(!UKC_GROUP_BY_ROUTE[name] && typeof _ukcStopAudio === 'function'){
+    _ukcStopAudio();
+  }
   // Hide all (dedupe ukcView so it isn't toggled multiple times)
   const seen = new Set();
   Object.keys(views).forEach(function(k){
@@ -2625,12 +2851,14 @@ function showAppView(name){
   });
   const ukcModuleBack = document.getElementById('ukc-module-back-btn');
   if(ukcModuleBack) ukcModuleBack.addEventListener('click', function(){
+    if(typeof _ukcStopAudio === 'function') _ukcStopAudio();
     if(_ukcCurrent.group){
       renderUkCultureGroupHome(_ukcCurrent.group);
     }
   });
   const ukcLevelBack = document.getElementById('ukc-level-back-btn');
   if(ukcLevelBack) ukcLevelBack.addEventListener('click', function(){
+    if(typeof _ukcStopAudio === 'function') _ukcStopAudio();
     if(_ukcCurrent.moduleId){
       openUkCultureModule(_ukcCurrent.moduleId);
     } else if(_ukcCurrent.group){
