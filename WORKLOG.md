@@ -2,6 +2,42 @@
 
 ---
 
+## 2026-04-30 | Session 32 | v2.4.0
+
+**Note on session number:** brief said "Session 30" but Session 30 was v2.2.1 and Session 31 was v2.3.1, so this is Session 32. Silent correction — same calendar day, just sequence-counting.
+
+**Objective:** Wire the £2,000 high-margin services into the engagement loop. UK Culture Programme has been a cost centre (free practice with no upsell surface) — this session adds inline lead capture cards that fire at carefully chosen "intent moments" inside the practice flow.
+
+**Why this matters:**
+The dual-engine business model (low-margin practice → high-margin services) has been visible in the nav since v2.1.0 (CTA card on group home), but a passive CTA at the bottom of a tab does not convert. The trigger here — surfacing a relevant service at exactly the moment the learner is engaging with that topic (e.g. VAT card after they've drilled VAT-registration sentences) — is far higher intent. 8 sentences is the threshold because by then the learner has visibly invested time and is likely to perceive the recommendation as helpful rather than promotional.
+
+**Completed:**
+- [x] DB migration `database/migration-leads.sql`: `leads` table with anonymous-insert allowed (user_id nullable), service-role-only select policy, CHECK constraint on service_type values
+- [x] `UKC_LEAD_TRIGGERS` config: 7 entries mapping `<module>_l<level>` to service + bilingual copy. Covers setup l1/l3/l4, education l3, daily l4, email l5, meeting l5
+- [x] `_ukcMaybeShowLeadCard(moduleId, levelNum, progressData)`: trigger gate. Checks (a) trigger exists for this level, (b) localStorage flag not set, (c) uniqueIdx.size >= 8. Called from openUkCultureLevel (handles re-entry) and from onScore (handles fresh threshold crossing)
+- [x] `_ukcRenderLeadCard()`: populates headline + body from trigger config (bilingual spans), resets form state on each render, scrolls into view
+- [x] `_ukcSubmitLead()`: validates name + contact non-empty, fetches user (nullable), inserts to `leads`, fires-and-forgets `_ukcNotifyLeadByEmail()`, sets localStorage flag, swaps to thanks state. Error handling: re-enables submit button on DB failure with inline bilingual error
+- [x] `_ukcDismissLead()`: sets localStorage flag, hides card. No DB write
+- [x] `_ukcNotifyLeadByEmail(lead)`: Formspree placeholder. If `FORMSPREE_ENDPOINT` still contains `YOUR_FORMSPREE_ID`, skips fetch with an info console log. Otherwise POSTs JSON with name / contact / service / source / contact_time / _subject. Wrapped in try/catch — email failure does NOT block the success UI
+- [x] One-time event binding via `_ukcLeadBound` flag (matches the existing pattern for `_ukcListenBound`)
+- [x] Navigation cleanup: `_ukcHideLeadCard()` called from both back buttons and from showAppView when leaving a UK Culture route
+- [x] CSS: --fp background, --forest border, white inner form panel, mobile-stacked actions
+
+**Files changed:**
+- index.html (v2.3.1 → v2.4.0): lead-card HTML inside view-uk-culture (~60 lines), `.ukc-lead-*` CSS (~35 lines), `UKC_LEAD_TRIGGERS` + helpers + handlers + Formspree placeholder (~250 lines), hooks into openUkCultureLevel + onScore + back buttons + showAppView
+- database/migration-leads.sql (new)
+- VERSION (2.3.1 → 2.4.0)
+- CHANGELOG.md ([2.4.0] entry)
+- WORKLOG.md (this Session 32)
+
+**Verified by:** inline + module scripts both parse cleanly via `new Function(code)` syntax check.
+
+**Pending:**
+- [ ] User must run `database/migration-leads.sql` in Supabase SQL Editor (writes silently fail until then; submit button shows inline error)
+- [ ] Kevin needs to register at formspree.io and replace `YOUR_FORMSPREE_ID` for email-on-submit notifications. Until then leads still save to DB; Kevin can poll the dashboard
+
+---
+
 ## 2026-04-30 | Session 31 | v2.3.1
 
 **Objective:** Small follow-up to v2.3.0 — add a "Reading level" stat card to My Progress so users see their current adaptive tier (1/2/3) at a glance, alongside the existing Reading streak card.

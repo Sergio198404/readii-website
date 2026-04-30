@@ -496,6 +496,38 @@ h1{animation:fu .6s ease both .15s}
   .ukc-cta-card{padding:22px}
   .ukc-cta-title{font-size:20px}
 }
+/* ===== UK Culture — Lead capture card (v2.4.0) ===== */
+.ukc-lead-card{background:var(--fp);border:1px solid var(--forest);border-radius:12px;padding:24px 26px;margin-top:18px;box-shadow:var(--sh);max-width:720px;margin-left:auto;margin-right:auto}
+.ukc-lead-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);font-weight:500;margin-bottom:8px}
+.ukc-lead-headline{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--forest);line-height:1.3;margin-bottom:10px}
+.ukc-lead-body{font-size:14px;color:var(--ink2);line-height:1.7;margin-bottom:18px;max-width:640px}
+.ukc-lead-form{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px}
+.ukc-lead-form-title{font-family:var(--serif);font-size:15px;font-weight:400;color:var(--ink);margin-bottom:14px}
+.ukc-lead-field{margin-bottom:14px;display:flex;flex-direction:column;gap:6px}
+.ukc-lead-label{font-size:12px;color:var(--ink2);font-weight:500;letter-spacing:.02em}
+.ukc-lead-input{padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--white);color:var(--ink);font-family:var(--sans);transition:border-color .15s}
+.ukc-lead-input:focus{outline:none;border-color:var(--forest3)}
+.ukc-lead-radios{display:flex;gap:14px;flex-wrap:wrap;padding-top:2px}
+.ukc-lead-radio{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2);cursor:pointer;user-select:none}
+.ukc-lead-radio input{accent-color:var(--forest);cursor:pointer}
+.ukc-lead-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:6px}
+.ukc-lead-submit{background:var(--forest);color:var(--white);font-family:var(--sans);font-size:13px;font-weight:500;padding:10px 22px;border-radius:6px;border:none;cursor:pointer;letter-spacing:.02em;transition:background .15s}
+.ukc-lead-submit:hover{background:var(--forest2)}
+.ukc-lead-submit:disabled{opacity:.5;cursor:not-allowed}
+.ukc-lead-dismiss{background:transparent;border:none;color:var(--ink3);font-family:var(--sans);font-size:12px;cursor:pointer;padding:6px 10px;letter-spacing:.02em;transition:color .15s}
+.ukc-lead-dismiss:hover{color:var(--ink)}
+.ukc-lead-error{margin-top:10px;padding:8px 12px;font-size:12px;color:#B0463A;background:rgba(176,70,58,.06);border:1px solid rgba(176,70,58,.18);border-radius:6px}
+.ukc-lead-thanks{display:flex;align-items:center;gap:14px;padding:18px 4px}
+.ukc-lead-thanks-icon{font-size:32px;line-height:1}
+.ukc-lead-thanks-text{font-family:var(--serif);font-size:18px;color:var(--forest);line-height:1.4}
+@media (max-width:640px){
+  .ukc-lead-card{padding:20px}
+  .ukc-lead-headline{font-size:18px}
+  .ukc-lead-form{padding:16px}
+  .ukc-lead-actions{flex-direction:column;align-items:stretch}
+  .ukc-lead-submit{width:100%}
+  .ukc-lead-dismiss{align-self:flex-end}
+}
 /* ===== Progress upgrade banner ===== */
 .pg-upgrade-banner{position:relative;background:var(--fp);border:1px solid rgba(27,58,45,.22);border-radius:12px;padding:22px 26px;margin-top:24px;box-shadow:var(--sh)}
 .pg-upgrade-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--forest2);font-weight:500;margin-bottom:6px}
@@ -1414,6 +1446,62 @@ h1{animation:fu .6s ease both .15s}
              <span data-zh>为获得最佳体验，请使用 Chrome 或 Edge。</span>
            </div>
            <div class="sentence-list" id="ukc-sentence-list"></div>
+         </div>
+         <!-- v2.4.0: Lead capture card (hidden by default, revealed when triggered) -->
+         <div id="ukc-lead-card" class="ukc-lead-card" style="display:none">
+           <div class="ukc-lead-eyebrow"><span data-en>Recommended for you</span><span data-zh>为你推荐</span></div>
+           <h3 class="ukc-lead-headline" id="ukc-lead-headline"></h3>
+           <p class="ukc-lead-body" id="ukc-lead-body"></p>
+           <div class="ukc-lead-form" id="ukc-lead-form">
+             <h4 class="ukc-lead-form-title">
+               <span data-en>Leave your details</span><span data-zh>留下你的联系方式</span>
+             </h4>
+             <div class="ukc-lead-field">
+               <label class="ukc-lead-label" for="ukc-lead-name"><span data-en>Name</span><span data-zh>姓名</span></label>
+               <input id="ukc-lead-name" class="ukc-lead-input" type="text" autocomplete="name" maxlength="80">
+             </div>
+             <div class="ukc-lead-field">
+               <label class="ukc-lead-label" for="ukc-lead-contact">
+                 <span data-en>WeChat / Email</span><span data-zh>微信 / 邮箱</span>
+               </label>
+               <input id="ukc-lead-contact" class="ukc-lead-input" type="text" autocomplete="email" maxlength="120">
+             </div>
+             <div class="ukc-lead-field">
+               <span class="ukc-lead-label">
+                 <span data-en>Best time to contact</span><span data-zh>最佳联系时间</span>
+               </span>
+               <div class="ukc-lead-radios">
+                 <label class="ukc-lead-radio">
+                   <input type="radio" name="ukc-lead-time" value="Morning">
+                   <span><span data-en>Morning</span><span data-zh>上午</span></span>
+                 </label>
+                 <label class="ukc-lead-radio">
+                   <input type="radio" name="ukc-lead-time" value="Afternoon">
+                   <span><span data-en>Afternoon</span><span data-zh>下午</span></span>
+                 </label>
+                 <label class="ukc-lead-radio">
+                   <input type="radio" name="ukc-lead-time" value="Any time" checked>
+                   <span><span data-en>Any time</span><span data-zh>任何时间</span></span>
+                 </label>
+               </div>
+             </div>
+             <div class="ukc-lead-actions">
+               <button type="button" class="ukc-lead-submit" id="ukc-lead-submit">
+                 <span data-en>Submit →</span><span data-zh>提交 →</span>
+               </button>
+               <button type="button" class="ukc-lead-dismiss" id="ukc-lead-dismiss">
+                 ✕ <span data-en>Not interested</span><span data-zh>不感兴趣</span>
+               </button>
+             </div>
+             <div class="ukc-lead-error" id="ukc-lead-error" style="display:none"></div>
+           </div>
+           <div class="ukc-lead-thanks" id="ukc-lead-thanks" style="display:none">
+             <div class="ukc-lead-thanks-icon">✅</div>
+             <div class="ukc-lead-thanks-text">
+               <span data-en>Thank you! We'll be in touch soon.</span>
+               <span data-zh>谢谢！我们会尽快联系你。</span>
+             </div>
+           </div>
          </div>
        </div>
      </div><!-- /#view-uk-culture -->
@@ -2395,6 +2483,12 @@ async function openUkCultureLevel(moduleId, levelNum){
   _ukcRenderLevelMeta(progressData, moduleId, levelNum);
   _ukcRenderSentenceCards(m, lvl, progressData);
 
+  // v2.4.0: bind lead-card handlers (one-time), hide card on level switch,
+  // re-show if the user already has 8+ scored sentences and hasn't dismissed it
+  _ukcBindLeadHandlers();
+  _ukcHideLeadCard();
+  _ukcMaybeShowLeadCard(moduleId, levelNum, progressData);
+
   // v2.2.1: bind listen-button delegation (one-time) and load audio URLs in parallel
   _ukcBindListenHandler();
   _ukcStopAudio();
@@ -2431,6 +2525,8 @@ async function openUkCultureLevel(moduleId, levelNum){
         // Refresh progress meta (does not re-render cards to preserve UI)
         const fresh = await loadUkCultureProgress(true);
         _ukcRenderLevelMeta(fresh, _ukcCurrent.moduleId, _ukcCurrent.levelNum);
+        // v2.4.0: maybe surface the lead-capture card now that the user has progressed
+        _ukcMaybeShowLeadCard(_ukcCurrent.moduleId, _ukcCurrent.levelNum, fresh);
       }
     });
   }
@@ -2755,6 +2851,265 @@ function _ukcBindListenHandler(){
   });
 }
 
+/* ───────── v2.4.0: Lead capture inside UK Culture levels ───────── */
+
+// 📧 Email notification endpoint (Formspree placeholder).
+// To enable email-on-submit notifications:
+//   1. Register a free account at https://formspree.io
+//   2. Create a form pointing at hello@readii.co.uk
+//   3. Replace YOUR_FORMSPREE_ID below with the real form ID (e.g. 'mxyzwabc')
+// If left as the placeholder, leads still save to the leads table — only the email step is skipped.
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORMSPREE_ID';
+
+const UKC_LEAD_TRIGGERS = {
+  'setup_l1': {
+    service: 'company_formation',
+    headline: 'Need help setting up your UK company?',
+    headline_zh: '需要帮助注册英国公司？',
+    body: 'Our partners offer a complete company formation service — from Companies House registration to your first bank account.',
+    body_zh: '我们的合作伙伴提供一站式公司注册服务——从 Companies House 注册到开设银行账户。'
+  },
+  'setup_l3': {
+    service: 'vat_registration',
+    headline: 'Need help with VAT registration?',
+    headline_zh: '需要帮助注册 VAT？',
+    body: 'Our accountancy partners specialise in VAT registration and cross-border tax compliance for UK businesses.',
+    body_zh: '我们的会计合作伙伴专注于英国企业 VAT 注册和跨境税务合规。'
+  },
+  'setup_l4': {
+    service: 'hr_sponsor_licence',
+    headline: 'Applying for a Sponsor Licence?',
+    headline_zh: '申请 Sponsor Licence？',
+    body: 'Our HR partners can guide you through the Skilled Worker visa sponsorship application process.',
+    body_zh: '我们的 HR 合作伙伴可以协助您完成 Skilled Worker 签证担保牌照申请。'
+  },
+  'education_l3': {
+    service: 'school_application',
+    headline: 'Need help with school applications?',
+    headline_zh: '需要学校申请协助？',
+    body: 'Our education consultants help Chinese families navigate the UK school system — from applications to parents’ evenings.',
+    body_zh: '我们的教育顾问帮助华人家庭了解英国学校体系——从申请到家长会。'
+  },
+  'daily_l4': {
+    service: 'bank_account',
+    headline: 'Need help opening a UK bank account?',
+    headline_zh: '需要帮助开设英国银行账户？',
+    body: 'Our partners work with major UK banks to help international clients open personal and business accounts.',
+    body_zh: '我们的合作伙伴与英国主要银行合作，协助国际客户开设个人和商业账户。'
+  },
+  'email_l5': {
+    service: 'business_coaching',
+    headline: 'Ready for personalised business coaching?',
+    headline_zh: '准备好接受个性化商务辅导了吗？',
+    body: 'Our UK Business Communication Programme combines AI practice with expert one-to-one support — from £2,000 per programme.',
+    body_zh: '我们的英国商务沟通课程将 AI 练习与专家一对一支持结合，课程起价 £2,000。'
+  },
+  'meeting_l5': {
+    service: 'business_coaching',
+    headline: 'Ready for personalised business coaching?',
+    headline_zh: '准备好接受个性化商务辅导了吗？',
+    body: 'Our UK Business Communication Programme combines AI practice with expert one-to-one support — from £2,000 per programme.',
+    body_zh: '我们的英国商务沟通课程将 AI 练习与专家一对一支持结合，课程起价 £2,000。'
+  }
+};
+
+let _ukcLeadCurrent = null; // { moduleId, levelNum, trigger } | null
+let _ukcLeadBound = false;
+
+function _ukcLeadFlagKey(moduleId, levelNum){
+  // Per-browser flag — if the user submitted or dismissed, don't show again
+  return 'readii-lead-shown-' + moduleId + '_l' + levelNum;
+}
+
+function _ukcLeadHasShown(moduleId, levelNum){
+  try{ return localStorage.getItem(_ukcLeadFlagKey(moduleId, levelNum)) === 'true'; }
+  catch(_){ return false; }
+}
+
+function _ukcLeadMarkShown(moduleId, levelNum){
+  try{ localStorage.setItem(_ukcLeadFlagKey(moduleId, levelNum), 'true'); }catch(_){}
+}
+
+function _ukcHideLeadCard(){
+  const card = document.getElementById('ukc-lead-card');
+  if(card) card.style.display = 'none';
+  _ukcLeadCurrent = null;
+}
+
+function _ukcRenderLeadCard(moduleId, levelNum){
+  const key = moduleId + '_l' + levelNum;
+  const trigger = UKC_LEAD_TRIGGERS[key];
+  if(!trigger) return;
+  const card = document.getElementById('ukc-lead-card');
+  if(!card) return;
+
+  _ukcLeadCurrent = { moduleId: moduleId, levelNum: levelNum, trigger: trigger };
+
+  const headline = document.getElementById('ukc-lead-headline');
+  const body = document.getElementById('ukc-lead-body');
+  if(headline) headline.innerHTML =
+    '<span data-en>'+_ukcEsc(trigger.headline)+'</span>'+
+    '<span data-zh>'+_ukcEsc(trigger.headline_zh)+'</span>';
+  if(body) body.innerHTML =
+    '<span data-en>'+_ukcEsc(trigger.body)+'</span>'+
+    '<span data-zh>'+_ukcEsc(trigger.body_zh)+'</span>';
+
+  // Reset form to fresh state on each render (in case user previously submitted in another level)
+  const form = document.getElementById('ukc-lead-form');
+  const thanks = document.getElementById('ukc-lead-thanks');
+  const error = document.getElementById('ukc-lead-error');
+  if(form) form.style.display = 'block';
+  if(thanks) thanks.style.display = 'none';
+  if(error){ error.style.display = 'none'; error.textContent = ''; }
+  const nameEl = document.getElementById('ukc-lead-name');
+  const contactEl = document.getElementById('ukc-lead-contact');
+  if(nameEl) nameEl.value = '';
+  if(contactEl) contactEl.value = '';
+  const anyRadio = document.querySelector('input[name="ukc-lead-time"][value="Any time"]');
+  if(anyRadio) anyRadio.checked = true;
+  const submitBtn = document.getElementById('ukc-lead-submit');
+  if(submitBtn) submitBtn.disabled = false;
+
+  card.style.display = 'block';
+  // Ensure the user notices it
+  setTimeout(function(){ card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 80);
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+function _ukcMaybeShowLeadCard(moduleId, levelNum, progressData){
+  const key = moduleId + '_l' + levelNum;
+  if(!UKC_LEAD_TRIGGERS[key]) return;
+  if(_ukcLeadHasShown(moduleId, levelNum)) return;
+  if(_ukcLeadCurrent && _ukcLeadCurrent.moduleId === moduleId && _ukcLeadCurrent.levelNum === levelNum){
+    // already showing for this level
+    return;
+  }
+  const lp = _ukcLevelProgress(progressData, moduleId, levelNum);
+  if(lp.uniqueIdx.size < 8) return;
+  _ukcRenderLeadCard(moduleId, levelNum);
+}
+
+async function _ukcNotifyLeadByEmail(lead){
+  if(!FORMSPREE_ENDPOINT || FORMSPREE_ENDPOINT.indexOf('YOUR_FORMSPREE_ID') !== -1){
+    console.info('Formspree not configured — skipping email notification (lead saved to DB)');
+    return;
+  }
+  try{
+    await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: lead.name,
+        contact: lead.contact,
+        service: lead.service_type,
+        source: (lead.source_module || '?') + ' Level ' + (lead.source_level || '?'),
+        contact_time: lead.message || 'Any time',
+        _subject: 'New Readii Lead — ' + lead.service_type
+      })
+    });
+  }catch(e){
+    console.warn('Email notification failed:', e);
+  }
+}
+
+async function _ukcSubmitLead(){
+  if(!_ukcLeadCurrent) return;
+  const { moduleId, levelNum, trigger } = _ukcLeadCurrent;
+
+  const nameEl = document.getElementById('ukc-lead-name');
+  const contactEl = document.getElementById('ukc-lead-contact');
+  const errorEl = document.getElementById('ukc-lead-error');
+  const submitBtn = document.getElementById('ukc-lead-submit');
+
+  const name = (nameEl && nameEl.value || '').trim();
+  const contact = (contactEl && contactEl.value || '').trim();
+  let timeRadio = document.querySelector('input[name="ukc-lead-time"]:checked');
+  const contactTime = timeRadio ? timeRadio.value : 'Any time';
+
+  if(!name || !contact){
+    if(errorEl){
+      errorEl.style.display = 'block';
+      errorEl.innerHTML =
+        '<span data-en>Please enter your name and contact details.</span>'+
+        '<span data-zh>请填写姓名和联系方式。</span>';
+      setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+    }
+    return;
+  }
+
+  if(submitBtn) submitBtn.disabled = true;
+
+  let userId = null;
+  try{
+    if(typeof _supabase !== 'undefined'){
+      const r = await _supabase.auth.getUser();
+      userId = (r && r.data && r.data.user) ? r.data.user.id : null;
+    }
+  }catch(_){}
+
+  const lead = {
+    user_id: userId,
+    name: name,
+    contact: contact,
+    service_type: trigger.service || 'other',
+    message: contactTime,
+    source_module: moduleId,
+    source_level: levelNum
+  };
+
+  try{
+    if(typeof _supabase !== 'undefined'){
+      const { error } = await _supabase.from('leads').insert(lead);
+      if(error){
+        console.warn('lead insert failed:', error.message);
+        if(errorEl){
+          errorEl.style.display = 'block';
+          errorEl.innerHTML =
+            '<span data-en>Submission failed. Please try again.</span>'+
+            '<span data-zh>提交失败，请重试。</span>';
+          setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+        }
+        if(submitBtn) submitBtn.disabled = false;
+        return;
+      }
+    }
+  }catch(e){
+    console.warn('lead submit threw:', e);
+    if(submitBtn) submitBtn.disabled = false;
+    return;
+  }
+
+  // Fire-and-forget email notification (does not block the success UI)
+  _ukcNotifyLeadByEmail(lead);
+
+  // Mark this trigger as shown — don't bug the user again on this device
+  _ukcLeadMarkShown(moduleId, levelNum);
+
+  // Swap to thank-you state
+  const form = document.getElementById('ukc-lead-form');
+  const thanks = document.getElementById('ukc-lead-thanks');
+  if(form) form.style.display = 'none';
+  if(thanks) thanks.style.display = 'flex';
+  setLang(document.body.classList.contains('zh') ? 'zh' : 'en');
+}
+
+function _ukcDismissLead(){
+  if(!_ukcLeadCurrent) { _ukcHideLeadCard(); return; }
+  const { moduleId, levelNum } = _ukcLeadCurrent;
+  _ukcLeadMarkShown(moduleId, levelNum);
+  _ukcHideLeadCard();
+}
+
+function _ukcBindLeadHandlers(){
+  if(_ukcLeadBound) return;
+  const submitBtn = document.getElementById('ukc-lead-submit');
+  const dismissBtn = document.getElementById('ukc-lead-dismiss');
+  if(!submitBtn || !dismissBtn) return;
+  _ukcLeadBound = true;
+  submitBtn.addEventListener('click', function(){ _ukcSubmitLead(); });
+  dismissBtn.addEventListener('click', function(){ _ukcDismissLead(); });
+}
+
 const UKC_GROUP_BY_ROUTE = {
   'ukc-business':  'business',
   'ukc-education': 'education',
@@ -2792,6 +3147,10 @@ function showAppView(name){
   // v2.2.1: stop any playing UK Culture audio when leaving a UK Culture view
   if(!UKC_GROUP_BY_ROUTE[name] && typeof _ukcStopAudio === 'function'){
     _ukcStopAudio();
+  }
+  // v2.4.0: also hide any open lead card when leaving a UK Culture view
+  if(!UKC_GROUP_BY_ROUTE[name] && typeof _ukcHideLeadCard === 'function'){
+    _ukcHideLeadCard();
   }
   // Hide all (dedupe ukcView so it isn't toggled multiple times)
   const seen = new Set();
@@ -2853,6 +3212,7 @@ function showAppView(name){
   const ukcModuleBack = document.getElementById('ukc-module-back-btn');
   if(ukcModuleBack) ukcModuleBack.addEventListener('click', function(){
     if(typeof _ukcStopAudio === 'function') _ukcStopAudio();
+    if(typeof _ukcHideLeadCard === 'function') _ukcHideLeadCard();
     if(_ukcCurrent.group){
       renderUkCultureGroupHome(_ukcCurrent.group);
     }
@@ -2860,6 +3220,7 @@ function showAppView(name){
   const ukcLevelBack = document.getElementById('ukc-level-back-btn');
   if(ukcLevelBack) ukcLevelBack.addEventListener('click', function(){
     if(typeof _ukcStopAudio === 'function') _ukcStopAudio();
+    if(typeof _ukcHideLeadCard === 'function') _ukcHideLeadCard();
     if(_ukcCurrent.moduleId){
       openUkCultureModule(_ukcCurrent.moduleId);
     } else if(_ukcCurrent.group){

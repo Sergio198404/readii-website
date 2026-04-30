@@ -128,6 +128,37 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.4.0] — 2026-04-30
+
+### Added
+- feat: **UK Culture Programme — in-context lead capture**. After a learner has scored 8+ unique sentences in specific levels, an inline (non-modal) service-recommendation card appears below the sentence list with a 3-field form (Name / WeChat or Email / Best time to contact)
+- New table `leads` (anonymous-allowed insert via RLS, service-role-only select) — see `database/migration-leads.sql`
+- 7 trigger entries in `UKC_LEAD_TRIGGERS`:
+  - `setup_l1` → company_formation
+  - `setup_l3` → vat_registration
+  - `setup_l4` → hr_sponsor_licence
+  - `education_l3` → school_application
+  - `daily_l4` → bank_account
+  - `email_l5` and `meeting_l5` → business_coaching
+  Each entry has bilingual headline + body copy
+- Trigger logic: card surfaces when `uniqueIdx.size >= 8` AND a per-level `localStorage` flag (`readii-lead-shown-<id>_l<n>`) is unset. The check runs on level open AND after every onScore-driven progress refresh, so the card appears the moment the user crosses the 8-sentence threshold
+- Submit flow: writes to `leads` (anonymous user_id allowed), then fires-and-forgets a Formspree POST for email-on-submit. After success, form swaps to "✅ Thank you! We'll be in touch soon." and the localStorage flag is set
+- "✕ Not interested" sets the localStorage flag and hides the card without writing to DB — same dismiss-once behaviour
+- Email notification: `FORMSPREE_ENDPOINT` constant at the top of the lead block, with placeholder `YOUR_FORMSPREE_ID`. If the placeholder is detected, the email step is silently skipped (lead still saves to DB). To enable: register at formspree.io, point a form at hello@readii.co.uk, replace the ID
+
+### Changed
+- `openUkCultureLevel()` now binds lead-card handlers (one-time), hides any stale card from a previous level, and calls `_ukcMaybeShowLeadCard()` so a returning user with 8+ already-scored sentences sees the card immediately
+- onScore handler in the level detail page calls `_ukcMaybeShowLeadCard()` after the meta refresh — card appears the moment the threshold is crossed
+- Both UK Culture back buttons (level → module, module → group) and `showAppView` (when leaving any UK Culture route) call `_ukcHideLeadCard()` for clean navigation
+
+### Notes
+- All `leads` writes wrapped in try/catch — table-missing or RLS-failure paths show a friendly "Submission failed, please try again" inline error rather than crashing
+- Anonymous lead capture works (user_id is nullable) — useful for users who happen to be signed out when triggered
+- Mobile layout: form fields stack to single column, Submit button goes full-width, Dismiss aligns right
+- Per-browser localStorage: a user clearing browser data will see the cards again. This is acceptable — users who clear data are rare, and a returning user who already submitted/dismissed seeing the card again is annoying but not broken (`Anyone insert leads` policy means duplicate submissions are harmless and easy to dedupe by Kevin in the dashboard)
+
+---
+
 ## [2.3.1] — 2026-04-30
 
 ### Added
