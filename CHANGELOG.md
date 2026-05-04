@@ -5,6 +5,28 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.5.2] — 2026-05-04
+
+### Fixed
+- chore: **Corrected reader narration teacher attribution from placeholder identity (Emma / Southern England) to actual personnel (Matt / London).** These strings appear in formal documentation submitted to a UK endorsing body, so on-screen attribution must reflect real personnel
+- 3 sites updated in `index.html`:
+  - Hero mock player (line 851): `Emma · Unit 14 · 4:22` → `Matt · Unit 14 · 4:22` (EN + ZH)
+  - Reading panel header (line 1070): `Read by Emma · Native British teacher` → `Read by Matt · Native British teacher` (EN + ZH `Emma 朗读` → `Matt 朗读`)
+  - AI Pronunciation panel teacher chip (line 1087): avatar initial `E` → `M`; `Emma · British English teacher` → `Matt · British English teacher` (EN + ZH); `Native speaker · Southern England` → `Native speaker · London` (EN + ZH `英格兰南部` → `伦敦`)
+- Avatar is the existing initial-badge style (`.aptav` — forest gradient circle) — only the letter changed from "E" to "M". No image asset added/removed; no female avatar with a male name
+
+### Notes
+- Larry (commentary teacher) is not referenced in `index.html` — no risk of accidental edit
+- Audio files unchanged (presentation-layer only, per brief)
+- ZH equivalents present for all three sites; updated in lockstep with EN
+- Three remaining "Emma" matches are flagged as out-of-scope per brief (clearly unrelated to teacher identity):
+  - `WORKLOG.md:981` — historical audit log line referencing a real test user's email `huangemma60@foxmail.com`. Rewriting historical worklog entries is out of scope
+  - `tools/seed-test-users.js:41` — `'Emma'` appears in a list of common first names used to randomly seed fake test accounts (alongside `'Lily'`, `'Lucy'`, `'Ethan'`, etc.). Not teacher attribution
+  - `tools/seeded-test-users.json:297,299` — JSON output of the above seeding script (real seeded user `Emma Huang` with `huangemma60@foxmail.com`). Not teacher attribution
+- "Southern England" returns zero matches anywhere in the codebase ✓
+
+---
+
 ## [2.5.1] — 2026-05-04
 
 ### Fixed

@@ -2,6 +2,57 @@
 
 ---
 
+## 2026-05-04 | Session 35 | v2.5.2
+
+**Objective:** Replace the placeholder reader-narration teacher identity ("Emma · Southern England") with the actual personnel ("Matt · London"). These strings appear in formal documentation submitted to a UK endorsing body, so on-screen attribution must match reality.
+
+**Why this matters:**
+The endorsing body cross-references public-site claims against the documentation pack. Stale placeholder identities in the lesson interface are a credibility risk — caseworkers don't know it's a placeholder; they see a name that doesn't exist on the team page.
+
+**Completed:**
+- [x] Project-wide case-insensitive grep for `emma|southern england|英格兰南部` — 7 hits, categorised:
+  - 3 teacher-identity hits in `index.html` → all replaced
+  - 4 unrelated hits (WORKLOG audit log, test-user seed name pool, seed JSON output) → flagged, not touched per brief
+- [x] `index.html:851` — hero mock player byline: `Emma · Unit 14 · 4:22` → `Matt · Unit 14 · 4:22` (EN + ZH)
+- [x] `index.html:1070` — reading panel `.rpbtr` byline: `Read by Emma · Native British teacher` / `Emma 朗读 · 英国外教` → `Read by Matt · Native British teacher` / `Matt 朗读 · 英国外教`
+- [x] `index.html:1087` — AI Pronunciation panel `.aptch` teacher chip: avatar initial `E → M`; `Emma · British English teacher / Emma · 英国外教` → `Matt · British English teacher / Matt · 英国外教`; `Native speaker · Southern England / 母语者 · 英格兰南部` → `Native speaker · London / 母语者 · 伦敦`
+- [x] No new image assets needed — `.aptav` is the existing forest-gradient initial-badge style. Letter swap only
+
+**Verification (per brief checklist):**
+- ✅ `Emma` returns zero matches in `index.html` (the user-facing site)
+- ✅ `Southern England` returns zero matches anywhere in the codebase
+- ✅ `英格兰南部` returns zero matches anywhere in the codebase
+- ✅ All 3 reader-narration sites render `Matt · British English teacher` + `Native speaker · London`
+- ✅ Avatar shows `M` initial in the existing badge styling — no female avatar with male name
+- ✅ Larry (commentary teacher) — not referenced in `index.html`, so no accidental edit
+- ✅ EN + ZH updated in lockstep at all three sites
+
+**Out-of-scope `Emma` matches (flagged, not changed):**
+| File | Line | Context | Reason to leave |
+|---|---|---|---|
+| `WORKLOG.md` | 981 | Historical Session 32 audit-log entry referencing real test user `huangemma60@foxmail.com` | Rewriting committed worklog history is out of scope |
+| `tools/seed-test-users.js` | 41 | `'Emma'` in a fake-first-name pool (`'Lily','Lucy','Ethan','Emma','Sophia',...`) used for random test-account generation | Not teacher attribution — random user-name pool |
+| `tools/seeded-test-users.json` | 297, 299 | Output of the above seed script (`"display_name":"Emma Huang"` + her real email) | Test-user record, not teacher attribution |
+
+**Files changed:**
+- index.html (v2.5.1 → v2.5.2): 3 single-line edits
+- VERSION (2.5.1 → 2.5.2)
+- CHANGELOG.md ([2.5.2] entry)
+- WORKLOG.md (this Session 35)
+
+**Pending (browser-only verification):**
+- [ ] Open the lesson detail page → confirm reading panel header shows `Read by Matt · Native British teacher`
+- [ ] Confirm AI Pronunciation panel teacher chip shows `M` initial + `Matt · British English teacher` + `Native speaker · London`
+- [ ] Toggle ZH → confirm `Matt · 英国外教` + `母语者 · 伦敦` render
+- [ ] Hero mock player on landing page → confirm `Matt · Unit 14 · 4:22`
+
+**Out of scope per brief:**
+- Audio re-recording (presentation-layer fix only)
+- Adding biographical details / photos / "About our teachers" content beyond the existing identity strip
+- DB schema / backend changes
+
+---
+
 ## 2026-05-04 | Session 34 | v2.5.1
 
 **Objective:** Fix two related navigation bugs that surfaced after v2.5.0 deploy:
