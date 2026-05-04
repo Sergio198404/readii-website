@@ -5,6 +5,39 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.5.0] — 2026-05-04
+
+### Changed
+- chore: **Visa-documentation alignment** — repositioned the public site so the EdTech platform is the visible core, with cross-border services subordinate. Driven by the Innovator Founder visa extension prep: the documented business model treats advisory/cross-border work as value-added services for existing platform members, not a co-equal third pillar
+- Hero copy: "helping children master English and entrepreneurs build confidently in the UK" → "helping non-native speakers master British English with confidence, from children to professionals" (EN + ZH)
+- Stats card: `100+ / Clients served` → `150+ / Children coached` (EN + ZH)
+- Meta description: removed "cross-border business support" tail; now leads with AI voice + 1,000+ audio lessons + non-native speaker focus
+
+### Added
+- New `#platform` section structure: primary block (white card, prominent) + 5 module chips linking into AI Voice Coach + subordinate "Beyond the platform" block (muted `--cream2` bg, smaller h3, italic footnote "Available to existing platform members.")
+- 5 chips reuse the canonical Voice Coach module copy (Broad A / Non-rhotic R / TH voiced / Yod retention / Short O). Each chip onclick → `openVoiceCoachFromLanding(moduleId)` which opens the app shell, switches to `voice-coach` view, and drills into that module
+- New CSS: `.platform-primary`, `.platform-body`, `.platform-modules`, `.platform-chip`, `.platform-secondary`, `.platform-secondary-title`, `.platform-secondary-body`, `.platform-secondary-note` + mobile @media rule
+
+### Removed
+- Old `.fgrid` 3-column "Three layers" structure with `01 AI Voice Engine`, `02 English Learning Platform`, `03 Cross-border Business Programme` cards
+- Pricing tier 3 (Business Programme — Custom / project-based) entirely. `Book a call` mailto CTA removed with it
+- Footer "Business Programme" link (`#pricing` → orphan after the tier removal)
+- Forbidden phrases removed from the page: "Three layers", "UK market entry support", "business establishment services", "UK company formation", "Market research & business plan", "Partner & supplier introductions", "Cross-border communication training", "Cross-border Business Programme"
+
+### Changed (layout)
+- `.pgrid` from `repeat(3,1fr)` to `repeat(2,minmax(0,360px))` with `justify-content:center` + `max-width:780px` + `margin:0 auto` so two tiers render balanced on desktop
+- Mobile: `.pgrid` collapses to single column (max-width 420px) at ≤640px
+- `.platform-modules` uses `repeat(auto-fit,minmax(220px,1fr))` so 5 chips wrap cleanly across breakpoints
+
+### Notes
+- Keep "Most popular" badge on Learner Pro — still works visually with two tiers (Children entry vs Pro premium)
+- `Most popular` ZH text and CTA copy unchanged
+- Footer description still contains "entrepreneurs" — out of scope per brief (brief restricted entrepreneurs-removal to the hero)
+- `articles/index.html` and `privacy-policy.html` not touched: they don't contain any of the verbatim deleted strings, and brief flagged "SEO meta tag rewrites beyond removed strings" as out of scope
+- ZH translations applied throughout (homepage uses inline `data-en`/`data-zh` spans, so ZH structure mirrors EN — single edit pass for both)
+
+---
+
 ## [1.0.0] — 2026-04-09
 
 ### Added

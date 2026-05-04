@@ -2,6 +2,71 @@
 
 ---
 
+## 2026-05-04 | Session 33 | v2.5.0
+
+**Objective:** Repackage the public landing page so it visibly matches the documented business model for the Innovator Founder visa extension. The current site frames "Cross-border Business Programme" as a co-equal third pillar; the documented model treats advisory/cross-border work as value-added services to existing platform members. The site has to read that way before submission.
+
+**Why this matters:**
+This is a Home Office artefact — caseworkers will compare the public site against the business plan and the 6/12/18-month checkpoints. Co-equal-third-pillar framing on the public site contradicts the platform-first narrative we've been reporting. Fixing it now is cheap; fixing it after a rejection letter is not.
+
+**Completed:**
+- [x] Hero `.hsub` copy: replaced "children master English and entrepreneurs build confidently in the UK" with "non-native speakers master British English with confidence, from children to professionals" (EN + ZH)
+- [x] Stats tile: `100+ / Clients served` → `150+ / Children coached` (EN + ZH). Other 3 tiles untouched
+- [x] Meta description rewritten — removed the "cross-border business support" tail; now leads with AI voice + 1,000+ audio lessons + non-native speaker focus. Kept Co. No. and Canterbury references for caseworker visibility
+- [x] `#platform` section fully restructured (~10 lines old `<div class="fgrid">` → ~35 lines new `<div class="platform-primary">` + `<div class="platform-secondary">`):
+  - h2 reworded "Three layers. One integrated platform." → "One platform. Built on our AI voice engine."
+  - Removed the introductory `<p class="sd">` above the grid (the body copy now lives inside the primary card)
+  - Primary block: white card, `--sh` shadow, 48/44 padding, body copy + 5 chips
+  - 5 module chips: Broad A / Non-rhotic R / TH (voiced) / Yod retention / Short O — copy lifted verbatim from `VOICE_COACH_MODULES[].short` so the public site matches the in-app module page
+  - Each chip is a `<button>` (semantic — keyboard focusable) onclick=`openVoiceCoachFromLanding(<id>)`
+  - Subordinate block: `.platform-secondary` on `--cream2` muted bg, smaller h3 (18px serif), italic footnote "Available to existing platform members." — clearly secondary visually
+- [x] New bridge function `openVoiceCoachFromLanding(moduleId)` next to existing `openApp()`/`closeApp()`. Opens app, waits 220ms for inline script init, then `showAppView('voice-coach')` + `openVoiceCoachModule(moduleId)`. Soft-fails (`typeof === 'function'` checks) if either function isn't loaded yet
+- [x] Pricing tier 3 (Business Programme — Custom) removed entirely (~7 lines). The `Book a call` mailto CTA went with it
+- [x] `.pgrid` CSS: `repeat(3,1fr)` → `repeat(2,minmax(0,360px))` with `justify-content:center`, `max-width:780px`, `margin:0 auto`. Two cards now render balanced on desktop instead of stretched-thin-with-orphan-third
+- [x] Mobile @media: `.pgrid` collapses to 1-column at ≤640px (max-width 420px so the card doesn't run edge-to-edge)
+- [x] `.platform-modules` uses `auto-fit minmax(220px,1fr)` — 5 chips wrap to 2-3 rows cleanly at any width without explicit breakpoints
+- [x] Mobile @media: `.platform-primary` padding 48/44 → 28/22; `.platform-secondary` padding 28/32 → 22/20 with margin-top 48 → 32
+- [x] Footer "Business Programme" link removed (was `#pricing` → orphan after the tier removal). Footer Platform menu now: English Reading · AI Voice Training · Pricing
+- [x] "Most popular" badge on Learner Pro retained — still works visually with two tiers (Children entry £5/mo vs Pro premium £299), since the badge contrasts price points rather than presupposing a 3-tier comparison
+
+**Verification checklist (per brief):**
+- ✅ "Three layers" — gone from index.html
+- ✅ "Cross-border Business Programme" — gone
+- ✅ "UK market entry support" — gone
+- ✅ "business establishment services" — gone
+- ✅ "UK company formation" — gone
+- ✅ "Market research & business plan" — gone
+- ✅ "Partner & supplier introductions" — gone
+- ✅ Pricing renders exactly 2 tier cards
+- ✅ Hero EN no longer contains "entrepreneurs" (footer still does — out of scope per brief)
+- ✅ Stats shows `150+` / "Children coached"
+- ✅ "Beyond the platform" block present, muted `--cream2` bg, smaller h3, italic footnote — visually subordinate
+- ✅ Mobile @media rule added so `.pgrid` and `.platform-*` collapse cleanly
+- ✅ Desktop balanced (centered 2-col pricing, primary card prominent, secondary block muted)
+- ✅ No broken links — footer Business Programme link removed; chip onclick uses defensive `typeof` checks
+- ✅ Meta description updated (removed "cross-border business support"; kept Canterbury + Co. No. for visa visibility)
+
+**Files changed:**
+- index.html (v2.4.2 → v2.5.0): meta description, hero hsub, stats tile, full #platform section rebuild, pricing tier removal, .pgrid CSS, new .platform-* CSS block, openVoiceCoachFromLanding helper, footer link cleanup
+- VERSION (2.4.2 → 2.5.0)
+- CHANGELOG.md ([2.5.0] entry)
+- WORKLOG.md (this Session 33)
+
+**Verified by:** read-back of #platform + #pricing + #stats sections; grep for forbidden strings returns no matches; grep for new identifiers (`platform-primary`, `Beyond the platform`, `150+`, `Children coached`, `openVoiceCoachFromLanding`) returns the index.html.
+
+**Pending:**
+- [ ] Browser test: open the homepage, confirm chip click opens the app and lands on the correct Voice Coach module
+- [ ] Browser test on mobile width (≤640px): verify pricing collapses to 1-col, chips wrap cleanly, secondary block stays subordinate
+- [ ] Visa pack: re-screenshot homepage hero + #platform + pricing for the documentation bundle
+- [ ] `articles/index.html` meta and `privacy-policy.html` body still mention "cross-border business" themes — out of scope this session per brief, but flag for caseworker-review pass
+
+**Out of scope per brief:**
+- 中文 translations applied where the page has inline `data-zh` spans (homepage does — single-pass edit). No separate ZH page exists, so no ZH-only follow-up needed
+- SEO meta rewrites beyond removed strings — kept the meta description tight to the deleted-string scope
+- Backend / database / auth / routing — untouched
+
+---
+
 ## 2026-04-30 | Session 32 | v2.4.0
 
 **Note on session number:** brief said "Session 30" but Session 30 was v2.2.1 and Session 31 was v2.3.1, so this is Session 32. Silent correction — same calendar day, just sequence-counting.

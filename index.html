@@ -5,7 +5,7 @@
 <!-- Readii v2.0.1 | Updated: 2026-04-29 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Readii — AI-Powered UK-China Learning & Cross-border Platform | Canterbury, UK</title>
-<meta name="description" content="Readii is a UK-based AI technology platform. English communication training for non-native speakers, children's British English audio programmes, and cross-border business support. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
+<meta name="description" content="Readii is a UK-based AI voice technology platform for British English. Real-time pronunciation scoring, 1,000+ audio lessons recorded by native British teachers, and personalised feedback for non-native speakers from age 3 upwards. Founded by Xiaoyu Su, Canterbury, England. Company No. 15002332.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
@@ -149,7 +149,25 @@ h2 em{font-style:italic;color:var(--forest)}
 .cfv{font-family:var(--serif);font-size:19px;font-weight:400;color:var(--ink)}
 .cfs{font-size:13px;color:var(--ink3);margin-top:3px}
 .psec{background:var(--white)}
-.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pgrid{display:grid;grid-template-columns:repeat(2,minmax(0,360px));gap:20px;justify-content:center;max-width:780px;margin:0 auto}
+@media (max-width:640px){
+  .pgrid{grid-template-columns:1fr;max-width:420px}
+}
+.platform-primary{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:48px 44px;box-shadow:var(--sh)}
+.platform-body{font-size:16px;line-height:1.8;color:var(--ink2);max-width:780px;margin-bottom:34px}
+.platform-modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.platform-chip{background:var(--cream);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;text-align:left;cursor:pointer;font-family:var(--sans);transition:all .15s;display:flex;flex-direction:column;gap:6px}
+.platform-chip:hover{border-color:var(--forest3);background:var(--fp);transform:translateY(-2px);box-shadow:var(--sh)}
+.platform-chip .chip-name{font-family:var(--serif);font-size:15px;font-weight:500;color:var(--ink)}
+.platform-chip .chip-desc{font-size:12px;color:var(--ink3);line-height:1.5}
+.platform-secondary{margin-top:48px;background:var(--cream2);border:1px solid var(--border);border-radius:var(--rl);padding:28px 32px;max-width:760px}
+.platform-secondary-title{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink2);margin-bottom:10px}
+.platform-secondary-body{font-size:13px;color:var(--ink3);line-height:1.7;margin-bottom:8px}
+.platform-secondary-note{font-size:12px;font-style:italic;color:var(--ink3);opacity:.8}
+@media (max-width:640px){
+  .platform-primary{padding:28px 22px}
+  .platform-secondary{padding:22px 20px;margin-top:32px}
+}
 .pcard{border:1px solid var(--border);border-radius:var(--rxl);padding:36px 32px;position:relative;transition:all .2s}
 .pcard:hover{box-shadow:var(--shm);transform:translateY(-2px)}
 .pcard.feat{border-color:rgba(27,58,45,.28);border-width:2px;background:linear-gradient(160deg,var(--fp) 0%,var(--white) 55%)}
@@ -813,7 +831,7 @@ h1{animation:fu .6s ease both .15s}
   <div>
     <div class="htag"><span class="htag-dot"></span><span data-en>AI-Powered Platform · Canterbury, UK</span><span data-zh>AI 技术平台 · 英国坎特伯雷</span></div>
     <h1><span data-en>The platform that<br>bridges China<br>and <em>Britain.</em></span><span data-zh>连接中国与<br>英国的<br><em>AI平台。</em></span></h1>
-    <p class="hsub"><span data-en>Readii combines AI voice technology with curated British English content — helping children master English and entrepreneurs build confidently in the UK.</span><span data-zh>Readii 将 AI 语音技术与精选英式英语内容结合，帮助孩子掌握英语，帮助创业者在英国自信发展。</span></p>
+    <p class="hsub"><span data-en>Readii combines AI voice technology with curated British English content — helping non-native speakers master British English with confidence, from children to professionals.</span><span data-zh>Readii 将 AI 语音技术与精选英式英语内容结合，帮助从儿童到职场人士的非母语学习者自信掌握英式英语。</span></p>
     <div class="hbtns">
       <button class="btn-p" onclick="openApp()"><span data-en>Open Platform →</span><span data-zh>进入平台 →</span></button>
       <a href="#reading" class="btn-s"><span data-en>See how it works</span><span data-zh>了解产品</span></a>
@@ -840,18 +858,42 @@ h1{animation:fu .6s ease both .15s}
 <div class="stats">
   <div class="stat"><div class="sn">1,000+</div><div class="sl"><span data-en>Audio lessons</span><span data-zh>音频课程</span></div></div>
   <div class="stat"><div class="sn">3–12</div><div class="sl"><span data-en>Age range</span><span data-zh>适用年龄</span></div></div>
-  <div class="stat"><div class="sn">100+</div><div class="sl"><span data-en>Clients served</span><span data-zh>服务客户</span></div></div>
+  <div class="stat"><div class="sn">150+</div><div class="sl"><span data-en>Children coached</span><span data-zh>累计辅导儿童</span></div></div>
   <div class="stat"><div class="sn">2 yrs</div><div class="sl"><span data-en>Operating in UK</span><span data-zh>在英运营</span></div></div>
 </div>
 
 <section id="platform" class="feats">
   <span class="ey"><span data-en>The Platform</span><span data-zh>平台功能</span></span>
-  <h2><span data-en>Three layers.<br>One <em>integrated</em> platform.</span><span data-zh>三层结构，<br>一个<em>完整</em>平台。</span></h2>
-  <p class="sd"><span data-en>Readii is a technology platform built on proprietary AI voice and communication tools — not a consultancy. We serve individuals and enterprises across the UK-China corridor.</span><span data-zh>Readii 是基于自研 AI 语音与沟通技术构建的平台，不是咨询公司。我们服务于中英两地的个人与企业客户。</span></p>
-  <div class="fgrid">
-    <div class="fc"><div class="fi">🔊</div><div class="fn">01</div><div class="ft"><span data-en>AI Voice Engine</span><span data-zh>AI 语音引擎</span></div><p class="fdesc"><span data-en>Proprietary AI voice analysis and pronunciation assessment. Scores speech, identifies phonetic gaps, and delivers personalised feedback in real time — the core technology that powers Readii.</span><span data-zh>自研 AI 语音分析与发音评估技术。实时打分、识别语音弱点、提供个性化反馈——驱动 Readii 所有产品的核心技术。</span></p><span class="fp"><span data-en>Core technology</span><span data-zh>核心技术</span></span></div>
-    <div class="fc"><div class="fi">📚</div><div class="fn">02</div><div class="ft"><span data-en>English Learning Platform</span><span data-zh>英语学习平台</span></div><p class="fdesc"><span data-en>1,000+ audio lessons with native British teachers. British reader, science, and history series for ages 3–12. AI pronunciation coaching, vocabulary tracking, and progress dashboards.</span><span data-zh>超过1000节英国外教音频课程。英式分级阅读、科学、历史系列，适合3至12岁。AI 发音指导、词汇追踪与进度看板。</span></p><span class="fp">£5 / <span data-en>month</span><span data-zh>月</span></span></div>
-    <div class="fc"><div class="fi">🌐</div><div class="fn">03</div><div class="ft"><span data-en>Cross-border Business Programme</span><span data-zh>跨境商业服务</span></div><p class="fdesc"><span data-en>UK market entry support, business establishment services, and cross-border communication training for Chinese entrepreneurs. AI-assisted preparation aligned with UK-China trade policy.</span><span data-zh>面向中国创业者的英国市场进入、公司落地服务与跨境沟通培训。AI 辅助，对齐英中贸易政策。</span></p><span class="fp"><span data-en>Enterprise</span><span data-zh>企业版</span></span></div>
+  <h2><span data-en>One platform.<br>Built on our <em>AI voice engine.</em></span><span data-zh>一个平台，<br>构建于<em>AI 语音引擎</em>之上。</span></h2>
+  <div class="platform-primary">
+    <p class="platform-body"><span data-en>Readii is an AI voice technology platform for British English. Our proprietary engine scores pronunciation in real time, identifies phonetic gaps, and delivers personalised feedback across 1,000+ audio lessons recorded by native British teachers. Built for non-native speakers from age 3 upwards.</span><span data-zh>Readii 是面向英式英语的 AI 语音技术平台。我们的自研引擎实时打分、识别发音弱点，在 1000 多节由英国本土教师录制的音频课程中提供个性化反馈。专为 3 岁以上的非母语学习者打造。</span></p>
+    <div class="platform-modules">
+      <button class="platform-chip" type="button" onclick="openVoiceCoachFromLanding('broad_a')">
+        <span class="chip-name">Broad A</span>
+        <span class="chip-desc"><span data-en>Long, open 'ah' in bath, can't, dance</span><span data-zh>bath、can't、dance 中开放的长元音 'ah'</span></span>
+      </button>
+      <button class="platform-chip" type="button" onclick="openVoiceCoachFromLanding('non_rhotic_r')">
+        <span class="chip-name">Non-rhotic R</span>
+        <span class="chip-desc"><span data-en>Silent R in car, water, paper</span><span data-zh>car、water、paper 中不发音的 R</span></span>
+      </button>
+      <button class="platform-chip" type="button" onclick="openVoiceCoachFromLanding('th_voiced')">
+        <span class="chip-name">TH sound (voiced)</span>
+        <span class="chip-desc"><span data-en>Voiced 'th' in this, that, weather</span><span data-zh>this、that、weather 中浊化的 'th'</span></span>
+      </button>
+      <button class="platform-chip" type="button" onclick="openVoiceCoachFromLanding('yod')">
+        <span class="chip-name">Yod retention</span>
+        <span class="chip-desc"><span data-en>Y sound preserved in new, tube, duty</span><span data-zh>new、tube、duty 中保留的 Y 音</span></span>
+      </button>
+      <button class="platform-chip" type="button" onclick="openVoiceCoachFromLanding('short_o')">
+        <span class="chip-name">Short O</span>
+        <span class="chip-desc"><span data-en>Rounded short O in hot, lot, not</span><span data-zh>hot、lot、not 中圆润的短元音 O</span></span>
+      </button>
+    </div>
+  </div>
+  <div class="platform-secondary">
+    <h3 class="platform-secondary-title"><span data-en>Beyond the platform</span><span data-zh>平台之外</span></h3>
+    <p class="platform-secondary-body"><span data-en>For users who progress through our pronunciation training, Readii offers value-added services that complement their journey in the UK — including UK cultural programmes, professional communication coaching, and partner introductions for cross-border learners.</span><span data-zh>对于完成发音训练的用户，Readii 提供配套的增值服务以辅助他们的英国之旅——包括英国文化课程、职业沟通辅导，以及面向跨境学习者的合作伙伴对接。</span></p>
+    <p class="platform-secondary-note"><span data-en>Available to existing platform members.</span><span data-zh>仅向现有平台会员开放。</span></p>
   </div>
 </section>
 
@@ -916,20 +958,13 @@ h1{animation:fu .6s ease both .15s}
       <ul class="pfl"><li><span data-en>AI pronunciation assessment</span><span data-zh>AI 发音评估</span></li><li><span data-en>Personalised coaching plan</span><span data-zh>个性化指导方案</span></li><li><span data-en>Voice recording & feedback</span><span data-zh>语音录制与反馈</span></li><li><span data-en>British accent training</span><span data-zh>英式口音训练</span></li><li><span data-en>Certificate of completion</span><span data-zh>完成证书</span></li></ul>
       <button class="btn-p" onclick="handleCheckout('pro')" style="width:100%"><span data-en>Enrol now — £299</span><span data-zh>立即报名 — £299</span></button>
     </div>
-    <div class="pcard">
-      <div class="ptier"><span data-en>Business Programme</span><span data-zh>商业服务</span></div>
-      <div class="pamt" style="font-size:30px;"><span data-en>Custom</span><span data-zh>定制</span></div><div class="pper"><span data-en>project-based</span><span data-zh>按项目</span></div>
-      <p class="pdesc"><span data-en>UK market entry and cross-border business establishment support for entrepreneurs and companies.</span><span data-zh>面向创业者和企业的英国市场进入与跨境商业落地支持。</span></p>
-      <ul class="pfl"><li><span data-en>UK company formation</span><span data-zh>英国公司注册</span></li><li><span data-en>Market research & business plan</span><span data-zh>市场调研与商业计划</span></li><li><span data-en>Cross-border communication training</span><span data-zh>跨境沟通培训</span></li><li><span data-en>Partner & supplier introductions</span><span data-zh>合作伙伴引介</span></li></ul>
-      <a href="mailto:hello@readii.co.uk" class="btn-s" style="width:100%;justify-content:center"><span data-en>Book a call</span><span data-zh>预约咨询</span></a>
-    </div>
   </div>
 </section>
 
 <footer>
   <div class="fgrid">
     <div><div class="fln">Readii</div><p class="fdesc"><span data-en>AI-powered platform for Chinese families and entrepreneurs building their future in Britain.</span><span data-zh>为在英国打造未来的中国家庭与创业者提供 AI 技术平台。</span></p><p class="faddr">Suite 3.2, 27 Castle Street<br>Canterbury, England, CT1 2PX<br>Co. No. 15002332 · VAT 463 5349 77</p></div>
-    <div><h4><span data-en>Platform</span><span data-zh>平台</span></h4><ul><li><a href="#reading"><span data-en>English Reading</span><span data-zh>英语阅读</span></a></li><li><a href="#platform"><span data-en>AI Voice Training</span><span data-zh>AI 语音训练</span></a></li><li><a href="#pricing"><span data-en>Business Programme</span><span data-zh>商业服务</span></a></li><li><a href="#pricing"><span data-en>Pricing</span><span data-zh>价格</span></a></li></ul></div>
+    <div><h4><span data-en>Platform</span><span data-zh>平台</span></h4><ul><li><a href="#reading"><span data-en>English Reading</span><span data-zh>英语阅读</span></a></li><li><a href="#platform"><span data-en>AI Voice Training</span><span data-zh>AI 语音训练</span></a></li><li><a href="#pricing"><span data-en>Pricing</span><span data-zh>价格</span></a></li></ul></div>
     <div><h4><span data-en>Company</span><span data-zh>公司</span></h4><ul><li><a href="#about"><span data-en>About Readii</span><span data-zh>关于 Readii</span></a></li><li><a href="#about"><span data-en>Kevin Su — Founder</span><span data-zh>创始人 Kevin Su</span></a></li><li><a href="/articles/"><span data-en>Articles & Insights</span><span data-zh>文章与洞见</span></a></li><li><a href="mailto:hello@readii.co.uk"><span data-en>Contact</span><span data-zh>联系我们</span></a></li></ul></div>
     <div><h4><span data-en>Connect</span><span data-zh>联系方式</span></h4><ul><li><a href="https://www.linkedin.com/company/112639056/" target="_blank">LinkedIn</a></li><li><a href="mailto:hello@readii.co.uk">hello@readii.co.uk</a></li><li><a href="/privacy-policy.html">Privacy Policy</a></li></ul></div>
   </div>
@@ -1615,6 +1650,13 @@ function setLang(l, opts){
 })();
 function openApp(){document.body.classList.add('app');document.body.style.overflow='hidden'}
 function closeApp(){document.body.classList.remove('app');document.body.style.overflow=''}
+function openVoiceCoachFromLanding(moduleId){
+  if(typeof window.openApp === 'function') window.openApp();
+  setTimeout(function(){
+    if(typeof showAppView === 'function') showAppView('voice-coach');
+    if(typeof openVoiceCoachModule === 'function' && moduleId) openVoiceCoachModule(moduleId);
+  }, 220);
+}
 let playing=false,prog=42;
 function togglePlay(){
   playing=!playing;
