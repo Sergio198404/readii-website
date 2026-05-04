@@ -5,6 +5,23 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.5.4] — 2026-05-04
+
+### Fixed
+- chore: **Reviewer demo account upgraded to active subscription** so books unlock for direct reading. The library access gate in `assets/js/library.js:checkAccess()` reads `user_profiles.subscription_status === 'active'`; the prior seed value of `'free'` was hiding all books behind a 🔒 paywall on the reviewer experience
+- Set `subscription_start = today`, `subscription_end = today + 365 days` for a 1-year review window
+
+### Added
+- New script `scripts/upgrade-reviewer-subscription.js` — surgical patch that flips just the subscription fields on the existing reviewer auth user without touching password or seeded activity data. Use this for spot-fixes between full re-runs of the seeder
+- Main `scripts/seed-reviewer-account.js` updated: future re-runs default to `subscription_status='active'` with the same 1-year window so the reviewer-as-paying-user state survives full re-seeds
+
+### Notes
+- Existing password from the v2.5.3 run still works — the surgical patch did not rotate it
+- Reviewer can now click any book in the Library, see the audio player, and access the full reading flow
+- No changes to website code, auth, or RLS policies — pure data flip
+
+---
+
 ## [2.5.3] — 2026-05-04
 
 ### Added

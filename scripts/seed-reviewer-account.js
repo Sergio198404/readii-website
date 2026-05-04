@@ -181,12 +181,19 @@ async function wipeSeededActivity(userId) {
 }
 
 async function upsertProfile(userId) {
+  // Reviewer needs 'active' subscription so books unlock for direct reading
+  // (Library access gate in assets/js/library.js checks subscription_status
+  // === 'active'). 1-year window is generous for review cycles
+  const today = new Date();
+  const oneYearLater = new Date(today.getTime() + 365 * 86400000);
   const { error } = await supabase.from('user_profiles').upsert({
     id: userId,
     display_name: DISPLAY_NAME,
     child_name: null,
     child_age: null,
-    subscription_status: 'free',
+    subscription_status: 'active',
+    subscription_start: today.toISOString().slice(0, 10),
+    subscription_end: oneYearLater.toISOString().slice(0, 10),
     reading_level: READING_LEVEL,
     books_read_count: 6,
   }, { onConflict: 'id' });

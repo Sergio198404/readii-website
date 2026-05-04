@@ -2,6 +2,41 @@
 
 ---
 
+## 2026-05-04 | Session 37 | v2.5.4
+
+**Objective:** Upgrade `reviewer@readii.co.uk` from free to active subscription so the library books unlock for direct reading. Without this, the reviewer login lands on the dashboard but every book in the Library shows the 🔒 + "Subscribe" button instead of "▶ Listen" — incomplete review experience.
+
+**Why this matters:**
+The whole point of the reviewer account is to demonstrate the platform end-to-end. A locked library defeats that. The seeded activity data (Session 36) gave realistic stats, but the reviewer couldn't actually open a book to verify the reading flow.
+
+**Root cause:** Session 36's seeder set `subscription_status='free'` (matching the brief default for "free-tier or basic-tier user"). But the brief also says the experience must be "indistinguishable from a real user" who can demonstrate "Reading Library shows multiple books in various states (completed, in progress)" — and the books-in-progress state requires the user to actually have *opened* them, which requires active subscription.
+
+**Approach:** Surgical patch (no password rotation, no data wipe) + future-proof the main seeder for re-runs.
+
+**Completed:**
+- [x] Wrote `scripts/upgrade-reviewer-subscription.js` — minimal one-shot updater. Lists auth users by email, finds reviewer, runs an UPDATE on `user_profiles` setting subscription_status='active' + start=today + end=today+365d. ~30 lines
+- [x] Ran against production. Confirmed reviewer user_id `89ee3ded-4f63-48eb-a225-23feb6ac4057` now has subscription_status='active', start=2026-05-04, end=2027-05-04
+- [x] Updated `scripts/seed-reviewer-account.js`'s `upsertProfile()` to default to active+1yr — so future full re-seeds preserve the reviewer-as-paying-user state instead of regressing to free
+
+**Files changed:**
+- scripts/upgrade-reviewer-subscription.js (new — committed)
+- scripts/seed-reviewer-account.js (upsertProfile updated)
+- VERSION (2.5.3 → 2.5.4)
+- CHANGELOG.md ([2.5.4] entry)
+- WORKLOG.md (this Session 37)
+
+**Verified by:**
+- Script printed success header with the expected user_id
+- Library access gate (`assets/js/library.js:5-13`) reads `subscription_status === 'active'` directly — no caching layer to invalidate, so the change is effective on the reviewer's next page load
+
+**Pending (browser verification by operator):**
+- [ ] Login at https://readii.co.uk with the v2.5.3 credentials
+- [ ] Library now shows ▶ Listen buttons (not 🔒 Subscribe)
+- [ ] Click any book → reading panel opens with PDF + audio player
+- [ ] No "Subscribe" upsell banner overlaying the library
+
+---
+
 ## 2026-05-04 | Session 36 | v2.5.3
 
 **Objective:** Provision a single reviewer demo account on the production Supabase database with realistic, lived-in activity data for the UK endorsing-body platform review. Account must be indistinguishable from a real user, stable, and pre-populated across the past 30 days.
