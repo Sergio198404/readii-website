@@ -2,6 +2,53 @@
 
 ---
 
+## 2026-05-04 | Session 34 | v2.5.1
+
+**Objective:** Fix two related navigation bugs that surfaced after v2.5.0 deploy:
+1. Browser Back button on the app shell (post-`openApp()`) leaves the site entirely instead of returning to the landing
+2. Sidebar "Readii" logo at the top-left of the app shell is non-interactive — users who expect a logo to be a home link have no way back
+
+**Why this matters:**
+Both bugs are dead-ends in the navigation graph. (1) breaks a near-universal browser convention (Back returns to the previous in-site state); (2) breaks the equally universal logo-is-home convention. For visa documentation screenshots and live caseworker review, leaving these unfixed makes the site feel half-baked.
+
+**Root cause:** `openApp()` toggled a CSS class only — no URL change, no `history.pushState`. The browser had no entry to go back to, so Back went to whatever site the user came from. The logo was a `<span class="sbhln">Readii</span>` inside a non-interactive `<div>`.
+
+**Completed:**
+- [x] `openApp()` rewritten: still toggles `body.classList.add('app')` + `overflow:hidden`, but now also `history.pushState({readiiApp:true}, '', '/app')` IF `pathname !== '/app'` (the guard prevents duplicate-entry stacking on refresh or chip click loops)
+- [x] `closeApp()` rewritten: removes the class first (so the UI flips even if history is borked), then branches:
+  - If `history.state.readiiApp === true` (our pushState put us here) → `history.back()` — clean return, popstate then no-op-syncs
+  - Else (direct /app load, no in-site entry) → `history.replaceState({}, '', '/')` — URL flips to / but no nav, so the next Back goes to whatever came before this tab. This is the best we can do for direct loads
+- [x] `popstate` listener added: on browser Back/Forward, reads `pathname === '/app'` and adds/removes the `app` class accordingly. Idempotent — no-op if state already matches
+- [x] Sidebar logo (`.sbhl` div, line 977) now: `role="link" tabindex="0" onclick="closeApp()" onkeydown=` (Enter/Space activates) `style="cursor:pointer" title="Back to homepage"`. Kept as a div so the existing flexbox layout is untouched; added a11y wrapper attributes
+- [x] CSS for `.sbhl` extended with `:hover` bg (`rgba(255,255,255,.08)` — subtle on the dark forest sidebar) and `:focus-visible` gold ring. Added small negative margin to compensate for the new padding so the layout doesn't shift
+- [x] Initial-load handler at the bottom of the inline script: `if (window.location.pathname === '/app') window.openApp()`. The wrapped openApp's auth + render flow runs; the inner openApp's `pathname !== '/app'` guard prevents re-pushing state
+
+**Files changed:**
+- index.html (v2.5.0 → v2.5.1):
+  - openApp/closeApp rewritten + popstate listener (~32 lines added at the function block)
+  - Sidebar logo div: a11y attrs + onclick (~1 line edit)
+  - .sbhl CSS: +3 rules (hover bg, focus ring, padding/margin compensation)
+  - Initial-load /app entry block (~7 lines added at the end of the inline script)
+- VERSION (2.5.0 → 2.5.1)
+- CHANGELOG.md ([2.5.1] entry)
+- WORKLOG.md (this Session 34)
+
+**Verified by:** static read-back of the four edit sites; existing `closeApp()` callers (`#1001` backbtn, `#4714` post-signOut redirect, `#5117` cta wiring) all keep working since the public function signature is unchanged.
+
+**Pending (browser-only verification):**
+- [ ] Click `Open Platform →` from `/` → URL flips to `/app` → press Back → returns to `/` with hash/scroll preserved by browser
+- [ ] On `/app`, click sidebar Readii logo → URL flips to `/` → app class drops → landing visible
+- [ ] On `/app`, click `← Back to site` button (existing) → same as above
+- [ ] Open `https://readii.co.uk/app` directly in a fresh tab → app shell loads (Netlify SPA rewrite + initial-load check)
+- [ ] Browser Forward after closeApp → URL goes back to `/app` → popstate listener re-adds app class
+- [ ] Keyboard: Tab to logo → focus ring shows gold → Enter activates closeApp
+
+**Out of scope:**
+- In-app routing (sidebar tabs change view but not URL) — adds complexity, doesn't solve the reported bug
+- 中文 — no copy changed; "Back to homepage" tooltip is EN-only since `title` doesn't accept i18n spans. Acceptable trade-off for an a11y label
+
+---
+
 ## 2026-05-04 | Session 33 | v2.5.0
 
 **Objective:** Repackage the public landing page so it visibly matches the documented business model for the Innovator Founder visa extension. The current site frames "Cross-border Business Programme" as a co-equal third pillar; the documented model treats advisory/cross-border work as value-added services to existing platform members. The site has to read that way before submission.

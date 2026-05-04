@@ -5,6 +5,25 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.5.1] — 2026-05-04
+
+### Fixed
+- fix: **Browser Back button now returns to landing instead of leaving the site.** `openApp()` previously toggled a CSS class only — no URL change, no history entry — so the browser had nothing to go back to and Back navigated away from readii.co.uk entirely
+- `openApp()` now `history.pushState({readiiApp:true}, '', '/app')` on entry (skipped if already on `/app`, so refreshes don't stack duplicates)
+- `closeApp()` now calls `history.back()` when our pushState put us on `/app`; falls back to `history.replaceState` to `/` if the user landed on `/app` directly (no in-site entry to go back to)
+- Added `popstate` listener so browser Back/Forward syncs the app-shell class with the URL (entering /app re-enters app shell; leaving /app drops it)
+- Sidebar **Readii logo** is now clickable (was a non-interactive `<span>`). `role="link" tabindex="0"`, Enter/Space activates, Click → `closeApp()`. Hover bg + focus-visible gold ring for a11y
+
+### Added
+- Direct-load support for `/app`: the existing Netlify SPA rewrite (`/* → /index.html`) already serves index.html for `/app`. New init-time check at the bottom of the inline script: if `pathname === '/app'`, call `window.openApp()` (the wrapped async version). The inner `openApp` guards the pushState so this initial enter doesn't re-push the same URL
+
+### Notes
+- No backend / auth / routing changes — pure client-side history wiring
+- Hash anchors on the landing (`#platform`, `#reading`, `#about`, `#pricing`) are unaffected — they share the URL but use the hash channel
+- In-app navigation (sidebar tabs: Library, Voice Coach, Word Bank, etc.) still uses `showAppView()` and does NOT change the URL — out of scope this fix. Could be a future enhancement (e.g. `/app/voice-coach`) but adds complexity without solving the reported bug
+
+---
+
 ## [2.5.0] — 2026-05-04
 
 ### Changed

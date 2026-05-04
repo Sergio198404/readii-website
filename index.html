@@ -193,7 +193,9 @@ footer ul a:hover{color:var(--forest)}
 .app-shell{display:flex;height:100vh;overflow:hidden;background:var(--cream)}
 .asb{width:236px;background:var(--forest);flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto}
 .sbh{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
-.sbhl{display:flex;align-items:center;gap:8px}
+.sbhl{display:flex;align-items:center;gap:8px;border-radius:6px;padding:2px 4px;margin:-2px -4px;transition:background .15s}
+.sbhl:hover{background:rgba(255,255,255,.08)}
+.sbhl:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .sbhlm{width:26px;height:26px;border-radius:5px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
 .sbhln{font-family:var(--serif);font-size:17px;color:rgba(255,255,255,.88)}
 .sbu{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -974,7 +976,7 @@ h1{animation:fu .6s ease both .15s}
 <div id="view-app">
 <div class="app-shell">
   <div class="asb">
-    <div class="sbh"><div class="sbhl"><div class="sbhlm"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="#fff" stroke-width="2.2"><path d="M3 3h4a2 2 0 0 1 0 4H3V3z"/><path d="M3 7h5a2.5 2.5 0 0 1 0 5H3V7z"/></svg></div><span class="sbhln">Readii</span></div></div>
+    <div class="sbh"><div class="sbhl" role="link" tabindex="0" onclick="closeApp()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();closeApp();}" style="cursor:pointer" title="Back to homepage"><div class="sbhlm"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="#fff" stroke-width="2.2"><path d="M3 3h4a2 2 0 0 1 0 4H3V3z"/><path d="M3 7h5a2.5 2.5 0 0 1 0 5H3V7z"/></svg></div><span class="sbhln">Readii</span></div></div>
     <div class="sbu"><div class="sbui"><div class="sbuav">小</div><div><div class="sbun"><span data-en>Xiaoming</span><span data-zh>小明</span></div><div class="sbulv"><span data-en>Level 2 · British Reader</span><span data-zh>第2级 · 英式分级阅读</span></div></div></div></div>
     <div class="sbnav">
       <div class="nbgl"><span data-en>Learn</span><span data-zh>学习</span></div>
@@ -1648,8 +1650,44 @@ function setLang(l, opts){
     if(saved === 'en' || saved === 'zh') setLang(saved);
   }catch(_){}
 })();
-function openApp(){document.body.classList.add('app');document.body.style.overflow='hidden'}
-function closeApp(){document.body.classList.remove('app');document.body.style.overflow=''}
+function openApp(){
+  document.body.classList.add('app');
+  document.body.style.overflow='hidden';
+  // Push a real history entry so the browser Back button returns to the
+  // landing page instead of leaving the site. Skip if we're already on /app
+  // (e.g. direct refresh on /app) to avoid stacking duplicate entries.
+  if(window.location.pathname !== '/app'){
+    try{ history.pushState({readiiApp:true}, '', '/app'); }catch(_){}
+  }
+}
+function closeApp(){
+  document.body.classList.remove('app');
+  document.body.style.overflow='';
+  if(window.location.pathname === '/app'){
+    // If our pushState put us here, history.back() returns to the landing
+    // cleanly (and fires popstate, which is a no-op since the class is
+    // already off). If the user landed on /app directly (refresh/typed
+    // URL/external link), there's no in-site entry to go back to — replace
+    // the URL with / so the user sees the landing on the next manual reload.
+    if(history.state && history.state.readiiApp){
+      try{ history.back(); }catch(_){ }
+    } else {
+      try{ history.replaceState({}, '', '/'); }catch(_){}
+    }
+  }
+}
+// Sync app shell with browser Back/Forward navigation
+window.addEventListener('popstate', function(){
+  const onApp = window.location.pathname === '/app';
+  const isApp = document.body.classList.contains('app');
+  if(onApp && !isApp){
+    document.body.classList.add('app');
+    document.body.style.overflow='hidden';
+  } else if(!onApp && isApp){
+    document.body.classList.remove('app');
+    document.body.style.overflow='';
+  }
+});
 function openVoiceCoachFromLanding(moduleId){
   if(typeof window.openApp === 'function') window.openApp();
   setTimeout(function(){
@@ -5897,6 +5935,13 @@ async function renderSettings(){
   // v2.3.0: render daily card on initial load too (if user is signed in and view-library is visible)
   if (typeof window.renderLibraryDailyMode === 'function') {
     setTimeout(() => window.renderLibraryDailyMode(), 200)
+  }
+  // v2.5.1: if the user landed directly on /app (refresh, typed URL, external
+  // link), enter the app shell automatically. openApp() is the wrapped async
+  // version (auth check + render); the inner openApp guards the pushState so
+  // we don't stack a duplicate /app entry.
+  if (window.location.pathname === '/app') {
+    window.openApp()
   }
 </script>
 </body>
