@@ -2,6 +2,82 @@
 
 ---
 
+## 2026-05-04 | Session 36 | v2.5.3
+
+**Objective:** Provision a single reviewer demo account on the production Supabase database with realistic, lived-in activity data for the UK endorsing-body platform review. Account must be indistinguishable from a real user, stable, and pre-populated across the past 30 days.
+
+**Why this matters:**
+A fresh empty account on the live platform doesn't demonstrate progress monitoring, adaptive review queue, score-trend chart, or streak — all of which are documented features in the visa pack. Caseworkers logging in with `reviewer@readii.co.uk` need to see a populated dashboard immediately.
+
+**Approach:** One-off Node script (`scripts/seed-reviewer-account.js`) using the existing service-role pattern from `tools/seed-test-users.js`. Idempotent on re-run (find by email → wipe → re-seed → password rotate).
+
+**Completed:**
+- [x] Wrote `scripts/seed-reviewer-account.js` (~430 lines) — idempotent provisioner with `--dry-run` mode
+- [x] Schema knowledge gathered from `database/schema.sql` (books/lessons/vocabulary/user_profiles/progress/streaks), `migration-daily-book.sql`, `migration-uk-culture-progress.sql`, plus column-name reverse-engineering from `index.html` for `pronunciation_attempts` (user_id, source, module_id, sentence, transcript, score, created_at), `review_queue` (user_id, word_id, added_at, best_score_since_added, last_practiced_at), `user_word_favorites` (user_id, word_id), `word_bank` (id, word, ipa_gb, module_id) — these tables are off-repo migrations
+- [x] Voice Coach sentence pool inlined from `VOICE_COACH_MODULES` so seeded `sentence` values match what a real practiser would have submitted
+- [x] Score distributions per brief: Broad A trend-up 60→100, ≥3 perfect-100s; Non-rhotic R 50-92 best 95; TH 45-88 best 90; Yod 55-80 best 85; Short O 50-75 best 80
+- [x] Cluster-into-sessions timing: each "session" is 3-8 attempts within a ~10-20min window, on a randomly-chosen day in the last 30. Sessions are sparse — some days 0, some days 10+ — matches "real learners are uneven" per brief
+- [x] Daily-book pattern: today in-progress + 4 consecutive completed days + a 5-day gap + 1 earlier completed day → current_streak=4, longest=10 stored in `streaks`
+- [x] UK Culture mirror: each `uk_culture_progress` row gets a paired `pronunciation_attempts` row with `source='uk_culture'`, `module_id='<id>_l<level>'` — matches the v2.2.0 dual-write pattern in `index.html` so My Progress page picks them up
+- [x] Word Bank seeding: 6 favorited (mastered) + 3 in review queue with best_score 35-55, plus matching low-score `pronunciation_attempts` rows (source='word_bank') for the trend chart
+- [x] Idempotency tested: ran twice. First run created user `89ee3ded-4f63-48eb-a225-23feb6ac4057`. Second run found that user_id, wiped activity, re-seeded with a new password
+- [x] **Two iterations on book picking** to satisfy "≥2 series, ≥2 levels":
+  - Iteration 1: matched series by uppercase exact key (`'GK'`, `'G1'`, ...) but DB stores `'Heinemann GK'`/`'Heinemann G1'`, so all 6 books fell to fallback (first 6 = all GK). Caught and fixed
+  - Iteration 2: case-insensitive substring match (`includes('gk')`, `includes('g1')`, ...) — picks across Heinemann GK/G1/G2, levels 1/2/3
+- [x] **One iteration on lessons completed**: first version constrained progress lessons to the 6 daily-book books → only 10 lessons available (target 20). Fix: progress fetches a broader 200-lesson pool independent of daily-book picks. After fix: 20 lessons completed (14 last-7-days, 6 earlier)
+
+**Final account state (printed by script, not committed):**
+```
+URL:                   https://readii.co.uk
+Email:                 reviewer@readii.co.uk
+Username:              reviewer
+Password:              <regenerated each run, latest copied to docs by operator>
+Reading Level:         Level 2
+Total seeded attempts: 197 (voice_coach + reading + word_bank + uk_culture)
+Books in library:      6 (lessons completed: 20)
+Words mastered:        6
+Words in review:       3
+UK Culture entries:    16
+```
+
+**Files changed:**
+- scripts/seed-reviewer-account.js (new — committed; reads from gitignored .env)
+- VERSION (2.5.2 → 2.5.3)
+- CHANGELOG.md ([2.5.3] entry)
+- WORKLOG.md (this Session 36)
+
+**Verified by:**
+- Dry-run output sanity-checked against brief targets (counts, score ranges, distribution)
+- Production write completed without errors across all 8 phases
+- Idempotency confirmed by running twice on the same email — second run reused the same auth user_id
+
+**Pending (browser-only verification — operator must walk this checklist):**
+- [ ] Login at https://readii.co.uk with the printed credentials succeeds in a private window
+- [ ] My Progress total attempts in 160-180 range (we seeded 197 incl. word_bank+uk_culture; the headline filter may show only voice_coach + reading = 175)
+- [ ] My Progress avg ~65-70, best 100
+- [ ] Score Trend chart non-flat over 30 days (sessions are clustered, gaps between)
+- [ ] AI Voice Coach module index shows different attempt counts (Broad A heaviest)
+- [ ] Broad A page: best 100, ~50 attempts
+- [ ] Reading Library shows 6 books, mix of completed/in-progress, 3 series across 3 levels
+- [ ] At least one lesson detail shows AI Pronunciation panel with prior attempt scores
+- [ ] Word Bank Review page: 3 words queued (low best_score), 6 mastered (favorites)
+- [ ] UK Culture: meeting 1/50, email 7/50, setup L3 8/10 — values match brief
+- [ ] No empty-state placeholders, no broken UI, no "demo" banner
+
+**Out-of-scope (per brief):**
+- Self-service demo account creation feature
+- "Demo mode" UI banner / flag
+- Email auto-responders / support tickets
+- Multi-account provisioning
+
+**Security notes:**
+- `.env` is gitignored (verified)
+- Credentials never written to disk by the script — only stdout
+- `tools/seeded-test-users.json` (untracked, contains real test-user creds) was already excluded from git tracking and remains so
+- The script itself is committed (no secrets in code; reads from .env at runtime)
+
+---
+
 ## 2026-05-04 | Session 35 | v2.5.2
 
 **Objective:** Replace the placeholder reader-narration teacher identity ("Emma · Southern England") with the actual personnel ("Matt · London"). These strings appear in formal documentation submitted to a UK endorsing body, so on-screen attribution must match reality.

@@ -5,6 +5,34 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.5.3] — 2026-05-04
+
+### Added
+- chore: **Provisioned reviewer demo account on production with seeded 30-day activity data for platform review purposes.** Single account (`reviewer@readii.co.uk`) at `https://readii.co.uk` for UK endorsing-body reviewers. Indistinguishable from a real user at the application layer — no demo flags, no banners
+- New script `scripts/seed-reviewer-account.js`: idempotent provisioner that creates or refreshes the reviewer auth user, wipes prior seeded activity, and re-inserts realistic data across `user_profiles`, `streaks`, `user_daily_book`, `progress`, `pronunciation_attempts`, `user_word_favorites`, `review_queue`, and `uk_culture_progress`
+- Script supports `--dry-run` to print the plan without writes; reads `SUPABASE_URL` + `SUPABASE_SERVICE_KEY` from gitignored `.env`. Never prints credentials except as final stdout output for the operator to copy
+
+### Seeded data shape (per brief)
+- `pronunciation_attempts`: ~175 voice_coach + reading + 7 word_bank + 16 uk_culture mirror = 198 total, distributed across 30 days with cluster-into-sessions timing
+- `voice_coach` per-module split: Broad A 50 (trend-up, ≥3 perfect-100s, best 100), Non-rhotic R 35 (best 95), TH voiced 30 (best 90), Yod 25 (best 85), Short O 15 (best 80)
+- `progress`: 20 lessons (14 in last 7 days, 6 earlier 8-25 days ago) — fetched from a broader lesson pool than the 6 daily-book picks so the "Lessons this week" stat hits 14
+- `user_daily_book`: 6 entries — today in-progress + 4 consecutive completed days + 1 break + 1 earlier (current_streak=4, longest=10 in `streaks`)
+- `user_profiles.reading_level`: 2; `books_read_count`: 6
+- 6 books picked from 3 series (Heinemann GK, G1, G2) across reading levels 1/2/3 — covers brief's "≥2 series, ≥2 levels" requirement
+- `user_word_favorites`: 6 mastered words (random pick from `word_bank`)
+- `review_queue`: 3 words with `best_score_since_added` 35-55, added 2-14 days ago
+- `uk_culture_progress`: 16 entries — meeting L1 ×1 (score 100), email L1 ×7 (avg ~98), setup L3 ×8 (scores 86-100). Mirrored to `pronunciation_attempts` with `source='uk_culture'` per the v2.2.0 dual-write pattern
+
+### Notes
+- Idempotent: the script lists users by email, updates the password if found, wipes all prior seeded rows for that user_id, re-inserts. Auth user_id stable across re-runs so external references remain valid
+- Falls back to `demo.reviewer@readii.co.uk` if the primary email is unavailable
+- The script file is committed (read-only logic, no secrets); credentials are NOT committed (printed once to stdout for the operator)
+- Random 12-char password regenerated on every run (mixed upper/lower/digit, excluding visually ambiguous chars `I/l/1/O/0`); each run prints the new credential set so the operator can update the documentation pack
+- No changes to website code — pure database provisioning
+- See WORKLOG Session 36 for the full design notes and verification checklist
+
+---
+
 ## [2.5.2] — 2026-05-04
 
 ### Fixed
