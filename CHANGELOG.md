@@ -5,6 +5,20 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.6.3] — 2026-05-05
+
+### Fixed
+- fix: **Relative `<script src>` paths broke at deep routes like `/learn/personal-library`, causing MIME error `Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html"`.** Root cause: lines 5320-5323 used `src="assets/js/..."` (relative). At `/app` and `/` the relative resolution worked because both are single-segment paths and the directory portion is `/`. At `/learn/personal-library/upload` the directory portion is `/learn/personal-library/`, so `assets/js/auth.js` resolved to `/learn/personal-library/assets/js/auth.js`. That file doesn't exist → Netlify SPA catch-all returned `index.html` with `text/html` → browser refused to execute as JavaScript
+- 4 lines changed: `assets/js/{supabase-client,stripe-config,auth,checkout}.js` → `/assets/js/...` (absolute paths). Now resolves correctly at any route depth
+
+### Notes
+- **`netlify.toml` was NOT modified.** The Personal Library beta tester (Xiaoyu) initially diagnosed the issue as "SPA fallback rewriting .js requests to /index.html". That observation is correct as a *symptom* — the catch-all rule does serve `index.html` for unknown paths, including the wrong-path .js requests. But the *cause* is the relative path resolution at the source (HTML), not the Netlify rule. Adding pre-catch-all redirect rules for static-asset extensions would fix the symptom but leave the brittle relative paths in place; future deep routes would just rediscover the bug
+- Articles HTML files in `articles/*.html` were checked and contain no relative `assets/...` references, so they're unaffected
+- Existing `<script src="https://cdn.jsdelivr.net/...">` (line 5319) is absolute — was already fine
+- New baseline archive: `archive/index-v2.6.2.html`
+
+---
+
 ## [2.6.2] — 2026-05-05
 
 ### Changed (security hardening)

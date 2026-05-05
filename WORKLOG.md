@@ -2,6 +2,51 @@
 
 ---
 
+## 2026-05-05 | Session 41 | v2.6.3
+
+**Objective:** Fix MIME error blocking site JavaScript from loading at deep `/learn/personal-library/*` routes. Reported by Xiaoyu post-deploy of v2.6.2: browser console showed `Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html"`. Site appeared to load but every interaction (Sign In, navigation, etc.) was broken.
+
+**Why this matters:**
+This is the kind of bug that makes a deploy look successful but leaves the user with a non-functional site. Phase 2a's whole point was the deep routing — if the routing works but breaks all the existing site JS, we've shipped a regression for Kevin and broken nothing for non-allowlist users (since they redirect away anyway), but Kevin can't actually test the feature.
+
+**Root cause analysis:**
+Lines 5320-5323 of `index.html` had relative-path script tags: `<script src="assets/js/auth.js"></script>` etc. Browsers resolve relative URLs from the current document's directory, NOT from the site root. Specifically:
+- At `/`: directory is `/` → resolves to `/assets/js/auth.js` ✓
+- At `/app`: directory is `/` (single-segment paths have empty directory after stripping the segment) → resolves to `/assets/js/auth.js` ✓
+- At `/learn/personal-library`: directory is `/learn/` → resolves to `/learn/assets/js/auth.js` ✗
+- At `/learn/personal-library/upload`: directory is `/learn/personal-library/` → resolves to `/learn/personal-library/assets/js/auth.js` ✗
+
+The Personal Library deep routes were the FIRST 2-segment paths on the site (every prior route was single-segment), so the latent bug was never triggered.
+
+The downstream chain: wrong path → file doesn't exist → Netlify catch-all rule `/* → /index.html status=200` serves index.html → browser receives `Content-Type: text/html` for what it expected to be JS → strict MIME check fails → script doesn't execute → entire site JS broken on that page (auth, navigation, everything).
+
+**Why Xiaoyu's first instinct (modify netlify.toml) was close but not quite:**
+He suggested adding pre-catch-all rules to force `.js` requests to bypass the rewrite. That would work — Netlify would 404 on the bad path instead of serving HTML, browser would then 404-error rather than MIME-error, but auth.js still wouldn't load and the site would still be broken. The fix needs to happen at the source (HTML), not the symptom (Netlify rule). Patching the rule would also leave a brittle pattern in place: every future deep route would rediscover the bug if anyone added another relative reference somewhere.
+
+**Approach:** Single Edit, 4 lines: `assets/js/...` → `/assets/js/...` for the 4 local script tags. The CDN-hosted Supabase script (line 5319) was already absolute, no change. Articles HTML files were grep-checked and contain no relative references, so they're unaffected.
+
+**Completed:**
+- [x] Archived `index.html` → `archive/index-v2.6.2.html` (pre-fix baseline)
+- [x] Edited 4 script-src attributes to use absolute paths starting with `/`
+- [x] Verified no other relative-path references exist in `index.html` (grepped src= and href= for assets/articles/tools/netlify/privacy prefixes — only the 4 fixed lines came up)
+- [x] Verified articles/*.html have no relative asset references
+- [x] Bumped VERSION 2.6.2 → 2.6.3 (PATCH — bug fix, no feature surface change)
+- [x] CHANGELOG [2.6.3] entry with full root-cause explanation and the rationale for not touching netlify.toml
+
+**Files changed:**
+- index.html (4 lines: relative → absolute paths)
+- archive/index-v2.6.2.html (new baseline)
+- VERSION (2.6.2 → 2.6.3)
+- CHANGELOG.md ([2.6.3] entry)
+- WORKLOG.md (this Session 41)
+
+**Pending (operator):**
+- [ ] Hard refresh on the deployed site (Ctrl+Shift+R or Cmd+Shift+R) to bypass cache after Netlify auto-deploy fires
+- [ ] Re-run the verification checklist from Session 40 — the 7 browser tests for Kevin/anonymous/reviewer paths
+- [ ] If MIME error still appears: open Network tab in DevTools → look for any request with status 200 + Content-Type `text/html` for a path ending in `.js`. The path will tell us which script tag is still relative. There shouldn't be any after this fix, but if there is, that's where to look
+
+---
+
 ## 2026-05-05 | Session 40 | v2.6.2
 
 **Objective:** Harden the Phase 2a beta gate per advisor review. The 2.6.1 implementation showed a "Personal Library — Coming soon" branded page to non-allowlisted visitors who probed the `/learn/personal-library/*` routes — leaking the feature name and confirming the existence of unreleased work to anyone curious. Replace with a silent redirect to `/`, indistinguishable from any other unknown path on the site. Also add session-level caching of the beta-access result, invalidated on auth state changes.
