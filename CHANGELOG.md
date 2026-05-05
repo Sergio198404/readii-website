@@ -5,6 +5,23 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.6.4] — 2026-05-05
+
+### Fixed
+- fix: **"Loading today's book…" stuck forever after v2.6.3 deploy.** Root cause: same class of bug as v2.6.3 (relative paths breaking at deep routes), but a different SYNTACTIC form I missed. v2.6.3 fixed 4 `<script src="assets/...">` (classic script tags). I missed line 5325 — a `<script type="module">` with `import { ... } from './assets/js/library.js'` (ES module import, relative path). At deep routes like `/learn/personal-library/...` this resolved to `/learn/personal-library/assets/js/library.js`, didn't exist, Netlify catch-all served `index.html` with `text/html`, ES module loader refused to execute → `library.js` never loaded → `loadLibrary()` and `checkAccess()` never callable from inline app code → "Loading today's book…" string sat there because the function that replaces it never ran
+- 1-line fix: changed `from './assets/js/library.js'` to `from '/assets/js/library.js'` (absolute path)
+
+### Notes
+- This was actually the user's ORIGINAL diagnosis when first reporting the MIME error: "module script ... text/html". I read it as a generic relative-path issue and only grep'd for `<script src=`, missing the `import ... from` form. **Lesson:** when fixing a regression, search ALL syntactic forms of the same class of issue — script src, link href, img src, ES module import, dynamic import(), CSS @import, fetch() with relative paths
+- Verified after this fix: `grep -nE "import .* from ['\"]\\./` returns no matches in `index.html`
+- `library.js` itself has zero internal imports (checked) — it's a leaf module, no chain effect
+- Probably also explains why Sign In appeared broken earlier: `library.js`'s `checkAccess()` is called from the inline module's `initApp()`, which sets up Sign-In click handlers. Module fails to load → Sign-In handlers never wired → button looked broken
+
+### Operator action
+- Hard refresh after Netlify deploys this commit. Today's book card and Browse-all-books should both come back
+
+---
+
 ## [2.6.3] — 2026-05-05
 
 ### Fixed

@@ -2,6 +2,59 @@
 
 ---
 
+## 2026-05-05 | Session 42 | v2.6.4
+
+**Objective:** Finish the relative-path-resolution fix that v2.6.3 only half-completed. Xiaoyu reported post-v2.6.3-deploy that the daily-book card was stuck on "Loading today's book…" and "Browse all books" was missing. Same root cause as v2.6.3 (relative paths break at deep routes) but a different syntactic form — an ES module `import` statement that I'd grep'd over.
+
+**Why this matters:**
+This is a clean example of an incomplete fix. v2.6.3's CHANGELOG/commit message confidently said "verified no other relative-path references exist", but my verification only covered `<script src=` and `<link href=` and `<img src=`. ES module imports look syntactically different (`import { ... } from '...'`) and weren't in my grep pattern. So the bug class was only partially fixed, and the user noticed the breakage on the most-visible feature (the daily book) — which is the worst possible kind of regression because it makes the FIX itself look broken to the user.
+
+**Root cause:**
+Line 5325 of `index.html`:
+```html
+<script type="module">
+  import { checkAccess, loadLibrary, loadProgress, saveProgress, loadStreak, updateStreak } from './assets/js/library.js'
+```
+
+`library.js` is an ES module (per CHANGELOG line 892 from v2.5.0: "library.js rewritten as ES module"). The import statement uses a relative path (`./assets/...`). Same resolution rule as `<script src=` — at `/learn/personal-library/...`, this becomes `/learn/personal-library/assets/js/library.js`, which doesn't exist, Netlify catch-all returns `index.html` with `text/html`, and the ES module loader refuses (correctly per HTML spec strict MIME check). Module never loads → exported functions (checkAccess, loadLibrary, etc.) are unavailable to the inline app code → the inline initApp() function silently fails when calling them → "Loading today's book…" placeholder text never gets replaced.
+
+The reason this also broke the homepage daily card (not just PL routes) for Kevin: he had been on `/learn/personal-library` in this browser tab before. When he then navigated back to the app/library, the URL might have been on a deep PL path momentarily, OR — more likely — the browser had cached the failed module load. Either way, library.js was never properly loaded for that tab and the card never rendered.
+
+**Why my v2.6.3 grep missed it:**
+My pre-push verification grep was `grep -nE 'src="(assets|articles|tools|netlify|privacy)'` and similar for `href=`. ES module imports use neither `src=` nor `href=`. The user's ORIGINAL diagnosis (in their first MIME error report) explicitly said "module script" — I should have caught the hint and searched for `import` statements too. Instead I focused on the `<script src=` cases that matched my mental model.
+
+**Approach:**
+1. grep `import .* from` — found exactly 1 hit
+2. Change `'./assets/js/library.js'` → `'/assets/js/library.js'` (single character: prepend `/`, drop `.`)
+3. Re-verify with broader pattern: `grep -nE "import .* from ['\"]\\./` should return zero hits
+4. Push as v2.6.4
+
+**Completed:**
+- [x] Archived `index.html` → `archive/index-v2.6.3.html`
+- [x] Fixed line 5325 import path
+- [x] Re-verified no other `import './...'` or `import "./...'` patterns exist in `index.html`
+- [x] Verified `library.js` itself has no internal relative imports (would have caused chain failure)
+- [x] Bumped VERSION 2.6.3 → 2.6.4
+- [x] CHANGELOG [2.6.4] entry, including the explicit lesson-learned about searching ALL syntactic forms of a bug class on a regression fix
+
+**Files changed:**
+- index.html (1 line: relative module import → absolute)
+- archive/index-v2.6.3.html (new baseline)
+- VERSION (2.6.3 → 2.6.4)
+- CHANGELOG.md ([2.6.4] entry)
+- WORKLOG.md (this Session 42)
+
+**Pending (operator):**
+- [ ] Hard refresh after Netlify deploys
+- [ ] Daily book card should populate ("Today's book: ..." instead of stuck "Loading...")
+- [ ] "Browse all books" link should be visible and clickable
+- [ ] Re-run the v2.6.2 PL gate verification checklist (was blocked by this regression)
+
+**Lesson saved for future me:**
+On a regression fix, when the user's error message names a specific construct (here: "module script"), grep for that EXACT term too — not just my mental shortlist. The user's first words usually point at the right spot.
+
+---
+
 ## 2026-05-05 | Session 41 | v2.6.3
 
 **Objective:** Fix MIME error blocking site JavaScript from loading at deep `/learn/personal-library/*` routes. Reported by Xiaoyu post-deploy of v2.6.2: browser console showed `Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html"`. Site appeared to load but every interaction (Sign In, navigation, etc.) was broken.
