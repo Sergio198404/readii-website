@@ -2,6 +2,169 @@
 
 ---
 
+## 2026-05-05 | Session 40 | v2.6.2
+
+**Objective:** Harden the Phase 2a beta gate per advisor review. The 2.6.1 implementation showed a "Personal Library — Coming soon" branded page to non-allowlisted visitors who probed the `/learn/personal-library/*` routes — leaking the feature name and confirming the existence of unreleased work to anyone curious. Replace with a silent redirect to `/`, indistinguishable from any other unknown path on the site. Also add session-level caching of the beta-access result, invalidated on auth state changes.
+
+**Why this matters:**
+The whole point of "no public entry yet" is that competitors, journalists, and curious users shouldn't even know we're building this until we choose to announce it. A branded "Coming soon" page on a guessable URL undoes that — anyone who tries `/learn/...` paths could find it. Advisor framing (which Xiaoyu forwarded): this is **feature flag + allowlist** discipline, the standard approach for shipping feature code to production while gating user-visible surface — used by Netflix, Stripe, every serious product team.
+
+**Approach:** Move the beta-access check to the very top of `openPersonalLibrary()` so it runs **before** any DOM mutation or URL push. On failure: clean up state, replace URL to `/`, return early. Non-allowlist users see no PL frame, no class change, no URL change beyond the silent redirect. Existing `pl_beta_access BOOLEAN` column on `user_profiles` (added in v2.6.0 migration) stays — no premature abstraction to a `feature_flags` table when only one feature is gated.
+
+**Spec compliance with Xiaoyu's advisor:**
+- ✅ "导航入口对所有人隐藏" — already true since v2.6.1 (no nav entry exists)
+- ✅ "URL 直接访问也要拦截... 不能让他看到任何 Personal Library 的页面、组件或 API 响应" — fixed: silent redirect, no PL-branded view ever rendered for non-allowlist
+- ⏳ "后端 API 也要做权限检查" — deferred to Phase 2b (no backend endpoints exist yet; first one is `personal-library-quote` Netlify Function in 2b, which will check `pl_beta_access` server-side via service-role read of `user_profiles`)
+- ✅ "Allowlist 实现方式" — boolean `user_profiles.pl_beta_access` in place; advisor accepted JSONB-on-user_profiles as alternative to a separate `feature_flags` table, and our boolean is functionally a degenerate JSONB single-flag
+- ✅ "前端取 flag 的方式 — 缓存" — `_plBetaCache` session cache added; cleared on auth state change via existing `authOnStateChange` listener in `assets/js/auth.js`
+- ⏳ "Stripe 测试模式 + email [BETA] 标识" — Stripe arrives in Phase 3, Resend in Phase 4. Will enforce when those land
+- ⚠️ HTML source still contains PL view markup (anyone view-source can read it). Static SPA can't conditionally render server-side. Documented as known limitation; would require a build pipeline to obfuscate. Not worth the build complexity for v1
+
+**Completed:**
+- [x] Archived `index.html` → `archive/index-v2.6.1.html` (pre-hardening baseline)
+- [x] Removed the `<div class="pl-screen" data-screen="locked">...</div>` block from `index.html` (~13 lines deleted) — eliminates the "Coming soon" branded page entirely. The `.pl-soon`/`.pl-soon-tag` CSS rules left in place (cheap, may reuse later for an actual marketing page when the feature ships publicly)
+- [x] Added `_plBetaCache` module-level variable + cache logic to `checkPLBetaAccess()`. Errors are NOT cached (re-checked on next call); only true/false from a successful query are cached
+- [x] Added `plInvalidateBetaCache()` exported function
+- [x] Refactored `openPersonalLibrary()` so beta check runs FIRST. On `false`: removes `body.pl-active` class (defensive), resets `body.style.overflow`, calls `history.replaceState({}, '', '/')` if currently on a PL path, returns early. No DOM additions, no URL push, no `data-screen="..."` toggling
+- [x] Refactored same-shell sub-route popstate branch (`onPL && isPL`) to silent-redirect on gate failure, mirroring the entry-side hardening. Covers: user authenticated as Kevin in tab A, navigated to /upload, then logged out in tab B → tab A's back-button click now correctly bounces them out
+- [x] Added one line to `assets/js/auth.js`'s `authOnStateChange` callback: `plInvalidateBetaCache()`. This way, sign-out / sign-in events flush the PL cache automatically — no possibility of a stale `true` surviving an auth change in the same tab
+- [x] Bumped VERSION 2.6.1 → 2.6.2 (PATCH — security hardening of an existing gate, no new feature surface)
+- [x] Added `[2.6.2]` to CHANGELOG with full rationale + the "frontend-only, backend in 2b" caveat
+
+**Files changed:**
+- index.html (-13 HTML lines, ~+15 JS lines for cache + redirect logic; net ~+2)
+- assets/js/auth.js (+5 lines for cache invalidation hook)
+- archive/index-v2.6.1.html (new baseline)
+- VERSION (2.6.1 → 2.6.2)
+- CHANGELOG.md ([2.6.2] entry)
+- WORKLOG.md (this Session 40)
+
+**Verification done locally (logic trace):**
+- Anonymous user types `/learn/personal-library` → init route fires `openPersonalLibrary('list')` → `checkPLBetaAccess()` returns false (no auth.user) → replaceState to `/`, no class change, no PL view rendered. URL bar shows `/`. View-source still has the PL HTML but it's `display:none` via #view-pl rule
+- Authenticated non-allowlist user (e.g. reviewer@) → same path; `pl_beta_access=false` → same redirect
+- Authenticated allowlist user (Kevin) → `pl_beta_access=true` → cached, then PL view rendered. Subsequent navigations within PL hit the cache, no extra Supabase round-trip
+- Sign-out while in PL → `authOnStateChange` fires → cache cleared → next navigation rechecks → false → redirect
+
+**Pending (operator):**
+- [ ] Push to GitHub (next session task) → Netlify auto-deploy → verify on https://readii.co.uk
+- [ ] Browser test as Kevin: visit `/learn/personal-library`, see empty list view + "Upload a book" CTA
+- [ ] Browser test as anonymous (incognito): visit `/learn/personal-library`, expect URL bar bounces to `/`, see homepage. View-source can still show PL HTML (acceptable — documented)
+- [ ] Browser test as reviewer@readii.co.uk: same as anonymous — silent redirect
+
+---
+
+## 2026-05-05 | Session 39 | v2.6.1
+
+**Objective:** Land Phase 2a of Personal Library — the frontend skeleton and beta gate. Get all `/learn/personal-library/*` routes reachable via direct URL with placeholder views, behind a server-checked `pl_beta_access` flag. No nav entry, no feature surface for non-beta users. Sets up the scaffolding so Phase 2b (PDF upload + quote function) can plug in without touching routing again.
+
+**Why this matters:**
+The whole rollout discipline rests on this gate. If we add nav entries or expose feature affordances before the backend is built, beta testing becomes leaky and the "no public surface yet" promise breaks. Wiring routing + beta check now means every later phase just slots its UI into the existing `pl-screen[data-screen="..."]` slots.
+
+**Approach:** Inline in `index.html` (consistent with current `view-landing` / `view-app` pattern, single-page deploy). Routing follows the same `history.pushState` + `popstate` model as the existing `openApp`/`closeApp` pair (which was hardened in v2.5.1). Beta gate hits Supabase server-side every time `openPersonalLibrary()` runs — no client-side cache to go stale, no localStorage flag to spoof.
+
+**Spec compliance:**
+- spec §1 user flow steps 1–3 (nav entry + landing on /learn/personal-library + click to upload): step 1 (nav entry) is **deliberately deferred** per Xiaoyu's instruction "暂时先不在Readii的官网设置入口". Steps 2 + 3 land here as placeholders
+- spec §9.1 routes: all 7 routes parsed and routed (list, upload, checkout/success, checkout/cancel, bookId, bookId/day/n, vouchers). `checkout/*` routes will be wired in Phase 3 alongside Stripe; for 2a, hitting them lands on the locked screen by default route fall-through (acceptable — they should never be reachable without first going through checkout flow)
+- spec §9.5 i18n: every new string has `data-en` + `data-zh` siblings, follows existing site convention (no `i18n/personal-library.ts` file — that pattern doesn't exist in this codebase, all i18n is inline)
+
+**Completed:**
+- [x] Archived current `index.html` to `archive/index-v2.5.2.html` (first use of the archive folder — v2.5.2 was the last release that mutated index.html, so it's the truthful baseline). Subsequent index.html-touching releases will follow the README archive convention
+- [x] Added ~25 lines of CSS for `#view-pl` + `body.pl-active` toggle + sub-screen `.act` switching + sticky top bar + empty-state typography. Reuses existing CSS variables (`--cream`, `--forest`, `--gold`, `--serif`) — visually consistent with rest of site
+- [x] Added `<div id="view-pl">` block (right after view-app, before the first `<script>` so it's parsed before the init route check runs). Contains 6 sub-screens: `locked`, `list`, `upload`, `vouchers`, `book`, `day`. Only one is `.act` at a time
+- [x] Added 7 new JS functions in the existing inline `<script>`:
+  - `checkPLBetaAccess()` — async, hits `user_profiles.pl_beta_access` via existing `_supabase` global. Returns false on any error (degrades gracefully if migration not applied)
+  - `plPathFor(screen, params)` — screen → URL string mapping
+  - `plParseRoute(pathname)` — URL string → `{screen, params}` parsing (handles bookId / bookId/day/n / list / upload / vouchers)
+  - `plShowScreen(name)` — toggles `.act` class on the matching sub-screen
+  - `openPersonalLibrary(screen, params)` — main entry. Removes `body.app`, adds `body.pl-active`, sets `overflow:auto`, runs beta check, shows screen, pushes history state (only if path actually changes)
+  - `closePersonalLibrary()` — mirrors `closeApp`. If our pushState put us on a PL route, `history.back()` to leave cleanly; otherwise `replaceState` to `/` for direct-URL entries
+  - New `popstate` listener (additive, doesn't touch the existing one) — handles `/learn/personal-library/*` ↔ `/` ↔ `/app` transitions including same-shell sub-route changes
+- [x] Extended initial route detection at end of script: previously only checked `/app`, now also detects `/learn/personal-library/*` and routes accordingly via `plParseRoute` + `openPersonalLibrary`
+- [x] Bumped VERSION 2.6.0 → 2.6.1 (PATCH per README rules — feature is gated and invisible to non-beta users, so this is technically not a "new section" from end-user perspective. 2.7.0 will be the MINOR bump when 2b makes the upload UI visible to beta users)
+- [x] Added `[2.6.1]` entry to CHANGELOG with full notes on the no-public-entry rationale
+
+**Files changed:**
+- index.html (CSS + HTML view block + 7 JS functions + popstate listener + init route extension; ~+187 lines (5947 → 6134))
+- archive/index-v2.5.2.html (new — pre-2a baseline, exact copy of pre-edit index.html)
+- VERSION (2.6.0 → 2.6.1)
+- CHANGELOG.md ([2.6.1] entry)
+- WORKLOG.md (this Session 39)
+
+**Verified by:**
+- 4 surgical edits to index.html, all unique-anchored (CSS at #view-app sibling, HTML at view-app sibling pre-`<script>`, JS at popstate sibling, init at the existing `/app` check). No accidental duplicate insertions
+- Routing logic traced manually for all 4 navigation paths: (a) typed URL fresh load, (b) internal CTA click, (c) browser Back, (d) browser Forward. Each ends in the expected body-class + sub-screen + URL state
+
+**Pending (operator browser test by Xiaoyu after deploy):**
+- [ ] Login as `Kevin_SU2022@163.COM` at https://readii.co.uk
+- [ ] Visit https://readii.co.uk/learn/personal-library (type in address bar) — expect: empty-state list view with "📚 Your Personal Library" + "Upload a book" CTA
+- [ ] Click "Upload a book" — URL changes to `/learn/personal-library/upload`, view shows the dashed-border stub "Upload UI ships in v2.7.0"
+- [ ] Click browser Back — returns to list view, URL `/learn/personal-library`
+- [ ] Click "Back" button in PL header — returns to landing `/`, body class `pl-active` removed
+- [ ] Toggle EN/中文 — both placeholders' copy switches correctly
+- [ ] Logout, then visit `/learn/personal-library` — expect: "Coming soon" locked screen (anonymous = no beta)
+- [ ] Login as a non-beta user (e.g. `reviewer@readii.co.uk`) — expect: also "Coming soon" locked screen
+- [ ] Confirm to Claude that all 7 checks pass → unblock Phase 2b (PDF upload + parse pipeline)
+
+**Out of scope (deferred, do not add until requested):**
+- Any nav entry under LEARN — explicitly held back until the feature is testing-mature
+- Real upload UI — Phase 2b
+- Voice picker / pricing / preview MP3s — Phase 2c
+- Stripe checkout — Phase 3
+- Worker / Azure / Resend — Phase 4
+
+---
+
+## 2026-05-05 | Session 38 | v2.6.0
+
+**Objective:** Land Phase 1 of Personal Library — pure schema + storage foundations. New product line per `spec-personal-library.md`: users upload English PDFs, platform turns them into personalised audiobooks + daily reading plans + pronunciation practice, per-book pricing (£8/£18/£30/£45), completion vouchers (10–20%) for repeat purchase. Decoupled rollout: ship the database/storage layer with no frontend entry, gate all future routes on a beta flag, only Kevin's account enabled for now.
+
+**Why this matters:**
+The whole feature stack (worker, Stripe, Azure TTS, Resend, frontend) sits on top of these tables. Getting Phase 1 right — RLS clean, source column unified with existing `pronunciation_attempts` writes, beta gate established — unblocks every later phase without committing to user-visible surface area. If the schema is wrong, every later phase pays the cost.
+
+**Approach:** Single SQL migration file (`database/migration-personal-library.sql`) matching the existing `migration-{feature}.sql` convention. Idempotent throughout (re-runnable). One deviation from spec, flagged below.
+
+**Spec deviation (Xiaoyu approved before build):**
+Spec §3.2 said *add* a new `source_type` column to `pronunciation_attempts`. But the existing column is named `source` and already takes values `voice_coach` / `word_bank` / `uk_culture` across 6+ read/write sites (verified in `index.html` lines 1813/1838/2367/3809/4093/4287 and `seed-reviewer-account.js` lines 305/491/559). Adding `source_type` would either fork the data or require rewriting all existing call sites. Decision: **reuse `source`, add `personal_library` as a value, add only the genuinely new columns** (`source_id` UUID, `source_metadata` JSONB). The spec's explicit goal — "My Progress dashboard automatically picks up Personal Library scores with zero changes ✅" — is preserved with strictly less change.
+
+**Completed:**
+- [x] Wrote `database/migration-personal-library.sql` (~250 lines, single file)
+  - 4 new tables: `user_books` (master record per uploaded book, 28 cols incl. tier/voice/voucher/Stripe fields and full lifecycle status), `user_book_chunks` (per-day reading task with audio_path, vocabulary JSONB, representative_sentences JSONB), `user_book_vouchers` (completion rewards, 60-day expiry, applied_to/earned_from FKs), `book_processing_jobs` (worker queue, queued/running/succeeded/failed)
+  - Circular FK `user_books.voucher_id ↔ user_book_vouchers.id` resolved by declaring column inline then `ALTER TABLE ADD CONSTRAINT` after both tables exist, wrapped in `pg_constraint` guard for re-run safety
+  - RLS on all 4 tables. User-facing policies for SELECT/INSERT/UPDATE on `user_books`/`user_book_chunks`; SELECT-only on `user_book_vouchers` (issuance is server-side via service role); no user policies on `book_processing_jobs` (service role only)
+  - `pronunciation_attempts` extended: `source_id UUID` + `source_metadata JSONB` + composite index `(user_id, source, source_id)`. **No CHECK constraint added** to `source` to avoid validation back-fill against historical reviewer-account rows
+  - `user_profiles.pl_beta_access BOOLEAN DEFAULT false` — gate flag for Personal Library route access during internal testing
+  - 3 private storage buckets via `INSERT INTO storage.buckets ... ON CONFLICT DO NOTHING`: `user-pdfs` (50 MB cap), `user-book-audio` (30 MB cap), `user-book-recordings` (5 MB cap). Per-user path-based RLS on `storage.objects` using `auth.uid()::text = (storage.foldername(name))[1]`
+  - Operator UPDATE at end grants `pl_beta_access=true` to `Kevin_SU2022@163.COM` (case-insensitive email match, idempotent)
+  - 4 verification SELECT queries appended (commented out) for post-migration sanity-check
+- [x] Updated `database/README.md` with the 4 new tables and a note on `pl_beta_access`
+- [x] Bumped `VERSION` 2.5.4 → 2.6.0 (MINOR — new feature surface, per README versioning rules)
+- [x] Added `[2.6.0]` entry to `CHANGELOG.md` documenting the spec deviation
+- [x] No `archive/index-vX.X.X.html` snapshot needed — `index.html` was not touched in this session
+
+**Files changed:**
+- database/migration-personal-library.sql (new)
+- database/README.md (4 rows added to tables grid)
+- VERSION (2.5.4 → 2.6.0)
+- CHANGELOG.md ([2.6.0] entry)
+- WORKLOG.md (this Session 38)
+
+**Pending (operator action — Xiaoyu in Supabase SQL Editor):**
+- [ ] Open Supabase Dashboard → SQL Editor → paste contents of `database/migration-personal-library.sql` → Run
+- [ ] Run the 4 verification queries at the bottom of the file (commented):
+  - All 4 new tables show up in `pg_tables`
+  - `pronunciation_attempts` shows `source`, `source_id`, `source_metadata` columns
+  - 3 storage buckets `user-pdfs`, `user-book-audio`, `user-book-recordings` exist
+  - `Kevin_SU2022@163.COM`'s row in `user_profiles` shows `pl_beta_access=true`
+- [ ] If the verification of beta access returns 0 rows, your account may not have a `user_profiles` row yet — log into https://readii.co.uk once to trigger the upsert, then re-run the final UPDATE statement
+- [ ] Confirm to Claude that all 4 verifications pass → unblock Phase 2 (quote pipeline)
+
+**Out of scope for this session (deferred):**
+- 24h cleanup cron for unpaid PDFs (spec §13 Phase 1 step 4) — moved to Phase 4 worker poll loop. Avoids needing `pg_cron` extension just for one cleanup task; worker is already polling jobs every 5s, can do cleanup on every Nth poll
+- Voice preview MP3 hosting — depends on Phase 2 quote endpoint; will be added then
+- Any frontend, API, worker, or third-party (Stripe/Azure/Resend) integration — Phase 2+
+
+---
+
 ## 2026-05-04 | Session 37 | v2.5.4
 
 **Objective:** Upgrade `reviewer@readii.co.uk` from free to active subscription so the library books unlock for direct reading. Without this, the reviewer login lands on the dashboard but every book in the Library shows the 🔒 + "Subscribe" button instead of "▶ Listen" — incomplete review experience.

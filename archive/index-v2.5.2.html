@@ -32,28 +32,6 @@ body.zh span[data-zh]{display:inline!important}
 #view-app{display:none}
 body.app #view-landing{display:none}
 body.app #view-app{display:block}
-/* Personal Library (v2.6.1+) — beta-gated, no public nav entry */
-#view-pl{display:none;background:var(--cream);min-height:100vh}
-body.pl-active #view-landing,body.pl-active #view-app{display:none}
-body.pl-active #view-pl{display:block}
-.pl-screen{display:none}
-.pl-screen.act{display:block}
-.pl-top{position:sticky;top:0;background:rgba(250,247,242,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:14px 56px;display:flex;align-items:center;gap:16px;z-index:100}
-.pl-back{background:transparent;border:none;font-size:14px;color:var(--ink2);cursor:pointer;padding:6px 12px;border-radius:6px;transition:background .15s;font-family:var(--sans)}
-.pl-back:hover{background:var(--cream2)}
-.pl-title{font-family:var(--serif);font-size:20px;color:var(--ink);font-weight:400}
-.pl-wrap{max-width:880px;margin:0 auto;padding:64px 32px}
-.pl-empty{text-align:center;padding:80px 24px}
-.pl-empty-icon{font-size:48px;margin-bottom:20px}
-.pl-empty h2{font-family:var(--serif);font-size:28px;font-weight:400;margin-bottom:12px;color:var(--ink)}
-.pl-empty p{color:var(--ink3);font-size:15px;line-height:1.7;max-width:480px;margin:0 auto 32px}
-.pl-cta-primary{display:inline-block;background:var(--forest);color:#fff;font-size:14px;font-weight:500;letter-spacing:.04em;padding:14px 32px;border-radius:8px;border:none;cursor:pointer;text-decoration:none;transition:background .15s;font-family:var(--sans)}
-.pl-cta-primary:hover{background:var(--forest2)}
-.pl-soon{text-align:center;padding:120px 24px;max-width:520px;margin:0 auto}
-.pl-soon-tag{display:inline-block;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);background:var(--gp);padding:6px 14px;border-radius:20px;border:1px solid rgba(196,154,56,.25);margin-bottom:24px}
-.pl-soon h2{font-family:var(--serif);font-size:36px;font-weight:400;margin-bottom:16px;color:var(--ink)}
-.pl-soon p{color:var(--ink3);font-size:15px;line-height:1.7;margin-bottom:32px}
-.pl-stub{padding:48px;background:var(--cream2);border:1px dashed var(--border2);border-radius:12px;color:var(--ink3);font-size:14px;text-align:center;line-height:1.7}
 nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:64px;background:rgba(250,247,242,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(221,216,207,.7)}
 .logo{text-decoration:none;display:flex;align-items:center;gap:8px}
 .lm{width:28px;height:28px;border-radius:6px;background:var(--forest);display:flex;align-items:center;justify-content:center}
@@ -1653,73 +1631,6 @@ h1{animation:fu .6s ease both .15s}
 </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     Personal Library (v2.6.1+) — beta-gated, no public nav entry.
-     Access via direct URL /learn/personal-library only.
-     Gated on user_profiles.pl_beta_access. Phase 2a = skeleton only;
-     upload/quote/checkout land in 2b–2d.
-     ═══════════════════════════════════════════════════════════════ -->
-<div id="view-pl">
-  <header class="pl-top">
-    <button class="pl-back" onclick="closePersonalLibrary()">
-      <span data-en>← Back</span><span data-zh>← 返回</span>
-    </button>
-    <div class="pl-title"><span data-en>Personal Library</span><span data-zh>个人书库</span></div>
-  </header>
-
-  <div class="pl-screen" data-screen="list">
-    <div class="pl-wrap">
-      <div class="pl-empty">
-        <div class="pl-empty-icon">📚</div>
-        <h2><span data-en>Your Personal Library</span><span data-zh>你的个人书库</span></h2>
-        <p>
-          <span data-en>You haven't uploaded any books yet. Upload an English PDF and we'll prepare it into a personalised daily reading plan with audio and pronunciation practice.</span>
-          <span data-zh>还没有上传书籍。上传一本英文 PDF，我们会把它做成专属的每日阅读计划，配音频和发音练习。</span>
-        </p>
-        <button class="pl-cta-primary" onclick="openPersonalLibrary('upload')">
-          <span data-en>Upload a book</span><span data-zh>上传一本书</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="pl-screen" data-screen="upload">
-    <div class="pl-wrap">
-      <div class="pl-stub">
-        <span data-en>Upload UI ships in v2.7.0 (Phase 2b). This route is reserved.</span>
-        <span data-zh>上传界面将在 v2.7.0（Phase 2b）上线。此路由已预留。</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="pl-screen" data-screen="vouchers">
-    <div class="pl-wrap">
-      <div class="pl-stub">
-        <span data-en>Voucher list ships in Phase 6.</span>
-        <span data-zh>代金券列表将在 Phase 6 上线。</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="pl-screen" data-screen="book">
-    <div class="pl-wrap">
-      <div class="pl-stub">
-        <span data-en>Book overview ships in Phase 5.</span>
-        <span data-zh>书籍概览将在 Phase 5 上线。</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="pl-screen" data-screen="day">
-    <div class="pl-wrap">
-      <div class="pl-stub">
-        <span data-en>Daily reading screen ships in Phase 5.</span>
-        <span data-zh>每日阅读界面将在 Phase 5 上线。</span>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
 function setLang(l, opts){
   const zh=l==='zh';
@@ -1777,113 +1688,6 @@ window.addEventListener('popstate', function(){
     document.body.style.overflow='';
   }
 });
-
-/* ═══════════════════════════════════════════════════════════════
-   Personal Library (v2.6.1+) — routes / beta gate / view switcher
-   v2.6.2 hardening: non-allowlist users are silently redirected to /.
-   No "Coming soon" page, no leaked feature name, no PL-branded UI ever
-   shown to a non-allowlisted visitor. Front-end gate is necessary but
-   not sufficient — Phase 2b+ adds server-side guards on every endpoint.
-   ═══════════════════════════════════════════════════════════════ */
-let _plBetaCache = null;  // null = not checked yet; true/false = cached for session
-async function checkPLBetaAccess(){
-  if(_plBetaCache !== null) return _plBetaCache;
-  if(typeof _supabase === 'undefined') return false;
-  try{
-    const { data: { user } } = await _supabase.auth.getUser();
-    if(!user){ _plBetaCache = false; return false; }
-    const { data, error } = await _supabase
-      .from('user_profiles').select('pl_beta_access').eq('id', user.id).maybeSingle();
-    if(error){ return false; }  // do NOT cache transient errors
-    _plBetaCache = !!(data && data.pl_beta_access);
-    return _plBetaCache;
-  }catch(_){ return false; }
-}
-function plInvalidateBetaCache(){ _plBetaCache = null; }
-function plPathFor(screen, params){
-  params = params || {};
-  switch(screen){
-    case 'list':     return '/learn/personal-library';
-    case 'upload':   return '/learn/personal-library/upload';
-    case 'vouchers': return '/learn/personal-library/vouchers';
-    case 'book':     return '/learn/personal-library/' + params.bookId;
-    case 'day':      return '/learn/personal-library/' + params.bookId + '/day/' + params.day;
-    default:         return '/learn/personal-library';
-  }
-}
-function plParseRoute(pathname){
-  const m = pathname.replace(/^\/learn\/personal-library\/?/, '');
-  const parts = m.split('/').filter(Boolean);
-  if(parts.length === 0) return { screen: 'list', params: {} };
-  if(parts[0] === 'upload') return { screen: 'upload', params: {} };
-  if(parts[0] === 'vouchers') return { screen: 'vouchers', params: {} };
-  if(parts[1] === 'day' && parts[2]) return { screen: 'day', params: { bookId: parts[0], day: parts[2] } };
-  return { screen: 'book', params: { bookId: parts[0] } };
-}
-function plShowScreen(name){
-  document.querySelectorAll('#view-pl .pl-screen').forEach(el => el.classList.remove('act'));
-  const target = document.querySelector('#view-pl .pl-screen[data-screen="'+name+'"]');
-  if(target) target.classList.add('act');
-}
-async function openPersonalLibrary(screen, params){
-  screen = screen || 'list';
-  params = params || {};
-  // Gate FIRST — non-allowlist users never see PL-branded UI. Silent redirect
-  // to '/' makes the route indistinguishable from an unknown URL fall-through.
-  const ok = await checkPLBetaAccess();
-  if(!ok){
-    document.body.classList.remove('pl-active');
-    document.body.style.overflow = '';
-    if(window.location.pathname.indexOf('/learn/personal-library') === 0){
-      try{ history.replaceState({}, '', '/'); }catch(_){}
-    }
-    return;
-  }
-  document.body.classList.remove('app');
-  document.body.style.overflow = 'auto';
-  document.body.classList.add('pl-active');
-  plShowScreen(screen);
-  const path = plPathFor(screen, params);
-  if(window.location.pathname !== path){
-    try{ history.pushState({readiiPL: true, screen: screen, params: params}, '', path); }catch(_){}
-  }
-}
-function closePersonalLibrary(){
-  document.body.classList.remove('pl-active');
-  document.body.style.overflow = '';
-  if(history.state && history.state.readiiPL){
-    try{ history.back(); }catch(_){}
-  } else {
-    try{ history.replaceState({}, '', '/'); }catch(_){}
-  }
-}
-// Sync PL view with browser Back/Forward
-window.addEventListener('popstate', function(){
-  const path = window.location.pathname;
-  const onPL = path.indexOf('/learn/personal-library') === 0;
-  const isPL = document.body.classList.contains('pl-active');
-  if(onPL && !isPL){
-    // Will run beta gate; non-allowlist gets silent-redirected inside the call
-    const r = plParseRoute(path);
-    openPersonalLibrary(r.screen, r.params);
-  } else if(!onPL && isPL){
-    document.body.classList.remove('pl-active');
-    document.body.style.overflow = '';
-  } else if(onPL && isPL){
-    // Same shell, different sub-route — re-check gate (cheap if cached) then render
-    const r = plParseRoute(path);
-    checkPLBetaAccess().then(ok => {
-      if(ok){
-        plShowScreen(r.screen);
-      } else {
-        document.body.classList.remove('pl-active');
-        document.body.style.overflow = '';
-        try{ history.replaceState({}, '', '/'); }catch(_){}
-      }
-    });
-  }
-});
-
 function openVoiceCoachFromLanding(moduleId){
   if(typeof window.openApp === 'function') window.openApp();
   setTimeout(function(){
@@ -6138,10 +5942,6 @@ async function renderSettings(){
   // we don't stack a duplicate /app entry.
   if (window.location.pathname === '/app') {
     window.openApp()
-  } else if (window.location.pathname.indexOf('/learn/personal-library') === 0) {
-    // v2.6.1: deep-link into Personal Library (beta-gated, no public entry).
-    const r = plParseRoute(window.location.pathname);
-    openPersonalLibrary(r.screen, r.params);
   }
 </script>
 </body>

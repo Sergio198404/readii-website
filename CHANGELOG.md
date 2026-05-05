@@ -5,6 +5,63 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.6.2] — 2026-05-05
+
+### Changed (security hardening)
+- fix: **Personal Library gate now silently redirects non-allowlist visitors to `/`**, instead of showing a "Personal Library — Coming soon" branded page. The previous "locked" screen leaked the feature name + existence to anyone who guessed the URL. Now a non-allowlist user typing `/learn/personal-library/*` lands on the homepage with the URL replaced to `/`, indistinguishable from any other unknown path
+- The `data-screen="locked"` HTML block has been removed from `index.html`. `.pl-soon` and `.pl-soon-tag` CSS rules retained for now (low cost) but unused
+- `openPersonalLibrary()` reorganised so the gate runs **before** any DOM mutation. No `body.pl-active` class, no PL view rendering, no URL push for non-allowlisted users — they never see anything PL-branded for any frame
+- `popstate` handler hardened symmetrically: same-shell sub-route changes also re-check the gate and silent-redirect on failure (covers the "user logged out in another tab then hit back" edge case)
+
+### Added
+- `_plBetaCache` — session-level memoization of the beta access result, so rapid back/forward navigation doesn't hammer Supabase. Cleared on auth state change via `assets/js/auth.js`'s existing `authOnStateChange` callback (added one line: `plInvalidateBetaCache()` after `updateAuthUI()`). Transient errors are NOT cached — they fall through and re-check on next call
+
+### Notes
+- This is a **frontend-only** hardening. Phase 2b will add server-side allowlist checks on every Netlify Function — front-end gate is necessary but not sufficient (anyone with DevTools can flip a class). Backend guards are non-bypassable
+- Allowlist mechanism (boolean `user_profiles.pl_beta_access`) unchanged — see WORKLOG Session 38 / migration-personal-library.sql §9. Still only `Kevin_SU2022@163.COM` enabled
+- HTML for the PL views is still present in `index.html` source for any visitor (static SPA — can't conditionally render server-side without a build step). What's hidden is **behaviour**: the views never become visible to non-allowlist users. If view-source obfuscation becomes a hard requirement later, we'd need a build pipeline to strip PL blocks for the public bundle. Out of scope for now
+- New baseline archive: `archive/index-v2.6.1.html`
+
+---
+
+## [2.6.1] — 2026-05-05
+
+### Added
+- feat: **Personal Library — Phase 2a (frontend skeleton + beta gate).** Routes `/learn/personal-library`, `/learn/personal-library/upload`, `/learn/personal-library/vouchers`, `/learn/personal-library/{bookId}`, and `/learn/personal-library/{bookId}/day/{n}` are now reachable via direct URL only. **No public navigation entry — feature is invisible to non-beta users.** Access gated on `user_profiles.pl_beta_access`; non-beta users land on a "Coming soon" placeholder regardless of which sub-route they hit
+- New views in `index.html` under `#view-pl`: `locked` (Coming soon), `list` (empty state with Upload CTA), `upload`/`vouchers`/`book`/`day` (placeholder stubs — real UI ships in 2b–2d / Phase 5–6). All copy bilingual EN/中文 via existing `data-en`/`data-zh` pattern
+- Routing helpers: `openPersonalLibrary(screen, params)`, `closePersonalLibrary()`, `plParseRoute(pathname)`, `plPathFor(screen, params)`, `plShowScreen(name)`, `checkPLBetaAccess()`. Uses `history.pushState`/`popstate` consistent with existing `openApp`/`closeApp` pattern (v2.5.1)
+- Browser Back/Forward correctly synced — popstate handler distinguishes `/app` ↔ `/learn/personal-library/*` ↔ `/` transitions and re-renders the right view + body class
+- Direct URL deep-linking: typing `/learn/personal-library/upload` in the address bar (or refreshing while on a PL route) lands the user on the correct sub-screen with the beta gate evaluated server-truth-first via Supabase
+- New baseline archive: `archive/index-v2.5.2.html` (this is the first time the archive folder gets used; v2.5.2 was the last release that actually mutated `index.html` before this session, so it's the correct snapshot)
+
+### Notes
+- This release ships **no user-visible feature surface to non-beta users** (intentional — bumped as PATCH not MINOR for that reason). Only `Kevin_SU2022@163.COM` has `pl_beta_access=true` per the v2.6.0 migration. Other users typing the URL see "Coming soon" with no leakage of feature details
+- Beta-access lookup is best-effort: if Supabase is unreachable, the column doesn't exist (migration not applied), or the user has no `user_profiles` row yet, `checkPLBetaAccess()` returns `false` → user sees the locked screen. Acceptable degradation for the gate
+- index.html grew from 5947 to 6134 lines (+187). Single-page architecture preserved; if file size becomes a maintenance concern in later phases, splitting can happen at v3.0.0
+- Phase 2b will replace the upload stub with the real PdfDropzone + Netlify Function `personal-library-quote`. Phase 2c will replace it with the full quote panel (voice picker + minutes slider + price). Pricing/checkout logic does not yet exist on this branch
+
+---
+
+## [2.6.0] — 2026-05-05
+
+### Added
+- feat: **Personal Library — Phase 1 (schema + storage foundations).** New product line letting users upload any English PDF and get a personalised audiobook + daily reading plan + pronunciation practice. Per-book pricing (£8/£18/£30/£45 tiers). Per spec `spec-personal-library.md`. **No frontend entry point shipped — all routes gated on a beta flag, only Kevin's account enabled for now.**
+- New migration `database/migration-personal-library.sql` — single file containing 4 new tables (`user_books`, `user_book_chunks`, `user_book_vouchers`, `book_processing_jobs`), RLS policies, 3 private storage buckets (`user-pdfs`, `user-book-audio`, `user-book-recordings`) with per-user path-based RLS, and verification queries
+- `user_profiles.pl_beta_access` (BOOLEAN, default false) — gate flag for Personal Library access during internal testing. Migration grants `pl_beta_access=true` to `Kevin_SU2022@163.COM` (case-insensitive email match)
+- `database/README.md` updated with the 4 new Personal Library tables
+
+### Changed
+- `pronunciation_attempts` extended with two new columns: `source_id` (UUID, points to `user_book_chunks.id` for Personal Library entries) and `source_metadata` (JSONB, holds `{day_number, sentence_index, sentence_text}`). New composite index `(user_id, source, source_id)`
+- **Deviation from spec §3.2:** spec proposed adding a new `source_type` column with a CHECK constraint covering all 4 sources. Existing code already uses a `source` column with the same semantics in 6+ read/write sites (`index.html`, `seed-reviewer-account.js`). Adding `source_type` would either fork data (some rows use `source`, new ones use `source_type`) or require a high-risk rewrite of existing call sites. Decision: reuse `source`, add `'personal_library'` as a new value (no CHECK constraint added to avoid back-fill validation against ~200 historical reviewer rows). My Progress dashboard picks up Personal Library scores with zero code changes — the spec's stated goal is preserved
+
+### Notes
+- Phase 1 is database/storage only. No backend endpoints, no frontend, no worker. Stripe / Azure / Resend integration starts at Phase 3 / 4
+- Migration is idempotent — safe to re-run. Uses `CREATE TABLE IF NOT EXISTS`, `DROP POLICY IF EXISTS` + `CREATE POLICY`, `ON CONFLICT DO NOTHING` for storage buckets, and a `pg_constraint` guard for the circular FK between `user_books` ↔ `user_book_vouchers`
+- Operator must run the migration manually in Supabase SQL Editor (existing convention) — see WORKLOG Session 38 for the verification checklist
+- 24h cleanup cron for unpaid PDFs (spec §13 Phase 1 step 4) deferred to Phase 4 worker — the worker's poll loop is a natural place to do this and avoids needing `pg_cron` extension just for Phase 1
+
+---
+
 ## [2.5.4] — 2026-05-04
 
 ### Fixed

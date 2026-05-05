@@ -173,5 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // 监听状态变化
   authOnStateChange((event, session) => {
     updateAuthUI();
+    // v2.6.2: invalidate Personal Library beta cache so a logged-out user
+    // can't keep accessing PL via a stale cached "true" if they previously
+    // logged in as an allowlisted account in the same tab.
+    if (typeof plInvalidateBetaCache === 'function') plInvalidateBetaCache();
   });
 });

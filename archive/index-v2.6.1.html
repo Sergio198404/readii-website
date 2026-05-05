@@ -1667,6 +1667,20 @@ h1{animation:fu .6s ease both .15s}
     <div class="pl-title"><span data-en>Personal Library</span><span data-zh>个人书库</span></div>
   </header>
 
+  <div class="pl-screen" data-screen="locked">
+    <div class="pl-soon">
+      <div class="pl-soon-tag"><span data-en>Coming soon</span><span data-zh>即将推出</span></div>
+      <h2><span data-en>Personal Library</span><span data-zh>个人书库</span></h2>
+      <p>
+        <span data-en>Upload any English PDF and we'll turn it into a personalised audiobook with a daily reading plan and pronunciation practice. Currently in private beta.</span>
+        <span data-zh>上传任意英文 PDF，我们会把它转成定制的有声书，配每日阅读计划和发音练习。目前为内部测试阶段。</span>
+      </p>
+      <button class="pl-cta-primary" onclick="closePersonalLibrary()">
+        <span data-en>Back to Readii</span><span data-zh>返回 Readii</span>
+      </button>
+    </div>
+  </div>
+
   <div class="pl-screen" data-screen="list">
     <div class="pl-wrap">
       <div class="pl-empty">
@@ -1780,26 +1794,19 @@ window.addEventListener('popstate', function(){
 
 /* ═══════════════════════════════════════════════════════════════
    Personal Library (v2.6.1+) — routes / beta gate / view switcher
-   v2.6.2 hardening: non-allowlist users are silently redirected to /.
-   No "Coming soon" page, no leaked feature name, no PL-branded UI ever
-   shown to a non-allowlisted visitor. Front-end gate is necessary but
-   not sufficient — Phase 2b+ adds server-side guards on every endpoint.
+   No public nav entry. Logic gates on user_profiles.pl_beta_access.
    ═══════════════════════════════════════════════════════════════ */
-let _plBetaCache = null;  // null = not checked yet; true/false = cached for session
 async function checkPLBetaAccess(){
-  if(_plBetaCache !== null) return _plBetaCache;
   if(typeof _supabase === 'undefined') return false;
   try{
     const { data: { user } } = await _supabase.auth.getUser();
-    if(!user){ _plBetaCache = false; return false; }
+    if(!user) return false;
     const { data, error } = await _supabase
       .from('user_profiles').select('pl_beta_access').eq('id', user.id).maybeSingle();
-    if(error){ return false; }  // do NOT cache transient errors
-    _plBetaCache = !!(data && data.pl_beta_access);
-    return _plBetaCache;
+    if(error) return false;
+    return !!(data && data.pl_beta_access);
   }catch(_){ return false; }
 }
-function plInvalidateBetaCache(){ _plBetaCache = null; }
 function plPathFor(screen, params){
   params = params || {};
   switch(screen){
@@ -1828,21 +1835,11 @@ function plShowScreen(name){
 async function openPersonalLibrary(screen, params){
   screen = screen || 'list';
   params = params || {};
-  // Gate FIRST — non-allowlist users never see PL-branded UI. Silent redirect
-  // to '/' makes the route indistinguishable from an unknown URL fall-through.
-  const ok = await checkPLBetaAccess();
-  if(!ok){
-    document.body.classList.remove('pl-active');
-    document.body.style.overflow = '';
-    if(window.location.pathname.indexOf('/learn/personal-library') === 0){
-      try{ history.replaceState({}, '', '/'); }catch(_){}
-    }
-    return;
-  }
   document.body.classList.remove('app');
   document.body.style.overflow = 'auto';
   document.body.classList.add('pl-active');
-  plShowScreen(screen);
+  const ok = await checkPLBetaAccess();
+  plShowScreen(ok ? screen : 'locked');
   const path = plPathFor(screen, params);
   if(window.location.pathname !== path){
     try{ history.pushState({readiiPL: true, screen: screen, params: params}, '', path); }catch(_){}
@@ -1863,24 +1860,14 @@ window.addEventListener('popstate', function(){
   const onPL = path.indexOf('/learn/personal-library') === 0;
   const isPL = document.body.classList.contains('pl-active');
   if(onPL && !isPL){
-    // Will run beta gate; non-allowlist gets silent-redirected inside the call
     const r = plParseRoute(path);
     openPersonalLibrary(r.screen, r.params);
   } else if(!onPL && isPL){
     document.body.classList.remove('pl-active');
     document.body.style.overflow = '';
   } else if(onPL && isPL){
-    // Same shell, different sub-route — re-check gate (cheap if cached) then render
     const r = plParseRoute(path);
-    checkPLBetaAccess().then(ok => {
-      if(ok){
-        plShowScreen(r.screen);
-      } else {
-        document.body.classList.remove('pl-active');
-        document.body.style.overflow = '';
-        try{ history.replaceState({}, '', '/'); }catch(_){}
-      }
-    });
+    checkPLBetaAccess().then(ok => plShowScreen(ok ? r.screen : 'locked'));
   }
 });
 
