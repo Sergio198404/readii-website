@@ -5,6 +5,47 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.7.0] — 2026-05-05
+
+### Added (Personal Library — Phase 2b: PDF upload + parse pipeline)
+
+This is the **first user-visible feature surface** for Personal Library beta users. Allowlisted users (currently only Kevin) can drop a PDF, see it parsed, and view the price preview. Non-allowlisted users still silently redirect to `/` and see nothing.
+
+- **Frontend** — replaced `data-screen="upload"` placeholder stub with a real dropzone in `index.html`. State machine driven by `data-state` on `.pl-up`: `idle` → `uploading` → `analysing` → `success` / `error`. Five states, one `data-state` attribute, simple. Drag-and-drop + click-to-browse. Progress bar (faked, capped at 85% until upload actually resolves — Supabase JS v2 doesn't expose real progress events). Error states map server `code` strings to localised EN/中文 copy via `PL_ERROR_COPY` table. After success: title, author (italic), page count, word count, estimated audio duration, and "Starting at £X" using the Sonia (cheapest) tier. "Upload another" button resets state without leaving the route
+- **Backend** — new `netlify/functions/personal-library-quote.js`:
+  - JWT verification via `supabaseAdmin.auth.getUser(jwt)`
+  - **Server-side allowlist guard**: rejects with 403 `NOT_AUTHORIZED` if `user_profiles.pl_beta_access` is not true. This is the non-bypassable layer — frontend gate is just UX
+  - Downloads PDF from `user-pdfs/{user_id}/{book_id}/source.pdf` via service role
+  - Parses with `pdf-parse` (using inner module require to dodge the v1.1.1 test-PDF debug bug)
+  - Language detection via `franc` (lazy dynamic import — franc v6+ is ESM-only, so we cache the import promise at module level)
+  - Validates: size ≤ 50 MB, pages ≤ 800, avg chars/page ≥ 50 (scan detection), language is `eng` or `und`
+  - Computes `estimated_audio_seconds` from `READING_WPM=130`, then tier (`short`/`medium`/`long`/`xlarge`) and per-voice pricing for all 4 voices (Sonia/Ryan + HD variants @ +50%)
+  - Inserts `user_books` row with `status='pending_payment'`. Schema requires `voice_id` and `daily_minutes` NOT NULL but those aren't chosen until checkout — uses `sonia` + `15` as placeholders, overwritten in Phase 3
+  - Returns the full §7.1 spec response shape, including `pricing_preview.by_voice` for all 4 voices (frontend uses `sonia` for now, voice-specific prices ready for Phase 2c without API change)
+- **Function deps** — `netlify/functions/package.json` now includes `pdf-parse` ^1.1.1 + `franc` ^6.2.0
+- **Routing hook** — `plShowScreen('upload')` now also lazy-wires the dropzone (idempotent, marked via `data-wired="1"`) and resets state to `idle` so re-entry doesn't show stale results
+
+### ⚠️ Operator action required (Netlify env vars)
+
+Two new env vars must be set on Netlify Dashboard → Site settings → Environment variables:
+- `SUPABASE_URL` = the project URL (matches `assets/js/supabase-client.js`)
+- `SUPABASE_SERVICE_KEY` = service-role key (Supabase Dashboard → Settings → API → `service_role` secret)
+
+If these aren't set, the function returns 500 `CONFIG_MISSING` and the upload UI shows "Server isn't fully configured yet."
+
+Optional tuning vars (defaults are fine):
+- `READING_WPM` (default 130) — words per minute for ESL audio estimation
+- `MAX_PDF_BYTES` (default 52428800 = 50 MB)
+- `MAX_PDF_PAGES` (default 800)
+
+### Notes
+- Error response shape consistent with spec §7: `{error: {code, message}}`. Codes: `PDF_TOO_LARGE`, `PDF_TOO_MANY_PAGES`, `PDF_SCANNED`, `PDF_NOT_ENGLISH`, `PDF_PARSE_FAILED`, `PDF_NOT_FOUND`, `INVALID_BODY`, `INVALID_BOOK_ID`, `UNAUTHORIZED`, `NOT_AUTHORIZED`, `CONFIG_MISSING`, `DB_INSERT_FAILED`, `METHOD_NOT_ALLOWED`
+- 24h cleanup of unpaid PDFs (spec §10) still deferred to Phase 4 worker. Orphans accumulate until then. Acceptable for beta of 1
+- `available_voices[].preview_url` returned as `null` for now — preview MP3s are pre-generated in Phase 2c
+- New baseline archive: `archive/index-v2.6.4.html`
+
+---
+
 ## [2.6.4] — 2026-05-05
 
 ### Fixed

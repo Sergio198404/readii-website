@@ -2,6 +2,84 @@
 
 ---
 
+## 2026-05-05 | Session 43 | v2.7.0
+
+**Objective:** Phase 2b — replace the upload-route placeholder stub with a real PDF upload + parse + price-preview pipeline. End state: an allowlisted user (Kevin) can drop a PDF on `/learn/personal-library/upload`, watch it upload, watch it parse, and see "Untitled book — 287 pages — 78,421 words — ~10h 4m audio — Starting at £45". Pricing is per spec §5.1; voice picker / daily-minutes / Stripe come in 2c & Phase 3. Non-allowlist users still get the silent-redirect treatment from v2.6.2 — verified by adding a SECOND, server-side allowlist check in the new Netlify Function.
+
+**Why this matters:**
+- This is the FIRST user-visible feature surface for Personal Library — the entire previous 2a work is invisible to anyone testing the route since the success path was just a placeholder
+- The server-side allowlist guard is the non-bypassable security layer. v2.6.2 hardened the frontend gate; this push adds the matching backend gate. Per advisor review: "前端隐藏 + 后端守门，缺一不可"
+- Sets up the data plumbing all later phases will reuse: `user_books` row inserted at quote-time means Phase 2c (voice picker) and Phase 3 (Stripe) both UPDATE this row rather than re-create
+
+**Approach:** One Netlify Function (`personal-library-quote.js`), one frontend state machine inlined in `index.html`. Direct upload to Supabase Storage from the browser (decision A from session start), then function pulls the PDF via service role, parses, validates, prices, inserts row, returns. ~350 lines of new code total.
+
+**Spec compliance:**
+- ✅ §7.1 quote endpoint — full response shape including `available_voices` (preview_url null for now), `daily_minute_options`, `pricing_preview.by_voice`
+- ✅ §5.1 pricing function — tier from audio seconds, base pence per tier, +50% HD premium
+- ✅ §5.3 reading speed — `READING_WPM=130` (env-configurable)
+- ✅ §10 edge cases — PDF_TOO_LARGE / PDF_TOO_MANY_PAGES / PDF_SCANNED / PDF_NOT_ENGLISH / PDF_PARSE_FAILED all handled with friendly EN/中文 copy
+- ✅ §0 architecture — quote function is sync/fast; the slow worker pipeline is still Phase 4 (separate Node service on Railway)
+- ✅ Advisor's "feature flag + allowlist" — server-side guard added; previous frontend gate retained
+- ⏳ §1 step 4 — direct upload happens; storage path is `user-pdfs/{user_id}/{book_id}/source.pdf` per spec §4
+- ⏳ Voice preview MP3s — `preview_url: null` for now, populated in Phase 2c
+- ⏳ Voucher application — voucher_code field skipped at this stage; vouchers don't exist yet (Phase 6 issuance)
+- ⏳ 24h cleanup of unpaid PDFs (§10 row "User abandons before payment") — deferred to Phase 4 worker. Orphans accumulate, beta of 1 user, acceptable
+
+**Two technical landmines I sidestepped:**
+1. **pdf-parse v1.1.1 ships a debug block in `index.js`** that tries to read `./test/data/05-versions-space.pdf` on module load — fails in Netlify Functions (no test files in the bundle). Workaround used: `require('pdf-parse/lib/pdf-parse.js')` to bypass index.js entirely. Documented inline
+2. **franc v6+ is ESM-only**, the function is CJS. Mixed-mode Node 18+ supports `await import('franc')` from a CJS file. Cached at module level so the import cost is paid once on cold start, not per-invocation
+
+**Frontend state machine:**
+`.pl-up[data-state]` toggles between idle / uploading / analysing / success / error via CSS `display:none` rules. One DOM tree, one attribute, no React-style state libraries needed (consistent with the rest of the site, which is plain DOM manipulation).
+
+**Why the progress bar is fake:** `@supabase/supabase-js` v2 storage upload doesn't expose progress events (issue tracked upstream). Rather than show a static "Uploading..." text for what could be 5 seconds on a 50MB PDF, I run a `setInterval` ticker that creeps to 85% on a randomised cadence, then jumps to 100% when the actual upload Promise resolves. UX honesty: the user sees something moving. If we ever need real progress, switching to `XMLHttpRequest` upload to a signed URL is the documented path
+
+**Completed:**
+- [x] `netlify/functions/package.json`: added `pdf-parse ^1.1.1` + `franc ^6.2.0`. Netlify build runs `npm install` here per `netlify.toml`
+- [x] `netlify/functions/personal-library-quote.js` (~250 lines):
+  - JWT validation, allowlist guard, PDF download, parse, scan/lang/page validations, pricing for all 4 voices, user_books insert (idempotent on book_id collision), §7.1 response
+  - Errors: structured `{error:{code,message}}` with consistent codes for frontend mapping
+  - Env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY (must be set on Netlify Dashboard); READING_WPM / MAX_PDF_BYTES / MAX_PDF_PAGES tunable
+- [x] Archived `index.html` → `archive/index-v2.6.4.html`
+- [x] `index.html` upload sub-screen rewritten — 5 states, full bilingual copy, dropzone with drag/drop + click, progress bar, spinner, success card with stats + price box, error card
+- [x] CSS for `.pl-up*`, `.pl-dz*`, `.pl-up-spinner` keyframe — extends existing PL CSS block, reuses cream/forest/gold tokens
+- [x] JS for `plHandleFile`, `plWireDropzone`, `plSetUploadState`, `plResetUpload`, `plShowUploadError`, `plFmtDuration`, `plFmtPence`, plus `PL_ERROR_COPY` localisation table
+- [x] `plShowScreen('upload')` extended: lazy-wires dropzone (idempotent), resets state to `idle` on each entry so re-navigation doesn't show stale data
+- [x] VERSION 2.6.4 → 2.7.0 (MINOR — first user-visible PL surface for beta users; non-beta still see nothing per v2.6.2 hardening)
+- [x] CHANGELOG [2.7.0] entry with operator-action callout for env vars
+
+**Files changed:**
+- netlify/functions/package.json (+2 deps)
+- netlify/functions/personal-library-quote.js (new, ~250 lines)
+- index.html (~+200 lines: upload UI HTML/CSS + dropzone JS)
+- archive/index-v2.6.4.html (new baseline)
+- VERSION (2.6.4 → 2.7.0)
+- CHANGELOG.md ([2.7.0] entry with env var callout)
+- WORKLOG.md (this Session 43)
+
+**Pending (operator — must do BEFORE Netlify deploy will work):**
+- [ ] **Set Netlify env vars** (Site settings → Environment variables):
+  - `SUPABASE_URL` = `https://bltfljdgjxhcmbfduert.supabase.co` (same value already in `assets/js/supabase-client.js`)
+  - `SUPABASE_SERVICE_KEY` = service-role key from Supabase Dashboard → Settings → API → `service_role` secret. **Treat as secret — do NOT commit.** This grants RLS-bypass access to write any table; never expose to frontend
+- [ ] After env vars are set, trigger a Netlify deploy (or just push v2.7.0 — push includes the new function so deploy fires automatically)
+- [ ] Hard refresh https://readii.co.uk after deploy
+- [ ] Acceptance test as Kevin:
+  - Visit `/learn/personal-library/upload`
+  - Drop in a small text-based English PDF (a 5-page sample is fine)
+  - Should see: filename → progress bar → spinner ("Analysing…") → success card with title/pages/words/duration/price
+  - Click "Upload another" — should reset to dropzone
+- [ ] Acceptance test as anonymous (incognito): `/learn/personal-library/upload` should silent-redirect to `/`. If somehow the frontend gate misfires, server-side function will still 403 NOT_AUTHORIZED
+- [ ] Edge case tests: try uploading a non-PDF file (should reject `PDF_INVALID_TYPE` client-side), a >50MB file (rejects client-side), a scanned PDF (server rejects `PDF_SCANNED`), a Chinese PDF (server rejects `PDF_NOT_ENGLISH`)
+
+**Next: Phase 2c (v2.7.1)**
+- Voice picker (Sonia / Ryan + HD): 4 cards, each with 30s preview MP3
+- Daily-minutes slider (5/10/15/20/30)
+- Live price update from `pricing_preview.by_voice` (already returned by quote endpoint — no API change needed)
+- "Continue to checkout" button (still placeholder until Phase 3 wires Stripe in test mode)
+- Pre-generate the 4 preview MP3s and host in a new public `voice-previews` storage bucket (decision 3a from session start)
+
+---
+
 ## 2026-05-05 | Session 42 | v2.6.4
 
 **Objective:** Finish the relative-path-resolution fix that v2.6.3 only half-completed. Xiaoyu reported post-v2.6.3-deploy that the daily-book card was stuck on "Loading today's book…" and "Browse all books" was missing. Same root cause as v2.6.3 (relative paths break at deep routes) but a different syntactic form — an ES module `import` statement that I'd grep'd over.
