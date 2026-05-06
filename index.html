@@ -948,6 +948,35 @@ h1{animation:fu .6s ease both .15s}
 
   /* ── Auth modal (created dynamically by auth.js) ── */
   #auth-modal>div{padding:24px!important;width:auto!important;max-width:92vw!important}
+
+  /* ── Reading panel (.agr 2-col grid → single column) ── */
+  /* Reading Library's book reader was 1fr + 348px sidebar — the 348px
+     fixed column overflowed below ~700px viewport. Stack vertically. */
+  .agr{grid-template-columns:1fr;gap:14px}
+  .rph{padding:14px 16px;gap:10px}
+  .rpbc{width:40px;height:52px;font-size:18px}
+  .rpbt{font-size:15px}
+  .rpbu,.rpbtr{font-size:11px}
+  .rpbody{min-height:360px}                  /* shorter than desktop's implicit min */
+  #pdf-frame{min-height:360px!important}
+  #pdf-placeholder{min-height:240px!important}
+  .aplayer{padding:14px 16px}
+  .aptch{margin-bottom:10px;gap:8px}
+  .aptav{width:32px;height:32px;font-size:13px}
+  .aptn{font-size:13px}
+  .aptd{font-size:11px}
+  .wvf{height:32px;gap:1px;margin-bottom:9px}
+  .apctrl{gap:8px}
+  .applay{width:36px;height:36px;font-size:14px}
+  .approg{flex:1;min-width:0}                /* prevent the time text from being squeezed off */
+  .aptime{font-size:11px;flex-shrink:0}
+  .apspd{font-size:11px;padding:4px 8px}
+  .pch{padding:12px 14px}
+  .pch .pctit{font-size:14px}
+  .pcb{padding:14px}
+  .vi{flex-wrap:wrap;gap:8px}
+  .vw{font-size:14px;min-width:60px}
+  .vplay{flex-shrink:0}
 }
 </style></head>
 <body>

@@ -2,6 +2,51 @@
 
 ---
 
+## 2026-05-06 | Session 46 | v2.7.3
+
+**Objective:** Fix mobile reading panel. Xiaoyu reported that tapping into a single book in Reading Library still doesn't display correctly on phone — v2.7.2's mobile pass covered nav/hero/app-shell/auth-modal but missed `.agr` (the book reader's 2-column grid).
+
+**Why this happened:**
+v2.7.2 was written from a "site foundation" mental model — global components like nav/hero/app-shell/modal. The reading panel `.agr` grid is technically inside the app shell's main content area, so it inherited the responsive container, but its OWN grid declaration (`grid-template-columns: 1fr 348px`) overrode any fluid behaviour. The 348px right column is fixed, so on a 360-414px viewport, the right column eats most of the width and the left iframe column gets squeezed to ~25px. Same class of bug as the v2.6.3 → v2.6.4 "I missed an `import` form" — search ALL the offending forms.
+
+**Approach:** Extended the existing `@media (max-width:768px)` block (no new block, no extra HTML). ~25 lines of CSS additions. Stack `.agr` to single column on mobile, shrink the reading panel header / book cover / audio player / waveform / cards to phone-friendly sizes, prevent the time-display in `.apctrl` from being squeezed off the right edge by adding `flex-shrink:0` on `.aptime` and `.apspd`.
+
+**Specific rules added:**
+- `.agr { grid-template-columns: 1fr; gap: 14px }` — the core fix
+- `.rph` (reading-panel header): smaller padding, smaller cover (`.rpbc` 40×52 instead of 46×60), smaller title font
+- `.rpbody` and `#pdf-frame` / `#pdf-placeholder` get `min-height:360px / 240px` — was implicitly tall on desktop, would have left awkward whitespace on phone
+- `.aplayer` (sticky audio player): smaller padding, smaller play button (36 instead of 38), smaller waveform (32 height instead of 40)
+- `.apctrl`: tighter gap, but critically `.approg{flex:1;min-width:0}` lets the progress bar shrink, and `.aptime{flex-shrink:0}` keeps the "1:52 / 4:22" text from being eaten
+- `.pc` cards (Pronunciation / Vocabulary / Progress): tighter header + body padding
+- `.vi` (vocabulary items): `flex-wrap:wrap` so the play button doesn't push the word off the row
+
+**Completed:**
+- [x] Extended `@media (max-width:768px)` block with reading panel rules (~25 lines)
+- [x] No HTML changes; no new archive (rules-only addition to existing CSS)
+- [x] VERSION 2.7.2 → 2.7.3 (PATCH — bug fix, follow-up to incomplete v2.7.2 mobile pass)
+- [x] CHANGELOG [2.7.3] entry
+
+**Files changed:**
+- index.html (~+25 CSS lines inside existing 768px @media block)
+- VERSION (2.7.2 → 2.7.3)
+- CHANGELOG.md ([2.7.3] entry)
+- WORKLOG.md (this Session 46)
+
+**Pending (operator phone test):**
+- [ ] Hard refresh after Netlify deploy (or wait 1-2 min from push)
+- [ ] Open Reading Library on phone, tap a book
+- [ ] Reading panel header should fit, book title + subtitle visible
+- [ ] PDF iframe should fill the available width, ~360px tall (scrollable inside)
+- [ ] Audio player at the bottom: play button + progress bar + time text + speed button all on one row, not overflowing
+- [ ] Below the reader: AI Pronunciation card, then Vocabulary card, then This-week card — each full width, stacked vertically
+- [ ] No horizontal scroll
+- [ ] If still misbehaves: tell me which element is the problem (screenshot or describe), I'll add a targeted rule
+
+**Lesson echo (per memory feedback_search_all_syntactic_forms):**
+v2.7.2's commit body claimed "minimum viable mobile foundation" but didn't enumerate the components covered. When a class of bug (here: hard-coded 2-column grids that don't collapse on mobile) is being fixed, the next fix should grep for all uses of that pattern, not just the most-visible ones. For "grid-template-columns: ... + ...px" this codebase has at least 5 hits (`.agr`, `.pgrid`, `.platform-modules`, `.ukc-modules`, `.wb-grid`). Three of those already had `@media` rules; the other two didn't. Lesson: next mobile pass — grep `grid-template-columns` AND `display:flex` (with hard-coded widths) and check each one has a mobile fallback.
+
+---
+
 ## 2026-05-06 | Session 45 | v2.7.2
 
 **Objective:** Make readii.co.uk usable on phones. Xiaoyu reported "尺寸不对，很多功能都无法正常显示" when testing on his phone. Diagnosis: site has 12 existing `@media` blocks but they're all narrow-scope — covering individual app screens (Word Bank, UK Culture, Settings, etc.) — never the **foundation** (landing nav, hero, app shell, auth modal). On a phone (~360–414px wide) the hero's 2-column grid crushes both halves to ~125px and the 236px sidebar leaves ~120px for main content.

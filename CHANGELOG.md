@@ -5,6 +5,17 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.7.3] — 2026-05-06
+
+### Fixed (mobile reading panel)
+- fix: **Reading Library's book reader was unusable on mobile.** `.agr` was a 2-column grid (`grid-template-columns: 1fr 348px`) — the fixed 348px right sidebar (AI Pronunciation + Vocabulary + Progress cards) overflowed below ~700px viewport, squeezing the reader iframe to ~25px wide
+- Extended the existing `@media (max-width:768px)` block (added in v2.7.2) with reading-panel-specific rules: stack `.agr` to single column, shrink reading panel header (`.rph`/`.rpbc`/`.rpbt`), reduce `.rpbody` minimum height to 360px (was 500px+), tighten audio player layout (smaller play button, smaller waveform, smaller text, prevent time text from being squeezed off the right edge with `flex-shrink:0`), shrink the right-side cards' headers and padding, and let vocabulary items wrap when the row is narrow
+
+### Notes
+- No HTML changes — pure CSS additions (~25 lines) inside the existing 768px @media block. Same archive baseline as v2.7.2 (`archive/index-v2.7.1.html`); not creating a new one for a rules-only change
+
+---
+
 ## [2.7.2] — 2026-05-06
 
 ### Fixed (mobile foundation)
