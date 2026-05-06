@@ -870,85 +870,6 @@ h1{animation:fu .6s ease both .15s}
   .pg-recent-score{grid-area:score;text-align:right}
   .pg-recent-sentence{grid-area:sentence;font-size:12px}
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   Mobile (≤768px) — site-wide layout fixes (v2.7.2)
-   The site was originally desktop-first; per-screen @media blocks
-   above (640/600/900) covered individual app views as they were
-   added, but nav/hero/app-shell foundation was never made
-   responsive. This block fixes the foundation. Existing narrower
-   breakpoints (640/600) cascade naturally on top of these rules.
-═══════════════════════════════════════════════════════════════ */
-.sb-toggle{display:none}                          /* desktop: hidden */
-@media (max-width:768px){
-  /* Prevent any rogue overflow */
-  body{overflow-x:hidden}
-
-  /* ── Landing nav ──────────────────────── */
-  nav{padding:0 16px;height:56px}
-  .nav-links{display:none}                        /* hide secondary nav links on mobile */
-  .nav-r{gap:6px}
-  .ltog{padding:1px}
-  .lopt{padding:3px 8px;font-size:11px}
-  .btn-si{padding:5px 10px;font-size:12px}
-  .btn-p{padding:6px 12px;font-size:12px;letter-spacing:0}
-
-  /* ── Hero ─────────────────────────────── */
-  .hero{padding:88px 20px 48px;grid-template-columns:1fr;gap:32px;min-height:auto}
-  .hero::before{display:none}                     /* the giant decorative gradient circle */
-  h1{font-size:clamp(32px,8vw,48px)}
-  .hsub{font-size:15px;max-width:none}
-
-  /* ── Generic landing-section padding ──── */
-  /* Catch-all for sections that hard-coded 56px horizontal padding.
-     Selector list = the worst offenders observed in v2.7.1 source. */
-  .sd,.platform-primary,.platform-secondary,
-  .feat-grid,.pricing-grid,
-  section[class*="-section"]{padding-left:20px;padding-right:20px}
-
-  /* ── App shell — sidebar becomes a slide-out drawer ───────────── */
-  .app-shell{display:block;height:auto;min-height:100vh;overflow:visible}
-  .asb{
-    position:fixed;top:0;left:0;bottom:0;
-    width:280px;max-width:85vw;
-    transform:translateX(-100%);
-    transition:transform .22s ease;
-    z-index:300;
-    box-shadow:0 0 30px rgba(0,0,0,.25);
-  }
-  body.sb-open .asb{transform:translateX(0)}
-  body.sb-open::after{                            /* dimmed backdrop */
-    content:'';position:fixed;inset:0;
-    background:rgba(0,0,0,.45);z-index:290;
-  }
-  .amain{height:auto;overflow:visible}
-  .atb{padding-left:60px}                         /* room for the hamburger */
-  .acon{padding:16px}                             /* inner content can use less padding */
-
-  /* Hamburger button — inside #view-app, only visible on mobile + body.app */
-  body.app .sb-toggle{
-    display:flex;align-items:center;justify-content:center;
-    position:fixed;top:10px;left:10px;
-    width:40px;height:40px;
-    background:var(--white);
-    border:1px solid var(--border);
-    border-radius:8px;
-    cursor:pointer;
-    z-index:280;
-    box-shadow:var(--sh);
-    padding:0;
-  }
-  body.sb-open .sb-toggle{                        /* slide button along with drawer */
-    left:calc(min(280px,85vw) + 12px);
-    background:transparent;
-    border-color:transparent;
-    box-shadow:none;
-  }
-  body.sb-open .sb-toggle svg{stroke:#fff}        /* white X on dark backdrop */
-
-  /* ── Auth modal (created dynamically by auth.js) ── */
-  #auth-modal>div{padding:24px!important;width:auto!important;max-width:92vw!important}
-}
 </style></head>
 <body>
 <div id="view-landing">
@@ -1112,9 +1033,6 @@ h1{animation:fu .6s ease both .15s}
 </footer>
 </div>
 <div id="view-app">
-<button class="sb-toggle" onclick="toggleSidebar()" aria-label="Menu">
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1A1714" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
-</button>
 <div class="app-shell">
   <div class="asb">
     <div class="sbh"><div class="sbhl" role="link" tabindex="0" onclick="closeApp()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();closeApp();}" style="cursor:pointer" title="Back to homepage"><div class="sbhlm"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="#fff" stroke-width="2.2"><path d="M3 3h4a2 2 0 0 1 0 4H3V3z"/><path d="M3 7h5a2.5 2.5 0 0 1 0 5H3V7z"/></svg></div><span class="sbhln">Readii</span></div></div>
@@ -1881,28 +1799,8 @@ function openApp(){
     try{ history.pushState({readiiApp:true}, '', '/app'); }catch(_){}
   }
 }
-/* v2.7.2: Mobile sidebar drawer toggle. Hamburger button is .sb-toggle; on
-   mobile, body.sb-open slides the sidebar in. Closes when a nav item is
-   clicked or when the dimmed backdrop is tapped (anything outside .asb /
-   .sb-toggle while the drawer is open). */
-function toggleSidebar(){ document.body.classList.toggle('sb-open'); }
-document.addEventListener('click', function(e){
-  // Auto-close on nav item click (so user navigates without manual close)
-  if(e.target.closest('.ni')){
-    document.body.classList.remove('sb-open');
-    return;
-  }
-  // Close on click outside drawer + toggle button
-  if(document.body.classList.contains('sb-open')
-     && !e.target.closest('.asb')
-     && !e.target.closest('.sb-toggle')){
-    document.body.classList.remove('sb-open');
-  }
-});
-
 function closeApp(){
   document.body.classList.remove('app');
-  document.body.classList.remove('sb-open');                /* tidy up if drawer was open */
   document.body.style.overflow='';
   if(window.location.pathname === '/app'){
     // If our pushState put us here, history.back() returns to the landing
@@ -1998,7 +1896,6 @@ async function openPersonalLibrary(screen, params){
     return;
   }
   document.body.classList.remove('app');
-  document.body.classList.remove('sb-open');                  /* tidy mobile drawer state */
   document.body.style.overflow = 'auto';
   document.body.classList.add('pl-active');
   plShowScreen(screen);

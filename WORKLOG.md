@@ -2,6 +2,69 @@
 
 ---
 
+## 2026-05-06 | Session 45 | v2.7.2
+
+**Objective:** Make readii.co.uk usable on phones. Xiaoyu reported "尺寸不对，很多功能都无法正常显示" when testing on his phone. Diagnosis: site has 12 existing `@media` blocks but they're all narrow-scope — covering individual app screens (Word Bank, UK Culture, Settings, etc.) — never the **foundation** (landing nav, hero, app shell, auth modal). On a phone (~360–414px wide) the hero's 2-column grid crushes both halves to ~125px and the 236px sidebar leaves ~120px for main content.
+
+**Why this matters:**
+Xiaoyu can't test his own site on his phone before pushing it to investors / endorsing-body reviewers. The advisor / reviewer might also try the site on a phone. Even ignoring the v2 pivot, current v1 needs to at least look credible on mobile.
+
+**Approach:** One new `@media (max-width:768px)` block at the END of the inline CSS, before `</style>`. Cascades on top of existing 640/600/900 rules (which keep working — they have narrower breakpoints, so they layer over the 768 rules where applicable). This is the **minimum viable mobile foundation**, not a comprehensive mobile-first rebuild — a full mobile pass on the v2 onboarding/today/library/coread UIs will happen as those views are built.
+
+**Why not lower the breakpoint to 640 (matching existing)?**
+768px catches tablet-portrait and large phones (e.g. iPhone Plus models in landscape, iPad mini portrait) where the desktop layout also breaks down. 640 leaves a noticeable middle zone where the site still looks bad. 768 is the standard "mobile + small tablet" breakpoint.
+
+**Foundation issues fixed:**
+1. **Landing nav** (`<nav>`): `padding:0 16px`, hide `.nav-links` (the 4 hash links — accessible via scroll), shrink lang toggle + Sign in + Try Platform buttons
+2. **Hero** (`.hero`): single column instead of 2, less padding, hide the giant `::before` gradient circle decoration, h1 uses `clamp(32px,8vw,48px)` for fluid scaling
+3. **Generic section padding**: catch-all selector hits `.sd`, `.platform-primary`, `.platform-secondary`, `.feat-grid`, `.pricing-grid`, `section[class*="-section"]` with 20px horizontal padding
+4. **App shell drawer**: `.asb` (sidebar) becomes `position:fixed; transform:translateX(-100%)`; `body.sb-open` slides it in; `body.sb-open::after` is the dimmed backdrop
+5. **Hamburger button** (`.sb-toggle`): new HTML inserted inside `#view-app`, hidden on desktop, shown only when `body.app` AND viewport ≤768px. SVG icon (3 horizontal lines, no emoji)
+6. **Auth modal**: created dynamically by `auth.js` with inline `width:400px; padding:40px`. Override via global stylesheet rule `#auth-modal>div{padding:24px!important; width:auto!important; max-width:92vw!important}` — only fires at ≤768px, desktop untouched
+7. **Belt-and-braces**: `body{overflow-x:hidden}` to kill any rogue horizontal scroll from a missed rule
+
+**Sidebar drawer interaction:**
+- Click hamburger → `toggleSidebar()` adds `body.sb-open`
+- Click anywhere outside `.asb` and `.sb-toggle` while drawer is open → close (single delegated `document.addEventListener('click', ...)` listener)
+- Click any `.ni` nav-item → close (so the user navigates without manually closing)
+- `closeApp()` and `openPersonalLibrary()` clear `sb-open` defensively to avoid leaking state across views
+
+**Completed:**
+- [x] Archived `index.html` → `archive/index-v2.7.1.html`
+- [x] Added one `@media (max-width:768px)` block (~70 lines CSS) at end of inline CSS
+- [x] Inserted `.sb-toggle` button HTML inside `#view-app` (svg icon, ARIA label, fixed-positioned via CSS)
+- [x] Added `toggleSidebar()` + delegated click handler near `closeApp()` for thematic grouping
+- [x] Added defensive `body.classList.remove('sb-open')` to `closeApp()` and `openPersonalLibrary()`
+- [x] Verified existing narrower `@media (max-width:640px)` and `(max-width:600px)` blocks still apply (cascade order: 768 fires first, 640/600 layer over with more specific values where defined)
+- [x] VERSION 2.7.1 → 2.7.2 (PATCH — bug fix, no feature surface change)
+
+**Files changed:**
+- index.html (~+90 lines: ~70 CSS + ~10 HTML hamburger + ~10 JS toggle/close)
+- archive/index-v2.7.1.html (new baseline)
+- VERSION (2.7.1 → 2.7.2)
+- CHANGELOG.md ([2.7.2] entry)
+- WORKLOG.md (this Session 45)
+
+**Pending (operator browser test on phone after deploy):**
+- [ ] **Hard refresh** on phone (most browsers: pull down to refresh + clear cache via browser settings)
+- [ ] Open `https://readii.co.uk` on phone
+- [ ] Nav: only logo + lang toggle + Sign in + Try Platform are visible. No 4-link bar
+- [ ] Hero: title + subtitle stack vertically; the big gradient circle is gone; h1 readable
+- [ ] Sign in tap: modal opens, doesn't overflow viewport, form fields full-width inside the modal padding
+- [ ] After login → tap Try Platform → enters app shell. Hamburger button appears top-left
+- [ ] Tap hamburger → sidebar slides in from left, dimmed backdrop covers main content
+- [ ] Tap a nav item (e.g. Reading Library) → drawer closes, view switches
+- [ ] Tap hamburger again → drawer slides in. Tap on the dim area → drawer closes
+- [ ] Tap "Back to site" inside drawer → drawer should close, app shell exits, back to landing
+- [ ] No horizontal scroll on any page (including PL `/learn/personal-library` Coming-soon stub)
+
+**Known limitations of this minimum pass:**
+- The `.atb` top-bar inside the app shell may still feel cramped on phones (book title + lang toggle + Back to site button all in one row). Acceptable — the narrower 640/600 rules from existing screens may already help. If it's bad, we add an extra rule later
+- The 4 hidden landing nav-links (`Platform / For Children / About / Pricing`) aren't reachable via tap on mobile — only by scrolling down to those sections. Adding a hamburger to landing nav too is feasible but out of scope for this minimum pass
+- Per-section content (cards, modules) inside landing may still need individual tweaks — those'll be visible after Xiaoyu's next phone test, we iterate from there
+
+---
+
 ## 2026-05-06 | Session 44 | v2.7.1
 
 **Objective:** Stub the v2.7.0 upload UI before Phase A schema migration, in preparation for the v1 per-book → v2 subscription model pivot. Xiaoyu has dropped a new spec (`spec-personal-library-v2-subscription.md`) which replaces the v1 per-book pricing model with £15/month subscription + daily 07:30 task delivery + attendance rewards + freeze days + co-read. v1's non-pricing engineering (PDF parse, worker plan, Azure TTS, OpenAI prompts, pronunciation scoring) is reused; v1's pricing/voucher/tier code is retired.

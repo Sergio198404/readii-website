@@ -5,6 +5,27 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.7.2] — 2026-05-06
+
+### Fixed (mobile foundation)
+- fix: **Site is now usable on phones**. v1 was always desktop-first; per-screen `@media` blocks (640/600/900) had been added piecemeal as individual app views were built (Word Bank, UK Culture, Settings, My Progress, etc.), but the **foundation** — landing nav, hero, app shell sidebar, auth modal — had no mobile rules. On a typical phone (≤414px wide), the hero's `grid-template-columns: 1fr 1fr` left ~125px per column (unusable), the nav had `padding:0 56px` plus 4 nav-links + lang toggle + 2 CTAs (overflowed), and the app shell's 236px-wide fixed sidebar left ~120px for main content
+- One new `@media (max-width: 768px)` block added at the end of the inline CSS, ~70 lines:
+  - **Nav**: `padding:0 16px`, hide `.nav-links` (4 secondary links — accessible via scroll), tighten lang toggle + Sign in + Try Platform buttons
+  - **Hero**: collapses to single column, `padding:88px 20px 48px`, hides the giant decorative gradient circle (`.hero::before`), `h1` font-size scales via `clamp(32px,8vw,48px)`
+  - **App shell sidebar (`.asb`) becomes a drawer**: `position:fixed; transform:translateX(-100%)` by default; new body class `sb-open` slides it in via `transform:translateX(0)` with a `::after` pseudo-element backdrop
+  - New hamburger button `.sb-toggle` inside `#view-app`. Hidden on desktop, shown only when `body.app` AND viewport ≤768px. Click toggles `body.sb-open`
+  - Click-outside-to-close + auto-close on `.ni` nav-item click via single delegated `document.addEventListener('click', ...)` handler. `closeApp` and `openPersonalLibrary` clear `sb-open` defensively
+  - **Auth modal** (created dynamically by `auth.js` with inline `width:400px; padding:40px`): override via global stylesheet `#auth-modal>div{padding:24px!important; width:auto!important; max-width:92vw!important}` — only fires at ≤768px so desktop is untouched
+  - **Generic section padding catch-all**: `.sd, .platform-primary, .platform-secondary, .feat-grid, .pricing-grid, section[class*="-section"]` get `padding-left/right:20px` on mobile
+  - `body{overflow-x:hidden}` belt-and-braces against any rogue overflow
+
+### Notes
+- Existing 12 narrower-breakpoint blocks (640/600/900) are unchanged — they cascade naturally on top of these 768px rules. App-internal screens (Word Bank, UK Culture, etc.) keep their previous mobile tuning
+- This is the **minimum viable mobile foundation**, not a comprehensive mobile-first rebuild. A full mobile pass on the v2 onboarding wizard / `/today` / `/library` / `/coread` UIs will happen as those views are built (Phase B onwards), where mobile-first is cheaper than retrofitting
+- New baseline archive: `archive/index-v2.7.1.html`
+
+---
+
 ## [2.7.1] — 2026-05-06
 
 ### Changed (model pivot — v1 per-book → v2 subscription)
