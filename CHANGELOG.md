@@ -5,6 +5,18 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.7.4] — 2026-05-06
+
+### Fixed (mobile recording — audio player was overlapping the record buttons)
+- fix: **Tapping "Read aloud" record buttons in Reading Library did nothing on mobile.** Root cause: `.aplayer` (the audio player at the bottom of the reading panel) is `position: sticky; bottom: 0; z-index: 50` to keep it visible while reading. After v2.7.3 stacked `.agr` to a single column on mobile, the AI Pronunciation card (with the record buttons) ended up in the bottom region of the viewport directly behind the sticky audio player. Taps that looked like they were on a record button actually landed on the audio player's progress/speed/play controls — those have their own click handlers, so it didn't feel like "nothing happened" via JS, but visually nothing useful changed
+- One-line fix: `.aplayer { position: static; box-shadow: none }` inside the existing `@media (max-width: 768px)` block. The audio player is now inline at the natural end of `.rp` (after the iframe), so it scrolls with the content and doesn't cover anything below it. Trade-off: can't pause audio while scrolled past the player without scrolling back up — acceptable; the alternative was a custom intersection-observer scheme to release stickiness near the cards, which is over-engineered for this
+- Also added `touch-action: manipulation` on `.read-aloud-btn` to kill the 300ms double-tap delay on iOS — small responsiveness win
+
+### If you're on iOS Safari and recording still doesn't seem to work
+Web Speech API support on iOS Safari is intermittent depending on iOS version. The site shows a "For best experience, use Chrome or Edge" notice on iOS already, but the click still attempts speech recognition. If `recognition.start()` returns silently without firing onresult/onend, the button times out after 10 seconds. Workaround: open in **iOS Chrome** or **iOS Edge** for the recording feature specifically (rest of the site works in Safari). Android Chrome works fully.
+
+---
+
 ## [2.7.3] — 2026-05-06
 
 ### Fixed (mobile reading panel)

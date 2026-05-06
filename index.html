@@ -960,7 +960,8 @@ h1{animation:fu .6s ease both .15s}
   .rpbody{min-height:360px}                  /* shorter than desktop's implicit min */
   #pdf-frame{min-height:360px!important}
   #pdf-placeholder{min-height:240px!important}
-  .aplayer{padding:14px 16px}
+  .aplayer{padding:14px 16px;position:static;box-shadow:none}    /* v2.7.4: was sticky bottom — covered the record buttons */
+  .read-aloud-btn{touch-action:manipulation}                       /* v2.7.4: kill 300ms double-tap delay on iOS */
   .aptch{margin-bottom:10px;gap:8px}
   .aptav{width:32px;height:32px;font-size:13px}
   .aptn{font-size:13px}

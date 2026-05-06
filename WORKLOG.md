@@ -2,6 +2,47 @@
 
 ---
 
+## 2026-05-06 | Session 47 | v2.7.4
+
+**Objective:** Fix the mobile recording. Xiaoyu reported "我点击手机版的录音，怎么没有反应" — tapping the "Read aloud" record buttons in Reading Library produced no recording.
+
+**Why this happened:**
+After v2.7.3 collapsed `.agr` to a single column on mobile, the layout vertical order became: reading-panel header → PDF iframe → audio player → AI Pronunciation card → Vocab card → Progress card. Audio player has `position: sticky; bottom: 0; z-index: 50` (line 307), so as the user scrolls down to reach the AI Pronunciation card, the audio player overlays the bottom slice of the viewport. The AI Pronunciation card with its record buttons happens to often be in that bottom region. Taps "land" on the audio player's controls (.applay / .approg / .apspd / .aptime), which have their own click handlers (toggle play, seek, cycle speed), so the recognition `list.addEventListener('click', ...)` never fired.
+
+This also explains why earlier mobile passes (v2.7.2 / v2.7.3) didn't catch it — they were testing layout/legibility, not touch targets in overlapping z-stacks.
+
+**Approach:** One-line fix — `.aplayer { position: static; box-shadow: none }` inside the existing `@media (max-width: 768px)` block. Audio player becomes inline at end of `.rp` (after iframe, before cards). It scrolls with the content. Trade-off: user can no longer pause audio while reading further down, must scroll back up. Acceptable — a more elegant fix (intersection observer to release stickiness near the cards) is over-engineering for the value.
+
+Also added `touch-action: manipulation` on `.read-aloud-btn` to kill the 300ms double-tap delay on iOS Safari. Small responsiveness win, separate from the main fix.
+
+**Why I didn't reach for the iOS Web Speech API angle first:**
+SR support on iOS Safari is genuinely flaky — `webkitSpeechRecognition` exists but `start()` often goes silent. But the site DOES already show a "For best experience, use Chrome or Edge" notice when `isIOS || isSafari`, so this is documented. And the user's report is consistent with NOTHING happening at all (not "started but no transcript" or "permission prompt"). That points to the click never even firing the recognition path — i.e. the click hit the wrong element. The audio player overlay theory fits the symptom precisely; the iOS-SR theory would manifest as "button shows Listening… for 10s, then resets" which is not what was reported.
+
+**Completed:**
+- [x] Added `position: static; box-shadow: none` to `.aplayer` inside the v2.7.2 `@media (max-width:768px)` block
+- [x] Added `touch-action: manipulation` to `.read-aloud-btn` in same block
+- [x] VERSION 2.7.2 → 2.7.4 (skip 2.7.3 since I cut 2.7.3 for the .agr collapse — yes done already)
+- [x] CHANGELOG [2.7.4] entry, including the "if you're on iOS Safari" workaround note
+
+**Files changed:**
+- index.html (+2 lines in existing 768 @media block)
+- VERSION (2.7.3 → 2.7.4)
+- CHANGELOG.md ([2.7.4] entry)
+- WORKLOG.md (this Session 47)
+
+**Pending (operator phone test after deploy):**
+- [ ] Hard refresh
+- [ ] Open Reading Library on phone, tap a book
+- [ ] Scroll down past the iframe + audio player. Tap "Read aloud" on a sentence
+- [ ] Expected: button changes to "Listening…", mic permission prompt (first time only), then recording for up to 10s
+- [ ] If it does NOT work AND device is iOS Safari: try iOS Chrome / Edge as a workaround (Web Speech API on iOS Safari is platform-flaky)
+- [ ] If it does NOT work on Android Chrome: tell me, this would mean my hypothesis was wrong and we need to dig further (likely candidates: pointer-events, z-index of the card, or actual JS error in the speech recognition path)
+
+**Lesson observed (will update memory):**
+Mobile bugs that present as "nothing happened" can be (a) JS not firing, (b) tap landing on wrong element due to z-index overlap, (c) browser/platform feature unsupported. (a) shows console errors, (c) usually has a visible state change before stalling, (b) is the silent killer because no JS runs at all and there's no telltale signature. When debugging a "nothing happened" report on mobile, **first check for stacked elements with their own click handlers in the same screen region** — a sticky/fixed bar near the bottom is a classic culprit.
+
+---
+
 ## 2026-05-06 | Session 46 | v2.7.3
 
 **Objective:** Fix mobile reading panel. Xiaoyu reported that tapping into a single book in Reading Library still doesn't display correctly on phone — v2.7.2's mobile pass covered nav/hero/app-shell/auth-modal but missed `.agr` (the book reader's 2-column grid).
