@@ -1722,22 +1722,70 @@ h1{animation:fu .6s ease both .15s}
 
   <div class="pl-screen" data-screen="upload">
     <div class="pl-wrap">
-      <!-- v2.7.1: per-book pricing model retired in favour of v2 subscription
-           model (see spec-personal-library-v2-subscription.md). The v1 dropzone
-           UI is preserved as archive/index-v2.7.0.html and the JS/CSS for the
-           5-state upload flow is kept dormant in this file — Phase D will
-           re-wire it for the subscription onboarding's "upload your own book"
-           step. Until then, beta users see this Coming-soon notice. -->
-      <div class="pl-soon">
-        <div class="pl-soon-tag"><span data-en>Coming soon</span><span data-zh>即将推出</span></div>
-        <h2><span data-en>Personal Library is being rebuilt</span><span data-zh>个人书库正在重做</span></h2>
-        <p>
-          <span data-en>We're rebuilding this with daily reading habits in mind. Beta will be back online shortly.</span>
-          <span data-zh>我们正在按"每日阅读习惯"的模型重做。Beta 版本很快回来。</span>
-        </p>
-        <button class="pl-cta-primary" onclick="closePersonalLibrary()">
-          <span data-en>Back to Readii</span><span data-zh>返回 Readii</span>
-        </button>
+      <div class="pl-up" data-state="idle">
+
+        <div class="pl-up-state pl-up-idle">
+          <h2 class="pl-up-h"><span data-en>Upload your book</span><span data-zh>上传你的书</span></h2>
+          <p class="pl-up-sub"><span data-en>An English PDF, up to 50 MB and 800 pages.</span><span data-zh>英文 PDF，不超过 50 MB / 800 页。</span></p>
+          <label class="pl-dz" id="pl-dropzone">
+            <input type="file" id="pl-file-input" accept="application/pdf,.pdf" style="display:none">
+            <div class="pl-dz-icon">📄</div>
+            <div class="pl-dz-text"><span data-en>Drop a PDF here, or click to browse</span><span data-zh>把 PDF 拖进来，或点击选择</span></div>
+          </label>
+        </div>
+
+        <div class="pl-up-state pl-up-uploading">
+          <div class="pl-up-icon">⏫</div>
+          <div class="pl-up-h-small" id="pl-up-filename">file.pdf</div>
+          <div class="pl-up-progress"><div class="pl-up-progress-bar" id="pl-up-progress-bar"></div></div>
+          <div class="pl-up-status"><span data-en>Uploading…</span><span data-zh>上传中……</span></div>
+        </div>
+
+        <div class="pl-up-state pl-up-analysing">
+          <div class="pl-up-spinner"></div>
+          <div class="pl-up-status"><span data-en>Analysing your book… this usually takes 5–20 seconds.</span><span data-zh>正在分析你的书…… 通常 5–20 秒。</span></div>
+        </div>
+
+        <div class="pl-up-state pl-up-success">
+          <div class="pl-up-success-tag"><span data-en>Ready</span><span data-zh>就绪</span></div>
+          <h2 class="pl-up-title" id="pl-up-title-display">—</h2>
+          <div class="pl-up-author" id="pl-up-author-display"></div>
+          <div class="pl-up-stats">
+            <div class="pl-up-stat">
+              <div class="pl-up-stat-val" id="pl-up-pages">—</div>
+              <div class="pl-up-stat-lbl"><span data-en>pages</span><span data-zh>页</span></div>
+            </div>
+            <div class="pl-up-stat">
+              <div class="pl-up-stat-val" id="pl-up-words">—</div>
+              <div class="pl-up-stat-lbl"><span data-en>words</span><span data-zh>字</span></div>
+            </div>
+            <div class="pl-up-stat">
+              <div class="pl-up-stat-val" id="pl-up-duration">—</div>
+              <div class="pl-up-stat-lbl"><span data-en>est. audio</span><span data-zh>估算音频</span></div>
+            </div>
+          </div>
+          <div class="pl-up-price-box">
+            <div class="pl-up-price-row"><span data-en>Starting at</span><span data-zh>起价</span> <strong id="pl-up-price-display">—</strong></div>
+            <div class="pl-up-price-note"><span data-en>Final price depends on voice + daily commitment, chosen on the next step.</span><span data-zh>最终价格取决于语音和每日承诺时间，在下一步选择。</span></div>
+          </div>
+          <div class="pl-stub" style="margin-top:24px">
+            <span data-en>Voice picker, daily-minutes slider, and checkout ship in v2.7.x (Phase 2c &amp; 3). For now, this is the parse + price preview only.</span>
+            <span data-zh>语音选择、每日分钟数、结算流程将在 v2.7.x（Phase 2c 与 3）上线。本阶段仅展示解析结果和起步价。</span>
+          </div>
+          <div style="text-align:center;margin-top:32px">
+            <button class="pl-back" onclick="plResetUpload()" style="font-size:13px"><span data-en>Upload another</span><span data-zh>再上传一本</span></button>
+          </div>
+        </div>
+
+        <div class="pl-up-state pl-up-error">
+          <div class="pl-up-error-icon">⚠️</div>
+          <h2 class="pl-up-h"><span data-en>Couldn't process this PDF</span><span data-zh>无法处理这个 PDF</span></h2>
+          <div class="pl-up-error-msg" id="pl-up-error-msg"></div>
+          <div style="text-align:center;margin-top:24px">
+            <button class="pl-cta-primary" onclick="plResetUpload()"><span data-en>Try another PDF</span><span data-zh>换一个 PDF</span></button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

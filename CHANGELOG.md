@@ -5,6 +5,21 @@ Format: [Version] — YYYY-MM-DD
 
 ---
 
+## [2.7.1] — 2026-05-06
+
+### Changed (model pivot — v1 per-book → v2 subscription)
+- **Personal Library is pivoting from per-book pricing to a £15/month subscription** with daily 07:30 task delivery, attendance rewards, freeze days, and co-read groups. See `spec-personal-library-v2-subscription.md`. v1 spec is retired (where it contradicts v2, v2 wins). v1's non-pricing engineering (PDF parse, worker architecture, Azure TTS integration plan, OpenAI prompts, pronunciation scoring) carries over as the v2 implementation foundation
+- **Upload UI replaced with a Coming-soon stub** — the v2.7.0 dropzone + parse + price-preview flow doesn't fit the v2 subscription model (no per-book pricing exists). Beta users (Kevin) hitting `/learn/personal-library/upload` now see "Personal Library is being rebuilt — Beta will be back online shortly". This stub stays until Phase B (Stripe trial + onboarding wizard) is ready to replace it
+- **The v1 dropzone HTML/CSS/JS is preserved in archive** (`archive/index-v2.7.0.html`) and the dormant JS functions (`plHandleFile`, `plWireDropzone`, `plSetUploadState`, etc.) are kept in `index.html` for re-wiring in Phase D (v2 user-PDF upload pipeline). Net diff is HTML-only — function definitions and CSS are unchanged
+- The Netlify Function `personal-library-quote.js` is kept on disk and unreachable (no UI calls it). Will be deprecated/replaced when Phase D's worker pipeline lands
+- New baseline archive: `archive/index-v2.7.0.html`
+
+### Notes
+- Stub ships **before** Phase A schema migration so the upload UI can't try to insert into `user_books` columns that Phase A is about to drop (voucher_id, base_price_pence, tier, etc.). If Kevin uploads to the v1 endpoint after Phase A is applied, the function will 500 — but no UI calls it, so that's hypothetical
+- VERSION 2.7.0 → 2.7.1 (PATCH — feature surface gated/regressed, no new feature). Phase A migration will be MAJOR (3.0.0 — structural overhaul per README versioning rules)
+
+---
+
 ## [2.7.0] — 2026-05-05
 
 ### Added (Personal Library — Phase 2b: PDF upload + parse pipeline)

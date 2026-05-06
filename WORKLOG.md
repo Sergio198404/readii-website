@@ -2,6 +2,49 @@
 
 ---
 
+## 2026-05-06 | Session 44 | v2.7.1
+
+**Objective:** Stub the v2.7.0 upload UI before Phase A schema migration, in preparation for the v1 per-book → v2 subscription model pivot. Xiaoyu has dropped a new spec (`spec-personal-library-v2-subscription.md`) which replaces the v1 per-book pricing model with £15/month subscription + daily 07:30 task delivery + attendance rewards + freeze days + co-read. v1's non-pricing engineering (PDF parse, worker plan, Azure TTS, OpenAI prompts, pronunciation scoring) is reused; v1's pricing/voucher/tier code is retired.
+
+**Why this matters:**
+The v2.7.0 dropzone immediately tries to write to `user_books` with `voucher_id=null`, `voucher_discount_pence=0`, `base_price_pence=...`, `voice_premium_pence=0`, `amount_paid_pence=0`, `tier='medium'`, `voice_id='sonia-hd'`-or-similar. Phase A migration drops every one of those columns and tightens `voice_id` from 4 values down to 2. If the v2.7.0 frontend stays live across the migration, every upload attempt 500s with a Postgres column-doesn't-exist error. Stubbing the UI first means there's no code path that hits the about-to-break columns. Then Phase A is a clean schema rewrite with zero coordination risk. Then Phase B onboarding lands, and the stub gets replaced with the v2 wizard.
+
+**Approach:** Replace only the inner HTML of `data-screen="upload"` — keep the dormant CSS (`.pl-up*`, `.pl-dz*`) and the dormant JS functions (`plHandleFile`, `plWireDropzone`, etc.) in place because Phase D (v2 user-PDF upload) will re-wire them. Reuse the existing `.pl-soon` class (originally introduced in v2.6.1 for the locked screen, removed in v2.6.2 as a security leak, but the CSS rules were left in place — turns out useful here).
+
+**Completed:**
+- [x] Archived `index.html` → `archive/index-v2.7.0.html` (last v1-pricing-model version)
+- [x] Replaced upload sub-screen 5-state dropzone HTML (~70 lines) with a single `.pl-soon` Coming-soon block. Bilingual EN/中文. "Back to Readii" button calls `closePersonalLibrary()`
+- [x] Preserved CSS (`.pl-up*`, `.pl-dz*`, `@keyframes plSpin`) for Phase D reuse
+- [x] Preserved JS (`plHandleFile`, `plWireDropzone`, `plSetUploadState`, `plResetUpload`, `plShowUploadError`, `plFmtDuration`, `plFmtPence`, `PL_ERROR_COPY`) — dormant but accessible
+- [x] `plShowScreen('upload')`'s lazy-wire of `plWireDropzone()` is now a no-op (no `#pl-dropzone` element to wire), but it doesn't error because the function early-returns on missing element. Side-effect-free
+- [x] `personal-library-quote.js` Netlify Function kept on disk — no UI calls it after this stub. Will be deprecated when Phase D ships v2 worker
+- [x] VERSION 2.7.0 → 2.7.1 (PATCH — feature surface gated, no new feature surface)
+- [x] CHANGELOG [2.7.1] entry explaining the model pivot rationale
+
+**Files changed:**
+- index.html (-70 HTML lines net, JS/CSS unchanged)
+- archive/index-v2.7.0.html (new baseline)
+- VERSION (2.7.0 → 2.7.1)
+- CHANGELOG.md ([2.7.1] entry)
+- WORKLOG.md (this Session 44)
+
+**Pending (operator):**
+- [ ] After Netlify deploy: verify Kevin sees Coming-soon on `/learn/personal-library/upload` instead of dropzone
+- [ ] Confirm Sign In / homepage / app shell all still work (no JS regressions from the HTML change)
+
+**Next session: Phase A schema migration (v3.0.0)**
+- 8 SQL files in `database/`, named `migration-personal-library-v2-NN-{topic}.sql`
+- DROP table `user_book_vouchers`
+- ALTER table `user_books` (drop ~15 v1 columns, add ~8 v2 columns, tighten constraints)
+- ALTER table `user_book_chunks` (add `scheduled_dispatch_date`, `dispatched_at`)
+- ALTER table `book_processing_jobs` (add `job_type`, `target_day`)
+- CREATE 12 new tables: subscriptions, user_book_attendance, user_freezes, user_book_changes, co_read_groups, co_read_members, public_books, public_book_audio_cache, referrals, user_referral_codes, daily_dispatch_log, approval_queue
+- CREATE 4 new Storage buckets: public-book-pdfs, public-book-audio, public-book-covers, voice-previews
+
+In parallel: Xiaoyu sets up Stripe Dashboard (Product / Price / Webhook / Tax) so Phase B can ship without back-and-forth.
+
+---
+
 ## 2026-05-05 | Session 43 | v2.7.0
 
 **Objective:** Phase 2b — replace the upload-route placeholder stub with a real PDF upload + parse + price-preview pipeline. End state: an allowlisted user (Kevin) can drop a PDF on `/learn/personal-library/upload`, watch it upload, watch it parse, and see "Untitled book — 287 pages — 78,421 words — ~10h 4m audio — Starting at £45". Pricing is per spec §5.1; voice picker / daily-minutes / Stripe come in 2c & Phase 3. Non-allowlist users still get the silent-redirect treatment from v2.6.2 — verified by adding a SECOND, server-side allowlist check in the new Netlify Function.
