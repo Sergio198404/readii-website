@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Readii · British Pronunciation Reader</title>
 <meta name="description" content="Paste any English text. Read it aloud, get British pronunciation tips, fix the words you miss.">
+<meta property="og:title" content="Readii · British Pronunciation Challenge">
+<meta property="og:description" content="Test your British English pronunciation. Read any article aloud and see how close you get. Can you beat my score?">
+<meta property="og:image" content="https://readii.co.uk/og-image.png">
+<meta property="og:url" content="https://readii.co.uk/quiz">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Readii · British Pronunciation Challenge">
+<meta name="twitter:description" content="Test your British English pronunciation. Can you beat my score?">
+<meta name="twitter:image" content="https://readii.co.uk/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -59,20 +68,57 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .loading-box h2{font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:8px}
 .loading-box p{font-size:13px;color:var(--muted)}
 
-/* Session — segment reader */
-.seg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+/* WeChat banner (Web Speech unsupported in WeChat WebView) */
+.wechat-banner{background:var(--yellow-pale);border-bottom:1px solid var(--yellow);padding:10px 16px;text-align:center;font-size:13px;line-height:1.5;position:sticky;top:0;z-index:50;color:#5a4a1a}
+.wechat-banner p{margin:1px 0}
+.wechat-banner b{color:var(--ink)}
+
+/* Session top: progress + meta */
+.session-top{margin-bottom:14px}
+.session-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
 .seg-num{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.04em}
-.seg-xp{font-size:12px;font-weight:700;color:var(--green);background:var(--green-pale);padding:4px 10px;border-radius:14px;transition:transform .2s}
-.seg-xp.bump{animation:xp-bump .4s ease-out}
-@keyframes xp-bump{0%{transform:scale(1)}45%{transform:scale(1.22)}100%{transform:scale(1)}}
-.seg-progress{height:5px;background:var(--border);border-radius:3px;margin-bottom:20px;overflow:hidden}
+.seg-xp{font-size:12px;font-weight:700;color:var(--green);background:var(--green-pale);padding:4px 10px;border-radius:14px;transition:transform .2s,color .2s}
+.seg-xp.bump,.seg-xp.xp-bump{animation:xp-bump .4s ease-out}
+@keyframes xp-bump{0%{transform:scale(1)}45%{transform:scale(1.28);color:var(--gold)}100%{transform:scale(1);color:var(--green)}}
+.seg-progress{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .seg-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold) 0%,var(--gold-light) 100%);border-radius:3px;transition:width .4s ease-out}
-.seg-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 22px;box-shadow:var(--shadow)}
-.seg-text{font-family:var(--serif);font-size:22px;line-height:1.7;margin-bottom:14px;color:var(--ink)}
+
+/* Article summary line */
+.article-summary{font-size:12px;color:var(--muted);text-align:center;padding:6px;margin-bottom:8px}
+
+/* Article view — full text, current segment highlighted */
+.article-view{max-height:46vh;overflow-y:auto;padding:18px 18px;background:var(--white);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:14px;scroll-behavior:smooth;box-shadow:var(--shadow)}
+.article-segment{font-family:var(--serif);font-size:17px;line-height:1.8;padding:8px 12px;margin:4px 0;border-radius:6px;transition:all .3s}
+.seg-active{background:var(--gold-pale);border-left:3px solid var(--gold);font-size:21px;padding:12px 16px;color:var(--ink);font-weight:500}
+.seg-done{opacity:.7;border-left:3px solid var(--green);padding-left:12px;color:var(--ink)}
+.seg-upcoming{color:var(--ink);opacity:.32}
+.seg-check{color:var(--green);font-weight:700;margin-right:4px}
+.seg-complete-anim{animation:seg-pop .35s ease-out}
+@keyframes seg-pop{0%{transform:scale(1)}50%{transform:scale(1.025)}100%{transform:scale(1)}}
 .focus-word{text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:4px;font-weight:600;cursor:pointer;transition:background .15s;border-radius:3px;padding:0 1px}
 .focus-word:hover{background:var(--gold-pale)}
-.seg-tip{font-size:13px;color:#5a4a1a;line-height:1.6;margin-bottom:20px;padding:10px 14px;background:var(--gold-pale);border-left:3px solid var(--gold);border-radius:6px}
+
+/* Segment controls (sticky at bottom of session) */
+.segment-controls{background:var(--bg);padding-top:12px;border-top:1px solid var(--border)}
+.seg-tip{font-size:13px;color:#5a4a1a;line-height:1.6;margin-bottom:14px;padding:10px 14px;background:var(--gold-pale);border-left:3px solid var(--gold);border-radius:6px}
 .seg-actions{display:flex;gap:8px;justify-content:center;margin-bottom:8px;flex-wrap:wrap}
+.center-mic{text-align:center}
+.seg-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+
+/* Milestone screen */
+.milestone-wrap{text-align:center;padding:80px 20px 40px}
+.milestone-emoji{font-size:72px;margin-bottom:18px;animation:milestone-pop .6s ease-out}
+@keyframes milestone-pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
+.milestone-title{font-family:var(--serif);font-size:30px;font-weight:700;margin-bottom:10px;color:var(--ink)}
+.milestone-sub{font-size:15px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.milestone-xp{font-size:14px;color:var(--green);font-weight:700;margin-bottom:30px}
+
+/* Article complete celebration */
+.article-complete-wrap{text-align:center;padding:64px 20px 40px}
+.ac-emoji{font-size:80px;margin-bottom:18px;animation:milestone-pop .7s ease-out}
+.ac-title{font-family:var(--serif);font-size:34px;font-weight:700;margin-bottom:14px;color:var(--ink)}
+.ac-sub{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:32px;padding:0 12px}
+.ac-sub b{color:var(--ink)}
 .btn-listen{padding:10px 20px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);font-size:13px;cursor:pointer;transition:all .15s;font-family:var(--sans);color:var(--ink)}
 .btn-listen:hover{border-color:var(--forest);color:var(--forest)}
 .btn-record{width:96px;height:96px;border-radius:50%;background:var(--forest);border:none;color:var(--white);font-size:30px;cursor:pointer;margin:14px auto;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 4px 20px rgba(45,90,79,.25)}
@@ -218,6 +264,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 </head>
 <body>
 <div class="confetti-container" id="confettiContainer"></div>
+<div class="wechat-banner" id="wechatBanner" style="display:none">
+  <p>🔊 Recording isn't supported in WeChat</p>
+  <p>Tap <b>⋯</b> top-right → <b>Open in Browser</b> for full experience</p>
+</div>
 <div class="container">
   <div class="brand">
     <h1>Readii</h1>
@@ -245,17 +295,21 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
   </div>
 
-  <!-- Session: segment reader (Read → Feedback → Quick Fix → Next) -->
+  <!-- Session: Article View + sticky bottom controls -->
   <div class="screen" id="screenSession">
-    <div class="seg-header">
-      <span class="seg-num" id="segNum">Segment 1 of 8</span>
-      <span class="seg-xp" id="segXP">+ 0 XP</span>
+    <div class="session-top">
+      <div class="seg-progress"><div class="seg-progress-fill" id="segProgress"></div></div>
+      <div class="session-meta">
+        <span class="seg-num" id="segNum">Segment 1 of 8</span>
+        <span class="seg-xp" id="segXP">+ 0 XP</span>
+      </div>
     </div>
-    <div class="seg-progress"><div class="seg-progress-fill" id="segProgress"></div></div>
 
-    <!-- Sub-state: Read -->
-    <div class="seg-box" id="segRead">
-      <div class="seg-text" id="segText"></div>
+    <p class="article-summary" id="articleSummary"></p>
+    <div class="article-view" id="articleView"></div>
+
+    <!-- Sub-state: Read (current segment actions) -->
+    <div class="segment-controls" id="segmentControls">
       <div class="seg-tip" id="segTip"></div>
       <div class="seg-actions">
         <button class="btn-listen" onclick="listenSegment(1)">▶ Listen</button>
@@ -267,8 +321,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       </div>
     </div>
 
-    <!-- Sub-state: Feedback -->
-    <div class="seg-box" id="segFeedback" style="display:none">
+    <!-- Sub-state: Feedback (replaces controls after recording) -->
+    <div class="seg-box" id="segFeedback" style="display:none;margin-top:14px">
       <div class="feedback-section">
         <p class="feedback-label">Original</p>
         <p class="feedback-original" id="feedbackOriginal"></p>
@@ -280,6 +334,27 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <p class="feedback-tap-hint">👆 Tap any underlined red word to hear the correct pronunciation</p>
       <div id="quickFixArea"></div>
       <button class="btn-next show" id="btnNextSeg" onclick="nextSegment()">Next →</button>
+    </div>
+  </div>
+
+  <!-- Milestone (between segment blocks, before quiz card) -->
+  <div class="screen" id="screenMilestone">
+    <div class="milestone-wrap">
+      <div class="milestone-emoji" id="milestoneEmoji">🔥</div>
+      <h2 class="milestone-title" id="milestoneTitle">3 segments done!</h2>
+      <p class="milestone-sub" id="milestoneSub">You're 38% through</p>
+      <p class="milestone-xp" id="milestoneXP">+ 0 XP so far</p>
+      <button class="btn-start" id="btnMilestoneCont">Continue →</button>
+    </div>
+  </div>
+
+  <!-- Article Complete (before Round Complete results) -->
+  <div class="screen" id="screenArticleComplete">
+    <div class="article-complete-wrap">
+      <div class="ac-emoji">📖</div>
+      <h2 class="ac-title">Article Complete!</h2>
+      <p class="ac-sub">You read all <b id="acSegCount">8</b> segments and practised <b id="acFocusCount">12</b> pronunciation points.</p>
+      <button class="btn-start" onclick="showRoundComplete()">See your results →</button>
     </div>
   </div>
 
@@ -475,10 +550,22 @@ function getWordTip(word) {
 // ═════════════════════════════════════════════════════
 // INIT
 // ═════════════════════════════════════════════════════
+function isWeChatBrowser() {
+  return /MicroMessenger/i.test(navigator.userAgent || '');
+}
+function isSpeechRecognitionSupported() {
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderLives();
   checkCooldown();
   primeTTS();
+
+  if (isWeChatBrowser()) {
+    document.getElementById('wechatBanner').style.display = 'block';
+    track('wechat_browser_detected');
+  }
 
   const params = new URLSearchParams(window.location.search);
   const slug = params.get('c');
@@ -621,6 +708,13 @@ document.getElementById('btnStart')?.addEventListener('click', async () => {
     segmentReview = [];
     cardResults = [];
     updateXP(0);
+
+    // Article summary line under progress bar
+    const summary = data.summary
+      ? `${segments.length} segments · ${data.summary}`
+      : `${segments.length} segments`;
+    document.getElementById('articleSummary').textContent = summary;
+
     showScreen('Session');
     showSegment(0);
   } catch (err) {
@@ -635,25 +729,55 @@ document.getElementById('btnStart')?.addEventListener('click', async () => {
 // ═════════════════════════════════════════════════════
 function showSegment(idx) {
   const seg = segments[idx];
-  if (!seg) { showRoundComplete(); return; }
+  if (!seg) { showArticleComplete(); return; }
 
   document.getElementById('segNum').textContent = `Segment ${idx + 1} of ${segments.length}`;
   const pct = (idx / segments.length) * 100;
   document.getElementById('segProgress').style.width = pct + '%';
 
-  document.getElementById('segText').innerHTML = renderSegmentTextWithFocus(seg.text, seg.focus_words || []);
+  // Render the full article with current segment highlighted
+  renderArticleView();
+
   const tipEl = document.getElementById('segTip');
   tipEl.innerHTML = seg.tip ? `💡 ${escapeHtml(seg.tip)}` : '💡 Read this segment carefully.';
 
   document.getElementById('recordHint').textContent = 'Tap to read aloud';
   document.getElementById('btnRecord').classList.remove('recording');
 
-  // Show Read sub-state, hide Feedback
-  document.getElementById('segRead').style.display = '';
+  // Show controls, hide feedback
+  document.getElementById('segmentControls').style.display = '';
   document.getElementById('segFeedback').style.display = 'none';
   document.getElementById('quickFixArea').innerHTML = '';
 
   track('segment_shown', { segment_idx: idx });
+}
+
+function renderArticleView() {
+  const container = document.getElementById('articleView');
+  if (!container) return;
+  container.innerHTML = segments.map((seg, i) => {
+    let cls = 'article-segment';
+    let prefix = '';
+    let inner = '';
+    if (i === segIdx) {
+      cls += ' seg-active';
+      inner = renderSegmentTextWithFocus(seg.text, seg.focus_words || []);
+    } else if (i < segIdx) {
+      cls += ' seg-done';
+      prefix = '<span class="seg-check">✓ </span>';
+      inner = escapeHtml(seg.text);
+    } else {
+      cls += ' seg-upcoming';
+      inner = escapeHtml(seg.text);
+    }
+    return `<div class="${cls}" id="seg-${i}" data-idx="${i}">${prefix}${inner}</div>`;
+  }).join('');
+
+  // Scroll the active segment into view inside the article-view container only
+  const active = document.getElementById(`seg-${segIdx}`);
+  if (active && active.scrollIntoView) {
+    active.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 function renderSegmentTextWithFocus(text, focusWords) {
@@ -667,7 +791,7 @@ function renderSegmentTextWithFocus(text, focusWords) {
       const lower = tok.toLowerCase().replace(/[^a-z]/g, '');
       const safe = escapeHtml(tok);
       if (focusSet.has(lower)) {
-        html += `<span class="focus-word" onclick="speakWord('${escapeJs(lower)}')">${safe}</span>`;
+        html += `<span class="focus-word" onclick="playWordAudio('${escapeJs(lower)}')">${safe}</span>`;
       } else {
         html += safe;
       }
@@ -719,6 +843,10 @@ function playWordAudio(word) {
 // ─────────── Recording (one-instance, tap-again-to-stop, timeout) ───────────
 function startContextualRecording(opts) {
   if (currentRecognition) { currentRecognition.stop(); return; }
+  if (isWeChatBrowser()) {
+    toast('Please open in Safari or Chrome to record');
+    return;
+  }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { toast('Speech recognition needs Chrome'); return; }
 
@@ -809,7 +937,7 @@ function showFeedback(transcript) {
     bumpXP(10);
   }
 
-  document.getElementById('segRead').style.display = 'none';
+  document.getElementById('segmentControls').style.display = 'none';
   document.getElementById('segFeedback').style.display = '';
 
   track('segment_read', { segment_idx: segIdx, had_errors: hadErrors });
@@ -917,21 +1045,48 @@ function levenshtein(a, b) {
 
 // ─────────── Advance to next segment / insert quiz card ───────────
 function nextSegment() {
+  // Mark just-completed segment in article view with the pop animation
+  const justDoneEl = document.getElementById(`seg-${segIdx}`);
+  if (justDoneEl) justDoneEl.classList.add('seg-complete-anim');
+
   segIdx++;
-  // Update progress bar to reflect completion of segment we just finished
+  // Update progress bar
   const donePct = Math.min(100, Math.round((segIdx / segments.length) * 100));
   document.getElementById('segProgress').style.width = donePct + '%';
+  document.getElementById('segNum').textContent =
+    `Segment ${Math.min(segIdx + 1, segments.length)} of ${segments.length}`;
 
-  // Check if a quiz card is scheduled after the segment we just finished (1-indexed position === segIdx)
+  // Check if a quiz card is scheduled after the segment we just finished
   const card = quizCards.find(c => c.after_segment === segIdx && !c._shown);
   if (card) {
     card._shown = true;
-    showQuizCard(card);
+    showMilestone(segIdx, () => showQuizCard(card));
     return;
   }
 
-  if (segIdx >= segments.length) { showRoundComplete(); return; }
+  if (segIdx >= segments.length) { showArticleComplete(); return; }
   showSegment(segIdx);
+}
+
+function showMilestone(segsCompleted, after) {
+  const pct = Math.round((segsCompleted / segments.length) * 100);
+  document.getElementById('milestoneTitle').textContent = `${segsCompleted} segments done!`;
+  document.getElementById('milestoneSub').textContent = `You're ${pct}% through`;
+  document.getElementById('milestoneXP').textContent = `+ ${xp} XP so far`;
+  showScreen('Milestone');
+  track('milestone_shown', { segments_completed: segsCompleted, xp });
+  let advanced = false;
+  const advance = () => { if (!advanced) { advanced = true; after(); } };
+  document.getElementById('btnMilestoneCont').onclick = advance;
+  setTimeout(advance, 2500);
+}
+
+function showArticleComplete() {
+  document.getElementById('acSegCount').textContent = segments.length;
+  document.getElementById('acFocusCount').textContent = focusWordsTotal;
+  showScreen('ArticleComplete');
+  triggerConfetti();
+  track('article_complete', { segments_total: segments.length, xp, focus_total: focusWordsTotal });
 }
 
 // ═════════════════════════════════════════════════════
@@ -1001,7 +1156,7 @@ function selectQcOption(selected, correctIdx, card) {
 }
 
 function afterQuizCard() {
-  if (segIdx >= segments.length) { showRoundComplete(); return; }
+  if (segIdx >= segments.length) { showArticleComplete(); return; }
   showScreen('Session');
   showSegment(segIdx);
 }
@@ -1047,7 +1202,7 @@ function showRoundComplete() {
     lives,
   });
 
-  if (pct >= 80) triggerConfetti();
+  // Confetti already fired on Article Complete; Round Complete is analytical.
 }
 
 // ═════════════════════════════════════════════════════
@@ -1082,16 +1237,19 @@ function playSound(type) {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = 'sine';
   if (type === 'correct') {
-    osc.frequency.setValueAtTime(800, now);
-    osc.frequency.linearRampToValueAtTime(1200, now + 0.1);
-    gain.gain.setValueAtTime(0.18, now);
-    gain.gain.linearRampToValueAtTime(0, now + 0.2);
-    osc.start(now); osc.stop(now + 0.22);
-  } else {
-    osc.frequency.setValueAtTime(300, now);
-    osc.frequency.linearRampToValueAtTime(200, now + 0.15);
+    // Two notes: C5 then E5 — happy uplift
+    osc.frequency.setValueAtTime(523.25, now);          // C5
+    osc.frequency.setValueAtTime(659.25, now + 0.1);    // E5
     gain.gain.setValueAtTime(0.2, now);
+    gain.gain.linearRampToValueAtTime(0, now + 0.25);
+    osc.start(now); osc.stop(now + 0.26);
+  } else {
+    // Descending E4 to A3 — gentle "not quite" cue
+    osc.frequency.setValueAtTime(329.63, now);          // E4
+    osc.frequency.linearRampToValueAtTime(220, now + 0.2); // A3
+    gain.gain.setValueAtTime(0.15, now);
     gain.gain.linearRampToValueAtTime(0, now + 0.3);
     osc.start(now); osc.stop(now + 0.32);
   }
@@ -1203,13 +1361,15 @@ function acceptChallenge() {
 
 function shareGeneric() {
   const link = document.getElementById('challengeLink')?.value;
+  const score = document.getElementById('ringScore')?.textContent || '??';
   if (link) {
-    navigator.clipboard.writeText(link).then(() => toast('Link copied'));
+    const text =
+      `🇬🇧 I scored ${score} on a British English pronunciation quiz! Can you beat me?\n\n` +
+      `${link}\n\n` +
+      `Try it — paste any English text and test your British accent 🎤`;
+    navigator.clipboard.writeText(text).then(() => toast('Copied! Paste to share'));
   } else {
-    const score = document.getElementById('ringScore').textContent;
-    const url = `${window.location.origin}/quiz`;
-    navigator.clipboard.writeText(`I scored ${score} on Readii's British pronunciation reader. Try it: ${url}`)
-      .then(() => toast('Copied — paste it anywhere'));
+    toast('Create a challenge first');
   }
 }
 
