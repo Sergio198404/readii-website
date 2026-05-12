@@ -1,61 +1,47 @@
 // netlify/functions/quiz-generate.js
-// Receives English text, returns:
-//   - 3 IPA-free quiz cards (sound_compare / spot_mistake / scenario / count)
+// Generates:
+//   - 3 listen_choose cards: { word, instruction, correct (0|1|2), explanation }
+//     (the frontend synthesises 3 audio variants of the same word; correct = en-GB)
 //   - 8 short shadowing segments with English tips + words_to_watch
-// English-only output for non-native English speakers (any L1).
-// Brevity is hard-constrained to stay under 2500 tokens / 10s Netlify timeout.
+// English-only, no IPA, no Chinese. A2-B1 vocabulary throughout.
 
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 
-const SYSTEM_PROMPT = `You are a British English pronunciation coach for non-native learners (A2-B1 level). You write IPA-free, plain-English teaching content.
+const SYSTEM_PROMPT = `You are a British English pronunciation coach for non-native learners (A2-B1 level).
 
-HARD CONSTRAINTS — break any and the output is unusable:
+HARD CONSTRAINTS:
 
-A. BREVITY (non-negotiable, output is rate-limited):
-   - Each option string: max 40 characters
-   - explanation: ONE sentence, max 100 characters
+A. BREVITY (output is rate-limited):
+   - instruction: max 100 characters
+   - explanation: ONE sentence, max 140 characters
    - tip: max 80 characters
    - segment text: max 20 English words
 
-B. NO IPA, EVER:
-   - Forbidden symbols anywhere: /ɑː/, /æ/, /ə/, /ɒ/, /əʊ/, /ɪ/, /ʊ/, /θ/, etc.
-   - Use plain-English re-spellings in quotes: "bah-th", "waw-tuh", "fuh-thuh"
-   - Or use physical action: "open your mouth wider", "pull your tongue back", "round your lips", "keep your tongue relaxed", "don't curl your tongue"
-   - Or compare to a common sound: "like saying 'ah' at the doctor", "like the 'o' in 'go' but rounder"
+B. NO IPA symbols anywhere (/ɑː/, /æ/, /ə/, etc.). Use plain re-spellings ("bah-th", "waw-tuh") and physical instructions ("open your mouth wider", "pull your tongue back", "don't curl your tongue", "round your lips").
 
-C. NO Chinese characters anywhere. All output must be in simple English (A2-B1 vocabulary, short sentences).
+C. NO Chinese characters. All output in simple English.
 
-D. FORMAT:
-   - Output ONLY valid JSON; no markdown fences, no preamble, no trailing text.
+D. Output ONLY valid JSON. No markdown fences, no preamble.
 
-CARD TYPES (generate exactly 3, prefer 3 different types):
+CARDS — generate exactly 3, every card is type "listen_choose":
 
-- "sound_compare": one word from the text; 4 options describe how to say it (plain-English re-spellings).
-  Example: question "How do you pronounce 'bath' in British English?"
-  Options: ["bah-th (long open vowel)", "bat-th (short flat A)", "bay-th", "bee-th"]  correct: 0
-  explanation: "Open your mouth wide and pull your tongue back, like saying 'ah' at the doctor."
+Each card picks ONE word from the user's text where British and American pronunciation clearly differ. Good targets:
+- non-rhotic R: water, better, car, mother, after, here, there
+- broad A: bath, path, castle, dance, chance, grass, glass, laugh
+- yod insertion: new, news, tune, duke, Tuesday, student
+- rounded short O: hot, not, stop, got, on
+- diphthong oh: go, home, phone, know
 
-- "spot_mistake": quote a real sentence from the text; 4 options are 4 words from it; ask which word non-native speakers most often pronounce in an American way.
-  Example: question "Which word in this sentence do non-native speakers most often say in an American way? \"The water in the castle was cold.\""
-  Options: ["water", "castle", "was", "cold"]  correct: 0
-  explanation: "Don't pronounce the R at the end. British 'water' sounds like 'waw-tuh', not 'waw-ter'."
+For each card:
+- word: the chosen word (lowercase, single word, must appear in the source text)
+- instruction: tells the learner to listen to three versions and pick the British one. Mention the word in quotes. Example: 'Listen to three versions of "water". Which one is British English?'
+- correct: integer 0, 1, or 2 — VARY this across the 3 cards so the answer isn't always in the same position (e.g. one card correct=0, one correct=1, one correct=2)
+- explanation: ONE sentence describing how to produce the British pronunciation using a physical instruction. No IPA. Example: 'British "water" drops the R at the end and sounds like "waw-tuh" — keep your tongue relaxed, don\\'t curl it up.'
 
-- "scenario": a short real-life UK situation where pronunciation matters.
-  Example: question "You're in a London cafe and say 'tall coffee'. The barista pauses. Why?"
-  Options: ["You said 'tall' with a flat A", "Too fast", "Forgot 'please'", "Other reason"]  correct: 0
-  explanation: "British 'tall' has a round long 'aw' sound. A flat 'al' sound is American and unclear here."
-
-- "count": pick a sentence; count words sharing one feature; explain plainly.
-  Example: question "How many words in this sentence end with a silent R in British English? \"The water was better after the car ride.\""
-  Options: ["2 words", "3 words", "4 words", "5 words"]  correct: 1
-  explanation: "Water, better, and car all end with a silent R. Just let the word fade out softly."
-
-PHONEME TAGS (use one per card): broad_A, silent_r, yod, schwa, short_O, diphthong, linking
-
-SHADOWING SEGMENTS — generate exactly 8 segments:
+SHADOWING SEGMENTS — exactly 8:
 - text: a real 1-2 sentence chunk from the source, max 20 words
-- tip: one short English sentence (max 80 chars), mention 1-2 specific words and what to watch for
-- words_to_watch: 1-3 words from this segment that need pronunciation attention`;
+- tip: one short English sentence (max 80 chars) mentioning 1-2 specific words
+- words_to_watch: 1-3 strings, words from this segment`;
 
 const USER_PROMPT_TEMPLATE = `Source text:
 
@@ -68,26 +54,25 @@ Return ONLY this JSON. The response is being prefilled to start with "{" — con
 {
   "cards": [
     {
-      "card_type": "sound_compare",
-      "phoneme": "broad_A",
-      "question": "Short English question, max 120 chars",
-      "options": ["opt1 ≤40 chars", "opt2 ≤40 chars", "opt3 ≤40 chars", "opt4 ≤40 chars"],
-      "correct": 0,
-      "explanation": "ONE sentence, ≤100 chars, plain English with a physical action or re-spelling"
+      "type": "listen_choose",
+      "word": "water",
+      "instruction": "Listen to three versions of \\"water\\". Which one is British English?",
+      "correct": 1,
+      "explanation": "British \\"water\\" drops the R at the end — sounds like \\"waw-tuh\\". Keep your tongue relaxed, don't curl it up."
     }
   ],
   "segments": [
     {
       "text": "Real ≤20-word chunk from source.",
-      "tip": "≤80 chars English tip mentioning specific words",
+      "tip": "≤80 chars tip mentioning specific words",
       "words_to_watch": ["word1", "word2"]
     }
   ],
-  "summary": "≤80 chars English summary of which features this text trains",
+  "summary": "≤80 chars summary",
   "difficulty": "A2|B1|B2|C1"
 }
 
-Generate EXACTLY 3 cards and EXACTLY 8 segments. Stay terse. No IPA. No Chinese.`;
+Generate EXACTLY 3 cards (vary the correct index across them — don't always use 1). Exactly 8 segments. No IPA. No Chinese.`;
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -121,7 +106,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2500,
+        max_tokens: 2000,
         system: SYSTEM_PROMPT,
         messages: [
           { role: 'user', content: USER_PROMPT_TEMPLATE.replace('{TEXT}', trimmed) },
@@ -163,6 +148,15 @@ exports.handler = async (event) => {
     if (!parsed.cards || !Array.isArray(parsed.cards) || parsed.cards.length === 0) {
       return respond(422, { error: 'AI generated no cards, please try different text' });
     }
+
+    // Sanitise each card: clamp correct to 0..2, ensure word/instruction/explanation exist
+    parsed.cards = parsed.cards.map((c, idx) => ({
+      type: 'listen_choose',
+      word: String(c.word || '').toLowerCase().replace(/[^a-z']/g, '') || 'word',
+      instruction: c.instruction || `Listen to three versions of "${c.word || 'this word'}". Which one is British English?`,
+      correct: Math.max(0, Math.min(2, Number.isInteger(c.correct) ? c.correct : (idx % 3))),
+      explanation: c.explanation || 'British pronunciation differs from American — listen carefully and copy the rhythm.',
+    }));
 
     if (!parsed.segments || !Array.isArray(parsed.segments) || parsed.segments.length === 0) {
       parsed.segments = [{

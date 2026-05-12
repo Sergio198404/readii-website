@@ -62,11 +62,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .card-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:28px 24px;box-shadow:var(--shadow)}
 .card-question{font-family:var(--serif);font-size:20px;line-height:1.4;margin-bottom:24px;color:var(--ink)}
 .options{display:flex;flex-direction:column;gap:10px}
-.option{display:block;width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);font-family:var(--sans);font-size:15px;text-align:left;cursor:pointer;transition:all .15s;color:var(--ink)}
-.option:hover{border-color:var(--gold);background:var(--gold-pale)}
-.option.correct{border-color:var(--green);background:var(--green-pale);color:var(--green)}
-.option.wrong{border-color:var(--red);background:var(--red-pale);color:var(--red)}
-.option.dimmed{opacity:.4;pointer-events:none}
+.option-audio{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;transition:all .15s;color:var(--ink);user-select:none}
+.option-audio:hover{border-color:var(--gold);background:var(--gold-pale)}
+.option-audio.correct{border-color:var(--green);background:var(--green-pale)}
+.option-audio.wrong{border-color:var(--red);background:var(--red-pale)}
+.option-audio.dimmed{opacity:.45;cursor:default}
+.option-audio.dimmed:hover{border-color:var(--border);background:var(--white)}
+.option-audio.answered{cursor:default}
+.play-btn{width:42px;height:42px;border-radius:50%;background:var(--bg);border:1px solid var(--border);font-size:14px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--ink)}
+.play-btn:hover{background:var(--gold-pale);border-color:var(--gold);transform:scale(1.05)}
+.play-btn:active{transform:scale(.95)}
+.option-label{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink)}
 .card-explain{margin-top:20px;padding:16px;border-radius:10px;font-size:13px;line-height:1.7;display:none}
 .card-explain.show{display:block}
 .card-explain.correct-explain{background:var(--green-pale);color:#1b5e20}
@@ -392,8 +398,9 @@ let currentSegmentText = '';
 let segmentScores = [];
 let readoutScore = 0;
 let challengeData = null;
-let isRecording = false;
-let recognition = null;
+let currentRecognition = null;
+let recordingTimeout = null;
+let cardAnswered = false;
 
 // Readout sub-state machine
 let readoutState = 'listen';  // listen | feedback | drill | retry | done
@@ -654,35 +661,63 @@ function showCard() {
   }
 
   const card = cards[cardIdx];
+  const correctIdx = typeof card.correct === 'number' ? Math.max(0, Math.min(2, card.correct)) : 1;
+
   document.getElementById('cardNum').textContent = `Card ${cardIdx + 1} / ${cards.length}`;
   document.getElementById('phonemeTag').textContent = (card.phoneme || 'pronunciation').replace(/_/g, ' ');
+  document.getElementById('cardQuestion').textContent =
+    card.instruction || `Listen to three versions of "${card.word || 'this word'}". Which one is British English?`;
 
-  document.getElementById('cardQuestion').textContent = card.question || '';
-
+  cardAnswered = false;
   const container = document.getElementById('optionsContainer');
   container.innerHTML = '';
-  (card.options || []).forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option';
-    btn.textContent = opt;
-    btn.addEventListener('click', () => selectOption(i, card.correct, card));
-    container.appendChild(btn);
-  });
+  const labels = ['A', 'B', 'C'];
+  for (let i = 0; i < 3; i++) {
+    const row = document.createElement('div');
+    row.className = 'option-audio';
+    row.addEventListener('click', () => {
+      if (cardAnswered) return;
+      selectAudioOption(i, correctIdx, card);
+    });
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'play-btn';
+    playBtn.type = 'button';
+    playBtn.textContent = '▶';
+    playBtn.setAttribute('aria-label', `Play option ${labels[i]}`);
+    playBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      playOptionAudio(card.word, i, correctIdx);
+    });
+    row.appendChild(playBtn);
+
+    const label = document.createElement('span');
+    label.className = 'option-label';
+    label.textContent = labels[i];
+    row.appendChild(label);
+
+    container.appendChild(row);
+  }
 
   document.getElementById('cardExplain').classList.remove('show', 'correct-explain', 'wrong-explain');
   document.getElementById('btnNext').classList.remove('show');
 }
 
-function selectOption(selected, correctIdx, card) {
-  const options = document.querySelectorAll('.option');
+function selectAudioOption(selected, correctIdx, card) {
+  if (cardAnswered) return;
+  cardAnswered = true;
+  const options = document.querySelectorAll('#optionsContainer .option-audio');
   const isCorrect = selected === correctIdx;
 
   options.forEach((opt, i) => {
-    opt.style.pointerEvents = 'none';
+    opt.classList.add('answered');
     if (i === correctIdx) opt.classList.add('correct');
-    if (i === selected && !isCorrect) opt.classList.add('wrong');
-    if (i !== selected && i !== correctIdx) opt.classList.add('dimmed');
+    else if (i === selected) opt.classList.add('wrong');
+    else opt.classList.add('dimmed');
   });
+
+  // Reinforce by playing the correct version once
+  setTimeout(() => playOptionAudio(card.word, correctIdx, correctIdx), 350);
 
   const explain = document.getElementById('cardExplain');
   explain.textContent = card.explanation || '';
@@ -695,8 +730,44 @@ function selectOption(selected, correctIdx, card) {
     if (lives <= 0) return;
   }
 
-  track('card_answer', { card_idx: cardIdx, correct: isCorrect, phoneme: card.phoneme, lives });
+  track('card_answer', {
+    card_idx: cardIdx,
+    correct: isCorrect,
+    word: card.word,
+    phoneme: card.phoneme,
+    lives,
+  });
   document.getElementById('btnNext').classList.add('show');
+}
+
+function playOptionAudio(word, optionIndex, correctIndex) {
+  if (!('speechSynthesis' in window)) return toast('Speech not supported in this browser');
+  if (!word) return;
+  window.speechSynthesis.cancel();
+  setTimeout(() => {
+    const u = new SpeechSynthesisUtterance(word);
+    const voices = cachedVoices.length ? cachedVoices : (window.speechSynthesis.getVoices() || []);
+    const brit = voices.find(v => v.lang === 'en-GB');
+    const amer = voices.find(v => v.lang === 'en-US');
+    const fallback = voices.find(v => v.lang && v.lang.startsWith('en'));
+
+    if (optionIndex === correctIndex) {
+      // British: clean, slightly slower
+      u.voice = brit || fallback;
+      u.lang = 'en-GB';
+      u.rate = 0.9;
+      u.pitch = 1.0;
+    } else {
+      // Non-British distractor — different voice if possible, plus rate/pitch tweaks
+      // so the two wrong options sound distinct from each other
+      u.voice = amer || fallback;
+      u.lang = brit ? 'en-US' : 'en';
+      const isFirstWrong = optionIndex < correctIndex;
+      u.rate = isFirstWrong ? 1.0 : 1.1;
+      u.pitch = isFirstWrong ? 0.85 : 1.15;
+    }
+    window.speechSynthesis.speak(u);
+  }, 50);
 }
 
 document.getElementById('btnNext')?.addEventListener('click', () => {
@@ -789,54 +860,77 @@ function speakDrillWord() {
   speakWord(errorWords[drillIdx]);
 }
 
-// ─────────── Generic Recording ───────────
-function startRecording(onResult, onError) {
-  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-    return toast('Speech recognition needs Chrome');
+// ─────────── Recording (one-instance, tap-again-to-stop, auto-timeout) ───────────
+function startContextualRecording(opts) {
+  // opts: { btn, hint, hintIdle, hintRecording, timeoutMs, onResult }
+  if (currentRecognition) {
+    // Already recording — tap = stop
+    currentRecognition.stop();
+    return;
   }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'en-GB';
-  recognition.continuous = false;
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 3;
+  if (!SR) { toast('Speech recognition needs Chrome'); return; }
 
-  recognition.onstart = () => { isRecording = true; };
-  recognition.onresult = (e) => {
+  currentRecognition = new SR();
+  currentRecognition.lang = 'en-GB';
+  currentRecognition.continuous = false;
+  currentRecognition.interimResults = false;
+  currentRecognition.maxAlternatives = 3;
+
+  let resultFired = false;
+
+  currentRecognition.onstart = () => {
+    opts.btn.classList.add('recording');
+    if (opts.hint) opts.hint.textContent = opts.hintRecording;
+  };
+
+  currentRecognition.onresult = (e) => {
+    clearTimeout(recordingTimeout);
+    resultFired = true;
     const alts = [];
     for (let i = 0; i < e.results[0].length; i++) {
       alts.push({ transcript: e.results[0][i].transcript, confidence: e.results[0][i].confidence });
     }
-    onResult(alts);
+    currentRecognition = null;
+    opts.btn.classList.remove('recording');
+    opts.onResult(alts);
   };
-  recognition.onerror = (e) => {
-    isRecording = false;
-    onError && onError(e.error || 'unknown');
-  };
-  recognition.onend = () => { isRecording = false; };
-  recognition.start();
-}
 
-function stopRecording() {
-  if (recognition) recognition.stop();
-  isRecording = false;
-}
-
-// ─────────── Listen sub-state recording ───────────
-function toggleListenRecording() {
-  if (isRecording) { stopRecording(); return; }
-  document.getElementById('btnRecord').classList.add('recording');
-  document.getElementById('recordHint').textContent = 'Recording…';
-  startRecording(
-    (alts) => {
-      document.getElementById('btnRecord').classList.remove('recording');
-      finishListenReadout(alts[0].transcript, Math.round((alts[0].confidence || 0) * 100));
-    },
-    (err) => {
-      document.getElementById('btnRecord').classList.remove('recording');
-      document.getElementById('recordHint').textContent = err === 'no-speech' ? 'No speech detected, try again' : 'Recording error, try again';
+  currentRecognition.onerror = (e) => {
+    clearTimeout(recordingTimeout);
+    opts.btn.classList.remove('recording');
+    if (opts.hint) {
+      opts.hint.textContent = e.error === 'no-speech' ? 'No speech detected. Try again.' : 'Recording error. Try again.';
     }
-  );
+    currentRecognition = null;
+  };
+
+  currentRecognition.onend = () => {
+    clearTimeout(recordingTimeout);
+    opts.btn.classList.remove('recording');
+    // If neither result nor error wrote a new hint, restore idle hint
+    if (!resultFired && opts.hint && opts.hint.textContent === opts.hintRecording) {
+      opts.hint.textContent = opts.hintIdle;
+    }
+    currentRecognition = null;
+  };
+
+  currentRecognition.start();
+
+  recordingTimeout = setTimeout(() => {
+    if (currentRecognition) currentRecognition.stop();
+  }, opts.timeoutMs);
+}
+
+function toggleListenRecording() {
+  startContextualRecording({
+    btn: document.getElementById('btnRecord'),
+    hint: document.getElementById('recordHint'),
+    hintIdle: 'Tap to record',
+    hintRecording: 'Recording... tap to stop',
+    timeoutMs: 15000,
+    onResult: (alts) => finishListenReadout(alts[0].transcript, Math.round((alts[0].confidence || 0) * 100)),
+  });
 }
 
 function finishListenReadout(transcript, confidence) {
@@ -962,26 +1056,21 @@ function showDrillWord() {
 }
 
 function toggleDrillRecording() {
-  if (isRecording) { stopRecording(); return; }
-  document.getElementById('btnDrillRecord').classList.add('recording');
-  document.getElementById('drillHint').textContent = 'Recording…';
-  startRecording(
-    (alts) => {
-      document.getElementById('btnDrillRecord').classList.remove('recording');
-      document.getElementById('drillHint').textContent = `Press and say: "${errorWords[drillIdx]}"`;
-      const expected = errorWords[drillIdx];
-      // Check all alternatives for any pass
+  const word = errorWords[drillIdx];
+  startContextualRecording({
+    btn: document.getElementById('btnDrillRecord'),
+    hint: document.getElementById('drillHint'),
+    hintIdle: `Press and say: "${word}"`,
+    hintRecording: 'Recording... tap to stop',
+    timeoutMs: 4000,
+    onResult: (alts) => {
       let passed = false;
       for (const a of alts) {
-        if (checkWordAttempt(expected, a.transcript) === 'pass') { passed = true; break; }
+        if (checkWordAttempt(word, a.transcript) === 'pass') { passed = true; break; }
       }
       handleDrillResult(passed ? 'pass' : 'fail');
     },
-    () => {
-      document.getElementById('btnDrillRecord').classList.remove('recording');
-      handleDrillResult('fail');
-    }
-  );
+  });
 }
 
 function checkWordAttempt(expected, transcript) {
@@ -1058,19 +1147,14 @@ function startRetry() {
 }
 
 function toggleRetryRecording() {
-  if (isRecording) { stopRecording(); return; }
-  document.getElementById('btnRetryRecord').classList.add('recording');
-  document.getElementById('retryHint').textContent = 'Recording…';
-  startRecording(
-    (alts) => {
-      document.getElementById('btnRetryRecord').classList.remove('recording');
-      finishRetry(alts[0].transcript);
-    },
-    (err) => {
-      document.getElementById('btnRetryRecord').classList.remove('recording');
-      document.getElementById('retryHint').textContent = err === 'no-speech' ? 'No speech detected, try again' : 'Recording error, try again';
-    }
-  );
+  startContextualRecording({
+    btn: document.getElementById('btnRetryRecord'),
+    hint: document.getElementById('retryHint'),
+    hintIdle: 'Tap to record',
+    hintRecording: 'Recording... tap to stop',
+    timeoutMs: 15000,
+    onResult: (alts) => finishRetry(alts[0].transcript),
+  });
 }
 
 function finishRetry(transcript) {
