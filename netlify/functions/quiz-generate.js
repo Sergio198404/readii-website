@@ -16,7 +16,7 @@ Your cards must focus on these British English features that Chinese speakers st
 - connected: liaison between words — an apple → /ənˈæpl/
 
 Rules:
-1. Generate exactly 3-5 cards based on the text provided
+1. Generate exactly 3 cards based on the text provided
 2. Each card MUST reference a specific word FROM the user's text
 3. Card types: "ipa_choice" (which IPA is correct), "comparison" (British vs American), "count" (how many instances of X), "concept" (what is X)
 4. All explanations must be in Chinese (简体中文) — this is critical for the target audience
@@ -81,7 +81,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1500,
+        max_tokens: 2000,
         system: SYSTEM_PROMPT,
         messages: [
           { role: 'user', content: USER_PROMPT_TEMPLATE.replace('{TEXT}', trimmed) },
@@ -98,6 +98,7 @@ exports.handler = async (event) => {
 
     const data = await resp.json();
     const raw = data.content?.[0]?.text || '';
+    const stopReason = data.stop_reason || 'unknown';
 
     // Prefilled "{" so prepend it back, then strip any stray markdown fences
     const withBrace = '{' + raw.replace(/```json|```/g, '').trim();
@@ -113,7 +114,7 @@ exports.handler = async (event) => {
           cards = JSON.parse(withBrace.slice(start, end + 1));
         } catch (parseErr2) {
           console.error('JSON parse failed (after extract):', parseErr2, 'Raw:', raw.slice(0, 500));
-          return respond(422, { error: `AI returned invalid format. Raw: ${raw.slice(0, 250)}` });
+          return respond(422, { error: `AI returned invalid format (stop_reason: ${stopReason}). Raw: ${raw.slice(0, 250)}` });
         }
       } else {
         console.error('JSON parse failed (no braces):', parseErr1, 'Raw:', raw.slice(0, 500));
