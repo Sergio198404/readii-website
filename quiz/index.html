@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Readii · 英式英语发音测验</title>
-<meta name="description" content="粘贴任何英文，AI 帮你生成英式发音测验。针对中文母语者，中英双语反馈。">
+<title>Readii · British Pronunciation Quiz</title>
+<meta name="description" content="Paste any English text. AI creates British pronunciation drills with word-level feedback.">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -22,23 +22,22 @@
 html{font-size:16px}
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh}
 
-/* ── Layout ── */
+/* Layout */
 .container{max-width:520px;margin:0 auto;padding:20px 16px 40px}
 .brand{text-align:center;margin-bottom:32px;padding-top:16px}
 .brand h1{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--forest);letter-spacing:.02em}
 .brand p{font-size:13px;color:var(--muted);margin-top:4px}
 
-/* ── Screens ── */
+/* Screens */
 .screen{display:none}.screen.active{display:block}
 
-/* ── Lives Bar ── */
+/* Lives Bar */
 .lives-bar{display:flex;align-items:center;justify-content:center;gap:3px;margin-bottom:20px;padding:10px;background:var(--white);border-radius:10px;border:1px solid var(--border)}
 .lives-bar .heart{font-size:14px;transition:transform .2s,opacity .2s}
 .lives-bar .heart.lost{opacity:.15;transform:scale(.7)}
 .lives-bar .count{font-size:13px;font-weight:700;color:var(--red);margin-left:8px}
-.lives-bar .streak{font-size:13px;color:var(--muted);margin-left:auto}
 
-/* ── Paste Screen ── */
+/* Paste */
 .paste-box{position:relative}
 .paste-box textarea{width:100%;height:180px;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;font-family:var(--sans);font-size:14px;line-height:1.7;resize:vertical;background:var(--white);transition:border-color .2s}
 .paste-box textarea:focus{outline:none;border-color:var(--gold)}
@@ -50,19 +49,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .btn-start:active{transform:none}
 .btn-start:disabled{background:#ccc;cursor:not-allowed;transform:none}
 
-/* ── Loading ── */
+/* Loading */
 .loading-box{text-align:center;padding:60px 20px}
 .spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 24px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-box h2{font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:8px}
 .loading-box p{font-size:13px;color:var(--muted)}
 
-/* ── Quiz Card ── */
+/* Quiz Card */
 .card-progress{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-size:12px;color:var(--muted)}
 .card-progress .phoneme-tag{background:var(--gold-pale);color:var(--gold);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
 .card-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:28px 24px;box-shadow:var(--shadow)}
 .card-question{font-family:var(--serif);font-size:20px;line-height:1.4;margin-bottom:24px;color:var(--ink)}
-.card-question small{display:block;font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:6px;font-style:normal}
 .options{display:flex;flex-direction:column;gap:10px}
 .option{display:block;width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);font-family:var(--sans);font-size:15px;text-align:left;cursor:pointer;transition:all .15s;color:var(--ink)}
 .option:hover{border-color:var(--gold);background:var(--gold-pale)}
@@ -76,31 +74,56 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .btn-next{display:none;width:100%;padding:14px;margin-top:16px;background:var(--forest);color:var(--white);border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
 .btn-next:hover{background:var(--forest-light)}
 .btn-next.show{display:block}
+.btn-secondary{display:block;width:100%;padding:14px;margin-top:8px;background:var(--white);color:var(--forest);border:1.5px solid var(--forest);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-secondary:hover{background:var(--forest-pale)}
 
-/* ── Life Lost Animation ── */
+/* Life Lost Animation */
 @keyframes life-lost{0%{transform:scale(1)}30%{transform:scale(1.6)}60%{transform:scale(.6)}100%{transform:scale(1);opacity:.15}}
 .heart.animating{animation:life-lost .5s ease-out forwards}
 
-/* ── Read Aloud Screen ── */
-.readout-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:28px 24px;text-align:center}
+/* Readout shared */
 .segment-progress{font-size:12px;color:var(--gold);font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-align:center}
-.readout-text{font-family:var(--serif);font-size:22px;line-height:1.6;margin-bottom:14px;text-align:left}
-.readout-text .w-green{background:var(--green-pale);padding:1px 4px;border-radius:4px}
-.readout-text .w-yellow{background:var(--yellow-pale);padding:1px 4px;border-radius:4px}
-.readout-text .w-red{background:var(--red-pale);padding:1px 4px;border-radius:4px;font-weight:700}
+.readout-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:28px 24px;text-align:center}
+.readout-text{font-family:var(--serif);font-size:22px;line-height:1.7;margin-bottom:14px;text-align:left}
+.readout-text .w-green{background:var(--green-pale);padding:1px 4px;border-radius:4px;margin-right:2px}
+.readout-text .w-red{background:var(--red-pale);padding:1px 4px;border-radius:4px;font-weight:700;margin-right:2px}
 .readout-text .watch{color:var(--gold);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.readout-text .tappable{cursor:pointer;border-bottom:2px dashed var(--red);text-decoration:none}
+.readout-text .tappable:hover{background:var(--red-pale)}
 .segment-tip{padding:10px 14px;background:var(--gold-pale);border-left:3px solid var(--gold);border-radius:6px;font-size:13px;line-height:1.6;color:#5a4a1a;text-align:left;margin-bottom:18px}
-.btn-listen{padding:12px 24px;border:1.5px solid var(--border);border-radius:10px;background:none;font-size:13px;cursor:pointer;margin:0 6px 12px;transition:all .15s}
+.btn-listen{padding:10px 20px;border:1.5px solid var(--border);border-radius:10px;background:none;font-size:13px;cursor:pointer;margin:0 6px 12px;transition:all .15s;font-family:var(--sans)}
 .btn-listen:hover{border-color:var(--forest);color:var(--forest)}
 .btn-record{width:100px;height:100px;border-radius:50%;background:var(--forest);border:none;color:var(--white);font-size:32px;cursor:pointer;margin:20px auto;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 4px 20px rgba(45,90,79,.25)}
 .btn-record:hover{transform:scale(1.05);box-shadow:0 6px 24px rgba(45,90,79,.35)}
 .btn-record.recording{background:var(--red);animation:pulse-rec 1.2s infinite}
 @keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(211,47,47,.3)}50%{box-shadow:0 0 0 16px rgba(211,47,47,0)}}
 .record-hint{font-size:12px;color:var(--muted);margin-top:8px}
-.readout-score{font-family:var(--serif);font-size:48px;font-weight:700;margin:20px 0 8px}
-.readout-score-label{font-size:13px;color:var(--muted)}
 
-/* ── Result Screen ── */
+/* Feedback sub-state */
+.fb-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;text-align:left}
+.fb-summary{font-size:13px;color:var(--ink);margin-top:14px;font-weight:600}
+.fb-helper{font-size:11px;color:var(--muted);margin-top:8px}
+
+/* Drill sub-state */
+.drill-card{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:32px 24px;text-align:center;box-shadow:var(--shadow)}
+.drill-progress{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.drill-word{font-family:var(--serif);font-size:46px;font-weight:700;color:var(--ink);margin:8px 0 18px;letter-spacing:.01em}
+.drill-tip{font-size:14px;line-height:1.7;color:var(--ink);margin:14px 0;text-align:left;padding:12px 14px;background:var(--gold-pale);border-left:3px solid var(--gold);border-radius:6px}
+.drill-body{font-size:13px;color:var(--ink);line-height:1.6;margin:12px 0;text-align:left;padding:12px 14px;background:var(--bg);border-radius:8px}
+.drill-result{font-size:18px;font-weight:700;margin:14px 0;min-height:24px}
+.drill-result.pass{color:var(--green)}
+.drill-result.fail{color:var(--red);font-size:14px;font-weight:600}
+
+/* Done sub-state (before/after) */
+.before-after{display:flex;gap:12px;margin:16px 0}
+.before-after>div{flex:1;padding:18px 12px;border-radius:10px;text-align:center}
+.ba-before{background:var(--red-pale)}
+.ba-after{background:var(--green-pale)}
+.ba-num{font-family:var(--serif);font-size:32px;font-weight:700;color:var(--ink)}
+.ba-label{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.improved-badge{display:inline-block;background:var(--green);color:var(--white);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;margin:8px 0}
+
+/* Result Screen */
 .result-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
 .result-header{background:linear-gradient(135deg,var(--forest) 0%,var(--forest-light) 100%);padding:32px;text-align:center;color:var(--white)}
 .result-score{font-family:var(--serif);font-size:56px;font-weight:700}
@@ -124,7 +147,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .try-again{display:block;width:100%;text-align:center;padding:12px;margin-top:12px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer}
 .try-again:hover{color:var(--ink)}
 
-/* ── Challenge Invite Screen ── */
+/* Challenge Invite */
 .invite-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:32px 24px;text-align:center}
 .invite-box .emoji{font-size:40px;margin-bottom:12px}
 .invite-box h2{font-family:var(--serif);font-size:22px;margin-bottom:8px}
@@ -137,7 +160,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .leaderboard-row .name{flex:1}
 .leaderboard-row .lb-score{font-weight:700;color:var(--forest)}
 
-/* ── No Lives Modal ── */
+/* No Lives Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
 .modal{background:var(--white);border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center}
@@ -151,11 +174,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .modal .wait-msg{font-size:12px;color:var(--muted);margin-top:8px}
 .modal .close-modal{margin-top:12px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer}
 
-/* ── Toast ── */
+/* Toast */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--white);padding:10px 20px;border-radius:10px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
 
-/* ── Challenge Link Box ── */
+/* Challenge Link Box */
 .link-box{margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;display:none}
 .link-box.show{display:block}
 .link-box input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:monospace;text-align:center}
@@ -166,151 +189,191 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .card-question{font-size:18px}
   .result-score{font-size:44px}
   .btn-record{width:80px;height:80px;font-size:26px}
+  .drill-word{font-size:38px}
 }
 </style>
 </head>
 <body>
 <div class="container">
-  <!-- Brand -->
   <div class="brand">
     <h1>Readii</h1>
-    <p>英式英语发音测验 · British Pronunciation Quiz</p>
+    <p>British Pronunciation Quiz</p>
   </div>
 
-  <!-- Lives Bar -->
   <div class="lives-bar" id="livesBar"></div>
 
-  <!-- ═══ Screen: Paste ═══ -->
+  <!-- Paste -->
   <div class="screen active" id="screenPaste">
     <div class="paste-box">
-      <textarea id="inputText" placeholder="Paste any English text here…&#10;粘贴任何英文到这里…&#10;&#10;例如：演讲稿、新闻、面试稿、课文" maxlength="2000"></textarea>
+      <textarea id="inputText" placeholder="Paste any English text here..." maxlength="2000"></textarea>
       <div class="char-count"><span id="charCount">0</span> / 2,000</div>
     </div>
-    <p class="paste-hint">AI 会自动分析你的文本，生成针对中文母语者的英式发音测验<br>AI analyses your text and creates British pronunciation quizzes for Chinese speakers</p>
-    <button class="btn-start" id="btnStart" disabled>开始测验 · Start Quiz →</button>
+    <p class="paste-hint">Paste any English text. AI creates pronunciation drills.</p>
+    <button class="btn-start" id="btnStart" disabled>Start Quiz →</button>
   </div>
 
-  <!-- ═══ Screen: Loading ═══ -->
+  <!-- Loading -->
   <div class="screen" id="screenLoading">
     <div class="loading-box">
       <div class="spinner"></div>
-      <h2>正在分析你的内容…</h2>
-      <p>Analysing pronunciation challenges</p>
+      <h2>Analysing your text…</h2>
+      <p>Finding pronunciation challenges</p>
     </div>
   </div>
 
-  <!-- ═══ Screen: Quiz ═══ -->
+  <!-- Quiz Cards -->
   <div class="screen" id="screenQuiz">
     <div class="card-progress">
-      <span id="cardNum">Card 1 / 5</span>
+      <span id="cardNum">Card 1 / 3</span>
       <span class="phoneme-tag" id="phonemeTag">broad A</span>
     </div>
     <div class="card-box">
       <p class="card-question" id="cardQuestion"></p>
       <div class="options" id="optionsContainer"></div>
       <div class="card-explain" id="cardExplain"></div>
-      <button class="btn-next" id="btnNext">下一题 · Next →</button>
+      <button class="btn-next" id="btnNext">Next →</button>
     </div>
   </div>
 
-  <!-- ═══ Screen: Read Aloud (segment-by-segment) ═══ -->
+  <!-- Readout (state machine: listen → feedback → drill → retry → done) -->
   <div class="screen" id="screenReadout">
-    <div class="readout-box">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:6px">跟读练习 · Shadow each segment</p>
-      <p class="segment-progress" id="segmentProgress">第 1 段 / 共 1 段</p>
-      <div class="readout-text" id="readoutText"></div>
-      <div class="segment-tip" id="segmentTip">💡</div>
+    <p class="segment-progress" id="segmentProgress">Segment 1 of 8</p>
+
+    <!-- Sub: listen (first read) -->
+    <div class="readout-box" id="stateListen">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Read this segment aloud</p>
+      <div class="readout-text" id="listenText"></div>
+      <div class="segment-tip" id="listenTip">💡</div>
       <div>
-        <button class="btn-listen" onclick="listenDemo()">▶ 听标准 · Listen</button>
-        <button class="btn-listen" onclick="listenDemo(0.8)">🐢 慢速 · Slow</button>
+        <button class="btn-listen" onclick="listenDemo(1)">▶ Listen</button>
+        <button class="btn-listen" onclick="listenDemo(0.6)">🐢 Slow</button>
       </div>
-      <button class="btn-record" id="btnRecord" onclick="toggleRecording()">🎤</button>
-      <p class="record-hint" id="recordHint">点击开始录音 · Click to record</p>
-      <div id="readoutResult" style="display:none">
-        <p class="readout-score" id="readoutScore">—</p>
-        <p class="readout-score-label">本段得分 · Segment Score</p>
-        <button class="btn-next show" id="btnNextSegment" style="margin-top:20px" onclick="nextSegment()">下一段 →</button>
+      <button class="btn-record" id="btnRecord" onclick="toggleListenRecording()">🎤</button>
+      <p class="record-hint" id="recordHint">Tap to record</p>
+    </div>
+
+    <!-- Sub: feedback (Original vs You said) -->
+    <div class="readout-box" id="stateFeedback" style="display:none">
+      <p class="fb-label">Original</p>
+      <p class="readout-text" id="fbOriginal"></p>
+      <p class="fb-label">You said</p>
+      <p class="readout-text" id="fbYouSaid"></p>
+      <p class="fb-summary" id="fbSummary"></p>
+      <p class="fb-helper">Tap any word above to hear it</p>
+      <button class="btn-next show" id="btnFix" onclick="startDrill()" style="display:none">Fix these words →</button>
+      <button class="btn-next show" id="btnSkipFix" onclick="goToNextSegment()" style="display:none">Next segment →</button>
+    </div>
+
+    <!-- Sub: drill (per-word correction) -->
+    <div class="drill-card" id="stateDrill" style="display:none">
+      <p class="drill-progress" id="drillProgress">Word 1 of 1</p>
+      <p class="drill-word" id="drillWord">word</p>
+      <button class="btn-listen" onclick="speakDrillWord()">▶ Hear it</button>
+      <p class="drill-tip" id="drillTip">💡</p>
+      <p class="drill-body" id="drillBody"></p>
+      <button class="btn-record" id="btnDrillRecord" onclick="toggleDrillRecording()">🎤</button>
+      <p class="record-hint" id="drillHint">Tap and say it</p>
+      <p class="drill-result" id="drillResult" style="display:none"></p>
+    </div>
+
+    <!-- Sub: retry (re-read full sentence) -->
+    <div class="readout-box" id="stateRetry" style="display:none">
+      <p style="font-size:14px;font-weight:700;margin-bottom:14px;color:var(--forest)">✨ Great! Now read the full sentence again.</p>
+      <div class="readout-text" id="retryText"></div>
+      <div>
+        <button class="btn-listen" onclick="listenDemo(1)">▶ Listen</button>
+        <button class="btn-listen" onclick="listenDemo(0.6)">🐢 Slow</button>
       </div>
+      <button class="btn-record" id="btnRetryRecord" onclick="toggleRetryRecording()">🎤</button>
+      <p class="record-hint" id="retryHint">Tap to record</p>
+    </div>
+
+    <!-- Sub: done (before/after) -->
+    <div class="readout-box" id="stateDone" style="display:none">
+      <p style="font-size:14px;font-weight:700;margin-bottom:6px">Segment progress</p>
+      <div class="before-after">
+        <div class="ba-before"><div class="ba-num" id="baBefore">0/0</div><div class="ba-label">Before</div></div>
+        <div class="ba-after"><div class="ba-num" id="baAfter">0/0</div><div class="ba-label">After</div></div>
+      </div>
+      <p id="baImprovedBadge" style="display:none" class="improved-badge">📈 Improved!</p>
+      <button class="btn-next show" onclick="goToNextSegment()">Next segment →</button>
     </div>
   </div>
 
-  <!-- ═══ Screen: Result ═══ -->
+  <!-- Result -->
   <div class="screen" id="screenResult">
     <div class="result-box">
       <div class="result-header">
         <p class="result-score" id="finalScore">0%</p>
-        <p class="result-label">英式发音知识得分 · British Pronunciation Score</p>
+        <p class="result-label">British Pronunciation Score</p>
       </div>
       <div class="result-stats">
-        <div class="result-stat"><span class="result-stat-num" id="statCorrect">0</span><span class="result-stat-lbl">答对 Correct</span></div>
-        <div class="result-stat"><span class="result-stat-num" id="statTotal">0</span><span class="result-stat-lbl">总题 Total</span></div>
-        <div class="result-stat"><span class="result-stat-num" id="statLives">0</span><span class="result-stat-lbl">剩余生命 Lives</span></div>
+        <div class="result-stat"><span class="result-stat-num" id="statCorrect">0</span><span class="result-stat-lbl">Correct</span></div>
+        <div class="result-stat"><span class="result-stat-num" id="statTotal">0</span><span class="result-stat-lbl">Total</span></div>
+        <div class="result-stat"><span class="result-stat-num" id="statLives">0</span><span class="result-stat-lbl">Lives</span></div>
       </div>
       <div class="result-body">
         <p class="result-summary" id="resultSummary"></p>
-        <button class="btn-challenge" onclick="createChallenge()">⚔️ 创建挑战，发给朋友 · Challenge a Friend</button>
+        <button class="btn-challenge" onclick="createChallenge()">⚔️ Challenge a Friend</button>
         <div class="link-box" id="linkBox">
           <input type="text" id="challengeLink" readonly onclick="this.select()">
-          <p>链接已复制 · Link copied to clipboard</p>
+          <p>Link copied to clipboard</p>
         </div>
         <div class="share-row">
-          <button onclick="shareWeChat()">微信分享</button>
-          <button onclick="shareXHS()">小红书</button>
-          <button onclick="shareGeneric()">复制链接</button>
+          <button onclick="shareWeChat()">WeChat</button>
+          <button onclick="shareXHS()">Xiaohongshu</button>
+          <button onclick="shareGeneric()">Copy Link</button>
         </div>
         <div class="email-row">
-          <input type="email" id="emailInput" placeholder="留下邮箱，获取完整版 · Leave email for full version">
-          <button onclick="submitEmail()">提交</button>
+          <input type="email" id="emailInput" placeholder="Leave email for the full version">
+          <button onclick="submitEmail()">Submit</button>
         </div>
-        <button class="try-again" onclick="resetAll()">再来一次 · Try Again</button>
+        <button class="try-again" onclick="resetAll()">Try Again</button>
       </div>
     </div>
   </div>
 
-  <!-- ═══ Screen: Challenge Invite ═══ -->
+  <!-- Challenge Invite -->
   <div class="screen" id="screenInvite">
     <div class="invite-box">
       <div class="emoji">⚔️</div>
-      <h2>发音挑战赛</h2>
+      <h2>Pronunciation Challenge</h2>
       <p class="challenger" id="inviteChallenger"></p>
       <div class="score-badge" id="inviteScore"></div>
       <div class="leaderboard" id="inviteLeaderboard"></div>
-      <button class="btn-start" onclick="acceptChallenge()">接受挑战 · Accept Challenge →</button>
+      <button class="btn-start" onclick="acceptChallenge()">Accept Challenge →</button>
     </div>
   </div>
 </div>
 
-<!-- No Lives Modal -->
 <div class="modal-overlay" id="noLivesModal">
   <div class="modal">
     <div class="big-emoji">💔</div>
-    <h2>生命用完！</h2>
+    <h2>Out of lives!</h2>
     <div class="countdown" id="cooldownTimer">10:00</div>
-    <p class="countdown-label">后恢复 · until lives refill</p>
-    <input class="email-skip-input" id="emailSkip" type="email" placeholder="留下邮箱可立即跳过 · Email to skip wait">
-    <button class="btn-email-skip" onclick="emailSkipCooldown()">提交邮箱，立即继续 · Submit & Continue</button>
-    <p class="wait-msg">或者等待倒计时结束 · Or wait for cooldown</p>
-    <button class="close-modal" onclick="closeNoLivesModal()">稍后再说 · Later</button>
+    <p class="countdown-label">until lives refill</p>
+    <input class="email-skip-input" id="emailSkip" type="email" placeholder="Leave email to skip wait">
+    <button class="btn-email-skip" onclick="emailSkipCooldown()">Submit & Continue</button>
+    <p class="wait-msg">Or wait for cooldown</p>
+    <button class="close-modal" onclick="closeNoLivesModal()">Later</button>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
-// ═══════════════════════════════════════════════
-// CONFIG — update these before deploying
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
+// CONFIG
+// ═════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://bltfljdgjxhcmbfduert.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsdGZsamRnanhoY21iZmR1ZXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQwMDMsImV4cCI6MjA5MTM0MDAwM30.WL8e6w1x_Bz437jtke8ZhFF0GpBo2WlG5-7wvLm8o2s'; // ← 填你的 anon key
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsdGZsamRnanhoY21iZmR1ZXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQwMDMsImV4cCI6MjA5MTM0MDAwM30.WL8e6w1x_Bz437jtke8ZhFF0GpBo2WlG5-7wvLm8o2s';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 let SID = localStorage.getItem('readii_sid');
 if (!SID) { SID = crypto.randomUUID(); localStorage.setItem('readii_sid', SID); }
 
@@ -325,27 +388,101 @@ let correct = 0;
 let sourceText = '';
 let segments = [];
 let segmentIdx = 0;
-let segmentScores = []; // per-segment recognition confidence
-let readoutScore = 0;   // average across segments
-let challengeData = null; // when opening a challenge link
+let currentSegmentText = '';
+let segmentScores = [];
+let readoutScore = 0;
+let challengeData = null;
 let isRecording = false;
 let recognition = null;
 
-// ═══════════════════════════════════════════════
+// Readout sub-state machine
+let readoutState = 'listen';  // listen | feedback | drill | retry | done
+let errorWords = [];          // words to drill this segment
+let drillIdx = 0;             // current drill word
+let drillAttempts = 0;        // attempts on current drill word
+let beforeScore = 0;
+let beforeTotal = 0;
+let afterScore = 0;
+let afterTotal = 0;
+let cachedVoices = [];
+
+// ═════════════════════════════════════════════════════
+// WORD TIPS (hard-coded correction library — covers ~30 common British features)
+// ═════════════════════════════════════════════════════
+const WORD_TIPS = {
+  // Non-rhotic (silent final R)
+  water:    { tip: "Don't pronounce the R. Say 'waw-tuh', not 'waw-ter'.", body: "Keep your tongue relaxed at the end. Don't curl the tip up." },
+  better:   { tip: "No R sound at the end. Say 'bet-uh', not 'bet-er'.", body: "Let the word end with a soft 'uh'." },
+  rather:   { tip: "No R at the end. Say 'rah-thuh', not 'rah-ther'.", body: "Tongue stays flat, don't curl it." },
+  after:    { tip: "Say 'ahf-tuh', not 'af-ter'. Long A, no final R.", body: "Open wide for the A, tongue stays down at the end." },
+  car:      { tip: "Say 'cah', not 'car'. No R sound.", body: "Open your mouth, don't curl your tongue." },
+  far:      { tip: "Say 'fah', not 'far'. Just open and stop.", body: "No tongue curl at the end." },
+  here:     { tip: "Say 'hee-uh', not 'heer'. Soften the ending.", body: "Don't pull your tongue back at the end." },
+  there:    { tip: "Say 'theh-uh', not 'thair'. Soft ending.", body: "Relax your tongue at the end." },
+  mother:   { tip: "Say 'muh-thuh', not 'muh-ther'.", body: "Soft fade at the end, no R." },
+  father:   { tip: "Say 'fah-thuh', long A and silent final R.", body: "Wide open A, then soft 'uh' ending." },
+  morning:  { tip: "Say 'mor-ning' with a soft, almost silent R.", body: "Don't curl your tongue for the R — just glide past it." },
+  cold:     { tip: "Round your lips slightly for the O.", body: "Lips form a small O shape, not a flat 'ah'." },
+
+  // Broad A (long open vowel)
+  bath:     { tip: "Long open A: say 'bahth', not 'bath' with a short A.", body: "Open your mouth wide. Pull your tongue back. Like saying 'ah' at the doctor." },
+  path:     { tip: "Same as bath: 'pahth', long open vowel.", body: "Drop your jaw, tongue back." },
+  castle:   { tip: "Say 'cah-sul', not 'cas-sul'. Long A.", body: "Open wide for the A." },
+  dance:    { tip: "British: 'dahns', not 'dans'. Long open A.", body: "Jaw drops, mouth opens wide." },
+  chance:   { tip: "Say 'chahns', not 'chans'. Open that A.", body: "Wide mouth, tongue pulled back." },
+  grass:    { tip: "Say 'grahs', not 'grass'. Long A sound.", body: "Open your mouth more than you think." },
+  glass:    { tip: "Say 'glahs', not 'glass'. Same long A.", body: "Drop your jaw for the A." },
+  laugh:    { tip: "Say 'lahf', not 'laf'. Long open A.", body: "Open wide for the A." },
+  staff:    { tip: "Say 'stahf', not 'staff' with short A.", body: "Long open A — jaw drops." },
+
+  // Yod (insert Y sound)
+  new:      { tip: "British: 'nyoo', not 'noo'. Add a tiny Y sound.", body: "Touch your tongue to the roof briefly before the 'oo'." },
+  news:     { tip: "Say 'nyooz', not 'nooz'. Tiny Y before the vowel.", body: "Quick tongue tap on the roof of your mouth." },
+  tune:     { tip: "Say 'tyoon', not 'toon'. Y sound after the T.", body: "T then quick Y then 'oon'." },
+  duke:     { tip: "Say 'dyook', not 'dook'. Add that Y.", body: "D then quick Y then 'ook'." },
+  tuesday:  { tip: "Say 'tyooz-day', not 'tooz-day'.", body: "Y sound right after the T." },
+  student:  { tip: "Say 'styoo-dent', not 'stoo-dent'.", body: "Tiny Y between the T and the 'oo'." },
+
+  // Short rounded O
+  hot:      { tip: "Round your lips slightly. Not a flat American 'haht'.", body: "Lips form a small O shape." },
+  not:      { tip: "Slightly rounded lips. 'Not' with a rounder O.", body: "Push lips forward just a little." },
+  stop:     { tip: "Round O, not flat.", body: "Lips slightly pursed." },
+  got:      { tip: "Round that O. Not 'gaht' but a rounder 'got'.", body: "Small O with your lips." },
+  on:       { tip: "Lips slightly rounded. British 'on' has a rounder vowel.", body: "Push lips forward a touch." },
+
+  // Diphthong oh (gəʊ)
+  go:       { tip: "Starts with a neutral sound, then slides to 'oo'.", body: "Start with mouth relaxed, then round your lips." },
+  home:     { tip: "Start neutral, slide to 'oo'. Not a flat 'hohm'.", body: "Mouth relaxed at start, then lips round." },
+  phone:    { tip: "Slide from neutral to round: 'fuh-ohn'.", body: "Start relaxed, end rounded." },
+  know:     { tip: "Start relaxed, slide to rounded.", body: "Don't start with already-rounded lips." },
+  no:       { tip: "Slide from a neutral to a rounded sound.", body: "Lips start relaxed, then round at the end." },
+};
+
+function getTip(word) {
+  const key = String(word || '').toLowerCase().replace(/[^a-z']/g, '');
+  if (WORD_TIPS[key]) return WORD_TIPS[key];
+  return {
+    tip: `Listen carefully to how '${word}' sounds, then try to match it exactly.`,
+    body: 'Tap "Hear it" first. Pay attention to each sound in the word.',
+  };
+}
+
+// ═════════════════════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   renderLives();
   checkCooldown();
-
-  // Check for challenge slug in URL
-  const params = new URLSearchParams(window.location.search);
-  const slug = params.get('c');
-  if (slug) {
-    loadChallenge(slug);
+  loadVoices();
+  // Some browsers populate voices async — listen for the event
+  if ('onvoiceschanged' in window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
   }
 
-  // Text input
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('c');
+  if (slug) loadChallenge(slug);
+
   const ta = document.getElementById('inputText');
   const btn = document.getElementById('btnStart');
   ta.addEventListener('input', () => {
@@ -354,10 +491,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.disabled = len < 30;
   });
 
-  // Track page view
   track('page_view', { referrer: document.referrer, challenge: slug || null });
 
-  // Return visit detection
   const lastVisit = localStorage.getItem('readii_last_visit');
   if (lastVisit) {
     const hoursSince = (Date.now() - parseInt(lastVisit)) / 3600000;
@@ -366,9 +501,13 @@ document.addEventListener('DOMContentLoaded', () => {
   localStorage.setItem('readii_last_visit', Date.now().toString());
 });
 
-// ═══════════════════════════════════════════════
+function loadVoices() {
+  cachedVoices = window.speechSynthesis.getVoices() || [];
+}
+
+// ═════════════════════════════════════════════════════
 // LIVES SYSTEM
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function renderLives() {
   const bar = document.getElementById('livesBar');
   let html = '';
@@ -383,15 +522,12 @@ function deductLife() {
   if (lives <= 0) return;
   lives--;
   localStorage.setItem(LIVES_KEY, lives);
-
-  // Animate the lost heart
   const heart = document.getElementById(`heart${lives}`);
   if (heart) {
     heart.classList.add('animating');
     setTimeout(() => heart.classList.add('lost'), 500);
   }
   renderLives();
-
   if (lives <= 0) {
     track('lives_exhausted', { cards_done: cardIdx, correct });
     startCooldown();
@@ -399,7 +535,7 @@ function deductLife() {
 }
 
 function startCooldown() {
-  const endsAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+  const endsAt = Date.now() + 10 * 60 * 1000;
   localStorage.setItem(COOLDOWN_KEY, endsAt.toString());
   showNoLivesModal(endsAt);
 }
@@ -408,7 +544,6 @@ function checkCooldown() {
   const endsAt = parseInt(localStorage.getItem(COOLDOWN_KEY));
   if (!endsAt) return;
   if (Date.now() >= endsAt) {
-    // Cooldown expired, restore lives
     localStorage.removeItem(COOLDOWN_KEY);
     lives = MAX_LIVES;
     localStorage.setItem(LIVES_KEY, lives);
@@ -444,28 +579,27 @@ function closeNoLivesModal() {
 
 function emailSkipCooldown() {
   const email = document.getElementById('emailSkip').value.trim();
-  if (!email || !email.includes('@')) return toast('请输入有效邮箱');
+  if (!email || !email.includes('@')) return toast('Please enter a valid email');
   track('email_submitted', { email, context: 'cooldown_skip' });
-  // Restore lives
   lives = MAX_LIVES;
   localStorage.setItem(LIVES_KEY, lives);
   localStorage.removeItem(COOLDOWN_KEY);
   renderLives();
   closeNoLivesModal();
-  toast('生命已恢复！');
+  toast('Lives restored!');
 }
 
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // SCREEN NAVIGATION
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(`screen${name}`).classList.add('active');
 }
 
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // PASTE → GENERATE
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 document.getElementById('btnStart')?.addEventListener('click', async () => {
   sourceText = document.getElementById('inputText').value.trim();
   if (sourceText.length < 30) return;
@@ -489,7 +623,7 @@ document.getElementById('btnStart')?.addEventListener('click', async () => {
     cards = data.cards || [];
     segments = (data.segments && data.segments.length) ? data.segments : [{
       text: sourceText.slice(0, 200),
-      tip_zh: '注意整段的发音节奏和连读。',
+      tip: 'Pay attention to rhythm and silent Rs.',
       words_to_watch: [],
     }];
     if (cards.length === 0) throw new Error('No cards generated');
@@ -498,23 +632,22 @@ document.getElementById('btnStart')?.addEventListener('click', async () => {
     correct = 0;
     segmentIdx = 0;
     segmentScores = [];
-    document.getElementById('resultSummary').textContent = data.summary_zh || '';
+    document.getElementById('resultSummary').textContent = data.summary || '';
     showCard();
     showScreen('Quiz');
 
   } catch (err) {
     console.error(err);
-    toast(err.message || '生成失败，请重试');
+    toast(err.message || 'Generation failed, try again');
     showScreen('Paste');
   }
 });
 
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // QUIZ CARDS
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function showCard() {
   if (cardIdx >= cards.length) {
-    // All cards done → readout
     track('cards_complete', { correct, total: cards.length, lives });
     startReadout();
     return;
@@ -524,10 +657,7 @@ function showCard() {
   document.getElementById('cardNum').textContent = `Card ${cardIdx + 1} / ${cards.length}`;
   document.getElementById('phonemeTag').textContent = (card.phoneme || 'pronunciation').replace(/_/g, ' ');
 
-  const q = document.getElementById('cardQuestion');
-  const qZh = card.question_zh || card.question_en || '';
-  const qEn = card.question_zh && card.question_en ? card.question_en : '';
-  q.innerHTML = qEn ? `${qZh}<small>${qEn}</small>` : qZh;
+  document.getElementById('cardQuestion').textContent = card.question || '';
 
   const container = document.getElementById('optionsContainer');
   container.innerHTML = '';
@@ -547,7 +677,6 @@ function selectOption(selected, correctIdx, card) {
   const options = document.querySelectorAll('.option');
   const isCorrect = selected === correctIdx;
 
-  // Disable all options
   options.forEach((opt, i) => {
     opt.style.pointerEvents = 'none';
     if (i === correctIdx) opt.classList.add('correct');
@@ -555,21 +684,18 @@ function selectOption(selected, correctIdx, card) {
     if (i !== selected && i !== correctIdx) opt.classList.add('dimmed');
   });
 
-  // Show explanation
   const explain = document.getElementById('cardExplain');
-  explain.textContent = card.explain_zh || card.explain_en || '';
+  explain.textContent = card.explanation || '';
   explain.classList.add('show', isCorrect ? 'correct-explain' : 'wrong-explain');
 
   if (isCorrect) {
     correct++;
   } else {
     deductLife();
-    if (lives <= 0) return; // modal will show
+    if (lives <= 0) return;
   }
 
   track('card_answer', { card_idx: cardIdx, correct: isCorrect, phoneme: card.phoneme, lives });
-
-  // Show next button
   document.getElementById('btnNext').classList.add('show');
 }
 
@@ -578,9 +704,9 @@ document.getElementById('btnNext')?.addEventListener('click', () => {
   showCard();
 });
 
-// ═══════════════════════════════════════════════
-// READ ALOUD — segment-by-segment (Web Speech API)
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
+// READOUT — state machine
+// ═════════════════════════════════════════════════════
 function startReadout() {
   segmentIdx = 0;
   segmentScores = [];
@@ -588,33 +714,39 @@ function startReadout() {
   showSegment();
 }
 
+function setReadoutState(name) {
+  readoutState = name;
+  ['Listen', 'Feedback', 'Drill', 'Retry', 'Done'].forEach(s => {
+    const el = document.getElementById(`state${s}`);
+    if (el) el.style.display = (s.toLowerCase() === name ? '' : 'none');
+  });
+}
+
 function showSegment() {
   const seg = segments[segmentIdx];
-  if (!seg) {
-    // Ran past the end — go to result
-    finishAllSegments();
-    return;
-  }
+  if (!seg) { finishAllSegments(); return; }
+
+  currentSegmentText = seg.text || '';
+  beforeScore = 0; beforeTotal = 0;
+  afterScore = 0; afterTotal = 0;
+  errorWords = [];
+  drillIdx = 0;
+  drillAttempts = 0;
 
   document.getElementById('segmentProgress').textContent =
-    `第 ${segmentIdx + 1} 段 / 共 ${segments.length} 段`;
+    `Segment ${segmentIdx + 1} of ${segments.length}`;
 
-  // Render text with words_to_watch highlighted
-  document.getElementById('readoutText').innerHTML = renderSegmentText(seg.text, seg.words_to_watch || []);
+  document.getElementById('listenText').innerHTML = renderSegmentText(seg.text, seg.words_to_watch || []);
+  const tipEl = document.getElementById('listenTip');
+  tipEl.textContent = seg.tip ? `💡 ${seg.tip}` : '💡 Read this segment carefully — mind the rhythm and silent Rs.';
 
-  // Tip line
-  const tipEl = document.getElementById('segmentTip');
-  tipEl.textContent = seg.tip_zh ? `💡 ${seg.tip_zh}` : '💡 跟读这一段，注意发音和节奏。';
-
-  // Reset record UI
-  document.getElementById('readoutResult').style.display = 'none';
-  document.getElementById('recordHint').textContent = '点击开始录音 · Click to record';
+  document.getElementById('recordHint').textContent = 'Tap to record';
   document.getElementById('btnRecord').classList.remove('recording');
+  setReadoutState('listen');
 }
 
 function renderSegmentText(text, watch) {
   if (!watch || !watch.length) return escapeHtml(text);
-  // Escape HTML once, then wrap watch words via regex with word boundaries (case-insensitive)
   let html = escapeHtml(text);
   watch.forEach(w => {
     if (!w) return;
@@ -630,31 +762,347 @@ function escapeRegex(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// ─────────── TTS ───────────
 function listenDemo(rate = 1) {
-  if (!('speechSynthesis' in window)) return toast('浏览器不支持语音');
-  window.speechSynthesis.cancel();
-  const seg = segments[segmentIdx];
-  const phrase = seg?.text || sourceText.slice(0, 200);
-  const u = new SpeechSynthesisUtterance(phrase);
-  u.lang = 'en-GB';
-  u.rate = rate;
-  const voices = window.speechSynthesis.getVoices();
-  const brit = voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en'));
-  if (brit) u.voice = brit;
-  window.speechSynthesis.speak(u);
+  speakPhrase(currentSegmentText || sourceText.slice(0, 200), rate);
 }
 
-function nextSegment() {
-  segmentIdx++;
-  if (segmentIdx >= segments.length) {
-    finishAllSegments();
+function speakPhrase(phrase, rate) {
+  if (!('speechSynthesis' in window)) return toast('Speech not supported in this browser');
+  window.speechSynthesis.cancel();
+  setTimeout(() => {
+    const u = new SpeechSynthesisUtterance(phrase);
+    u.lang = 'en-GB';
+    u.rate = rate;
+    const voices = cachedVoices.length ? cachedVoices : (window.speechSynthesis.getVoices() || []);
+    const brit = voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang && v.lang.startsWith('en'));
+    if (brit) u.voice = brit;
+    window.speechSynthesis.speak(u);
+  }, 50);
+}
+
+function speakWord(word) {
+  speakPhrase(word, 0.75);
+}
+
+function speakDrillWord() {
+  speakWord(errorWords[drillIdx]);
+}
+
+// ─────────── Generic Recording ───────────
+function startRecording(onResult, onError) {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    return toast('Speech recognition needs Chrome');
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'en-GB';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 3;
+
+  recognition.onstart = () => { isRecording = true; };
+  recognition.onresult = (e) => {
+    const alts = [];
+    for (let i = 0; i < e.results[0].length; i++) {
+      alts.push({ transcript: e.results[0][i].transcript, confidence: e.results[0][i].confidence });
+    }
+    onResult(alts);
+  };
+  recognition.onerror = (e) => {
+    isRecording = false;
+    onError && onError(e.error || 'unknown');
+  };
+  recognition.onend = () => { isRecording = false; };
+  recognition.start();
+}
+
+function stopRecording() {
+  if (recognition) recognition.stop();
+  isRecording = false;
+}
+
+// ─────────── Listen sub-state recording ───────────
+function toggleListenRecording() {
+  if (isRecording) { stopRecording(); return; }
+  document.getElementById('btnRecord').classList.add('recording');
+  document.getElementById('recordHint').textContent = 'Recording…';
+  startRecording(
+    (alts) => {
+      document.getElementById('btnRecord').classList.remove('recording');
+      finishListenReadout(alts[0].transcript, Math.round((alts[0].confidence || 0) * 100));
+    },
+    (err) => {
+      document.getElementById('btnRecord').classList.remove('recording');
+      document.getElementById('recordHint').textContent = err === 'no-speech' ? 'No speech detected, try again' : 'Recording error, try again';
+    }
+  );
+}
+
+function finishListenReadout(transcript, confidence) {
+  const seg = segments[segmentIdx];
+  const expectedWords = wordsOf(seg.text || '');
+  const spokenWords = wordsOf(transcript);
+  const expectedSet = new Set(expectedWords);
+
+  const wordStatus = expectedWords.map(w => ({ word: w, matched: spokenWords.includes(w) }));
+  beforeScore = wordStatus.filter(ws => ws.matched).length;
+  beforeTotal = wordStatus.length;
+
+  // Pick error words: prefer ones from words_to_watch; cap at 3
+  const watchSet = new Set((seg.words_to_watch || []).map(w => String(w).toLowerCase()));
+  const wrong = wordStatus.filter(ws => !ws.matched).map(ws => ws.word);
+  let errors = wrong.filter(w => watchSet.has(w));
+  if (errors.length === 0) errors = wrong.slice(0, 3);
+  if (errors.length > 3) errors = errors.slice(0, 3);
+  // De-dupe
+  errors = [...new Set(errors)];
+  errorWords = errors;
+
+  // Render Original (tap-to-hear; red words emphasised) + You said
+  document.getElementById('fbOriginal').innerHTML = renderOriginalForFeedback(expectedWords, expectedSet, wordStatus);
+  document.getElementById('fbYouSaid').innerHTML = renderYouSaidForFeedback(spokenWords, expectedSet);
+
+  if (errorWords.length === 0) {
+    document.getElementById('fbSummary').textContent = 'All words matched! 🎉';
+    document.getElementById('btnFix').style.display = 'none';
+    document.getElementById('btnSkipFix').style.display = 'block';
+  } else {
+    document.getElementById('fbSummary').textContent =
+      `${errorWords.length} word${errorWords.length > 1 ? 's' : ''} need practice`;
+    document.getElementById('btnFix').style.display = 'block';
+    document.getElementById('btnSkipFix').style.display = 'none';
+  }
+
+  // Score-too-low life deduction stays on the FIRST attempt only
+  const segScore = beforeTotal ? Math.round(beforeScore * 100 / beforeTotal) : confidence;
+  if (segScore < 60) {
+    deductLife();
+    if (lives <= 0) return;
+  }
+
+  track('segment_recorded', { segment_idx: segmentIdx, score: segScore, error_count: errorWords.length, lives });
+  setReadoutState('feedback');
+}
+
+function renderOriginalForFeedback(expectedWords, expectedSet, wordStatus) {
+  // Tokenise the original segment text preserving punctuation; only highlight word tokens
+  const seg = segments[segmentIdx];
+  const raw = seg.text || '';
+  // Build a quick lookup of matched-word status
+  const matchedMap = new Map();
+  wordStatus.forEach(ws => { matchedMap.set(ws.word, ws.matched); });
+
+  // Split raw by word boundaries and rebuild HTML
+  let html = '';
+  const re = /[A-Za-z']+|[^A-Za-z']+/g;
+  let m;
+  while ((m = re.exec(raw)) !== null) {
+    const tok = m[0];
+    if (/[A-Za-z']/.test(tok[0])) {
+      const lower = tok.toLowerCase();
+      const matched = matchedMap.get(lower);
+      const safe = escapeHtml(tok);
+      if (matched === false) {
+        html += `<span class="w-red tappable" onclick="speakWord('${escapeJs(lower)}')">${safe}</span>`;
+      } else if (matched === true) {
+        html += `<span class="w-green tappable" onclick="speakWord('${escapeJs(lower)}')">${safe}</span>`;
+      } else {
+        // Word not in our expected list (shouldn't happen) — still tappable
+        html += `<span class="tappable" onclick="speakWord('${escapeJs(lower)}')">${safe}</span>`;
+      }
+    } else {
+      html += escapeHtml(tok);
+    }
+  }
+  return html;
+}
+
+function renderYouSaidForFeedback(spokenWords, expectedSet) {
+  if (!spokenWords.length) return '<span style="color:var(--muted);font-style:italic">(nothing detected)</span>';
+  return spokenWords.map(w => {
+    const safe = escapeHtml(w);
+    return expectedSet.has(w)
+      ? `<span class="w-green">${safe}</span>`
+      : `<span class="w-red">${safe}</span>`;
+  }).join(' ');
+}
+
+function escapeJs(s) {
+  return String(s).replace(/[\\']/g, '\\$&');
+}
+
+function wordsOf(s) {
+  return (String(s || '').toLowerCase().match(/[a-z']+/g) || []);
+}
+
+// ─────────── Drill sub-state ───────────
+function startDrill() {
+  drillIdx = 0;
+  drillAttempts = 0;
+  setReadoutState('drill');
+  showDrillWord();
+  track('word_drill_start', { word: errorWords[0], segment_idx: segmentIdx });
+}
+
+function showDrillWord() {
+  const word = errorWords[drillIdx];
+  const tipData = getTip(word);
+  document.getElementById('drillProgress').textContent = `Word ${drillIdx + 1} of ${errorWords.length}`;
+  document.getElementById('drillWord').textContent = word;
+  document.getElementById('drillTip').textContent = `💡 ${tipData.tip}`;
+  document.getElementById('drillBody').textContent = `How to do it: ${tipData.body}`;
+  document.getElementById('drillResult').style.display = 'none';
+  document.getElementById('drillResult').textContent = '';
+  document.getElementById('drillHint').textContent = `Press and say: "${word}"`;
+  document.getElementById('btnDrillRecord').classList.remove('recording');
+  drillAttempts = 0;
+  // Auto-play the word once on entry so they hear it first
+  setTimeout(() => speakDrillWord(), 350);
+}
+
+function toggleDrillRecording() {
+  if (isRecording) { stopRecording(); return; }
+  document.getElementById('btnDrillRecord').classList.add('recording');
+  document.getElementById('drillHint').textContent = 'Recording…';
+  startRecording(
+    (alts) => {
+      document.getElementById('btnDrillRecord').classList.remove('recording');
+      document.getElementById('drillHint').textContent = `Press and say: "${errorWords[drillIdx]}"`;
+      const expected = errorWords[drillIdx];
+      // Check all alternatives for any pass
+      let passed = false;
+      for (const a of alts) {
+        if (checkWordAttempt(expected, a.transcript) === 'pass') { passed = true; break; }
+      }
+      handleDrillResult(passed ? 'pass' : 'fail');
+    },
+    () => {
+      document.getElementById('btnDrillRecord').classList.remove('recording');
+      handleDrillResult('fail');
+    }
+  );
+}
+
+function checkWordAttempt(expected, transcript) {
+  const clean = t => String(t || '').toLowerCase().replace(/[^a-z]/g, '');
+  const exp = clean(expected);
+  const got = clean(transcript);
+  if (!exp || !got) return 'fail';
+  if (got === exp) return 'pass';
+  if (got.includes(exp) || exp.includes(got)) return 'pass';
+  if (levenshtein(got, exp) <= 2) return 'pass';
+  return 'fail';
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  const dp = Array.from({length: m+1}, (_, i) =>
+    Array.from({length: n+1}, (_, j) => i === 0 ? j : j === 0 ? i : 0));
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i-1] === b[j-1]
+        ? dp[i-1][j-1]
+        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function handleDrillResult(result) {
+  drillAttempts++;
+  const resEl = document.getElementById('drillResult');
+  resEl.style.display = 'block';
+
+  if (result === 'pass') {
+    resEl.className = 'drill-result pass';
+    resEl.textContent = '✅ Nice!';
+    track('word_drill_pass', { word: errorWords[drillIdx], attempts: drillAttempts });
+    setTimeout(advanceDrill, 1100);
+  } else {
+    resEl.className = 'drill-result fail';
+    if (drillAttempts === 1) {
+      resEl.textContent = '❌ Try again. Listen first, then repeat.';
+      setTimeout(speakDrillWord, 500);
+    } else if (drillAttempts === 2) {
+      const tip = getTip(errorWords[drillIdx]).tip;
+      resEl.textContent = '❌ Almost! ' + tip;
+      setTimeout(speakDrillWord, 600);
+    } else {
+      resEl.textContent = "Let's move on. Keep practising this sound!";
+      track('word_drill_skip', { word: errorWords[drillIdx] });
+      setTimeout(advanceDrill, 1500);
+    }
+  }
+}
+
+function advanceDrill() {
+  drillIdx++;
+  if (drillIdx >= errorWords.length) {
+    startRetry();
     return;
   }
+  showDrillWord();
+  track('word_drill_start', { word: errorWords[drillIdx], segment_idx: segmentIdx });
+}
+
+// ─────────── Retry sub-state ───────────
+function startRetry() {
+  const seg = segments[segmentIdx];
+  document.getElementById('retryText').innerHTML = renderSegmentText(seg.text, seg.words_to_watch || []);
+  document.getElementById('retryHint').textContent = 'Tap to record';
+  document.getElementById('btnRetryRecord').classList.remove('recording');
+  setReadoutState('retry');
+}
+
+function toggleRetryRecording() {
+  if (isRecording) { stopRecording(); return; }
+  document.getElementById('btnRetryRecord').classList.add('recording');
+  document.getElementById('retryHint').textContent = 'Recording…';
+  startRecording(
+    (alts) => {
+      document.getElementById('btnRetryRecord').classList.remove('recording');
+      finishRetry(alts[0].transcript);
+    },
+    (err) => {
+      document.getElementById('btnRetryRecord').classList.remove('recording');
+      document.getElementById('retryHint').textContent = err === 'no-speech' ? 'No speech detected, try again' : 'Recording error, try again';
+    }
+  );
+}
+
+function finishRetry(transcript) {
+  const seg = segments[segmentIdx];
+  const expectedWords = wordsOf(seg.text || '');
+  const spokenWords = wordsOf(transcript);
+  afterScore = expectedWords.filter(w => spokenWords.includes(w)).length;
+  afterTotal = expectedWords.length;
+
+  const improved = afterScore > beforeScore;
+
+  document.getElementById('baBefore').textContent = `${beforeScore}/${beforeTotal}`;
+  document.getElementById('baAfter').textContent = `${afterScore}/${afterTotal}`;
+  document.getElementById('baImprovedBadge').style.display = improved ? '' : 'none';
+
+  track('sentence_retry', { before_score: beforeScore, after_score: afterScore, improved, segment_idx: segmentIdx });
+  setReadoutState('done');
+}
+
+// ─────────── Advance / finish all segments ───────────
+function goToNextSegment() {
+  // Use the better of before/after as the segment's contribution to overall readout score
+  const total = (afterTotal || beforeTotal) || 1;
+  const num = Math.max(afterScore, beforeScore);
+  segmentScores.push(Math.round(num * 100 / total));
+
+  segmentIdx++;
+  if (segmentIdx >= segments.length) { finishAllSegments(); return; }
   showSegment();
 }
 
 function finishAllSegments() {
-  // Aggregate average across all recorded segments
   if (segmentScores.length) {
     readoutScore = Math.round(segmentScores.reduce((a, b) => a + b, 0) / segmentScores.length);
   }
@@ -662,101 +1110,9 @@ function finishAllSegments() {
   showResult();
 }
 
-function toggleRecording() {
-  if (isRecording) {
-    stopRecording();
-  } else {
-    startRecording();
-  }
-}
-
-function startRecording() {
-  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-    return toast('浏览器不支持语音识别，请使用 Chrome');
-  }
-
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'en-GB';
-  recognition.continuous = false;
-  recognition.interimResults = false;
-
-  recognition.onstart = () => {
-    isRecording = true;
-    document.getElementById('btnRecord').classList.add('recording');
-    document.getElementById('recordHint').textContent = '正在录音… · Recording…';
-  };
-
-  recognition.onresult = (e) => {
-    const transcript = e.results[0][0].transcript;
-    const confidence = Math.round(e.results[0][0].confidence * 100);
-    finishReadout(transcript, confidence);
-  };
-
-  recognition.onerror = (e) => {
-    console.error('Speech error:', e.error);
-    isRecording = false;
-    document.getElementById('btnRecord').classList.remove('recording');
-    if (e.error === 'no-speech') {
-      document.getElementById('recordHint').textContent = '没有检测到语音，再试一次 · No speech detected';
-    } else {
-      document.getElementById('recordHint').textContent = '录音出错，再试一次 · Error, try again';
-    }
-  };
-
-  recognition.onend = () => {
-    isRecording = false;
-    document.getElementById('btnRecord').classList.remove('recording');
-  };
-
-  recognition.start();
-}
-
-function stopRecording() {
-  if (recognition) recognition.stop();
-}
-
-function finishReadout(transcript, confidence) {
-  const segScore = Math.round(confidence);
-  segmentScores.push(segScore);
-
-  // Word-level comparison against the CURRENT segment for visual feedback
-  const seg = segments[segmentIdx];
-  const expected = (seg?.text || '').toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/).filter(Boolean);
-  const spoken = transcript.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
-
-  let html = '';
-  expected.forEach(word => {
-    const found = spoken.includes(word);
-    const cls = found ? 'w-green' : 'w-red';
-    html += `<span class="${cls}">${word}</span> `;
-  });
-  document.getElementById('readoutText').innerHTML = html;
-
-  // Deduct life on poor segment score
-  if (segScore < 60) {
-    deductLife();
-    if (lives <= 0) return;
-  }
-
-  document.getElementById('readoutScore').textContent = segScore;
-  document.getElementById('readoutResult').style.display = 'block';
-  document.getElementById('recordHint').textContent = '录音完成 · Recording complete';
-
-  // Last segment? Change CTA to "查看结果"
-  const btn = document.getElementById('btnNextSegment');
-  if (segmentIdx >= segments.length - 1) {
-    btn.textContent = '查看结果 · See Results →';
-  } else {
-    btn.textContent = '下一段 →';
-  }
-
-  track('segment_recorded', { segment_idx: segmentIdx, score: segScore, segments_total: segments.length, lives });
-}
-
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // RESULT
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function showResult() {
   const pct = Math.round((correct / cards.length) * 100);
   document.getElementById('finalScore').textContent = pct + '%';
@@ -767,9 +1123,9 @@ function showResult() {
   showScreen('Result');
 }
 
-// ═══════════════════════════════════════════════
-// CHALLENGE CREATION & SHARING
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
+// CHALLENGE
+// ═════════════════════════════════════════════════════
 async function createChallenge() {
   const pct = Math.round((correct / cards.length) * 100);
   try {
@@ -780,7 +1136,7 @@ async function createChallenge() {
         source_text: sourceText.slice(0, 2000),
         cards_json: { cards, segments },
         creator_score: pct,
-        creator_name: '挑战者',
+        creator_name: 'Challenger',
       }),
     });
     const data = await resp.json();
@@ -790,10 +1146,10 @@ async function createChallenge() {
       document.getElementById('linkBox').classList.add('show');
       try { await navigator.clipboard.writeText(data.url); } catch {}
       track('challenge_created', { slug: data.slug, score: pct });
-      toast('挑战链接已生成！');
+      toast('Challenge link ready!');
     }
   } catch (err) {
-    toast('创建失败，请重试');
+    toast('Could not create challenge, try again');
   }
 }
 
@@ -806,29 +1162,27 @@ async function loadChallenge(slug) {
 
     track('friend_opened', { slug, creator_score: challengeData.creator_score });
 
-    // Show invite screen
     document.getElementById('inviteChallenger').textContent =
-      `${challengeData.creator_name} 邀请你挑战 · challenges you`;
+      `${challengeData.creator_name} invited you`;
     document.getElementById('inviteScore').textContent =
-      `对方得分 ${challengeData.creator_score}% · Their score`;
+      `Their score: ${challengeData.creator_score}%`;
 
-    // Leaderboard
     const lb = document.getElementById('inviteLeaderboard');
     lb.innerHTML = '';
     (challengeData.leaderboard || []).forEach((a, i) => {
       lb.innerHTML += `<div class="leaderboard-row">
         <span class="rank">${i + 1}.</span>
-        <span class="name">${i === 0 ? challengeData.creator_name : '挑战者'}</span>
+        <span class="name">${i === 0 ? challengeData.creator_name : 'Challenger'}</span>
         <span class="lb-score">${a.score}%</span>
       </div>`;
     });
-    if (challengeData.leaderboard?.length === 0) {
+    if (!challengeData.leaderboard || challengeData.leaderboard.length === 0) {
       lb.innerHTML = `<div class="leaderboard-row"><span class="rank">1.</span><span class="name">${challengeData.creator_name}</span><span class="lb-score">${challengeData.creator_score}%</span></div>`;
     }
 
     showScreen('Invite');
   } catch {
-    toast('挑战不存在');
+    toast('Challenge not found');
     showScreen('Paste');
   }
 }
@@ -836,20 +1190,19 @@ async function loadChallenge(slug) {
 function acceptChallenge() {
   if (!challengeData) return;
   sourceText = challengeData.source_text;
-  // cards_json may be: legacy array (cards only) OR { cards, segments }
   const cj = challengeData.cards_json;
   if (Array.isArray(cj)) {
     cards = cj;
     segments = [{
       text: sourceText.slice(0, 200),
-      tip_zh: '注意整段的发音节奏和连读。',
+      tip: 'Pay attention to rhythm and silent Rs.',
       words_to_watch: [],
     }];
   } else {
     cards = cj?.cards || [];
     segments = (cj?.segments && cj.segments.length) ? cj.segments : [{
       text: sourceText.slice(0, 200),
-      tip_zh: '注意整段的发音节奏和连读。',
+      tip: 'Pay attention to rhythm and silent Rs.',
       words_to_watch: [],
     }];
   }
@@ -861,26 +1214,26 @@ function acceptChallenge() {
   showScreen('Quiz');
 }
 
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // SHARE
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function shareWeChat() {
   const link = document.getElementById('challengeLink')?.value;
   if (link) {
-    navigator.clipboard.writeText(`我在 Readii 发音挑战中得了 ${document.getElementById('finalScore').textContent}，你来试试？ ${link}`);
-    toast('已复制到剪贴板，粘贴到微信发送');
+    navigator.clipboard.writeText(`I scored ${document.getElementById('finalScore').textContent} on Readii's British pronunciation quiz. Try it: ${link}`);
+    toast('Copied — paste it into WeChat');
   } else {
-    toast('请先创建挑战');
+    toast('Create the challenge first');
   }
 }
 
 function shareXHS() {
   const link = document.getElementById('challengeLink')?.value;
   if (link) {
-    navigator.clipboard.writeText(`测试你的英式英语发音！我得了 ${document.getElementById('finalScore').textContent} 💪 ${link} #英式英语 #发音练习 #Readii`);
-    toast('已复制，粘贴到小红书发布');
+    navigator.clipboard.writeText(`Test your British pronunciation! I scored ${document.getElementById('finalScore').textContent} 💪 ${link} #BritishEnglish #Pronunciation #Readii`);
+    toast('Copied — paste it into Xiaohongshu');
   } else {
-    toast('请先创建挑战');
+    toast('Create the challenge first');
   }
 }
 
@@ -888,23 +1241,23 @@ function shareGeneric() {
   const link = document.getElementById('challengeLink')?.value;
   if (link) {
     navigator.clipboard.writeText(link);
-    toast('链接已复制');
+    toast('Link copied');
   } else {
-    toast('请先创建挑战');
+    toast('Create the challenge first');
   }
 }
 
 function submitEmail() {
   const email = document.getElementById('emailInput').value.trim();
-  if (!email || !email.includes('@')) return toast('请输入有效邮箱');
+  if (!email || !email.includes('@')) return toast('Please enter a valid email');
   track('email_submitted', { email, context: 'result_page', score: document.getElementById('finalScore').textContent });
-  toast('提交成功，完整版发布时通知你！');
+  toast('Thanks — we will tell you when the full version is ready.');
   document.getElementById('emailInput').value = '';
 }
 
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // RESET
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function resetAll() {
   cardIdx = 0;
   correct = 0;
@@ -913,21 +1266,23 @@ function resetAll() {
   segmentIdx = 0;
   segmentScores = [];
   sourceText = '';
+  currentSegmentText = '';
   readoutScore = 0;
   challengeData = null;
+  errorWords = [];
+  drillIdx = 0;
+  drillAttempts = 0;
   document.getElementById('inputText').value = '';
   document.getElementById('charCount').textContent = '0';
   document.getElementById('btnStart').disabled = true;
   document.getElementById('linkBox').classList.remove('show');
-  // Don't reset lives — they persist
   showScreen('Paste');
-  // Remove challenge param from URL
   window.history.replaceState({}, '', window.location.pathname);
 }
 
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // TRACKING
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function track(event, data = {}) {
   const params = new URLSearchParams(window.location.search);
   sb.from('pretotype_events').insert({
@@ -938,9 +1293,9 @@ function track(event, data = {}) {
   }).then(() => {}).catch(e => console.warn('Track error:', e));
 }
 
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // TOAST
-// ═══════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function toast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg;
