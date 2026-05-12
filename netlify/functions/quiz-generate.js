@@ -1,109 +1,96 @@
 // netlify/functions/quiz-generate.js
-// Reading-first schema. Returns:
-//   - segments[]: 8 short reading chunks (1-2 sentences, ≤20 words) with
-//     focus_words + tip + phonemes for British pronunciation guidance
-//   - quiz_cards[]: 2 quick-check cards inserted after segment 3 and 6
-//     to reinforce what the reader has encountered
-// English only, no IPA, no Chinese. A2-B1 vocabulary throughout.
+// Three-pass reading prep:
+//   - segments[]: every sentence of the source, in original order (Pass 1)
+//   - drill_words[]: 5-8 high-value British-pronunciation words from the article (Pass 2)
+//   - quiz_cards[]: 1-2 quick checks shown between Pass 1 and Pass 2
+// English-only output for non-native learners. No IPA. No Chinese.
 
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 
-const SYSTEM_PROMPT = `You are a British English reading coach for non-native learners (A2-B1 level). You help them read English aloud with correct British pronunciation.
+const SYSTEM_PROMPT = `You are a British English reading coach for non-native learners (A2-B1 level). You prepare structured reading sessions.
 
-ABSOLUTE RULES — break any and the output is unusable:
+ABSOLUTE RULES:
 
-A. BREVITY (rate-limited):
-   - tip: ≤120 characters, ONE simple sentence
-   - segment text: ≤20 English words
-   - question: ≤120 characters
-   - option: ≤30 characters
-   - explanation: ≤120 characters
+A. NO IPA symbols anywhere. Use plain re-spellings ("waw-tuh", "bah-th", "nyoo") and physical actions ("open your mouth wider", "pull your tongue back", "round your lips", "keep your tongue relaxed").
 
-B. NO IPA symbols anywhere (/ɑː/, /æ/, /ə/, etc.). Describe sounds with:
-   - plain re-spellings: "waw-tuh", "bah-th", "nyoo", "fuh-thuh"
-   - physical instructions: "open your mouth wider", "pull your tongue back", "round your lips", "don't curl your tongue", "keep your tongue relaxed"
-   - simple comparisons: "like saying 'ah' at the doctor", "softer at the end"
+B. NO Chinese characters. All output in simple English.
 
-C. NO Chinese characters. Everything in simple English.
+C. Output ONLY valid JSON — no markdown fences, no preamble, no trailing text.
 
-D. Output ONLY valid JSON — no markdown fences, no preamble, no trailing text.
+D. BREVITY:
+   - segment text: max 25 English words
+   - tip: ONE sentence, max 100 characters
+   - body: ONE sentence, max 100 characters
+   - question: max 100 characters
+   - option: max 30 characters
+   - explanation: ONE sentence, max 120 characters
 
 SEGMENTATION — cover 100% of the source text:
-- CRITICAL: every sentence of the source must appear in exactly one segment. Do not skip, summarise, or omit any part. The user is READING the article and needs ALL of it.
-- Split in ORIGINAL ORDER. Do not rearrange.
-- Each chunk = 1-2 sentences, max 20 English words. If a sentence is longer than 20 words, split it at a natural boundary (comma, conjunction).
-- Segment count scales with text length:
-    * ~100-300 words  →  6-12 segments
-    * ~300-600 words  →  10-18 segments
-    * ~600-1200 words →  18-26 segments
-    * ~1200-2000 words → 22-30 segments  (HARD CAP: 30 segments)
-- If the source is very short (<60 words), produce however many short segments are needed to cover it (minimum 4) — never pad with invented content.
+- CRITICAL: every sentence of the source must appear in exactly one segment. Do not skip, summarise, paraphrase, or invent content.
+- Segments in ORIGINAL ORDER.
+- One sentence per segment. If a sentence is longer than 25 words, split it at a natural pause (comma, semicolon, dash, conjunction).
+- Source up to ~800 words → expect 12-30 segments depending on sentence length.
 
-FOCUS WORDS — for each segment:
-- Pick 1-2 words where British pronunciation differs notably from American or where non-native speakers commonly stumble.
-- Good targets: water, better, rather, after, car, father, mother, here, there, bath, path, castle, dance, chance, grass, glass, laugh, staff, new, news, tune, duke, Tuesday, student, hot, not, stop, got, on, go, home, phone, know, no.
-- All focus_words must appear verbatim in the segment text (case-insensitive).
-- Use the lowercase form in the focus_words array.
+DRILL WORDS — produce 5-8 words:
+- All drill_words must appear verbatim in the source text (case-insensitive).
+- Pick words with the most DISTINCTIVE British pronunciation — features that non-native speakers commonly get wrong:
+    * non-rhotic R: water, better, car, after, rather, father, mother, here, there, far, morning
+    * broad A: bath, path, castle, dance, chance, grass, glass, laugh, staff, can't
+    * yod insertion: new, news, tune, duke, Tuesday, student
+    * short rounded O: hot, not, stop, got, on, lot
+    * diphthong oh: go, home, phone, know, no, cold
+- If the source has fewer than 5 such words, pick the closest 5 you can find. If it has more than 8, pick the most varied set (cover at least 2-3 different features).
+- Use the lowercase form in the "word" field.
+- "from_segment" is the 1-indexed position of the segment containing this word.
+- "context_sentence" is the full segment text where the word appears (for context display).
+- "phonemes" is a dot-separated plain-English re-spelling: water→"W.AW.T.UH", bath→"B.AH.TH", new→"N.Y.OO". Uppercase letters separated by dots. NEVER use IPA.
+- "tip" tells the learner the key insight in one short sentence (re-spelling + what's wrong with American/native).
+- "body" gives a physical instruction (mouth, tongue, lips) in one short sentence.
+- "feature" is one of: "non-rhotic R", "broad A", "yod insertion", "short O", "diphthong", "linking".
 
-TIPS — one short English sentence per segment:
-- Name the focus word(s) explicitly.
-- Describe how to produce the British sound with a physical action OR plain re-spelling.
-- No IPA. No linguistic jargon.
-
-PHONEMES — for each focus word, give a dot-separated plain-English re-spelling:
-- water → "W.AW.T.UH"
-- better → "B.EH.T.UH"
-- bath → "B.AH.TH"
-- new → "N.Y.OO"
-- hot → "H.OT"
-- go → "G.UH.OO"
-Use uppercase letters separated by dots. This is what users see — keep it intuitive, not phonetic.
-
-QUIZ CARDS — insert short "quick check" cards spaced through the text:
-- One quiz card per ~6 segments (round to integer): so 2 cards for 12 segments, 3 cards for 18 segments, 4-5 cards for 24-30 segments.
-- Minimum 2 cards. Maximum 5 cards.
-- Space the after_segment positions evenly. For 12 segments use after_segment 4 and 8. For 18 use 5, 11, 15. For 24 use 5, 11, 17, 22.
-- Each card tests a pronunciation feature the reader has ALREADY encountered in the segments before it.
-- question: a short English question.
-- options: exactly 4 strings, ≤30 chars each. Only 1 correct.
+QUIZ CARDS — produce exactly 1-2 quick checks (prefer 1 if the article is short, 2 if long):
+- These appear between Pass 1 (reading) and Pass 2 (drilling).
+- Each card tests the learner's ability to APPLY a British pronunciation rule to a NEW word (not one of the drill_words if possible).
+- options: exactly 4 strings, only 1 correct.
 - correct: integer 0-3.
 - explanation: one short sentence with a physical action or re-spelling.`;
 
-const USER_PROMPT_TEMPLATE = `Split this English text into reading segments with British pronunciation guidance.
+const USER_PROMPT_TEMPLATE = `Source text:
 
 """
 {TEXT}
 """
 
-Return ONLY this JSON (the response is being prefilled to start with "{" — continue from there). No markdown, no preamble, no Chinese characters, no IPA.
+Return ONLY this JSON. The response is being prefilled to start with "{" — continue from there. No markdown. No preamble. No Chinese characters. No IPA.
 
 {
   "segments": [
+    { "position": 1, "text": "The water was rather cold this morning." }
+  ],
+  "drill_words": [
     {
-      "position": 1,
-      "text": "The water was rather cold this morning.",
-      "focus_words": ["water", "rather"],
-      "tip": "Don't pronounce the R at the end of 'water' and 'rather'. Say 'waw-tuh', 'rah-thuh'.",
-      "phonemes": {
-        "water": "W.AW.T.UH",
-        "rather": "R.AH.TH.UH"
-      }
+      "word": "water",
+      "from_segment": 1,
+      "context_sentence": "The water was rather cold this morning.",
+      "phonemes": "W.AW.T.UH",
+      "tip": "Don't pronounce the R at the end. Say 'waw-tuh'.",
+      "body": "Keep your tongue relaxed. Don't curl the tip up.",
+      "feature": "non-rhotic R"
     }
   ],
   "quiz_cards": [
     {
-      "after_segment": 3,
-      "question": "Which of these also has a SILENT R at the end in British English?",
+      "question": "Which of these words also has a SILENT R in British English?",
       "options": ["stop", "better", "big", "hot"],
       "correct": 1,
-      "explanation": "Better ends in R, silent in British English. Say 'bet-uh', not 'bet-er'."
+      "explanation": "'Better' ends in R, silent in British English. Say 'bet-uh', not 'bet-er'."
     }
   ],
-  "summary": "Short English summary of the main features practised.",
-  "total_focus_words": 12
+  "summary": "12 sentences, 6 drill words. Focus: silent R, broad A.",
+  "word_count": 145
 }
 
-Cover EVERY sentence of the source text in exactly one segment, in order. Pick a segment count that fits the text length per the system instructions (6-30 segments). Insert 2-5 quiz cards spaced evenly through the article.`;
+Cover EVERY sentence of the source in exactly one segment, in original order. Produce 5-8 drill_words and 1-2 quiz_cards.`;
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -125,7 +112,16 @@ exports.handler = async (event) => {
     return respond(400, { error: 'Text must be at least 30 characters' });
   }
 
-  const trimmed = text.trim().slice(0, 2000);
+  // Smart truncation at sentence boundary
+  let trimmed = text.trim();
+  if (trimmed.length > 5000) {
+    const cutPoint = trimmed.lastIndexOf('.', 5000);
+    if (cutPoint > 3000) {
+      trimmed = trimmed.slice(0, cutPoint + 1);
+    } else {
+      trimmed = trimmed.slice(0, 5000);
+    }
+  }
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -183,33 +179,43 @@ exports.handler = async (event) => {
     parsed.segments = parsed.segments.map((s, idx) => ({
       position: Number.isInteger(s.position) ? s.position : idx + 1,
       text: String(s.text || '').trim() || 'Missing segment text.',
-      focus_words: (Array.isArray(s.focus_words) ? s.focus_words : [])
-        .map(w => String(w).toLowerCase().replace(/[^a-z']/g, ''))
-        .filter(Boolean)
-        .slice(0, 3),
-      tip: String(s.tip || ''),
-      phonemes: (s.phonemes && typeof s.phonemes === 'object') ? s.phonemes : {},
     }));
 
-    // Sanitise quiz_cards — filter out malformed ones
+    // Sanitise drill_words — drop malformed entries
+    parsed.drill_words = (Array.isArray(parsed.drill_words) ? parsed.drill_words : [])
+      .filter(d => d && typeof d === 'object' && d.word)
+      .map(d => ({
+        word: String(d.word).toLowerCase().replace(/[^a-z']/g, ''),
+        from_segment: Number.isInteger(d.from_segment) ? d.from_segment : 1,
+        context_sentence: String(d.context_sentence || ''),
+        phonemes: String(d.phonemes || ''),
+        tip: String(d.tip || ''),
+        body: String(d.body || ''),
+        feature: String(d.feature || 'pronunciation'),
+      }))
+      .filter(d => d.word)
+      .slice(0, 8);
+
+    // Sanitise quiz_cards
     parsed.quiz_cards = (Array.isArray(parsed.quiz_cards) ? parsed.quiz_cards : [])
       .filter(c =>
         c && typeof c === 'object' &&
-        Number.isInteger(c.after_segment) &&
-        c.after_segment >= 1 && c.after_segment <= parsed.segments.length &&
         Array.isArray(c.options) && c.options.length >= 2 &&
         Number.isInteger(c.correct) && c.correct >= 0 && c.correct < c.options.length
       )
       .map(c => ({
-        after_segment: c.after_segment,
         question: String(c.question || ''),
         options: c.options.map(o => String(o)),
         correct: c.correct,
         explanation: String(c.explanation || ''),
-      }));
+      }))
+      .slice(0, 2);
 
     parsed.summary = String(parsed.summary || '');
-    parsed.total_focus_words = parsed.segments.reduce((sum, s) => sum + (s.focus_words?.length || 0), 0);
+    parsed.word_count = Number.isInteger(parsed.word_count)
+      ? parsed.word_count
+      : (trimmed.split(/\s+/).length || 0);
+    parsed.was_truncated = trimmed.length < text.trim().length;
 
     return respond(200, parsed);
 
