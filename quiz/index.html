@@ -525,7 +525,9 @@ function showCard() {
   document.getElementById('phonemeTag').textContent = (card.phoneme || 'pronunciation').replace(/_/g, ' ');
 
   const q = document.getElementById('cardQuestion');
-  q.innerHTML = `${card.question_zh || card.question_en}<small>${card.question_en || ''}</small>`;
+  const qZh = card.question_zh || card.question_en || '';
+  const qEn = card.question_zh && card.question_en ? card.question_en : '';
+  q.innerHTML = qEn ? `${qZh}<small>${qEn}</small>` : qZh;
 
   const container = document.getElementById('optionsContainer');
   container.innerHTML = '';
