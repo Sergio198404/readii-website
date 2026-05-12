@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Readii · 英式英语发音测验</title>
+<meta name="description" content="粘贴任何英文，AI 帮你生成英式发音测验。针对中文母语者，中英双语反馈。">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#B8873A;--gold-light:#D4A95A;--gold-pale:#F5ECD7;
+  --forest:#2D5A4F;--forest-light:#3D7A6A;--forest-pale:#E8F0EE;
+  --bg:#FAF8F3;--white:#FFFFFF;--ink:#1a1a1a;--muted:#888;
+  --border:#E5E0D8;--red:#D32F2F;--red-pale:#FFEBEE;
+  --green:#0f9d58;--green-pale:#E6F4EA;
+  --yellow:#F57C00;--yellow-pale:#FFF4E6;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Nunito Sans','Segoe UI',sans-serif;
+  --radius:14px;--shadow:0 2px 12px rgba(0,0,0,.06)
+}
+html{font-size:16px}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh}
+
+/* ── Layout ── */
+.container{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+.brand{text-align:center;margin-bottom:32px;padding-top:16px}
+.brand h1{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--forest);letter-spacing:.02em}
+.brand p{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* ── Screens ── */
+.screen{display:none}.screen.active{display:block}
+
+/* ── Lives Bar ── */
+.lives-bar{display:flex;align-items:center;justify-content:center;gap:3px;margin-bottom:20px;padding:10px;background:var(--white);border-radius:10px;border:1px solid var(--border)}
+.lives-bar .heart{font-size:14px;transition:transform .2s,opacity .2s}
+.lives-bar .heart.lost{opacity:.15;transform:scale(.7)}
+.lives-bar .count{font-size:13px;font-weight:700;color:var(--red);margin-left:8px}
+.lives-bar .streak{font-size:13px;color:var(--muted);margin-left:auto}
+
+/* ── Paste Screen ── */
+.paste-box{position:relative}
+.paste-box textarea{width:100%;height:180px;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;font-family:var(--sans);font-size:14px;line-height:1.7;resize:vertical;background:var(--white);transition:border-color .2s}
+.paste-box textarea:focus{outline:none;border-color:var(--gold)}
+.paste-box textarea::placeholder{color:#bbb}
+.char-count{text-align:right;font-size:11px;color:var(--muted);margin-top:4px}
+.paste-hint{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6;text-align:center}
+.btn-start{display:block;width:100%;padding:16px;margin-top:20px;background:var(--forest);color:var(--white);border:none;border-radius:var(--radius);font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;transition:background .15s,transform .1s;letter-spacing:.03em}
+.btn-start:hover{background:var(--forest-light);transform:translateY(-1px)}
+.btn-start:active{transform:none}
+.btn-start:disabled{background:#ccc;cursor:not-allowed;transform:none}
+
+/* ── Loading ── */
+.loading-box{text-align:center;padding:60px 20px}
+.spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 24px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-box h2{font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:8px}
+.loading-box p{font-size:13px;color:var(--muted)}
+
+/* ── Quiz Card ── */
+.card-progress{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-size:12px;color:var(--muted)}
+.card-progress .phoneme-tag{background:var(--gold-pale);color:var(--gold);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.card-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:28px 24px;box-shadow:var(--shadow)}
+.card-question{font-family:var(--serif);font-size:20px;line-height:1.4;margin-bottom:24px;color:var(--ink)}
+.card-question small{display:block;font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:6px;font-style:normal}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{display:block;width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);font-family:var(--sans);font-size:15px;text-align:left;cursor:pointer;transition:all .15s;color:var(--ink)}
+.option:hover{border-color:var(--gold);background:var(--gold-pale)}
+.option.correct{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+.option.wrong{border-color:var(--red);background:var(--red-pale);color:var(--red)}
+.option.dimmed{opacity:.4;pointer-events:none}
+.card-explain{margin-top:20px;padding:16px;border-radius:10px;font-size:13px;line-height:1.7;display:none}
+.card-explain.show{display:block}
+.card-explain.correct-explain{background:var(--green-pale);color:#1b5e20}
+.card-explain.wrong-explain{background:var(--red-pale);color:#b71c1c}
+.btn-next{display:none;width:100%;padding:14px;margin-top:16px;background:var(--forest);color:var(--white);border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+.btn-next:hover{background:var(--forest-light)}
+.btn-next.show{display:block}
+
+/* ── Life Lost Animation ── */
+@keyframes life-lost{0%{transform:scale(1)}30%{transform:scale(1.6)}60%{transform:scale(.6)}100%{transform:scale(1);opacity:.15}}
+.heart.animating{animation:life-lost .5s ease-out forwards}
+
+/* ── Read Aloud Screen ── */
+.readout-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:28px 24px;text-align:center}
+.readout-text{font-family:var(--serif);font-size:20px;line-height:1.6;margin-bottom:24px;text-align:left}
+.readout-text .w-green{background:var(--green-pale);padding:1px 4px;border-radius:4px}
+.readout-text .w-yellow{background:var(--yellow-pale);padding:1px 4px;border-radius:4px}
+.readout-text .w-red{background:var(--red-pale);padding:1px 4px;border-radius:4px;font-weight:700}
+.btn-listen{padding:12px 24px;border:1.5px solid var(--border);border-radius:10px;background:none;font-size:13px;cursor:pointer;margin:0 6px 12px;transition:all .15s}
+.btn-listen:hover{border-color:var(--forest);color:var(--forest)}
+.btn-record{width:100px;height:100px;border-radius:50%;background:var(--forest);border:none;color:var(--white);font-size:32px;cursor:pointer;margin:20px auto;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 4px 20px rgba(45,90,79,.25)}
+.btn-record:hover{transform:scale(1.05);box-shadow:0 6px 24px rgba(45,90,79,.35)}
+.btn-record.recording{background:var(--red);animation:pulse-rec 1.2s infinite}
+@keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(211,47,47,.3)}50%{box-shadow:0 0 0 16px rgba(211,47,47,0)}}
+.record-hint{font-size:12px;color:var(--muted);margin-top:8px}
+.readout-score{font-family:var(--serif);font-size:48px;font-weight:700;margin:20px 0 8px}
+.readout-score-label{font-size:13px;color:var(--muted)}
+
+/* ── Result Screen ── */
+.result-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+.result-header{background:linear-gradient(135deg,var(--forest) 0%,var(--forest-light) 100%);padding:32px;text-align:center;color:var(--white)}
+.result-score{font-family:var(--serif);font-size:56px;font-weight:700}
+.result-label{font-size:13px;opacity:.7;margin-top:4px}
+.result-stats{display:flex;border-bottom:1px solid var(--border)}
+.result-stat{flex:1;padding:16px;text-align:center;border-right:1px solid var(--border)}
+.result-stat:last-child{border-right:none}
+.result-stat-num{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink)}
+.result-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.result-body{padding:24px}
+.result-summary{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;text-align:center}
+.btn-challenge{display:block;width:100%;padding:16px;background:var(--gold);color:var(--white);border:none;border-radius:var(--radius);font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.03em}
+.btn-challenge:hover{background:var(--gold-light);transform:translateY(-1px)}
+.share-row{display:flex;gap:8px;margin-top:12px}
+.share-row button{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:none;font-size:12px;cursor:pointer;transition:all .15s}
+.share-row button:hover{border-color:var(--forest);color:var(--forest)}
+.email-row{margin-top:20px;display:flex;gap:8px}
+.email-row input{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px}
+.email-row input:focus{outline:none;border-color:var(--gold)}
+.email-row button{padding:10px 20px;background:var(--forest);color:var(--white);border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.try-again{display:block;width:100%;text-align:center;padding:12px;margin-top:12px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer}
+.try-again:hover{color:var(--ink)}
+
+/* ── Challenge Invite Screen ── */
+.invite-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:32px 24px;text-align:center}
+.invite-box .emoji{font-size:40px;margin-bottom:12px}
+.invite-box h2{font-family:var(--serif);font-size:22px;margin-bottom:8px}
+.invite-box .challenger{font-size:14px;color:var(--muted);margin-bottom:20px}
+.invite-box .score-badge{display:inline-block;background:var(--gold-pale);color:var(--gold);padding:6px 16px;border-radius:20px;font-weight:700;font-size:15px;margin-bottom:20px}
+.leaderboard{margin:16px 0;text-align:left}
+.leaderboard-row{display:flex;align-items:center;padding:8px 12px;border-radius:8px;font-size:13px}
+.leaderboard-row:nth-child(odd){background:var(--bg)}
+.leaderboard-row .rank{width:24px;font-weight:700;color:var(--gold)}
+.leaderboard-row .name{flex:1}
+.leaderboard-row .lb-score{font-weight:700;color:var(--forest)}
+
+/* ── No Lives Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--white);border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center}
+.modal .big-emoji{font-size:52px;margin-bottom:12px}
+.modal h2{font-family:var(--serif);font-size:22px;margin-bottom:8px}
+.modal .countdown{font-family:var(--serif);font-size:40px;font-weight:700;color:var(--red);margin:12px 0}
+.modal .countdown-label{font-size:13px;color:var(--muted);margin-bottom:16px}
+.modal .btn-email-skip{display:block;width:100%;padding:14px;background:var(--forest);color:var(--white);border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:12px}
+.modal .email-skip-input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px}
+.modal .email-skip-input:focus{outline:none;border-color:var(--gold)}
+.modal .wait-msg{font-size:12px;color:var(--muted);margin-top:8px}
+.modal .close-modal{margin-top:12px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--white);padding:10px 20px;border-radius:10px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+
+/* ── Challenge Link Box ── */
+.link-box{margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;display:none}
+.link-box.show{display:block}
+.link-box input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:monospace;text-align:center}
+.link-box p{font-size:11px;color:var(--muted);margin-top:6px;text-align:center}
+
+@media(max-width:540px){
+  .container{padding:12px 12px 32px}
+  .card-question{font-size:18px}
+  .result-score{font-size:44px}
+  .btn-record{width:80px;height:80px;font-size:26px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Brand -->
+  <div class="brand">
+    <h1>Readii</h1>
+    <p>英式英语发音测验 · British Pronunciation Quiz</p>
+  </div>
+
+  <!-- Lives Bar -->
+  <div class="lives-bar" id="livesBar"></div>
+
+  <!-- ═══ Screen: Paste ═══ -->
+  <div class="screen active" id="screenPaste">
+    <div class="paste-box">
+      <textarea id="inputText" placeholder="Paste any English text here…&#10;粘贴任何英文到这里…&#10;&#10;例如：演讲稿、新闻、面试稿、课文" maxlength="2000"></textarea>
+      <div class="char-count"><span id="charCount">0</span> / 2,000</div>
+    </div>
+    <p class="paste-hint">AI 会自动分析你的文本，生成针对中文母语者的英式发音测验<br>AI analyses your text and creates British pronunciation quizzes for Chinese speakers</p>
+    <button class="btn-start" id="btnStart" disabled>开始测验 · Start Quiz →</button>
+  </div>
+
+  <!-- ═══ Screen: Loading ═══ -->
+  <div class="screen" id="screenLoading">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <h2>正在分析你的内容…</h2>
+      <p>Analysing pronunciation challenges</p>
+    </div>
+  </div>
+
+  <!-- ═══ Screen: Quiz ═══ -->
+  <div class="screen" id="screenQuiz">
+    <div class="card-progress">
+      <span id="cardNum">Card 1 / 5</span>
+      <span class="phoneme-tag" id="phonemeTag">broad A</span>
+    </div>
+    <div class="card-box">
+      <p class="card-question" id="cardQuestion"></p>
+      <div class="options" id="optionsContainer"></div>
+      <div class="card-explain" id="cardExplain"></div>
+      <button class="btn-next" id="btnNext">下一题 · Next →</button>
+    </div>
+  </div>
+
+  <!-- ═══ Screen: Read Aloud ═══ -->
+  <div class="screen" id="screenReadout">
+    <div class="readout-box">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">知识卡片完成，现在跟读练习 · Now read aloud</p>
+      <div class="readout-text" id="readoutText"></div>
+      <div>
+        <button class="btn-listen" onclick="listenDemo()">▶ 听标准 · Listen</button>
+        <button class="btn-listen" onclick="listenDemo(0.8)">🐢 慢速 · Slow</button>
+      </div>
+      <button class="btn-record" id="btnRecord" onclick="toggleRecording()">🎤</button>
+      <p class="record-hint" id="recordHint">点击开始录音 · Click to record</p>
+      <div id="readoutResult" style="display:none">
+        <p class="readout-score" id="readoutScore">—</p>
+        <p class="readout-score-label">发音得分 · Pronunciation Score</p>
+        <button class="btn-next show" style="margin-top:20px" onclick="showResult()">查看结果 · See Results →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Screen: Result ═══ -->
+  <div class="screen" id="screenResult">
+    <div class="result-box">
+      <div class="result-header">
+        <p class="result-score" id="finalScore">0%</p>
+        <p class="result-label">英式发音知识得分 · British Pronunciation Score</p>
+      </div>
+      <div class="result-stats">
+        <div class="result-stat"><span class="result-stat-num" id="statCorrect">0</span><span class="result-stat-lbl">答对 Correct</span></div>
+        <div class="result-stat"><span class="result-stat-num" id="statTotal">0</span><span class="result-stat-lbl">总题 Total</span></div>
+        <div class="result-stat"><span class="result-stat-num" id="statLives">0</span><span class="result-stat-lbl">剩余生命 Lives</span></div>
+      </div>
+      <div class="result-body">
+        <p class="result-summary" id="resultSummary"></p>
+        <button class="btn-challenge" onclick="createChallenge()">⚔️ 创建挑战，发给朋友 · Challenge a Friend</button>
+        <div class="link-box" id="linkBox">
+          <input type="text" id="challengeLink" readonly onclick="this.select()">
+          <p>链接已复制 · Link copied to clipboard</p>
+        </div>
+        <div class="share-row">
+          <button onclick="shareWeChat()">微信分享</button>
+          <button onclick="shareXHS()">小红书</button>
+          <button onclick="shareGeneric()">复制链接</button>
+        </div>
+        <div class="email-row">
+          <input type="email" id="emailInput" placeholder="留下邮箱，获取完整版 · Leave email for full version">
+          <button onclick="submitEmail()">提交</button>
+        </div>
+        <button class="try-again" onclick="resetAll()">再来一次 · Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Screen: Challenge Invite ═══ -->
+  <div class="screen" id="screenInvite">
+    <div class="invite-box">
+      <div class="emoji">⚔️</div>
+      <h2>发音挑战赛</h2>
+      <p class="challenger" id="inviteChallenger"></p>
+      <div class="score-badge" id="inviteScore"></div>
+      <div class="leaderboard" id="inviteLeaderboard"></div>
+      <button class="btn-start" onclick="acceptChallenge()">接受挑战 · Accept Challenge →</button>
+    </div>
+  </div>
+</div>
+
+<!-- No Lives Modal -->
+<div class="modal-overlay" id="noLivesModal">
+  <div class="modal">
+    <div class="big-emoji">💔</div>
+    <h2>生命用完！</h2>
+    <div class="countdown" id="cooldownTimer">10:00</div>
+    <p class="countdown-label">后恢复 · until lives refill</p>
+    <input class="email-skip-input" id="emailSkip" type="email" placeholder="留下邮箱可立即跳过 · Email to skip wait">
+    <button class="btn-email-skip" onclick="emailSkipCooldown()">提交邮箱，立即继续 · Submit & Continue</button>
+    <p class="wait-msg">或者等待倒计时结束 · Or wait for cooldown</p>
+    <button class="close-modal" onclick="closeNoLivesModal()">稍后再说 · Later</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG — update these before deploying
+// ═══════════════════════════════════════════════
+const SUPABASE_URL = 'https://bltfljdgjxhcmbfduert.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsdGZsamRnanhoY21iZmR1ZXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQwMDMsImV4cCI6MjA5MTM0MDAwM30.WL8e6w1x_Bz437jtke8ZhFF0GpBo2WlG5-7wvLm8o2s'; // ← 填你的 anon key
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let SID = localStorage.getItem('readii_sid');
+if (!SID) { SID = crypto.randomUUID(); localStorage.setItem('readii_sid', SID); }
+
+const LIVES_KEY = 'readii_lives';
+const COOLDOWN_KEY = 'readii_cooldown';
+const MAX_LIVES = 15;
+
+let lives = parseInt(localStorage.getItem(LIVES_KEY)) || MAX_LIVES;
+let cards = [];
+let cardIdx = 0;
+let correct = 0;
+let sourceText = '';
+let readoutScore = 0;
+let challengeData = null; // when opening a challenge link
+let isRecording = false;
+let recognition = null;
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderLives();
+  checkCooldown();
+
+  // Check for challenge slug in URL
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('c');
+  if (slug) {
+    loadChallenge(slug);
+  }
+
+  // Text input
+  const ta = document.getElementById('inputText');
+  const btn = document.getElementById('btnStart');
+  ta.addEventListener('input', () => {
+    const len = ta.value.trim().length;
+    document.getElementById('charCount').textContent = len;
+    btn.disabled = len < 30;
+  });
+
+  // Track page view
+  track('page_view', { referrer: document.referrer, challenge: slug || null });
+
+  // Return visit detection
+  const lastVisit = localStorage.getItem('readii_last_visit');
+  if (lastVisit) {
+    const hoursSince = (Date.now() - parseInt(lastVisit)) / 3600000;
+    if (hoursSince > 1) track('return_visit', { hours_since: Math.round(hoursSince) });
+  }
+  localStorage.setItem('readii_last_visit', Date.now().toString());
+});
+
+// ═══════════════════════════════════════════════
+// LIVES SYSTEM
+// ═══════════════════════════════════════════════
+function renderLives() {
+  const bar = document.getElementById('livesBar');
+  let html = '';
+  for (let i = 0; i < MAX_LIVES; i++) {
+    html += `<span class="heart${i >= lives ? ' lost' : ''}" id="heart${i}">❤️</span>`;
+  }
+  html += `<span class="count">× ${lives}</span>`;
+  bar.innerHTML = html;
+}
+
+function deductLife() {
+  if (lives <= 0) return;
+  lives--;
+  localStorage.setItem(LIVES_KEY, lives);
+
+  // Animate the lost heart
+  const heart = document.getElementById(`heart${lives}`);
+  if (heart) {
+    heart.classList.add('animating');
+    setTimeout(() => heart.classList.add('lost'), 500);
+  }
+  renderLives();
+
+  if (lives <= 0) {
+    track('lives_exhausted', { cards_done: cardIdx, correct });
+    startCooldown();
+  }
+}
+
+function startCooldown() {
+  const endsAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+  localStorage.setItem(COOLDOWN_KEY, endsAt.toString());
+  showNoLivesModal(endsAt);
+}
+
+function checkCooldown() {
+  const endsAt = parseInt(localStorage.getItem(COOLDOWN_KEY));
+  if (!endsAt) return;
+  if (Date.now() >= endsAt) {
+    // Cooldown expired, restore lives
+    localStorage.removeItem(COOLDOWN_KEY);
+    lives = MAX_LIVES;
+    localStorage.setItem(LIVES_KEY, lives);
+    renderLives();
+  } else if (lives <= 0) {
+    showNoLivesModal(endsAt);
+  }
+}
+
+function showNoLivesModal(endsAt) {
+  document.getElementById('noLivesModal').classList.add('show');
+  const timerEl = document.getElementById('cooldownTimer');
+  const interval = setInterval(() => {
+    const remaining = Math.max(0, endsAt - Date.now());
+    if (remaining <= 0) {
+      clearInterval(interval);
+      lives = MAX_LIVES;
+      localStorage.setItem(LIVES_KEY, lives);
+      localStorage.removeItem(COOLDOWN_KEY);
+      renderLives();
+      closeNoLivesModal();
+      return;
+    }
+    const m = Math.floor(remaining / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    timerEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+  }, 1000);
+}
+
+function closeNoLivesModal() {
+  document.getElementById('noLivesModal').classList.remove('show');
+}
+
+function emailSkipCooldown() {
+  const email = document.getElementById('emailSkip').value.trim();
+  if (!email || !email.includes('@')) return toast('请输入有效邮箱');
+  track('email_submitted', { email, context: 'cooldown_skip' });
+  // Restore lives
+  lives = MAX_LIVES;
+  localStorage.setItem(LIVES_KEY, lives);
+  localStorage.removeItem(COOLDOWN_KEY);
+  renderLives();
+  closeNoLivesModal();
+  toast('生命已恢复！');
+}
+
+// ═══════════════════════════════════════════════
+// SCREEN NAVIGATION
+// ═══════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen${name}`).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+// PASTE → GENERATE
+// ═══════════════════════════════════════════════
+document.getElementById('btnStart')?.addEventListener('click', async () => {
+  sourceText = document.getElementById('inputText').value.trim();
+  if (sourceText.length < 30) return;
+
+  track('paste_submit', { chars: sourceText.length });
+  showScreen('Loading');
+
+  try {
+    const resp = await fetch('/.netlify/functions/quiz-generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: sourceText }),
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error || 'Generation failed');
+    }
+
+    const data = await resp.json();
+    cards = data.cards || [];
+    if (cards.length === 0) throw new Error('No cards generated');
+
+    cardIdx = 0;
+    correct = 0;
+    document.getElementById('resultSummary').textContent = data.summary_zh || '';
+    showCard();
+    showScreen('Quiz');
+
+  } catch (err) {
+    console.error(err);
+    toast(err.message || '生成失败，请重试');
+    showScreen('Paste');
+  }
+});
+
+// ═══════════════════════════════════════════════
+// QUIZ CARDS
+// ═══════════════════════════════════════════════
+function showCard() {
+  if (cardIdx >= cards.length) {
+    // All cards done → readout
+    track('cards_complete', { correct, total: cards.length, lives });
+    startReadout();
+    return;
+  }
+
+  const card = cards[cardIdx];
+  document.getElementById('cardNum').textContent = `Card ${cardIdx + 1} / ${cards.length}`;
+  document.getElementById('phonemeTag').textContent = card.phoneme || 'pronunciation';
+
+  const q = document.getElementById('cardQuestion');
+  q.innerHTML = `${card.question_zh || card.question_en}<small>${card.question_en || ''}</small>`;
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  (card.options || []).forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => selectOption(i, card.correct, card));
+    container.appendChild(btn);
+  });
+
+  document.getElementById('cardExplain').classList.remove('show', 'correct-explain', 'wrong-explain');
+  document.getElementById('btnNext').classList.remove('show');
+}
+
+function selectOption(selected, correctIdx, card) {
+  const options = document.querySelectorAll('.option');
+  const isCorrect = selected === correctIdx;
+
+  // Disable all options
+  options.forEach((opt, i) => {
+    opt.style.pointerEvents = 'none';
+    if (i === correctIdx) opt.classList.add('correct');
+    if (i === selected && !isCorrect) opt.classList.add('wrong');
+    if (i !== selected && i !== correctIdx) opt.classList.add('dimmed');
+  });
+
+  // Show explanation
+  const explain = document.getElementById('cardExplain');
+  explain.textContent = card.explain_zh || card.explain_en || '';
+  explain.classList.add('show', isCorrect ? 'correct-explain' : 'wrong-explain');
+
+  if (isCorrect) {
+    correct++;
+  } else {
+    deductLife();
+    if (lives <= 0) return; // modal will show
+  }
+
+  track('card_answer', { card_idx: cardIdx, correct: isCorrect, phoneme: card.phoneme, lives });
+
+  // Show next button
+  document.getElementById('btnNext').classList.add('show');
+}
+
+document.getElementById('btnNext')?.addEventListener('click', () => {
+  cardIdx++;
+  showCard();
+});
+
+// ═══════════════════════════════════════════════
+// READ ALOUD (Web Speech API)
+// ═══════════════════════════════════════════════
+function startReadout() {
+  showScreen('Readout');
+  document.getElementById('readoutText').textContent = sourceText.slice(0, 300);
+  document.getElementById('readoutResult').style.display = 'none';
+  document.getElementById('recordHint').textContent = '点击开始录音 · Click to record';
+  document.getElementById('btnRecord').classList.remove('recording');
+}
+
+function listenDemo(rate = 1) {
+  if (!('speechSynthesis' in window)) return toast('浏览器不支持语音');
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(sourceText.slice(0, 300));
+  u.lang = 'en-GB';
+  u.rate = rate;
+  // Try to find a British voice
+  const voices = window.speechSynthesis.getVoices();
+  const brit = voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en'));
+  if (brit) u.voice = brit;
+  window.speechSynthesis.speak(u);
+}
+
+function toggleRecording() {
+  if (isRecording) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+}
+
+function startRecording() {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    return toast('浏览器不支持语音识别，请使用 Chrome');
+  }
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'en-GB';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    isRecording = true;
+    document.getElementById('btnRecord').classList.add('recording');
+    document.getElementById('recordHint').textContent = '正在录音… · Recording…';
+  };
+
+  recognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    const confidence = Math.round(e.results[0][0].confidence * 100);
+    finishReadout(transcript, confidence);
+  };
+
+  recognition.onerror = (e) => {
+    console.error('Speech error:', e.error);
+    isRecording = false;
+    document.getElementById('btnRecord').classList.remove('recording');
+    if (e.error === 'no-speech') {
+      document.getElementById('recordHint').textContent = '没有检测到语音，再试一次 · No speech detected';
+    } else {
+      document.getElementById('recordHint').textContent = '录音出错，再试一次 · Error, try again';
+    }
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    document.getElementById('btnRecord').classList.remove('recording');
+  };
+
+  recognition.start();
+}
+
+function stopRecording() {
+  if (recognition) recognition.stop();
+}
+
+function finishReadout(transcript, confidence) {
+  readoutScore = confidence;
+
+  // Simple word-level comparison for highlighting
+  const expected = sourceText.slice(0, 300).toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
+  const spoken = transcript.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
+
+  let html = '';
+  expected.forEach(word => {
+    const found = spoken.includes(word);
+    const cls = found ? 'w-green' : (Math.random() > 0.5 ? 'w-yellow' : 'w-red');
+    html += `<span class="${cls}">${word}</span> `;
+  });
+  document.getElementById('readoutText').innerHTML = html;
+
+  // Deduct life if score < 60
+  if (readoutScore < 60) {
+    deductLife();
+    if (lives <= 0) return;
+  }
+
+  document.getElementById('readoutScore').textContent = readoutScore;
+  document.getElementById('readoutResult').style.display = 'block';
+  document.getElementById('recordHint').textContent = '录音完成 · Recording complete';
+
+  track('readout_complete', { score: readoutScore, lives });
+}
+
+// ═══════════════════════════════════════════════
+// RESULT
+// ═══════════════════════════════════════════════
+function showResult() {
+  const pct = Math.round((correct / cards.length) * 100);
+  document.getElementById('finalScore').textContent = pct + '%';
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statTotal').textContent = cards.length;
+  document.getElementById('statLives').textContent = lives;
+  document.getElementById('linkBox').classList.remove('show');
+  showScreen('Result');
+}
+
+// ═══════════════════════════════════════════════
+// CHALLENGE CREATION & SHARING
+// ═══════════════════════════════════════════════
+async function createChallenge() {
+  const pct = Math.round((correct / cards.length) * 100);
+  try {
+    const resp = await fetch('/.netlify/functions/quiz-challenge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source_text: sourceText.slice(0, 2000),
+        cards_json: cards,
+        creator_score: pct,
+        creator_name: '挑战者',
+      }),
+    });
+    const data = await resp.json();
+    if (data.url) {
+      const linkInput = document.getElementById('challengeLink');
+      linkInput.value = data.url;
+      document.getElementById('linkBox').classList.add('show');
+      try { await navigator.clipboard.writeText(data.url); } catch {}
+      track('challenge_created', { slug: data.slug, score: pct });
+      toast('挑战链接已生成！');
+    }
+  } catch (err) {
+    toast('创建失败，请重试');
+  }
+}
+
+async function loadChallenge(slug) {
+  showScreen('Loading');
+  try {
+    const resp = await fetch(`/.netlify/functions/quiz-challenge?slug=${slug}`);
+    if (!resp.ok) throw new Error('Not found');
+    challengeData = await resp.json();
+
+    track('friend_opened', { slug, creator_score: challengeData.creator_score });
+
+    // Show invite screen
+    document.getElementById('inviteChallenger').textContent =
+      `${challengeData.creator_name} 邀请你挑战 · challenges you`;
+    document.getElementById('inviteScore').textContent =
+      `对方得分 ${challengeData.creator_score}% · Their score`;
+
+    // Leaderboard
+    const lb = document.getElementById('inviteLeaderboard');
+    lb.innerHTML = '';
+    (challengeData.leaderboard || []).forEach((a, i) => {
+      lb.innerHTML += `<div class="leaderboard-row">
+        <span class="rank">${i + 1}.</span>
+        <span class="name">${i === 0 ? challengeData.creator_name : '挑战者'}</span>
+        <span class="lb-score">${a.score}%</span>
+      </div>`;
+    });
+    if (challengeData.leaderboard?.length === 0) {
+      lb.innerHTML = `<div class="leaderboard-row"><span class="rank">1.</span><span class="name">${challengeData.creator_name}</span><span class="lb-score">${challengeData.creator_score}%</span></div>`;
+    }
+
+    showScreen('Invite');
+  } catch {
+    toast('挑战不存在');
+    showScreen('Paste');
+  }
+}
+
+function acceptChallenge() {
+  if (!challengeData) return;
+  sourceText = challengeData.source_text;
+  cards = challengeData.cards_json;
+  cardIdx = 0;
+  correct = 0;
+  showCard();
+  showScreen('Quiz');
+}
+
+// ═══════════════════════════════════════════════
+// SHARE
+// ═══════════════════════════════════════════════
+function shareWeChat() {
+  const link = document.getElementById('challengeLink')?.value;
+  if (link) {
+    navigator.clipboard.writeText(`我在 Readii 发音挑战中得了 ${document.getElementById('finalScore').textContent}，你来试试？ ${link}`);
+    toast('已复制到剪贴板，粘贴到微信发送');
+  } else {
+    toast('请先创建挑战');
+  }
+}
+
+function shareXHS() {
+  const link = document.getElementById('challengeLink')?.value;
+  if (link) {
+    navigator.clipboard.writeText(`测试你的英式英语发音！我得了 ${document.getElementById('finalScore').textContent} 💪 ${link} #英式英语 #发音练习 #Readii`);
+    toast('已复制，粘贴到小红书发布');
+  } else {
+    toast('请先创建挑战');
+  }
+}
+
+function shareGeneric() {
+  const link = document.getElementById('challengeLink')?.value;
+  if (link) {
+    navigator.clipboard.writeText(link);
+    toast('链接已复制');
+  } else {
+    toast('请先创建挑战');
+  }
+}
+
+function submitEmail() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) return toast('请输入有效邮箱');
+  track('email_submitted', { email, context: 'result_page', score: document.getElementById('finalScore').textContent });
+  toast('提交成功，完整版发布时通知你！');
+  document.getElementById('emailInput').value = '';
+}
+
+// ═══════════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════════
+function resetAll() {
+  cardIdx = 0;
+  correct = 0;
+  cards = [];
+  sourceText = '';
+  readoutScore = 0;
+  challengeData = null;
+  document.getElementById('inputText').value = '';
+  document.getElementById('charCount').textContent = '0';
+  document.getElementById('btnStart').disabled = true;
+  document.getElementById('linkBox').classList.remove('show');
+  // Don't reset lives — they persist
+  showScreen('Paste');
+  // Remove challenge param from URL
+  window.history.replaceState({}, '', window.location.pathname);
+}
+
+// ═══════════════════════════════════════════════
+// TRACKING
+// ═══════════════════════════════════════════════
+function track(event, data = {}) {
+  const params = new URLSearchParams(window.location.search);
+  sb.from('pretotype_events').insert({
+    session_id: SID,
+    event,
+    data,
+    referrer: params.get('c') ? `challenge:${params.get('c')}` : (document.referrer || 'direct'),
+  }).then(() => {}).catch(e => console.warn('Track error:', e));
+}
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
