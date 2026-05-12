@@ -83,10 +83,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
 /* ── Read Aloud Screen ── */
 .readout-box{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:28px 24px;text-align:center}
-.readout-text{font-family:var(--serif);font-size:20px;line-height:1.6;margin-bottom:24px;text-align:left}
+.segment-progress{font-size:12px;color:var(--gold);font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-align:center}
+.readout-text{font-family:var(--serif);font-size:22px;line-height:1.6;margin-bottom:14px;text-align:left}
 .readout-text .w-green{background:var(--green-pale);padding:1px 4px;border-radius:4px}
 .readout-text .w-yellow{background:var(--yellow-pale);padding:1px 4px;border-radius:4px}
 .readout-text .w-red{background:var(--red-pale);padding:1px 4px;border-radius:4px;font-weight:700}
+.readout-text .watch{color:var(--gold);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.segment-tip{padding:10px 14px;background:var(--gold-pale);border-left:3px solid var(--gold);border-radius:6px;font-size:13px;line-height:1.6;color:#5a4a1a;text-align:left;margin-bottom:18px}
 .btn-listen{padding:12px 24px;border:1.5px solid var(--border);border-radius:10px;background:none;font-size:13px;cursor:pointer;margin:0 6px 12px;transition:all .15s}
 .btn-listen:hover{border-color:var(--forest);color:var(--forest)}
 .btn-record{width:100px;height:100px;border-radius:50%;background:var(--forest);border:none;color:var(--white);font-size:32px;cursor:pointer;margin:20px auto;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 4px 20px rgba(45,90,79,.25)}
@@ -210,11 +213,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
   </div>
 
-  <!-- ═══ Screen: Read Aloud ═══ -->
+  <!-- ═══ Screen: Read Aloud (segment-by-segment) ═══ -->
   <div class="screen" id="screenReadout">
     <div class="readout-box">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">知识卡片完成，现在跟读练习 · Now read aloud</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:6px">跟读练习 · Shadow each segment</p>
+      <p class="segment-progress" id="segmentProgress">第 1 段 / 共 1 段</p>
       <div class="readout-text" id="readoutText"></div>
+      <div class="segment-tip" id="segmentTip">💡</div>
       <div>
         <button class="btn-listen" onclick="listenDemo()">▶ 听标准 · Listen</button>
         <button class="btn-listen" onclick="listenDemo(0.8)">🐢 慢速 · Slow</button>
@@ -223,8 +228,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <p class="record-hint" id="recordHint">点击开始录音 · Click to record</p>
       <div id="readoutResult" style="display:none">
         <p class="readout-score" id="readoutScore">—</p>
-        <p class="readout-score-label">发音得分 · Pronunciation Score</p>
-        <button class="btn-next show" style="margin-top:20px" onclick="showResult()">查看结果 · See Results →</button>
+        <p class="readout-score-label">本段得分 · Segment Score</p>
+        <button class="btn-next show" id="btnNextSegment" style="margin-top:20px" onclick="nextSegment()">下一段 →</button>
       </div>
     </div>
   </div>
@@ -318,7 +323,10 @@ let cards = [];
 let cardIdx = 0;
 let correct = 0;
 let sourceText = '';
-let readoutScore = 0;
+let segments = [];
+let segmentIdx = 0;
+let segmentScores = []; // per-segment recognition confidence
+let readoutScore = 0;   // average across segments
 let challengeData = null; // when opening a challenge link
 let isRecording = false;
 let recognition = null;
@@ -479,10 +487,17 @@ document.getElementById('btnStart')?.addEventListener('click', async () => {
 
     const data = await resp.json();
     cards = data.cards || [];
+    segments = (data.segments && data.segments.length) ? data.segments : [{
+      text: sourceText.slice(0, 200),
+      tip_zh: '注意整段的发音节奏和连读。',
+      words_to_watch: [],
+    }];
     if (cards.length === 0) throw new Error('No cards generated');
 
     cardIdx = 0;
     correct = 0;
+    segmentIdx = 0;
+    segmentScores = [];
     document.getElementById('resultSummary').textContent = data.summary_zh || '';
     showCard();
     showScreen('Quiz');
@@ -507,7 +522,7 @@ function showCard() {
 
   const card = cards[cardIdx];
   document.getElementById('cardNum').textContent = `Card ${cardIdx + 1} / ${cards.length}`;
-  document.getElementById('phonemeTag').textContent = card.phoneme || 'pronunciation';
+  document.getElementById('phonemeTag').textContent = (card.phoneme || 'pronunciation').replace(/_/g, ' ');
 
   const q = document.getElementById('cardQuestion');
   q.innerHTML = `${card.question_zh || card.question_en}<small>${card.question_en || ''}</small>`;
@@ -562,27 +577,87 @@ document.getElementById('btnNext')?.addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════════
-// READ ALOUD (Web Speech API)
+// READ ALOUD — segment-by-segment (Web Speech API)
 // ═══════════════════════════════════════════════
 function startReadout() {
+  segmentIdx = 0;
+  segmentScores = [];
   showScreen('Readout');
-  document.getElementById('readoutText').textContent = sourceText.slice(0, 300);
+  showSegment();
+}
+
+function showSegment() {
+  const seg = segments[segmentIdx];
+  if (!seg) {
+    // Ran past the end — go to result
+    finishAllSegments();
+    return;
+  }
+
+  document.getElementById('segmentProgress').textContent =
+    `第 ${segmentIdx + 1} 段 / 共 ${segments.length} 段`;
+
+  // Render text with words_to_watch highlighted
+  document.getElementById('readoutText').innerHTML = renderSegmentText(seg.text, seg.words_to_watch || []);
+
+  // Tip line
+  const tipEl = document.getElementById('segmentTip');
+  tipEl.textContent = seg.tip_zh ? `💡 ${seg.tip_zh}` : '💡 跟读这一段，注意发音和节奏。';
+
+  // Reset record UI
   document.getElementById('readoutResult').style.display = 'none';
   document.getElementById('recordHint').textContent = '点击开始录音 · Click to record';
   document.getElementById('btnRecord').classList.remove('recording');
 }
 
+function renderSegmentText(text, watch) {
+  if (!watch || !watch.length) return escapeHtml(text);
+  // Escape HTML once, then wrap watch words via regex with word boundaries (case-insensitive)
+  let html = escapeHtml(text);
+  watch.forEach(w => {
+    if (!w) return;
+    const re = new RegExp(`\\b(${escapeRegex(w)})\\b`, 'gi');
+    html = html.replace(re, '<span class="watch">$1</span>');
+  });
+  return html;
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function listenDemo(rate = 1) {
   if (!('speechSynthesis' in window)) return toast('浏览器不支持语音');
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(sourceText.slice(0, 300));
+  const seg = segments[segmentIdx];
+  const phrase = seg?.text || sourceText.slice(0, 200);
+  const u = new SpeechSynthesisUtterance(phrase);
   u.lang = 'en-GB';
   u.rate = rate;
-  // Try to find a British voice
   const voices = window.speechSynthesis.getVoices();
   const brit = voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en'));
   if (brit) u.voice = brit;
   window.speechSynthesis.speak(u);
+}
+
+function nextSegment() {
+  segmentIdx++;
+  if (segmentIdx >= segments.length) {
+    finishAllSegments();
+    return;
+  }
+  showSegment();
+}
+
+function finishAllSegments() {
+  // Aggregate average across all recorded segments
+  if (segmentScores.length) {
+    readoutScore = Math.round(segmentScores.reduce((a, b) => a + b, 0) / segmentScores.length);
+  }
+  track('readout_complete', { score: readoutScore, segments_done: segmentScores.length, segments_total: segments.length, lives });
+  showResult();
 }
 
 function toggleRecording() {
@@ -640,31 +715,41 @@ function stopRecording() {
 }
 
 function finishReadout(transcript, confidence) {
-  readoutScore = confidence;
+  const segScore = Math.round(confidence);
+  segmentScores.push(segScore);
 
-  // Simple word-level comparison for highlighting
-  const expected = sourceText.slice(0, 300).toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
+  // Word-level comparison against the CURRENT segment for visual feedback
+  const seg = segments[segmentIdx];
+  const expected = (seg?.text || '').toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/).filter(Boolean);
   const spoken = transcript.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
 
   let html = '';
   expected.forEach(word => {
     const found = spoken.includes(word);
-    const cls = found ? 'w-green' : (Math.random() > 0.5 ? 'w-yellow' : 'w-red');
+    const cls = found ? 'w-green' : 'w-red';
     html += `<span class="${cls}">${word}</span> `;
   });
   document.getElementById('readoutText').innerHTML = html;
 
-  // Deduct life if score < 60
-  if (readoutScore < 60) {
+  // Deduct life on poor segment score
+  if (segScore < 60) {
     deductLife();
     if (lives <= 0) return;
   }
 
-  document.getElementById('readoutScore').textContent = readoutScore;
+  document.getElementById('readoutScore').textContent = segScore;
   document.getElementById('readoutResult').style.display = 'block';
   document.getElementById('recordHint').textContent = '录音完成 · Recording complete';
 
-  track('readout_complete', { score: readoutScore, lives });
+  // Last segment? Change CTA to "查看结果"
+  const btn = document.getElementById('btnNextSegment');
+  if (segmentIdx >= segments.length - 1) {
+    btn.textContent = '查看结果 · See Results →';
+  } else {
+    btn.textContent = '下一段 →';
+  }
+
+  track('segment_recorded', { segment_idx: segmentIdx, score: segScore, segments_total: segments.length, lives });
 }
 
 // ═══════════════════════════════════════════════
@@ -691,7 +776,7 @@ async function createChallenge() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         source_text: sourceText.slice(0, 2000),
-        cards_json: cards,
+        cards_json: { cards, segments },
         creator_score: pct,
         creator_name: '挑战者',
       }),
@@ -749,9 +834,27 @@ async function loadChallenge(slug) {
 function acceptChallenge() {
   if (!challengeData) return;
   sourceText = challengeData.source_text;
-  cards = challengeData.cards_json;
+  // cards_json may be: legacy array (cards only) OR { cards, segments }
+  const cj = challengeData.cards_json;
+  if (Array.isArray(cj)) {
+    cards = cj;
+    segments = [{
+      text: sourceText.slice(0, 200),
+      tip_zh: '注意整段的发音节奏和连读。',
+      words_to_watch: [],
+    }];
+  } else {
+    cards = cj?.cards || [];
+    segments = (cj?.segments && cj.segments.length) ? cj.segments : [{
+      text: sourceText.slice(0, 200),
+      tip_zh: '注意整段的发音节奏和连读。',
+      words_to_watch: [],
+    }];
+  }
   cardIdx = 0;
   correct = 0;
+  segmentIdx = 0;
+  segmentScores = [];
   showCard();
   showScreen('Quiz');
 }
@@ -804,6 +907,9 @@ function resetAll() {
   cardIdx = 0;
   correct = 0;
   cards = [];
+  segments = [];
+  segmentIdx = 0;
+  segmentScores = [];
   sourceText = '';
   readoutScore = 0;
   challengeData = null;
