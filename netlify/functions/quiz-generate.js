@@ -1,78 +1,103 @@
 // netlify/functions/quiz-generate.js
-// Generates:
-//   - 3 listen_choose cards: { word, instruction, correct (0|1|2), explanation }
-//     (the frontend synthesises 3 audio variants of the same word; correct = en-GB)
-//   - 8 short shadowing segments with English tips + words_to_watch
-// English-only, no IPA, no Chinese. A2-B1 vocabulary throughout.
+// Reading-first schema. Returns:
+//   - segments[]: 8 short reading chunks (1-2 sentences, ≤20 words) with
+//     focus_words + tip + phonemes for British pronunciation guidance
+//   - quiz_cards[]: 2 quick-check cards inserted after segment 3 and 6
+//     to reinforce what the reader has encountered
+// English only, no IPA, no Chinese. A2-B1 vocabulary throughout.
 
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 
-const SYSTEM_PROMPT = `You are a British English pronunciation coach for non-native learners (A2-B1 level).
+const SYSTEM_PROMPT = `You are a British English reading coach for non-native learners (A2-B1 level). You help them read English aloud with correct British pronunciation.
 
-HARD CONSTRAINTS:
+ABSOLUTE RULES — break any and the output is unusable:
 
-A. BREVITY (output is rate-limited):
-   - instruction: max 100 characters
-   - explanation: ONE sentence, max 140 characters
-   - tip: max 80 characters
-   - segment text: max 20 English words
+A. BREVITY (rate-limited):
+   - tip: ≤120 characters, ONE simple sentence
+   - segment text: ≤20 English words
+   - question: ≤120 characters
+   - option: ≤30 characters
+   - explanation: ≤120 characters
 
-B. NO IPA symbols anywhere (/ɑː/, /æ/, /ə/, etc.). Use plain re-spellings ("bah-th", "waw-tuh") and physical instructions ("open your mouth wider", "pull your tongue back", "don't curl your tongue", "round your lips").
+B. NO IPA symbols anywhere (/ɑː/, /æ/, /ə/, etc.). Describe sounds with:
+   - plain re-spellings: "waw-tuh", "bah-th", "nyoo", "fuh-thuh"
+   - physical instructions: "open your mouth wider", "pull your tongue back", "round your lips", "don't curl your tongue", "keep your tongue relaxed"
+   - simple comparisons: "like saying 'ah' at the doctor", "softer at the end"
 
-C. NO Chinese characters. All output in simple English.
+C. NO Chinese characters. Everything in simple English.
 
-D. Output ONLY valid JSON. No markdown fences, no preamble.
+D. Output ONLY valid JSON — no markdown fences, no preamble, no trailing text.
 
-CARDS — generate exactly 3, every card is type "listen_choose":
+SEGMENTATION — produce exactly 8 segments:
+- Split the text into 8 chunks in the ORIGINAL ORDER. Do not rearrange sentences.
+- Each chunk = 1-2 sentences, max 20 English words.
+- If a sentence is longer than 20 words, split it at a natural boundary (comma, conjunction).
+- If the source is too short for 8 segments, repeat or pad with the closing sentence — never invent new content.
 
-Each card picks ONE word from the user's text where British and American pronunciation clearly differ. Good targets:
-- non-rhotic R: water, better, car, mother, after, here, there
-- broad A: bath, path, castle, dance, chance, grass, glass, laugh
-- yod insertion: new, news, tune, duke, Tuesday, student
-- rounded short O: hot, not, stop, got, on
-- diphthong oh: go, home, phone, know
+FOCUS WORDS — for each segment:
+- Pick 1-2 words where British pronunciation differs notably from American or where non-native speakers commonly stumble.
+- Good targets: water, better, rather, after, car, father, mother, here, there, bath, path, castle, dance, chance, grass, glass, laugh, staff, new, news, tune, duke, Tuesday, student, hot, not, stop, got, on, go, home, phone, know, no.
+- All focus_words must appear verbatim in the segment text (case-insensitive).
+- Use the lowercase form in the focus_words array.
 
-For each card:
-- word: the chosen word (lowercase, single word, must appear in the source text)
-- instruction: tells the learner to listen to three versions and pick the British one. Mention the word in quotes. Example: 'Listen to three versions of "water". Which one is British English?'
-- correct: integer 0, 1, or 2 — VARY this across the 3 cards so the answer isn't always in the same position (e.g. one card correct=0, one correct=1, one correct=2)
-- explanation: ONE sentence describing how to produce the British pronunciation using a physical instruction. No IPA. Example: 'British "water" drops the R at the end and sounds like "waw-tuh" — keep your tongue relaxed, don\\'t curl it up.'
+TIPS — one short English sentence per segment:
+- Name the focus word(s) explicitly.
+- Describe how to produce the British sound with a physical action OR plain re-spelling.
+- No IPA. No linguistic jargon.
 
-SHADOWING SEGMENTS — exactly 8:
-- text: a real 1-2 sentence chunk from the source, max 20 words
-- tip: one short English sentence (max 80 chars) mentioning 1-2 specific words
-- words_to_watch: 1-3 strings, words from this segment`;
+PHONEMES — for each focus word, give a dot-separated plain-English re-spelling:
+- water → "W.AW.T.UH"
+- better → "B.EH.T.UH"
+- bath → "B.AH.TH"
+- new → "N.Y.OO"
+- hot → "H.OT"
+- go → "G.UH.OO"
+Use uppercase letters separated by dots. This is what users see — keep it intuitive, not phonetic.
 
-const USER_PROMPT_TEMPLATE = `Source text:
+QUIZ CARDS — produce exactly 2 cards (after_segment 3 and after_segment 6):
+- Each card tests a pronunciation feature the reader has ALREADY encountered in the segments before it.
+- Card 1 (after_segment 3): test something seen in segments 1-3.
+- Card 2 (after_segment 6): test something seen in segments 1-6.
+- question: a short English question.
+- options: exactly 4 strings, ≤30 chars each. Only 1 correct.
+- correct: integer 0-3.
+- explanation: one short sentence with a physical action or re-spelling.`;
+
+const USER_PROMPT_TEMPLATE = `Split this English text into reading segments with British pronunciation guidance.
 
 """
 {TEXT}
 """
 
-Return ONLY this JSON. The response is being prefilled to start with "{" — continue from there. No markdown. No preamble. No Chinese characters.
+Return ONLY this JSON (the response is being prefilled to start with "{" — continue from there). No markdown, no preamble, no Chinese characters, no IPA.
 
 {
-  "cards": [
-    {
-      "type": "listen_choose",
-      "word": "water",
-      "instruction": "Listen to three versions of \\"water\\". Which one is British English?",
-      "correct": 1,
-      "explanation": "British \\"water\\" drops the R at the end — sounds like \\"waw-tuh\\". Keep your tongue relaxed, don't curl it up."
-    }
-  ],
   "segments": [
     {
-      "text": "Real ≤20-word chunk from source.",
-      "tip": "≤80 chars tip mentioning specific words",
-      "words_to_watch": ["word1", "word2"]
+      "position": 1,
+      "text": "The water was rather cold this morning.",
+      "focus_words": ["water", "rather"],
+      "tip": "Don't pronounce the R at the end of 'water' and 'rather'. Say 'waw-tuh', 'rah-thuh'.",
+      "phonemes": {
+        "water": "W.AW.T.UH",
+        "rather": "R.AH.TH.UH"
+      }
     }
   ],
-  "summary": "≤80 chars summary",
-  "difficulty": "A2|B1|B2|C1"
+  "quiz_cards": [
+    {
+      "after_segment": 3,
+      "question": "Which of these also has a SILENT R at the end in British English?",
+      "options": ["stop", "better", "big", "hot"],
+      "correct": 1,
+      "explanation": "Better ends in R, silent in British English. Say 'bet-uh', not 'bet-er'."
+    }
+  ],
+  "summary": "Short English summary of the main features practised.",
+  "total_focus_words": 12
 }
 
-Generate EXACTLY 3 cards (vary the correct index across them — don't always use 1). Exactly 8 segments. No IPA. No Chinese.`;
+Generate EXACTLY 8 segments and EXACTLY 2 quiz cards (after_segment values 3 and 6).`;
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -106,7 +131,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2000,
+        max_tokens: 2500,
         system: SYSTEM_PROMPT,
         messages: [
           { role: 'user', content: USER_PROMPT_TEMPLATE.replace('{TEXT}', trimmed) },
@@ -145,26 +170,40 @@ exports.handler = async (event) => {
       }
     }
 
-    if (!parsed.cards || !Array.isArray(parsed.cards) || parsed.cards.length === 0) {
-      return respond(422, { error: 'AI generated no cards, please try different text' });
+    // Sanitise segments
+    if (!parsed.segments || !Array.isArray(parsed.segments) || parsed.segments.length === 0) {
+      return respond(422, { error: 'AI generated no segments, please try different text' });
     }
-
-    // Sanitise each card: clamp correct to 0..2, ensure word/instruction/explanation exist
-    parsed.cards = parsed.cards.map((c, idx) => ({
-      type: 'listen_choose',
-      word: String(c.word || '').toLowerCase().replace(/[^a-z']/g, '') || 'word',
-      instruction: c.instruction || `Listen to three versions of "${c.word || 'this word'}". Which one is British English?`,
-      correct: Math.max(0, Math.min(2, Number.isInteger(c.correct) ? c.correct : (idx % 3))),
-      explanation: c.explanation || 'British pronunciation differs from American — listen carefully and copy the rhythm.',
+    parsed.segments = parsed.segments.map((s, idx) => ({
+      position: Number.isInteger(s.position) ? s.position : idx + 1,
+      text: String(s.text || '').trim() || 'Missing segment text.',
+      focus_words: (Array.isArray(s.focus_words) ? s.focus_words : [])
+        .map(w => String(w).toLowerCase().replace(/[^a-z']/g, ''))
+        .filter(Boolean)
+        .slice(0, 3),
+      tip: String(s.tip || ''),
+      phonemes: (s.phonemes && typeof s.phonemes === 'object') ? s.phonemes : {},
     }));
 
-    if (!parsed.segments || !Array.isArray(parsed.segments) || parsed.segments.length === 0) {
-      parsed.segments = [{
-        text: trimmed.slice(0, 200),
-        tip: 'Pay attention to rhythm, linking, and silent Rs.',
-        words_to_watch: [],
-      }];
-    }
+    // Sanitise quiz_cards — filter out malformed ones
+    parsed.quiz_cards = (Array.isArray(parsed.quiz_cards) ? parsed.quiz_cards : [])
+      .filter(c =>
+        c && typeof c === 'object' &&
+        Number.isInteger(c.after_segment) &&
+        c.after_segment >= 1 && c.after_segment <= parsed.segments.length &&
+        Array.isArray(c.options) && c.options.length >= 2 &&
+        Number.isInteger(c.correct) && c.correct >= 0 && c.correct < c.options.length
+      )
+      .map(c => ({
+        after_segment: c.after_segment,
+        question: String(c.question || ''),
+        options: c.options.map(o => String(o)),
+        correct: c.correct,
+        explanation: String(c.explanation || ''),
+      }));
+
+    parsed.summary = String(parsed.summary || '');
+    parsed.total_focus_words = parsed.segments.reduce((sum, s) => sum + (s.focus_words?.length || 0), 0);
 
     return respond(200, parsed);
 

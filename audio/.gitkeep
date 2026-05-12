@@ -1,0 +1,4 @@
+# Future home for ElevenLabs-generated single-word audio files.
+# Naming convention: /audio/<lowercase-word>.mp3 — e.g. water.mp3, bath.mp3.
+# Until these files exist, the frontend's playWordAudio() falls back to
+# the browser's SpeechSynthesis API (Web Speech), so the quiz still works.
