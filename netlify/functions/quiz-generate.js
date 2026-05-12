@@ -28,11 +28,16 @@ C. NO Chinese characters. Everything in simple English.
 
 D. Output ONLY valid JSON — no markdown fences, no preamble, no trailing text.
 
-SEGMENTATION — produce exactly 8 segments:
-- Split the text into 8 chunks in the ORIGINAL ORDER. Do not rearrange sentences.
-- Each chunk = 1-2 sentences, max 20 English words.
-- If a sentence is longer than 20 words, split it at a natural boundary (comma, conjunction).
-- If the source is too short for 8 segments, repeat or pad with the closing sentence — never invent new content.
+SEGMENTATION — cover 100% of the source text:
+- CRITICAL: every sentence of the source must appear in exactly one segment. Do not skip, summarise, or omit any part. The user is READING the article and needs ALL of it.
+- Split in ORIGINAL ORDER. Do not rearrange.
+- Each chunk = 1-2 sentences, max 20 English words. If a sentence is longer than 20 words, split it at a natural boundary (comma, conjunction).
+- Segment count scales with text length:
+    * ~100-300 words  →  6-12 segments
+    * ~300-600 words  →  10-18 segments
+    * ~600-1200 words →  18-26 segments
+    * ~1200-2000 words → 22-30 segments  (HARD CAP: 30 segments)
+- If the source is very short (<60 words), produce however many short segments are needed to cover it (minimum 4) — never pad with invented content.
 
 FOCUS WORDS — for each segment:
 - Pick 1-2 words where British pronunciation differs notably from American or where non-native speakers commonly stumble.
@@ -54,10 +59,11 @@ PHONEMES — for each focus word, give a dot-separated plain-English re-spelling
 - go → "G.UH.OO"
 Use uppercase letters separated by dots. This is what users see — keep it intuitive, not phonetic.
 
-QUIZ CARDS — produce exactly 2 cards (after_segment 3 and after_segment 6):
+QUIZ CARDS — insert short "quick check" cards spaced through the text:
+- One quiz card per ~6 segments (round to integer): so 2 cards for 12 segments, 3 cards for 18 segments, 4-5 cards for 24-30 segments.
+- Minimum 2 cards. Maximum 5 cards.
+- Space the after_segment positions evenly. For 12 segments use after_segment 4 and 8. For 18 use 5, 11, 15. For 24 use 5, 11, 17, 22.
 - Each card tests a pronunciation feature the reader has ALREADY encountered in the segments before it.
-- Card 1 (after_segment 3): test something seen in segments 1-3.
-- Card 2 (after_segment 6): test something seen in segments 1-6.
 - question: a short English question.
 - options: exactly 4 strings, ≤30 chars each. Only 1 correct.
 - correct: integer 0-3.
@@ -97,7 +103,7 @@ Return ONLY this JSON (the response is being prefilled to start with "{" — con
   "total_focus_words": 12
 }
 
-Generate EXACTLY 8 segments and EXACTLY 2 quiz cards (after_segment values 3 and 6).`;
+Cover EVERY sentence of the source text in exactly one segment, in order. Pick a segment count that fits the text length per the system instructions (6-30 segments). Insert 2-5 quiz cards spaced evenly through the article.`;
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -131,7 +137,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2500,
+        max_tokens: 4000,
         system: SYSTEM_PROMPT,
         messages: [
           { role: 'user', content: USER_PROMPT_TEMPLATE.replace('{TEXT}', trimmed) },

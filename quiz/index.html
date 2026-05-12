@@ -119,6 +119,39 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .ac-title{font-family:var(--serif);font-size:34px;font-weight:700;margin-bottom:14px;color:var(--ink)}
 .ac-sub{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:32px;padding:0 12px}
 .ac-sub b{color:var(--ink)}
+
+/* Full Read-through (the END peak) */
+.fullread-header{text-align:center;margin-bottom:18px}
+.fullread-header h2{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--ink)}
+.fullread-header p{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5}
+.fullread-article{font-family:var(--serif);font-size:18px;line-height:2;padding:22px;background:var(--white);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:18px;max-height:46vh;overflow-y:auto;box-shadow:var(--shadow);color:var(--ink)}
+.fullread-good{color:var(--green);font-weight:600}
+.fullread-watch{color:var(--gold);font-weight:700;text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:3px}
+.fullread-controls{display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.fullread-record{text-align:center}
+.fullread-rec-btn{width:84px;height:84px;font-size:28px;margin:8px auto 6px}
+.fullread-skip{font-size:13px;color:var(--muted);cursor:pointer;margin-top:14px;text-decoration:underline;display:inline-block}
+.fullread-skip:hover{color:var(--ink)}
+.fullread-done{text-align:center;margin:24px 0 12px}
+.fullread-done h3{font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:6px}
+.fullread-stats{font-size:14px;color:var(--muted);margin-top:6px}
+.fullread-share-option{background:var(--bg);border-radius:10px;padding:14px;margin:16px 0}
+.share-toggle{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;color:var(--ink);font-weight:600}
+.share-toggle input{width:18px;height:18px;cursor:pointer}
+.share-note{font-size:11px;color:var(--muted);margin-top:6px;margin-left:28px}
+
+/* Round Complete: full-read badge */
+.fullread-badge{text-align:center;padding:12px;margin:12px 0;background:var(--gold-pale);border-radius:10px;font-size:14px;font-weight:600;color:#5a4a1a}
+
+/* Quick Fix user-paced actions */
+.qf-rec-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+.qf-result-pass{color:var(--green);font-weight:700;text-align:center;margin:12px 0;font-size:16px}
+.qf-result-retry{color:var(--yellow);font-size:13px;text-align:center;margin:12px 0;line-height:1.5}
+.qf-choice-buttons{display:flex;gap:10px;margin-top:14px}
+.qf-choice-buttons button{flex:1}
+.qf-skip{font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:14px;text-decoration:underline}
+.qf-skip:hover{color:var(--ink)}
+.qf-bottom-actions{margin-top:12px;text-align:center}
 .btn-listen{padding:10px 20px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);font-size:13px;cursor:pointer;transition:all .15s;font-family:var(--sans);color:var(--ink)}
 .btn-listen:hover{border-color:var(--forest);color:var(--forest)}
 .btn-record{width:96px;height:96px;border-radius:50%;background:var(--forest);border:none;color:var(--white);font-size:30px;cursor:pointer;margin:14px auto;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 4px 20px rgba(45,90,79,.25)}
@@ -348,13 +381,46 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
   </div>
 
-  <!-- Article Complete (before Round Complete results) -->
+  <!-- Article Complete (peak — leads into Full Read-through) -->
   <div class="screen" id="screenArticleComplete">
     <div class="article-complete-wrap">
       <div class="ac-emoji">📖</div>
       <h2 class="ac-title">Article Complete!</h2>
       <p class="ac-sub">You read all <b id="acSegCount">8</b> segments and practised <b id="acFocusCount">12</b> pronunciation points.</p>
-      <button class="btn-start" onclick="showRoundComplete()">See your results →</button>
+      <button class="btn-start" onclick="showFullReadthrough()">Now read the full article →</button>
+    </div>
+  </div>
+
+  <!-- Full Read-through (the END peak) -->
+  <div class="screen" id="screenFullRead">
+    <div class="fullread-header">
+      <h2>Final Read-through</h2>
+      <p>Now read the complete article with everything you've learned.</p>
+    </div>
+    <div class="fullread-article" id="fullreadArticle"></div>
+    <div class="fullread-controls">
+      <button class="btn-listen" onclick="listenFullArticle(1)">▶ Listen to full article</button>
+      <button class="btn-listen" onclick="listenFullArticle(0.7)">🐢 Slow</button>
+    </div>
+    <div class="fullread-record" id="fullreadRecordPanel">
+      <button class="btn-record fullread-rec-btn" id="btnFullRecord" onclick="toggleFullRecording()">🎤</button>
+      <p class="record-hint" id="fullRecordHint">Tap to record the full article</p>
+      <p class="fullread-skip" id="fullReadSkip" onclick="skipFullRead()">Skip and see results →</p>
+    </div>
+    <div id="fullReadResult" style="display:none">
+      <div class="fullread-done">
+        <div style="font-size:48px;margin-bottom:12px">🎉</div>
+        <h3>Beautiful reading!</h3>
+        <p class="fullread-stats" id="fullReadStats"></p>
+      </div>
+      <div class="fullread-share-option">
+        <label class="share-toggle">
+          <input type="checkbox" id="shareRecordingToggle" checked>
+          <span>Include my recording when sharing</span>
+        </label>
+        <p class="share-note">Others can hear how you read this article</p>
+      </div>
+      <button class="btn-start" onclick="showRoundComplete()">See my results →</button>
     </div>
   </div>
 
@@ -394,6 +460,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <p class="ring-label">pronunciation accuracy</p>
       </div>
       <div class="result-body">
+        <div id="fullReadSummary" style="display:none"></div>
         <h3>Segments read</h3>
         <div id="segmentReview"></div>
         <button class="btn-challenge" onclick="createChallenge()">⚔️ Challenge a friend</button>
@@ -481,6 +548,13 @@ let recordingTimeout = null;
 // Quick-fix state
 let qfWord = null;
 let qfAnswered = false; // for quiz cards
+let qfAttempts = 0;     // attempts on current Quick Fix word
+let missedFocusWords = new Set(); // focus words missed in any segment (for Full Read colouring)
+
+// Full Read-through state
+let fullRecordingTranscript = '';
+let fullRecordingStartTime = null;
+let userStoppedFullRecording = false;
 
 // TTS state
 let ttsVoices = [];
@@ -922,6 +996,12 @@ function showFeedback(transcript) {
   document.getElementById('feedbackOriginal').innerHTML = renderFeedbackOriginal(seg.text, focusSet, spokenSet);
   document.getElementById('feedbackYours').textContent = transcript || '(nothing detected)';
 
+  // Track every missed focus word for Full Read-through colouring
+  (seg.focus_words || []).forEach(fw => {
+    const key = String(fw).toLowerCase();
+    if (!spokenSet.has(key)) missedFocusWords.add(key);
+  });
+
   // Find first focus word the user missed — that's the Quick Fix candidate
   const missedFocus = (seg.focus_words || []).find(fw => !spokenSet.has(String(fw).toLowerCase()));
   const hadErrors = !!missedFocus;
@@ -968,9 +1048,10 @@ function renderFeedbackOriginal(text, focusSet, spokenSet) {
   return html;
 }
 
-// ─────────── Quick Fix ───────────
+// ─────────── Quick Fix (user-paced: try, retry, or skip) ───────────
 function showQuickFix(word, phonemeStr) {
   qfWord = String(word).toLowerCase();
+  qfAttempts = 0;
   const tipData = getWordTip(qfWord);
   const phoneme = phonemeStr || tipData.phonemes || '';
   const phonemeHtml = phoneme ? `<p class="qf-phonemes">${escapeHtml(phoneme)}</p>` : '';
@@ -982,44 +1063,95 @@ function showQuickFix(word, phonemeStr) {
       ${phonemeHtml}
       <p class="qf-tip">${escapeHtml(tipData.tip)}</p>
       <p class="qf-body">${escapeHtml(tipData.body)}</p>
+
       <div class="qf-actions">
         <button class="btn-listen" onclick="playWordAudio('${escapeJs(qfWord)}')">▶ Hear it</button>
-        <button class="btn-record-small" id="btnQfRecord" onclick="toggleQfRecording()">🎤</button>
       </div>
-      <div class="qf-result" id="qfResult"></div>
+
+      <button class="btn-record-small qf-rec-btn" id="btnQfRecord" onclick="toggleQfRecording()">🎤</button>
+      <p class="qf-rec-hint" id="qfRecHint">Tap to try this word</p>
+
+      <div id="qfResultArea"></div>
+      <div class="qf-bottom-actions" id="qfBottomActions">
+        <button class="qf-skip" onclick="skipQuickFix()">Skip this word →</button>
+      </div>
     </div>
   `;
+  // Hide segment-level Next while Quick Fix is in play — user advances via QF
+  document.getElementById('btnNextSeg').style.display = 'none';
   // Auto-play the word on entry so user hears it first
   setTimeout(() => playWordAudio(qfWord), 350);
 }
 
 function toggleQfRecording() {
   const btn = document.getElementById('btnQfRecord');
-  const resEl = document.getElementById('qfResult');
+  const hint = document.getElementById('qfRecHint');
   startContextualRecording({
     btn,
-    hint: resEl,
-    hintIdle: '',
-    hintRecording: 'Recording…',
+    hint,
+    hintIdle: 'Tap to try this word',
+    hintRecording: 'Recording… tap to stop',
     timeoutMs: 4000,
     onResult: (alts) => {
+      qfAttempts++;
       let matched = false;
       for (const a of alts) {
         if (checkWordMatch(qfWord, a.transcript)) { matched = true; break; }
       }
+      const resEl = document.getElementById('qfResultArea');
       if (matched) {
-        resEl.className = 'qf-result pass';
-        resEl.textContent = '✅ Sounds good!';
+        resEl.innerHTML = '<p class="qf-result-pass">✅ Sounds great!</p>';
         bumpXP(5);
         playSound('correct');
       } else {
-        resEl.className = 'qf-result fail';
-        resEl.textContent = '👍 Keep practising! Moving on.';
+        resEl.innerHTML = '<p class="qf-result-retry">Not quite — try listening first, then record again.</p>';
         playSound('wrong');
       }
-      track('quickfix_attempt', { word: qfWord, matched });
+      track('quickfix_attempt', { word: qfWord, matched, attempt_number: qfAttempts });
+
+      // After any attempt, offer Try Again + Next →, keep Skip available
+      document.getElementById('qfBottomActions').innerHTML = `
+        <div class="qf-choice-buttons">
+          <button class="btn-listen" onclick="retryQuickFix()">🎤 Try again</button>
+          <button class="btn-start" onclick="finishQuickFix()">Next →</button>
+        </div>
+        <button class="qf-skip" onclick="skipQuickFix()">Skip this word →</button>
+      `;
+      // Hide the giant mic — user uses the Try-again button now
+      btn.style.display = 'none';
+      hint.style.display = 'none';
     },
   });
+}
+
+function retryQuickFix() {
+  track('quickfix_retry', { word: qfWord, attempt_number: qfAttempts });
+  // Play the correct version, then auto-start recording after a short beat
+  playWordAudio(qfWord);
+  // Restore the mic UI for the next attempt
+  const btn = document.getElementById('btnQfRecord');
+  const hint = document.getElementById('qfRecHint');
+  if (btn) btn.style.display = '';
+  if (hint) { hint.style.display = ''; hint.textContent = 'Listening…'; }
+  document.getElementById('qfResultArea').innerHTML = '';
+  // Reset bottom actions to just Skip for the in-flight attempt
+  document.getElementById('qfBottomActions').innerHTML = `
+    <button class="qf-skip" onclick="skipQuickFix()">Skip this word →</button>
+  `;
+  setTimeout(() => toggleQfRecording(), 1200);
+}
+
+function skipQuickFix() {
+  track('quickfix_skipped', { word: qfWord });
+  finishQuickFix();
+}
+
+function finishQuickFix() {
+  // Tear down the QF card and reveal the segment-level Next
+  document.getElementById('quickFixArea').innerHTML = '';
+  document.getElementById('btnNextSeg').style.display = '';
+  // Auto-advance — one click is plenty after the user has decided
+  nextSegment();
 }
 
 function checkWordMatch(expected, transcript) {
@@ -1087,6 +1219,168 @@ function showArticleComplete() {
   showScreen('ArticleComplete');
   triggerConfetti();
   track('article_complete', { segments_total: segments.length, xp, focus_total: focusWordsTotal });
+}
+
+// ═════════════════════════════════════════════════════
+// FULL READ-THROUGH — the "end" peak
+// ═════════════════════════════════════════════════════
+function showFullReadthrough() {
+  renderFullReadArticle();
+  // Reset record UI in case user backs into the screen
+  document.getElementById('fullreadRecordPanel').style.display = '';
+  document.getElementById('fullReadResult').style.display = 'none';
+  document.getElementById('btnFullRecord').style.display = '';
+  document.getElementById('btnFullRecord').classList.remove('recording');
+  document.getElementById('fullRecordHint').style.display = '';
+  document.getElementById('fullRecordHint').textContent = 'Tap to record the full article';
+  document.getElementById('fullReadSkip').style.display = '';
+  fullRecordingTranscript = '';
+  fullRecordingStartTime = null;
+  userStoppedFullRecording = false;
+  showScreen('FullRead');
+  track('full_readthrough_shown', { segments_total: segments.length });
+}
+
+function renderFullReadArticle() {
+  const container = document.getElementById('fullreadArticle');
+  if (!container) return;
+  const html = segments.map(seg => {
+    const focusSet = new Set((seg.focus_words || []).map(w => String(w).toLowerCase()));
+    const re = /[A-Za-z']+|[^A-Za-z']+/g;
+    let segHtml = '';
+    let m;
+    while ((m = re.exec(seg.text)) !== null) {
+      const tok = m[0];
+      if (/[A-Za-z']/.test(tok[0])) {
+        const lower = tok.toLowerCase().replace(/[^a-z]/g, '');
+        const safe = escapeHtml(tok);
+        if (focusSet.has(lower)) {
+          const cls = missedFocusWords.has(lower) ? 'fullread-watch' : 'fullread-good';
+          segHtml += `<span class="${cls}" onclick="playWordAudio('${escapeJs(lower)}')">${safe}</span>`;
+        } else {
+          segHtml += safe;
+        }
+      } else {
+        segHtml += escapeHtml(tok);
+      }
+    }
+    return segHtml;
+  }).join(' ');
+  container.innerHTML = html;
+}
+
+function listenFullArticle(rate = 1) {
+  const fullText = segments.map(s => s.text).join(' ');
+  speakPhrase(fullText, rate);
+}
+
+function toggleFullRecording() {
+  // Tap to stop while already recording
+  if (currentRecognition) {
+    userStoppedFullRecording = true;
+    try { currentRecognition.stop(); } catch (e) {}
+    return;
+  }
+  if (isWeChatBrowser()) {
+    toast('Please open in Safari or Chrome to record');
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast('Speech recognition needs Chrome'); return; }
+
+  fullRecordingTranscript = '';
+  fullRecordingStartTime = Date.now();
+  userStoppedFullRecording = false;
+
+  currentRecognition = new SR();
+  currentRecognition.lang = 'en-GB';
+  currentRecognition.continuous = true;
+  currentRecognition.interimResults = false;
+
+  currentRecognition.onstart = () => {
+    document.getElementById('btnFullRecord').classList.add('recording');
+    document.getElementById('fullRecordHint').textContent = 'Recording... tap 🎤 when done';
+    document.getElementById('fullReadSkip').style.display = 'none';
+  };
+
+  currentRecognition.onresult = (e) => {
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        fullRecordingTranscript += e.results[i][0].transcript + ' ';
+      }
+    }
+  };
+
+  currentRecognition.onerror = (e) => {
+    if (e.error === 'no-speech') return; // Chrome fires this on quiet pauses — ignore
+    // Other errors fall through to onend
+  };
+
+  currentRecognition.onend = () => {
+    // Chrome sometimes auto-ends continuous recognition. Restart if the user
+    // hasn't manually stopped and we're still inside the 110s window.
+    const elapsed = fullRecordingStartTime ? Date.now() - fullRecordingStartTime : 999999;
+    if (!userStoppedFullRecording && elapsed < 110000 && fullRecordingStartTime) {
+      try { currentRecognition.start(); return; } catch (e) { /* fall through */ }
+    }
+    finishFullRecording();
+  };
+
+  currentRecognition.start();
+
+  // Hard 2-minute timeout
+  recordingTimeout = setTimeout(() => {
+    userStoppedFullRecording = true;
+    if (currentRecognition) {
+      try { currentRecognition.stop(); } catch (e) {}
+    }
+  }, 120000);
+}
+
+function finishFullRecording() {
+  clearTimeout(recordingTimeout);
+  const durationMs = fullRecordingStartTime ? Date.now() - fullRecordingStartTime : 0;
+  // Detach handlers BEFORE nulling — onend may still be queued
+  if (currentRecognition) {
+    currentRecognition.onend = null;
+    currentRecognition.onresult = null;
+    currentRecognition.onerror = null;
+  }
+  currentRecognition = null;
+
+  document.getElementById('btnFullRecord').classList.remove('recording');
+
+  const transcript = fullRecordingTranscript.trim();
+  if (transcript.length < 10) {
+    document.getElementById('fullRecordHint').textContent = 'Recording too short — try again or skip.';
+    document.getElementById('fullReadSkip').style.display = 'inline-block';
+    fullRecordingStartTime = null;
+    return;
+  }
+
+  const wordCount = transcript.split(/\s+/).length;
+  const durationSec = Math.round(durationMs / 1000);
+  const durationMin = Math.floor(durationSec / 60);
+  const durationRem = durationSec % 60;
+  document.getElementById('fullReadStats').textContent =
+    `You read ${wordCount} words in ${durationMin}m ${durationRem.toString().padStart(2, '0')}s`;
+
+  document.getElementById('fullreadRecordPanel').style.display = 'none';
+  document.getElementById('fullReadResult').style.display = 'block';
+
+  playSound('correct');
+  triggerConfetti();
+
+  track('full_readthrough', {
+    word_count: wordCount,
+    duration_sec: durationSec,
+    share_recording: document.getElementById('shareRecordingToggle')?.checked || false,
+  });
+}
+
+function skipFullRead() {
+  track('full_readthrough_skipped', {});
+  showRoundComplete();
 }
 
 // ═════════════════════════════════════════════════════
@@ -1173,6 +1467,16 @@ function showRoundComplete() {
   document.getElementById('scoreRing').style.background =
     `conic-gradient(var(--green) 0% ${pct}%, var(--border) ${pct}% 100%)`;
   document.getElementById('ringScore').textContent = pct + '%';
+
+  // Full Read badge if the user did the final read-through
+  const fullReadSummary = document.getElementById('fullReadSummary');
+  if (fullRecordingTranscript && fullRecordingTranscript.trim().length > 0) {
+    const wc = fullRecordingTranscript.trim().split(/\s+/).length;
+    fullReadSummary.innerHTML = `<div class="fullread-badge">📖 Full article read-through: ${wc} words</div>`;
+    fullReadSummary.style.display = 'block';
+  } else {
+    fullReadSummary.style.display = 'none';
+  }
 
   // Segment review
   const review = document.getElementById('segmentReview');
@@ -1276,15 +1580,25 @@ function triggerConfetti() {
 // ═════════════════════════════════════════════════════
 async function createChallenge() {
   const pct = focusWordsTotal ? Math.round((focusWordsCorrect / focusWordsTotal) * 100) : 100;
+  const includeRecording = document.getElementById('shareRecordingToggle')?.checked || false;
   try {
     const resp = await fetch('/.netlify/functions/quiz-challenge', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        source_text: sourceText.slice(0, 2000),
-        cards_json: { segments, quiz_cards: quizCards },
+        source_text: (segments.map(s => s.text).join(' ') || sourceText).slice(0, 2000),
+        cards_json: {
+          segments,
+          quiz_cards: quizCards,
+          // Pretotype signal for xyz-3: did the user opt to share their reading?
+          // (Real audio can't be transported via Web Speech API — this just records intent.)
+          include_recording: includeRecording,
+          full_read_word_count: fullRecordingTranscript
+            ? fullRecordingTranscript.trim().split(/\s+/).length
+            : 0,
+        },
         creator_score: pct,
-        creator_name: 'Challenger',
+        creator_name: 'Reader',
       }),
     });
     const data = await resp.json();
@@ -1390,8 +1704,13 @@ function resetAll() {
   segIdx = 0; sourceText = '';
   xp = 0; focusWordsTotal = 0; focusWordsCorrect = 0;
   segmentReview = []; cardResults = []; challengeData = null;
-  qfWord = null; qfAnswered = false;
+  qfWord = null; qfAnswered = false; qfAttempts = 0;
+  missedFocusWords = new Set();
+  fullRecordingTranscript = ''; fullRecordingStartTime = null;
+  userStoppedFullRecording = false;
   if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if (currentRecognition) { try { currentRecognition.stop(); } catch (e) {} currentRecognition = null; }
+  clearTimeout(recordingTimeout);
   document.getElementById('inputText').value = '';
   document.getElementById('charCount').textContent = '0';
   document.getElementById('btnStart').disabled = true;
