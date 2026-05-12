@@ -83,10 +83,10 @@ exports.handler = async (event) => {
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1500,
         system: SYSTEM_PROMPT,
-        messages: [{
-          role: 'user',
-          content: USER_PROMPT_TEMPLATE.replace('{TEXT}', trimmed),
-        }],
+        messages: [
+          { role: 'user', content: USER_PROMPT_TEMPLATE.replace('{TEXT}', trimmed) },
+          { role: 'assistant', content: '{' },
+        ],
       }),
     });
 
@@ -99,14 +99,26 @@ exports.handler = async (event) => {
     const data = await resp.json();
     const raw = data.content?.[0]?.text || '';
 
-    // Parse JSON (strip any markdown fences just in case)
-    const cleaned = raw.replace(/```json|```/g, '').trim();
+    // Prefilled "{" so prepend it back, then strip any stray markdown fences
+    const withBrace = '{' + raw.replace(/```json|```/g, '').trim();
     let cards;
     try {
-      cards = JSON.parse(cleaned);
-    } catch (parseErr) {
-      console.error('JSON parse failed:', parseErr, 'Raw:', raw.slice(0, 500));
-      return respond(422, { error: 'AI returned invalid format, please try again' });
+      cards = JSON.parse(withBrace);
+    } catch (parseErr1) {
+      // Fallback: extract substring between first { and last }
+      const start = withBrace.indexOf('{');
+      const end = withBrace.lastIndexOf('}');
+      if (start >= 0 && end > start) {
+        try {
+          cards = JSON.parse(withBrace.slice(start, end + 1));
+        } catch (parseErr2) {
+          console.error('JSON parse failed (after extract):', parseErr2, 'Raw:', raw.slice(0, 500));
+          return respond(422, { error: `AI returned invalid format. Raw: ${raw.slice(0, 250)}` });
+        }
+      } else {
+        console.error('JSON parse failed (no braces):', parseErr1, 'Raw:', raw.slice(0, 500));
+        return respond(422, { error: `AI returned invalid format. Raw: ${raw.slice(0, 250)}` });
+      }
     }
 
     // Validate structure
