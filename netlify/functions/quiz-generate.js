@@ -80,7 +80,7 @@ exports.handler = async (event) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 2000,
         system: SYSTEM_PROMPT,
         messages: [{
@@ -93,7 +93,7 @@ exports.handler = async (event) => {
     if (!resp.ok) {
       const err = await resp.text();
       console.error('Claude API error:', resp.status, err);
-      return respond(502, { error: 'AI service temporarily unavailable' });
+      return respond(502, { error: `AI service error (${resp.status}): ${err.slice(0, 300)}` });
     }
 
     const data = await resp.json();
