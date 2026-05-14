@@ -4600,7 +4600,8 @@ function blobToBase64(blob) {
     reader.onloadend = () => {
       console.log('🔄 reader.result length:', reader.result.length,
         'starts with:', reader.result.substring(0, 50));
-      const base64 = reader.result.split(',')[1]; // 去掉 data:xxx;base64, 前缀
+      // fix: 用 'base64,' 分隔 —— mime type 可能含逗号(如 codecs=vp9,opus),不能用 split(',')
+      const base64 = reader.result.split('base64,')[1];
       console.log('🔄 base64 extracted, length:', base64.length);
       resolve(base64);
     };
