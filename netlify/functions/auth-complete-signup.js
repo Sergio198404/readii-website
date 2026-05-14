@@ -23,57 +23,78 @@ exports.handler = async (event) => {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    console.log('🔐 START:', {
-      email: normalizedEmail,
-      hasPassword: !!password,
-      passwordLen: password?.length,
-      hasSessionId: !!sessionId,
-      hasAnonKey: !!SUPABASE_ANON_KEY
-    });
+    console.log('🔐 complete-signup START:', { email: normalizedEmail });
 
-    // 查邮箱是否已存在
+    // 检查邮箱是否已存在
     const { data: existingList } = await supabase.auth.admin.listUsers();
     const existingUser = existingList?.users?.find(u => u.email === normalizedEmail);
-
-    console.log('🔐 listUsers result:', {
-      totalUsers: existingList?.users?.length,
-      foundMatch: !!existingUser,
-      existingUserId: existingUser?.id
-    });
 
     let userId;
     let isNewUser = false;
 
     if (existingUser) {
       userId = existingUser.id;
-      console.log('🔐 EXISTING USER path:', { userId });
+      console.log('🔐 EXISTING USER:', userId);
 
-      const { data: updateData, error: updateError } = await supabase
+      // 查 user_profiles 是否真存在
+      const { data: existingProfile } = await supabase
         .from('user_profiles')
-        .update({
-          player_name: playerName || undefined,
-          newsletter_daily_readings: !!subscribeDaily,
-          newsletter_edu_entrepreneurship: !!subscribeEdu
-        })
+        .select('id')
         .eq('id', userId)
-        .select();
+        .maybeSingle();
 
-      console.log('🔐 update profile (existing):', {
-        rowsAffected: updateData?.length,
-        hasError: !!updateError,
-        errorMsg: updateError?.message
-      });
+      if (!existingProfile) {
+        // 孤儿账号 — 补创建 profile
+        console.log('🔧 Orphan user detected, inserting profile');
 
-      // 让失败可见:existing user 的 UPDATE 应至少影响 1 行
-      if (!updateData?.length) {
-        return { statusCode: 500, body: JSON.stringify({
-          error: 'User exists in auth but not in profile. Contact support.',
-          debug: { userId, email: normalizedEmail }
-        })};
+        const { error: insertError } = await supabase
+          .from('user_profiles')
+          .insert({
+            id: userId,
+            display_name: playerName || normalizedEmail.split('@')[0],
+            player_name: playerName,
+            subscription_status: 'free',
+            signup_source: 'quiz',
+            newsletter_daily_readings: !!subscribeDaily,
+            newsletter_edu_entrepreneurship: !!subscribeEdu
+          });
+
+        if (insertError) {
+          console.error('Profile insert failed:', insertError);
+          return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Failed to create profile: ' + insertError.message })
+          };
+        }
+      } else {
+        // 正常 UPDATE
+        const { data: updateData, error: updateError } = await supabase
+          .from('user_profiles')
+          .update({
+            player_name: playerName || undefined,
+            newsletter_daily_readings: !!subscribeDaily,
+            newsletter_edu_entrepreneurship: !!subscribeEdu
+          })
+          .eq('id', userId)
+          .select();
+
+        if (updateError) {
+          console.error('Profile update failed:', updateError);
+          return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Failed to update profile: ' + updateError.message })
+          };
+        }
+
+        if (!updateData?.length) {
+          console.error('Update affected 0 rows for existing user — should not happen');
+        }
       }
 
     } else {
+      // 新用户
       isNewUser = true;
+      console.log('🔐 NEW USER, creating auth user');
 
       const { data: createData, error: createError } = await supabase.auth.admin.createUser({
         email: normalizedEmail,
@@ -85,74 +106,76 @@ exports.handler = async (event) => {
         }
       });
 
-      console.log('🔐 admin.createUser result:', {
-        success: !createError,
-        newUserId: createData?.user?.id,
-        error: createError?.message,
-        errorStatus: createError?.status
-      });
-
       if (createError) {
+        console.error('createUser failed:', createError);
         return { statusCode: 500, body: JSON.stringify({ error: createError.message }) };
       }
 
       userId = createData.user.id;
+      console.log('🔐 auth user created:', userId);
 
-      // 等 trigger 完成
-      await new Promise(resolve => setTimeout(resolve, 400));
+      // 等 trigger
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      // 检查 trigger 是否建好了 profile
-      const { data: existingProfile } = await supabase
+      // 验证 trigger 是否工作
+      const { data: profile } = await supabase
         .from('user_profiles')
-        .select('id, display_name')
+        .select('id')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
-      console.log('🔐 profile after trigger:', {
-        profileExists: !!existingProfile,
-        display_name: existingProfile?.display_name
-      });
+      if (!profile) {
+        // trigger 失败 — explicit INSERT
+        console.warn('🔧 Trigger did not create profile, inserting manually');
 
-      // 让失败可见:trigger 应该已创建 profile
-      if (!existingProfile) {
-        return { statusCode: 500, body: JSON.stringify({
-          error: 'Profile creation failed (trigger issue).',
-          debug: { userId, email: normalizedEmail }
-        })};
+        const { error: insertError } = await supabase
+          .from('user_profiles')
+          .insert({
+            id: userId,
+            display_name: playerName || normalizedEmail.split('@')[0],
+            player_name: playerName,
+            subscription_status: 'free',
+            signup_source: 'quiz',
+            newsletter_daily_readings: !!subscribeDaily,
+            newsletter_edu_entrepreneurship: !!subscribeEdu
+          });
+
+        if (insertError) {
+          console.error('Manual profile insert failed:', insertError);
+          return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Profile creation failed: ' + insertError.message })
+          };
+        }
+      } else {
+        console.log('🔐 trigger worked, updating profile');
+
+        const { error: updateError } = await supabase
+          .from('user_profiles')
+          .update({
+            player_name: playerName || undefined,
+            newsletter_daily_readings: !!subscribeDaily,
+            newsletter_edu_entrepreneurship: !!subscribeEdu
+          })
+          .eq('id', userId);
+
+        if (updateError) {
+          console.warn('Profile update after trigger failed (non-fatal):', updateError);
+        }
       }
-
-      // 更新 newsletter + player_name
-      const { data: updateData, error: updateError } = await supabase
-        .from('user_profiles')
-        .update({
-          player_name: playerName || undefined,
-          newsletter_daily_readings: !!subscribeDaily,
-          newsletter_edu_entrepreneurship: !!subscribeEdu
-        })
-        .eq('id', userId)
-        .select();
-
-      console.log('🔐 update profile (new):', {
-        rowsAffected: updateData?.length,
-        hasError: !!updateError,
-        errorMsg: updateError?.message
-      });
     }
 
-    // 关联视频到 user_id
+    // 关联视频
     if (sessionId) {
-      const { data: videoUpdateData } = await supabase
+      const { data: videoUpdate } = await supabase
         .from('pretotype_videos')
         .update({ user_id: userId, user_email: normalizedEmail })
         .eq('session_id', sessionId)
         .select();
 
-      console.log('🔐 attach video:', {
-        rowsAffected: videoUpdateData?.length,
-        sessionId
-      });
+      console.log('🔐 video attach:', { rowsAffected: videoUpdate?.length });
 
-      // 检查视频是否已转码完成,如果是立即触发邮件
+      // 检查 mp4 就绪的视频,触发邮件
       const { data: videos } = await supabase
         .from('pretotype_videos')
         .select('id, mp4_url')
@@ -186,13 +209,9 @@ exports.handler = async (event) => {
         password
       });
 
-      console.log('🔐 signIn result:', {
-        hasSession: !!signInData?.session,
-        hasError: !!signInError,
-        errorMsg: signInError?.message
-      });
-
-      if (signInData?.session) {
+      if (signInError) {
+        console.warn('signIn failed (non-fatal):', signInError.message);
+      } else if (signInData?.session) {
         session = {
           access_token: signInData.session.access_token,
           refresh_token: signInData.session.refresh_token,
@@ -201,26 +220,16 @@ exports.handler = async (event) => {
       }
     }
 
-    console.log('🔐 RETURNING:', {
-      isNewUser,
-      hasSession: !!session,
-      userId
-    });
+    console.log('🔐 SUCCESS:', { userId, isNewUser, hasSession: !!session });
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        success: true,
-        userId,
-        email: normalizedEmail,
-        isNewUser,
-        session
-      })
+      body: JSON.stringify({ success: true, userId, email: normalizedEmail, isNewUser, session })
     };
 
   } catch (err) {
-    console.error('complete-signup error:', err);
+    console.error('🔐 CAUGHT ERROR:', err);
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
 };
