@@ -336,6 +336,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .volume-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--forest);cursor:pointer;border:2px solid var(--white);box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .volume-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--forest);cursor:pointer;border:2px solid var(--white)}
 .volume-display{font-size:11px;color:var(--muted);font-weight:700;min-width:36px;text-align:right}
+.volume-hint-btn{background:none;border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:var(--sans);width:100%;transition:all .15s}
+.volume-hint-btn:hover{border-color:var(--gold);color:var(--ink)}
 
 /* Pass 3 Echo-and-Capture (v10.1 final) */
 .ec-status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px}
@@ -1054,13 +1056,10 @@ let segmentRecordings = [];
 let ecDaisyAudioCache = {};
 
 // Global volume control (v10.1 fix #3)
+const IS_MOBILE = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
 let globalVolume = parseFloat(localStorage.getItem('readii_volume') || '0.8');
 let isMuted = false;
 let preMuteVolume = 0.8;
-// SpeechSynthesis 无法实时改音量,记录当前朗读内容以便用新音量重播
-let currentSpeechText = '';
-let currentSpeechRate = 1;
-let _speechRevolumeTimer = null;
 
 // Three-pass state
 let currentPass = 1;
@@ -1107,11 +1106,23 @@ document.addEventListener('DOMContentLoaded', () => {
   checkCooldown();
   primeTTS();
 
-  // Initialize volume slider (v10.1 fix #3)
-  const volSlider = document.getElementById('volSlider');
-  if (volSlider) {
-    volSlider.value = globalVolume * 100;
-    setGlobalVolume(globalVolume * 100);
+  // Volume control: platform-adaptive (v10.1)
+  // 移动端浏览器忽略 HTMLAudioElement.volume,只能用系统音量键
+  const volControl = document.querySelector('.volume-control');
+  if (volControl) {
+    if (IS_MOBILE) {
+      volControl.innerHTML = `
+        <button class="volume-hint-btn" onclick="showVolumeHint()" aria-label="Volume info">
+          🔊 Use phone volume keys
+        </button>
+      `;
+    } else {
+      const slider = document.getElementById('volSlider');
+      if (slider) {
+        slider.value = globalVolume * 100;
+        setGlobalVolume(globalVolume * 100);
+      }
+    }
   }
 
   if (isWeChatBrowser()) {
@@ -3307,20 +3318,16 @@ function toggleMute() {
 }
 
 function applyVolumeToAllAudio() {
+  if (IS_MOBILE) return;  // 移动端浏览器忽略 HTMLAudioElement.volume,不浪费 CPU
+
   if (listenAudio) listenAudio.volume = globalVolume;
   if (ecDaisyAudio) ecDaisyAudio.volume = globalVolume;
   // DOM 中的 audio / video 元素(如视频预览)
   document.querySelectorAll('audio, video').forEach(el => el.volume = globalVolume);
+}
 
-  // SpeechSynthesis(TTS 兜底)无法实时改音量 —— 防抖后用新音量重播当前内容
-  if ('speechSynthesis' in window && window.speechSynthesis.speaking && currentSpeechText) {
-    clearTimeout(_speechRevolumeTimer);
-    _speechRevolumeTimer = setTimeout(() => {
-      if (window.speechSynthesis.speaking && currentSpeechText) {
-        speakPhrase(currentSpeechText, currentSpeechRate);
-      }
-    }, 250);
-  }
+function showVolumeHint() {
+  toast('Use your phone volume buttons to adjust audio');
 }
 
 // ═════════════════════════════════════════════════════
@@ -3329,8 +3336,6 @@ function applyVolumeToAllAudio() {
 function speakPhrase(phrase, rate) {
   if (!('speechSynthesis' in window)) return toast('Speech not supported');
   if (!phrase) return;
-  currentSpeechText = phrase;        // v10.1 fix #3: 记录用于音量变更时重播
-  currentSpeechRate = rate || 1;
   window.speechSynthesis.cancel();
   setTimeout(() => {
     const warmup = new SpeechSynthesisUtterance(' ');
