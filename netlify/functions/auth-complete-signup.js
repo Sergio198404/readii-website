@@ -39,7 +39,7 @@ exports.handler = async (event) => {
       // 查 user_profiles 是否真存在
       const { data: existingProfile } = await supabase
         .from('user_profiles')
-        .select('id')
+        .select('id, display_name')
         .eq('id', userId)
         .maybeSingle();
 
@@ -68,13 +68,19 @@ exports.handler = async (event) => {
         }
       } else {
         // 正常 UPDATE
+        const updates = {
+          player_name: playerName || undefined,
+          newsletter_daily_readings: !!subscribeDaily,
+          newsletter_edu_entrepreneurship: !!subscribeEdu
+        };
+        // 只在 display_name 为空时补设(不覆盖主站老用户已有的)
+        if (!existingProfile.display_name && playerName) {
+          updates.display_name = playerName;
+        }
+
         const { data: updateData, error: updateError } = await supabase
           .from('user_profiles')
-          .update({
-            player_name: playerName || undefined,
-            newsletter_daily_readings: !!subscribeDaily,
-            newsletter_edu_entrepreneurship: !!subscribeEdu
-          })
+          .update(updates)
           .eq('id', userId)
           .select();
 
@@ -120,7 +126,7 @@ exports.handler = async (event) => {
       // 验证 trigger 是否工作
       const { data: profile } = await supabase
         .from('user_profiles')
-        .select('id')
+        .select('id, display_name')
         .eq('id', userId)
         .maybeSingle();
 
@@ -150,13 +156,18 @@ exports.handler = async (event) => {
       } else {
         console.log('🔐 trigger worked, updating profile');
 
+        const updates = {
+          player_name: playerName || undefined,
+          newsletter_daily_readings: !!subscribeDaily,
+          newsletter_edu_entrepreneurship: !!subscribeEdu
+        };
+        if (!profile.display_name && playerName) {
+          updates.display_name = playerName;
+        }
+
         const { error: updateError } = await supabase
           .from('user_profiles')
-          .update({
-            player_name: playerName || undefined,
-            newsletter_daily_readings: !!subscribeDaily,
-            newsletter_edu_entrepreneurship: !!subscribeEdu
-          })
+          .update(updates)
           .eq('id', userId);
 
         if (updateError) {

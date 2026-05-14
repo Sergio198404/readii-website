@@ -3951,17 +3951,24 @@ async function checkAuthAndShowForm() {
 async function attachVideoToUser(userId, email) {
   if (!currentPass3SessionId) return;
   try {
-    const { data, error } = await sb.from('pretotype_videos')
-      .update({ user_id: userId, user_email: email })
-      .eq('session_id', currentPass3SessionId)
-      .select();
-    console.log('🔧 attach video result:', {
-      rowsAffected: data?.length,
-      error: error?.message,
-      sessionId: currentPass3SessionId
+    const resp = await fetch('/.netlify/functions/attach-video-to-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId: currentPass3SessionId,
+        userId,
+        userEmail: email
+      })
     });
+
+    if (!resp.ok) {
+      console.warn('Attach video failed:', await resp.text());
+    } else {
+      const data = await resp.json();
+      console.log('🔧 video attached:', data);
+    }
   } catch (e) {
-    console.warn('Attach video failed:', e);
+    console.warn('Attach video error:', e);
   }
 }
 
