@@ -23,24 +23,54 @@ exports.handler = async (event) => {
 
     const normalizedEmail = email.trim().toLowerCase();
 
+    console.log('🔐 START:', {
+      email: normalizedEmail,
+      hasPassword: !!password,
+      passwordLen: password?.length,
+      hasSessionId: !!sessionId,
+      hasAnonKey: !!SUPABASE_ANON_KEY
+    });
+
     // 查邮箱是否已存在
     const { data: existingList } = await supabase.auth.admin.listUsers();
     const existingUser = existingList?.users?.find(u => u.email === normalizedEmail);
+
+    console.log('🔐 listUsers result:', {
+      totalUsers: existingList?.users?.length,
+      foundMatch: !!existingUser,
+      existingUserId: existingUser?.id
+    });
 
     let userId;
     let isNewUser = false;
 
     if (existingUser) {
       userId = existingUser.id;
+      console.log('🔐 EXISTING USER path:', { userId });
 
-      await supabase
+      const { data: updateData, error: updateError } = await supabase
         .from('user_profiles')
         .update({
           player_name: playerName || undefined,
           newsletter_daily_readings: !!subscribeDaily,
           newsletter_edu_entrepreneurship: !!subscribeEdu
         })
-        .eq('id', userId);
+        .eq('id', userId)
+        .select();
+
+      console.log('🔐 update profile (existing):', {
+        rowsAffected: updateData?.length,
+        hasError: !!updateError,
+        errorMsg: updateError?.message
+      });
+
+      // 让失败可见:existing user 的 UPDATE 应至少影响 1 行
+      if (!updateData?.length) {
+        return { statusCode: 500, body: JSON.stringify({
+          error: 'User exists in auth but not in profile. Contact support.',
+          debug: { userId, email: normalizedEmail }
+        })};
+      }
 
     } else {
       isNewUser = true;
@@ -55,6 +85,13 @@ exports.handler = async (event) => {
         }
       });
 
+      console.log('🔐 admin.createUser result:', {
+        success: !createError,
+        newUserId: createData?.user?.id,
+        error: createError?.message,
+        errorStatus: createError?.status
+      });
+
       if (createError) {
         return { statusCode: 500, body: JSON.stringify({ error: createError.message }) };
       }
@@ -64,23 +101,56 @@ exports.handler = async (event) => {
       // 等 trigger 完成
       await new Promise(resolve => setTimeout(resolve, 400));
 
+      // 检查 trigger 是否建好了 profile
+      const { data: existingProfile } = await supabase
+        .from('user_profiles')
+        .select('id, display_name')
+        .eq('id', userId)
+        .single();
+
+      console.log('🔐 profile after trigger:', {
+        profileExists: !!existingProfile,
+        display_name: existingProfile?.display_name
+      });
+
+      // 让失败可见:trigger 应该已创建 profile
+      if (!existingProfile) {
+        return { statusCode: 500, body: JSON.stringify({
+          error: 'Profile creation failed (trigger issue).',
+          debug: { userId, email: normalizedEmail }
+        })};
+      }
+
       // 更新 newsletter + player_name
-      await supabase
+      const { data: updateData, error: updateError } = await supabase
         .from('user_profiles')
         .update({
           player_name: playerName || undefined,
           newsletter_daily_readings: !!subscribeDaily,
           newsletter_edu_entrepreneurship: !!subscribeEdu
         })
-        .eq('id', userId);
+        .eq('id', userId)
+        .select();
+
+      console.log('🔐 update profile (new):', {
+        rowsAffected: updateData?.length,
+        hasError: !!updateError,
+        errorMsg: updateError?.message
+      });
     }
 
     // 关联视频到 user_id
     if (sessionId) {
-      await supabase
+      const { data: videoUpdateData } = await supabase
         .from('pretotype_videos')
         .update({ user_id: userId, user_email: normalizedEmail })
-        .eq('session_id', sessionId);
+        .eq('session_id', sessionId)
+        .select();
+
+      console.log('🔐 attach video:', {
+        rowsAffected: videoUpdateData?.length,
+        sessionId
+      });
 
       // 检查视频是否已转码完成,如果是立即触发邮件
       const { data: videos } = await supabase
@@ -111,9 +181,15 @@ exports.handler = async (event) => {
     let session = null;
     if (SUPABASE_ANON_KEY) {
       const anonClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      const { data: signInData } = await anonClient.auth.signInWithPassword({
+      const { data: signInData, error: signInError } = await anonClient.auth.signInWithPassword({
         email: normalizedEmail,
         password
+      });
+
+      console.log('🔐 signIn result:', {
+        hasSession: !!signInData?.session,
+        hasError: !!signInError,
+        errorMsg: signInError?.message
       });
 
       if (signInData?.session) {
@@ -124,6 +200,12 @@ exports.handler = async (event) => {
         };
       }
     }
+
+    console.log('🔐 RETURNING:', {
+      isNewUser,
+      hasSession: !!session,
+      userId
+    });
 
     return {
       statusCode: 200,
