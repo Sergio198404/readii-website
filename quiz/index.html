@@ -450,6 +450,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .otp-submit-btn{margin-bottom:10px}
 .otp-resend-btn{display:block;width:100%;background:none;border:none;color:var(--gold);font-size:13px;text-decoration:underline;cursor:pointer;font-family:var(--sans)}
 .otp-error{color:#C44;font-size:13px;margin-top:8px;font-weight:600}
+.password-form-section{margin:24px 0;padding:24px 20px;background:linear-gradient(135deg,#FFF8E7 0%,#FFFFFF 100%);border:2px solid var(--gold);border-radius:var(--radius)}
+.password-label{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.12em;margin-bottom:6px;text-align:center}
+.password-hint{font-size:12px;color:var(--muted);margin-bottom:16px;text-align:center;line-height:1.5}
+.password-hint strong{color:var(--ink)}
+.password-error{color:#C44;font-size:13px;margin-top:8px;text-align:center}
+.password-input{margin-bottom:16px}
+.signed-in-section{margin:24px 0;padding:20px;background:linear-gradient(135deg,#E8F5E9 0%,#FFFFFF 100%);border:2px solid var(--forest);border-radius:var(--radius)}
+.signed-in-label{font-size:11px;font-weight:700;color:var(--forest);letter-spacing:0.12em;margin-bottom:6px;text-align:center}
+.signed-in-hint{font-size:14px;color:var(--ink);margin-bottom:16px;text-align:center}
 .email-done-section{margin:24px 0;padding:32px 20px;background:linear-gradient(135deg,#E8F5E9 0%,#FFFFFF 100%);border:2px solid var(--forest);border-radius:var(--radius);text-align:center}
 .email-done-icon{width:56px;height:56px;border-radius:50%;background:var(--forest);color:var(--white);font-size:32px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
 .email-done-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px}
@@ -746,33 +755,60 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <p class="fullread-stats" id="pass3Stats"></p>
       </div>
 
-      <!-- 视频预览(完整版,可在线播放) -->
       <div class="full-video-section">
         <video id="videoPreview" controls playsinline preload="auto"></video>
       </div>
 
-      <!-- 邮件交付表单(嵌入式) -->
+      <!-- 未登录:Step 1 邮箱 -->
       <div class="email-form-section" id="emailFormSection">
         <div class="email-form-header">
-          <p class="email-form-label">📧 GET YOUR VIDEO DELIVERED</p>
-          <p class="email-form-hint">We'll email you the MP4 (works on iOS &amp; Android)</p>
+          <p class="email-form-label">📧 GET YOUR VIDEO BY EMAIL</p>
+          <p class="email-form-hint">We'll send the MP4 to your inbox</p>
         </div>
 
         <div class="email-form-fields">
-          <input
-            type="text"
-            id="userNameInput"
-            class="email-input"
-            placeholder="Your name"
-            autocomplete="given-name"
-            maxlength="50">
-          <input
-            type="email"
-            id="userEmailInput"
-            class="email-input"
-            placeholder="your@email.com"
-            autocomplete="email">
+          <input type="text" id="userNameInput" class="email-input"
+                 placeholder="Your name" autocomplete="given-name" maxlength="50">
+          <input type="email" id="userEmailInput" class="email-input"
+                 placeholder="your@email.com" autocomplete="email">
         </div>
+
+        <button class="btn-start email-submit-btn" id="emailSubmitBtn" onclick="submitEmailForm()">
+          📧 Send verification code
+        </button>
+
+        <button class="email-skip-btn" onclick="skipEmailForm()">
+          ↗ Skip for now (your reading may be lost)
+        </button>
+      </div>
+
+      <!-- Step 2 OTP -->
+      <div class="otp-form-section" id="otpFormSection" style="display:none">
+        <p class="otp-label">📩 CHECK YOUR INBOX</p>
+        <p class="otp-hint">We sent a 6-digit code to <span id="otpEmailDisplay"></span></p>
+
+        <input type="text" id="otpInput" class="otp-input"
+               placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+
+        <button class="btn-start otp-submit-btn" id="otpSubmitBtn" onclick="submitOtp()">
+          ✓ Confirm code
+        </button>
+
+        <button class="otp-resend-btn" onclick="resendOtp()">Resend code</button>
+
+        <p class="otp-error" id="otpError" style="display:none"></p>
+      </div>
+
+      <!-- Step 3 设置密码(新用户)-->
+      <div class="password-form-section" id="passwordFormSection" style="display:none">
+        <p class="password-label">🔐 CREATE YOUR PASSWORD</p>
+        <p class="password-hint">
+          This sets up your Readii account. You can use it later at
+          <strong>readii.co.uk</strong>
+        </p>
+
+        <input type="password" id="passwordInput" class="email-input password-input"
+               placeholder="At least 8 characters" minlength="8" autocomplete="new-password">
 
         <div class="newsletter-options">
           <label class="newsletter-option">
@@ -792,49 +828,42 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           </label>
         </div>
 
-        <button class="btn-start email-submit-btn" id="emailSubmitBtn" onclick="submitEmailForm()">
-          📧 Send me my video
+        <button class="btn-start" id="passwordSubmitBtn" onclick="submitPassword()">
+          ✓ Create my account
         </button>
 
-        <button class="email-skip-btn" onclick="skipEmailForm()">
-          ↗ Skip for now
-        </button>
+        <p class="password-error" id="passwordError" style="display:none"></p>
+      </div>
 
-        <p class="email-form-note">
-          We use your email only to deliver your video and (if you opt-in)
-          our newsletters. Unsubscribe anytime.
+      <!-- 已登录用户简化 UI -->
+      <div class="signed-in-section" id="signedInSection" style="display:none">
+        <p class="signed-in-label">📧 SEND TO YOUR EMAIL</p>
+        <p class="signed-in-hint">
+          Hi <strong id="signedInName"></strong>! We'll send your video to
+          <strong id="signedInEmail"></strong>
         </p>
+
+        <div class="newsletter-options">
+          <label class="newsletter-option">
+            <input type="checkbox" id="signedInSubDaily">
+            <span class="newsletter-text"><strong>Daily British readings</strong></span>
+          </label>
+
+          <label class="newsletter-option">
+            <input type="checkbox" id="signedInSubEdu">
+            <span class="newsletter-text"><strong>British education &amp; entrepreneurship</strong></span>
+          </label>
+        </div>
+
+        <button class="btn-start" id="signedInSubmitBtn" onclick="submitSignedInForm()">
+          📤 Send my video
+        </button>
       </div>
 
-      <!-- OTP 验证表单(初始隐藏) -->
-      <div class="otp-form-section" id="otpFormSection" style="display:none">
-        <p class="otp-label">📩 CHECK YOUR INBOX</p>
-        <p class="otp-hint">We sent a 6-digit code to <span id="otpEmailDisplay"></span></p>
-
-        <input
-          type="text"
-          id="otpInput"
-          class="otp-input"
-          placeholder="000000"
-          maxlength="6"
-          inputmode="numeric"
-          autocomplete="one-time-code">
-
-        <button class="btn-start otp-submit-btn" id="otpSubmitBtn" onclick="submitOtp()">
-          ✓ Confirm
-        </button>
-
-        <button class="otp-resend-btn" onclick="resendOtp()">
-          Resend code
-        </button>
-
-        <p class="otp-error" id="otpError" style="display:none"></p>
-      </div>
-
-      <!-- 完成确认(初始隐藏) -->
+      <!-- 完成 -->
       <div class="email-done-section" id="emailDoneSection" style="display:none">
         <div class="email-done-icon">✓</div>
-        <h3 class="email-done-title">Email confirmed!</h3>
+        <h3 class="email-done-title">All set!</h3>
         <p class="email-done-text">
           Your video will arrive at <span id="confirmedEmailDisplay"></span> in 1-2 minutes.
         </p>
@@ -1283,8 +1312,6 @@ let sfxCorrectAudio = null;
 // v12: email-based delivery
 let pendingEmail = null;
 let pendingUserName = null;
-let pendingSubscribeDaily = false;
-let pendingSubscribeEdu = false;
 let resentOtpCount = 0;
 
 // Global volume control (v10.1 fix #3)
@@ -3860,9 +3887,11 @@ function enterResultStage() {
     document.getElementById('userEmailInput').value = savedEmail;
   }
 
-  // 重置表单状态
+  // v12 final: 重置所有 form sections
   document.getElementById('emailFormSection').style.display = 'block';
   document.getElementById('otpFormSection').style.display = 'none';
+  document.getElementById('passwordFormSection').style.display = 'none';
+  document.getElementById('signedInSection').style.display = 'none';
   document.getElementById('emailDoneSection').style.display = 'none';
   resentOtpCount = 0;
 
@@ -3873,43 +3902,110 @@ function enterResultStage() {
   });
 
   clearIDBProgress(); // v10.1 fix #1: 完成了就清掉持久化进度
+
+  // v12 final: 检测登录状态(异步)
+  checkAuthAndShowForm();
 }
 
 // ═════════════════════════════════════════════════════
-// EMAIL DELIVERY — OTP form (v12)
+// EMAIL DELIVERY — unified user system (v12 final)
 // ═════════════════════════════════════════════════════
+
+// 在 enterResultStage 末尾调用
+async function checkAuthAndShowForm() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+
+    if (session && session.user) {
+      const userId = session.user.id;
+      const email = session.user.email;
+
+      const { data: profile } = await sb
+        .from('user_profiles')
+        .select('display_name, player_name, newsletter_daily_readings, newsletter_edu_entrepreneurship')
+        .eq('id', userId)
+        .single();
+
+      const name = profile?.player_name || profile?.display_name || email.split('@')[0];
+
+      document.getElementById('signedInName').textContent = name;
+      document.getElementById('signedInEmail').textContent = email;
+      document.getElementById('signedInSubDaily').checked = !!profile?.newsletter_daily_readings;
+      document.getElementById('signedInSubEdu').checked = !!profile?.newsletter_edu_entrepreneurship;
+
+      document.getElementById('emailFormSection').style.display = 'none';
+      document.getElementById('signedInSection').style.display = 'block';
+
+      await attachVideoToUser(userId, email);
+      return;
+    }
+  } catch (e) {
+    console.warn('Auth check failed:', e);
+  }
+
+  // 未登录,显示邮箱表单(已默认显示)
+  document.getElementById('emailFormSection').style.display = 'block';
+  document.getElementById('signedInSection').style.display = 'none';
+}
+
+async function attachVideoToUser(userId, email) {
+  if (!currentPass3SessionId) return;
+  try {
+    await sb.from('pretotype_videos')
+      .update({ user_id: userId, user_email: email })
+      .eq('session_id', currentPass3SessionId);
+  } catch (e) {
+    console.warn('Attach video failed:', e);
+  }
+}
+
+async function submitSignedInForm() {
+  const btn = document.getElementById('signedInSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw new Error('Not logged in');
+
+    const subDaily = document.getElementById('signedInSubDaily').checked;
+    const subEdu = document.getElementById('signedInSubEdu').checked;
+
+    await sb.from('user_profiles')
+      .update({
+        newsletter_daily_readings: subDaily,
+        newsletter_edu_entrepreneurship: subEdu
+      })
+      .eq('id', session.user.id);
+
+    document.getElementById('signedInSection').style.display = 'none';
+    document.getElementById('emailDoneSection').style.display = 'block';
+    document.getElementById('confirmedEmailDisplay').textContent = session.user.email;
+
+  } catch (err) {
+    toast('Failed. Try again?');
+    btn.disabled = false;
+    btn.textContent = '📤 Send my video';
+  }
+}
+
 async function submitEmailForm() {
   const nameInput = document.getElementById('userNameInput');
   const emailInput = document.getElementById('userEmailInput');
-  const dailyCheck = document.getElementById('subscribeDailyReadings');
-  const eduCheck = document.getElementById('subscribeEduEntrepreneurship');
   const submitBtn = document.getElementById('emailSubmitBtn');
 
   const name = nameInput.value.trim();
   const email = emailInput.value.trim();
 
-  if (!name) {
-    toast('Please enter your name');
-    nameInput.focus();
-    return;
-  }
+  if (!name) { toast('Please enter your name'); nameInput.focus(); return; }
   if (!email || !email.includes('@')) {
     toast('Please enter a valid email');
     emailInput.focus();
     return;
   }
 
-  // 暂存
   pendingEmail = email;
   pendingUserName = name;
-  pendingSubscribeDaily = dailyCheck.checked;
-  pendingSubscribeEdu = eduCheck.checked;
-
-  // 更新 playerName
-  if (name !== playerName) {
-    playerName = name;
-    try { localStorage.setItem('readii_player_name', name); } catch (e) {}
-  }
 
   submitBtn.disabled = true;
   submitBtn.textContent = 'Sending code...';
@@ -3931,13 +4027,10 @@ async function submitEmailForm() {
     document.getElementById('otpEmailDisplay').textContent = email;
     document.getElementById('otpInput').focus();
 
-    track('otp_sent', { email_provided: true });
-
   } catch (err) {
-    console.error('Send OTP failed:', err);
-    toast(err.message || 'Failed to send code. Try again?');
+    toast(err.message);
     submitBtn.disabled = false;
-    submitBtn.textContent = '📧 Send me my video';
+    submitBtn.textContent = '📧 Send verification code';
   }
 }
 
@@ -3947,7 +4040,6 @@ async function submitOtp() {
   const errorEl = document.getElementById('otpError');
 
   const otp = otpInput.value.trim();
-
   if (!/^\d{6}$/.test(otp)) {
     errorEl.textContent = 'Please enter the 6-digit code';
     errorEl.style.display = 'block';
@@ -3962,96 +4054,110 @@ async function submitOtp() {
     const resp = await fetch('/.netlify/functions/auth-verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: pendingEmail, otp })
+    });
+
+    const result = await resp.json();
+    if (!resp.ok) throw new Error(result.error);
+
+    // OTP 验证成功,切换到设置密码
+    document.getElementById('otpFormSection').style.display = 'none';
+    document.getElementById('passwordFormSection').style.display = 'block';
+    document.getElementById('passwordInput').focus();
+
+  } catch (err) {
+    errorEl.textContent = err.message;
+    errorEl.style.display = 'block';
+    submitBtn.disabled = false;
+    submitBtn.textContent = '✓ Confirm code';
+  }
+}
+
+async function submitPassword() {
+  const passwordInput = document.getElementById('passwordInput');
+  const subDaily = document.getElementById('subscribeDailyReadings').checked;
+  const subEdu = document.getElementById('subscribeEduEntrepreneurship').checked;
+  const submitBtn = document.getElementById('passwordSubmitBtn');
+  const errorEl = document.getElementById('passwordError');
+
+  const password = passwordInput.value;
+
+  if (password.length < 8) {
+    errorEl.textContent = 'Password must be at least 8 characters';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Creating account...';
+  errorEl.style.display = 'none';
+
+  try {
+    const resp = await fetch('/.netlify/functions/auth-complete-signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: pendingEmail,
-        otp,
+        password,
         playerName: pendingUserName,
-        subscribeDaily: pendingSubscribeDaily,
-        subscribeEdu: pendingSubscribeEdu
+        subscribeDaily: subDaily,
+        subscribeEdu: subEdu,
+        sessionId: currentPass3SessionId
       })
     });
 
     const result = await resp.json();
+    if (!resp.ok) throw new Error(result.error);
 
-    if (!resp.ok) {
-      throw new Error(result.error || 'Verification failed');
-    }
-
-    // 验证成功:绑定 email 到当前 session 的视频
-    try {
-      await fetch('/.netlify/functions/auth-video-attach-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: currentPass3SessionId,
-          email: pendingEmail
-        })
+    // 设置 session(保持登录)
+    if (result.session) {
+      await sb.auth.setSession({
+        access_token: result.session.access_token,
+        refresh_token: result.session.refresh_token
       });
-    } catch (e) {
-      console.warn('Email attach failed:', e);
     }
 
-    // 显示完成确认
-    document.getElementById('otpFormSection').style.display = 'none';
+    document.getElementById('passwordFormSection').style.display = 'none';
     document.getElementById('emailDoneSection').style.display = 'block';
     document.getElementById('confirmedEmailDisplay').textContent = pendingEmail;
 
-    // 存 localStorage(下次免登录)
-    try {
-      localStorage.setItem('readii_user_email', pendingEmail);
-      localStorage.setItem('readii_user_name', pendingUserName);
-    } catch (e) {}
-
-    track('email_confirmed', {
-      email_provided: true,
-      subscribed_daily: pendingSubscribeDaily,
-      subscribed_edu: pendingSubscribeEdu
+    track('quiz_signup_complete', {
+      is_new_user: result.isNewUser,
+      subscribed_daily: subDaily,
+      subscribed_edu: subEdu
     });
 
   } catch (err) {
-    console.error('Verify OTP failed:', err);
-    errorEl.textContent = err.message || 'Invalid code. Try again?';
+    errorEl.textContent = err.message;
     errorEl.style.display = 'block';
     submitBtn.disabled = false;
-    submitBtn.textContent = '✓ Confirm';
+    submitBtn.textContent = '✓ Create my account';
   }
 }
 
 async function resendOtp() {
   if (!pendingEmail) return;
-  if (resentOtpCount >= 3) {
-    toast('Too many resends. Please wait a moment.');
-    return;
-  }
+  if (resentOtpCount >= 3) { toast('Too many resends. Please wait.'); return; }
   resentOtpCount++;
 
   try {
     await fetch('/.netlify/functions/auth-send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: pendingEmail,
-        playerName: pendingUserName
-      })
+      body: JSON.stringify({ email: pendingEmail, playerName: pendingUserName })
     });
     toast('New code sent!');
   } catch (e) {
-    toast('Failed to resend. Try again?');
+    toast('Failed to resend');
   }
 }
 
 function skipEmailForm() {
-  if (!confirm('Skip the email? Your reading may be lost when you close this page. Continue?')) {
+  if (!confirm('Skip the email? Your reading will be lost when you close this page. Continue?')) {
     return;
   }
-
   document.getElementById('emailFormSection').style.display = 'none';
-
-  track('email_skipped', { user_skipped: true });
-
-  setTimeout(() => {
-    showRoundComplete();
-  }, 800);
+  setTimeout(() => showRoundComplete(), 800);
 }
 
 // ═════════════════════════════════════════════════════

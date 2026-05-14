@@ -33,13 +33,20 @@ exports.handler = async (event) => {
     }
 
     // 查 user 拿 player_name
-    const { data: user } = await supabase
-      .from('readii_users')
-      .select('player_name')
-      .eq('email', userEmail.toLowerCase())
-      .single();
+    // 查 user 拿 player_name(优先用 user_profiles)
+    let playerName = video.player_name || 'there';
 
-    const playerName = user?.player_name || video.player_name || 'there';
+    if (video.user_id) {
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('player_name, display_name')
+        .eq('id', video.user_id)
+        .single();
+
+      if (profile) {
+        playerName = profile.player_name || profile.display_name || playerName;
+      }
+    }
 
     // 视频 URL(优先 mp4)
     const videoUrl = video.mp4_url || video.public_url;
