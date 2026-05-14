@@ -391,6 +391,20 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .ec-generating-steps li.active{opacity:1;color:var(--forest);font-weight:700}
 .ec-generating-steps li.done{opacity:1;color:var(--muted);text-decoration:line-through}
 
+/* Unlock animation (v11) — 纸张展开效果 */
+.unlock-paper-stage{position:relative;width:100%;max-width:360px;height:320px;margin:30px auto;perspective:1000px;overflow:hidden}
+.unlock-paper{position:absolute;top:0;width:50%;height:100%;background:linear-gradient(135deg,#FAF8F3 0%,#E8E0CC 100%);border:1px solid #B8873A;box-shadow:0 8px 32px rgba(0,0,0,0.15);transition:transform 1.6s cubic-bezier(0.7,0,0.3,1);z-index:2}
+.unlock-paper-left{left:0;border-right:none;transform-origin:left center}
+.unlock-paper-right{right:0;border-left:none;transform-origin:right center}
+.unlock-paper-stage.unfolding .unlock-paper-left{transform:rotateY(-180deg)}
+.unlock-paper-stage.unfolding .unlock-paper-right{transform:rotateY(180deg)}
+.unlock-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:1;opacity:0;transition:opacity 0.6s ease 1.2s}
+.unlock-paper-stage.unfolding .unlock-content{opacity:1}
+.unlock-icon{font-size:56px;margin-bottom:16px;animation:unlock-icon-pop 0.6s ease 1.4s both}
+@keyframes unlock-icon-pop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.unlock-title{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1.3}
+.unlock-subtitle{font-size:14px;color:var(--gold);font-weight:600}
+
 .video-section{margin-top:16px;text-align:center}
 .video-section video{width:100%;max-width:320px;border-radius:var(--radius);background:#000;display:block;margin:0 auto}
 .video-actions{display:flex;gap:8px;justify-content:center;margin-top:12px}
@@ -667,6 +681,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       </div>
     </div>
 
+    <!-- Stage E.5: Unlock animation (v11) -->
+    <div class="ec-stage-panel" id="ecStageUnlock" style="display:none">
+      <div id="ecUnlockAnimContainer"></div>
+    </div>
+
     <!-- Stage F: Result -->
     <div class="ec-stage-panel" id="ecStageResult" style="display:none">
       <div class="fullread-done">
@@ -868,7 +887,10 @@ const ARTICLES_DATA = {
       }
     ],
     bgm_style: 'classical',
-    background_hint: 'london cafe wooden interior'
+    background_hint: 'london cafe wooden interior',
+    background_image: `${STORAGE_BASE}/article-images/apology-bg.jpg`,
+    viral_segments: [11, 12],
+    viral_pass_threshold: { max_rerecords: 2, min_duration_each: 1.5, max_duration_each: 15 }
   },
 
   'seven-novembers': {
@@ -946,7 +968,10 @@ const ARTICLES_DATA = {
       }
     ],
     bgm_style: 'lofi',
-    background_hint: 'london rainy november grey'
+    background_hint: 'london rainy november grey',
+    background_image: `${STORAGE_BASE}/article-images/seven-novembers-bg.jpg`,
+    viral_segments: [14, 15],
+    viral_pass_threshold: { max_rerecords: 2, min_duration_each: 1.5, max_duration_each: 15 }
   },
 
   'shop-closes-for-lunch': {
@@ -1023,7 +1048,10 @@ const ARTICLES_DATA = {
       }
     ],
     bgm_style: 'cinematic',
-    background_hint: 'london independent bookshop warm wood'
+    background_hint: 'london independent bookshop warm wood',
+    background_image: `${STORAGE_BASE}/article-images/shop-closes-bg.jpg`,
+    viral_segments: [12, 13, 14],
+    viral_pass_threshold: { max_rerecords: 2, min_duration_each: 1.5, max_duration_each: 15 }
   }
 };
 
@@ -1098,6 +1126,18 @@ let segmentRecordings = [];
 
 // Daisy 单句 audio cache (for replay/review)
 let ecDaisyAudioCache = {};
+
+// v11: viral video state
+let viralVideoBlob = null;
+let viralVideoUrl = null;
+let viralUploadedUrl = null;
+let viralMp4Url = null;
+let viralUnlocked = false;
+let segmentRecordingMeta = []; // segmentRecordingMeta[i] = { rerecord_count, duration, has_recording }
+let articleBackgroundImage = null; // 缓存背景图 HTMLImageElement
+let videoUploadedUrl = null;       // 完整视频的服务器 URL
+let videoMp4Url = null;            // 完整视频的 mp4 URL
+let videoShareSlug = null;         // 分享 slug
 
 // Global volume control (v10.1 fix #3)
 const IS_MOBILE = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
@@ -2228,6 +2268,8 @@ function startPass3() {
   ecCurrentSegmentIdx = 0;
   ecStage = 'prestart';
   segmentRecordings = [];
+  segmentRecordingMeta = [];  // v11
+  viralUnlocked = false;      // v11
   ecDaisyAudioCache = {};
   ecDaisyPlaybackRate = 1.0;
   clearIDBProgress(); // v10.1 fix #1: 全新一轮,清掉旧的持久化进度
@@ -2246,7 +2288,7 @@ function startPass3() {
 }
 
 function hideAllStagePanels() {
-  ['ecStagePreStart', 'ecStageDaisy', 'ecStageReadyCheck', 'ecStageRecording', 'ecStageReview', 'ecStageGenerating', 'ecStageResult']
+  ['ecStagePreStart', 'ecStageDaisy', 'ecStageReadyCheck', 'ecStageRecording', 'ecStageReview', 'ecStageGenerating', 'ecStageUnlock', 'ecStageResult']
     .forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
@@ -2566,6 +2608,20 @@ function enterReviewStage() {
     segment_idx: ecCurrentSegmentIdx,
     duration: segmentRecordings[ecCurrentSegmentIdx]?.duration || 0
   });
+
+  // v11: track recording metadata
+  const rec = segmentRecordings[ecCurrentSegmentIdx];
+  if (rec) {
+    if (!segmentRecordingMeta[ecCurrentSegmentIdx]) {
+      segmentRecordingMeta[ecCurrentSegmentIdx] = {
+        rerecord_count: 0,
+        duration: 0,
+        has_recording: false
+      };
+    }
+    segmentRecordingMeta[ecCurrentSegmentIdx].duration = rec.duration;
+    segmentRecordingMeta[ecCurrentSegmentIdx].has_recording = true;
+  }
 }
 
 function playMySegmentRecording() {
@@ -2603,11 +2659,24 @@ function playDaisySegment(rate) {
 }
 
 function reRecordCurrentSegment() {
+  // v11: 跟踪重录次数
+  if (!segmentRecordingMeta[ecCurrentSegmentIdx]) {
+    segmentRecordingMeta[ecCurrentSegmentIdx] = {
+      rerecord_count: 0,
+      duration: 0,
+      has_recording: false
+    };
+  }
+  segmentRecordingMeta[ecCurrentSegmentIdx].rerecord_count++;
+
   const rec = segmentRecordings[ecCurrentSegmentIdx];
   if (rec && rec.url) URL.revokeObjectURL(rec.url);
   segmentRecordings[ecCurrentSegmentIdx] = null;
 
-  track('pass3_segment_rerecorded', { segment_idx: ecCurrentSegmentIdx });
+  track('pass3_segment_rerecorded', {
+    segment_idx: ecCurrentSegmentIdx,
+    rerecord_count: segmentRecordingMeta[ecCurrentSegmentIdx].rerecord_count
+  });
 
   enterDaisyStage();
 }
@@ -2626,10 +2695,57 @@ function keepAndContinue() {
 }
 
 // Stage E: Generating video
+// ═════════════════════════════════════════════════════
+// VIRAL VIDEO QUALIFICATION (v11)
+// ═════════════════════════════════════════════════════
+function evaluateViralQualification() {
+  const article = ARTICLES_DATA[currentArticleId];
+  if (!article || !article.viral_segments || !article.viral_pass_threshold) {
+    return { qualified: false, reason: 'no_viral_config' };
+  }
+
+  const threshold = article.viral_pass_threshold;
+  const viralIndices = article.viral_segments;
+
+  for (const idx of viralIndices) {
+    const meta = segmentRecordingMeta[idx];
+    const rec = segmentRecordings[idx];
+
+    // Must have recording
+    if (!rec || !meta || !meta.has_recording) {
+      return { qualified: false, reason: 'missing_recording', segment: idx };
+    }
+
+    // Check rerecord count
+    if (meta.rerecord_count > threshold.max_rerecords) {
+      return { qualified: false, reason: 'too_many_rerecords', segment: idx };
+    }
+
+    // Check duration is reasonable
+    if (meta.duration < threshold.min_duration_each) {
+      return { qualified: false, reason: 'too_short', segment: idx };
+    }
+    if (meta.duration > threshold.max_duration_each) {
+      return { qualified: false, reason: 'too_long', segment: idx };
+    }
+  }
+
+  return { qualified: true };
+}
+
 async function enterGeneratingStage() {
   ecStage = 'generating';
   updateProgress();
   showStagePanel('ecStageGenerating');
+
+  // v11 模块 4: 评估是否解锁短视频
+  const evalResult = evaluateViralQualification();
+  viralUnlocked = evalResult.qualified;
+  track('viral_qualification_evaluated', {
+    qualified: viralUnlocked,
+    reason: evalResult.reason,
+    article_id: currentArticleId
+  });
 
   const stepStitch = document.getElementById('ecStepStitch');
   const stepMusic = document.getElementById('ecStepMusic');
@@ -2660,13 +2776,57 @@ async function enterGeneratingStage() {
 
     await sleep(500);
 
-    enterResultStage();
+    // v11 模块 4: 解锁则播放解锁动画,否则直接进结果屏
+    if (viralUnlocked) {
+      enterUnlockAnimationStage();
+    } else {
+      enterResultStage();
+    }
   } catch (err) {
     console.error('Generation failed:', err);
     toast('Video generation failed. Try again?');
     ecCurrentSegmentIdx = segments.length - 1;
     enterReviewStage();
   }
+}
+
+// ═════════════════════════════════════════════════════
+// VIRAL UNLOCK ANIMATION (v11)
+// ═════════════════════════════════════════════════════
+async function enterUnlockAnimationStage() {
+  ecStage = 'unlocking';
+  showStagePanel('ecStageUnlock');
+
+  track('viral_unlock_shown', { article_id: currentArticleId });
+
+  startUnlockAnimation();
+
+  // After 3.5 seconds, show result
+  setTimeout(() => {
+    enterResultStage();
+  }, 3500);
+}
+
+function startUnlockAnimation() {
+  const container = document.getElementById('ecUnlockAnimContainer');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="unlock-paper-stage">
+      <div class="unlock-paper unlock-paper-left"></div>
+      <div class="unlock-paper unlock-paper-right"></div>
+      <div class="unlock-content">
+        <div class="unlock-icon">✨</div>
+        <h2 class="unlock-title">You nailed the closing</h2>
+        <p class="unlock-subtitle">A 15-second viral cut has been crafted</p>
+      </div>
+    </div>
+  `;
+
+  requestAnimationFrame(() => {
+    const stage = container.querySelector('.unlock-paper-stage');
+    if (stage) stage.classList.add('unfolding');
+  });
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -3103,6 +3263,7 @@ async function saveProgressToIDB(recordedIdx) {
       xp,
       decodeResults,
       drillResults,
+      segmentRecordingMeta,  // v11: 保留 viral 资格判定所需的录音质量元数据
       timestamp: Date.now()
     });
   } catch (e) {
@@ -3179,6 +3340,22 @@ async function resumePass3FromIDB() {
   } catch (e) {
     console.warn('IDB recordings restore failed:', e);
   }
+
+  // v11: 恢复录音质量元数据(viral 资格判定用)。缺失则按已恢复的录音重建
+  if (Array.isArray(meta.segmentRecordingMeta)) {
+    segmentRecordingMeta = meta.segmentRecordingMeta;
+  } else {
+    segmentRecordingMeta = [];
+  }
+  segmentRecordings.forEach((rec, i) => {
+    if (!rec) return;
+    if (!segmentRecordingMeta[i]) {
+      segmentRecordingMeta[i] = { rerecord_count: 0, duration: rec.duration, has_recording: true };
+    } else {
+      segmentRecordingMeta[i].has_recording = true;
+      if (!segmentRecordingMeta[i].duration) segmentRecordingMeta[i].duration = rec.duration;
+    }
+  });
 
   // 恢复 Pass 3 位置
   currentPass = 3;
@@ -3918,6 +4095,8 @@ function resetAll() {
   stopSilenceDetection();
   segmentRecordings.forEach(rec => { if (rec && rec.url) URL.revokeObjectURL(rec.url); });
   segmentRecordings = [];
+  segmentRecordingMeta = [];  // v11
+  viralUnlocked = false;      // v11
   xp = 0; pass1Transcript = []; drillResults = []; challengeData = null;
   fullReadTranscript = ''; fullReadStartTime = null; userStoppedPass3 = false;
   transAnswered = false; pendingAction = null;
