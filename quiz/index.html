@@ -3647,8 +3647,11 @@ async function generateFinalVideo(audioBuffer) {
       };
 
       recorder.onstop = () => {
+        console.log('🎬 recorder.onstop, chunks count:', chunks.length, 'total bytes:',
+          chunks.reduce((sum, c) => sum + c.size, 0));
         videoBlob = new Blob(chunks, { type: mimeType });
         videoUrl = URL.createObjectURL(videoBlob);
+        console.log('🎬 videoBlob created, size:', videoBlob.size, 'duration estimate:', audioBuffer.duration);
 
         const preview = document.getElementById('videoPreview');
         if (preview) {
@@ -3663,6 +3666,7 @@ async function generateFinalVideo(audioBuffer) {
         resolve();
       };
 
+      console.log('🎬 video recorder.start() called');
       recorder.start();
       videoMediaRecorder = recorder;
 
@@ -4246,13 +4250,17 @@ async function generateClipVideoFromBuffer(audioBuffer) {
       };
 
       recorder.onstop = () => {
+        console.log('🎬 clip recorder.onstop, chunks count:', chunks.length, 'total bytes:',
+          chunks.reduce((sum, c) => sum + c.size, 0));
         clipVideoBlob = new Blob(chunks, { type: mimeType });
         clipVideoUrl = URL.createObjectURL(clipVideoBlob);
+        console.log('🎬 clipVideoBlob created, size:', clipVideoBlob.size, 'duration estimate:', audioBuffer.duration);
         resolve();
       };
 
       recorder.onerror = reject;
 
+      console.log('🎬 clip recorder.start() called');
       recorder.start();
 
       const startTime = Date.now();
@@ -4549,6 +4557,7 @@ async function uploadClipVideoToServer() {
 
 async function uploadSingleVideo({ blob, videoType, articleId, playerName }) {
   const base64Data = await blobToBase64(blob);
+  console.log('📤 uploading, videoType:', videoType, 'blob size:', blob && blob.size, 'base64 length:', base64Data.length);
 
   const resp = await fetch('/.netlify/functions/video-upload', {
     method: 'POST',
