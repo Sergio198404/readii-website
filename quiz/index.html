@@ -2141,6 +2141,12 @@ let echoMediaRecorder = null;
 let echoMediaStream = null;
 
 async function startEchoRecording(opts) {
+  console.log('🎤 startEchoRecording:', {
+    currentRecognition,
+    echoMediaRecorder: echoMediaRecorder?.state,
+    echoMediaStream: echoMediaStream?.active,
+    timestamp: Date.now()
+  });
   if (currentRecognition || echoMediaRecorder) {
     // Already recording, stop it
     try {
@@ -2186,6 +2192,12 @@ async function startEchoRecording(opts) {
     echoMediaRecorder.ondataavailable = (e) => {
       if (e.data && e.data.size > 0) chunks.push(e.data);
     };
+    echoMediaRecorder.onstart = () => {
+      console.log('🔴 MediaRecorder onstart');
+    };
+    echoMediaRecorder.onstop = () => {
+      console.log('⏹️ MediaRecorder onstop, chunks:', chunks.length);
+    };
   } catch (e) {
     console.warn('MediaRecorder setup failed:', e);
   }
@@ -2201,6 +2213,7 @@ async function startEchoRecording(opts) {
   currentRecognition.maxAlternatives = 3;
 
   currentRecognition.onstart = () => {
+    console.log('▶️ SR onstart fired');
     opts.btn.classList.add('recording');
     // Start MediaRecorder
     if (echoMediaRecorder) {
@@ -2209,6 +2222,7 @@ async function startEchoRecording(opts) {
   };
 
   currentRecognition.onresult = (e) => {
+    console.log('📝 SR onresult:', e.results?.[0]?.[0]?.transcript);
     resultFired = true;
     finalTranscript = e.results[0][0].transcript || '';
     // Stop everything
@@ -2216,6 +2230,7 @@ async function startEchoRecording(opts) {
   };
 
   currentRecognition.onerror = (e) => {
+    console.log('❌ SR onerror:', e.error);
     if (e.error !== 'no-speech') {
       console.warn('SR error:', e.error);
     }
@@ -2223,6 +2238,7 @@ async function startEchoRecording(opts) {
   };
 
   currentRecognition.onend = () => {
+    console.log('🏁 SR onend, resultFired:', resultFired);
     opts.btn.classList.remove('recording');
     if (!resultFired) {
       stopEchoRecording(opts, '', chunks);
@@ -2240,6 +2256,12 @@ async function startEchoRecording(opts) {
 }
 
 function stopEchoRecording(opts, transcript, chunks) {
+  console.log('🛑 stopEchoRecording:', {
+    transcript: arguments[1],
+    chunksLength: arguments[2]?.length,
+    mediaRecorderState: echoMediaRecorder?.state,
+    timestamp: Date.now()
+  });
   clearTimeout(recordingTimeout);
 
   opts.btn.classList.remove('recording');
