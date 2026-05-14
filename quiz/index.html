@@ -3601,8 +3601,12 @@ async function generateFinalVideo(audioBuffer) {
   audioSource.buffer = audioBuffer;
 
   const audioDest = audioCtx.createMediaStreamDestination();
-  audioSource.connect(audioDest);
-  audioSource.connect(audioCtx.destination);
+  // v11.7 修复1: 经过 GainNode 监听,响应 globalVolume(移动端静音监听)
+  const monitorGain = audioCtx.createGain();
+  monitorGain.gain.value = IS_MOBILE ? 0 : globalVolume;
+  audioSource.connect(audioDest);           // 给 MediaRecorder
+  audioSource.connect(monitorGain);         // 给监听
+  monitorGain.connect(audioCtx.destination);
 
   const videoStream = canvas.captureStream(30);
   const combinedStream = new MediaStream();
@@ -3708,45 +3712,43 @@ function renderVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
   ctx.fillStyle = 'rgba(184, 135, 58, 0.05)';
   ctx.fillRect(0, 0, W, H);
 
-  // 顶部 Brand
-  ctx.fillStyle = '#B8873A';
-  ctx.font = '600 36px "Helvetica Neue", sans-serif';
+  // v11.7 修复4: 顶部统一布局 — READII + Slogan + 装饰线
   ctx.textAlign = 'center';
-  ctx.fillText('READII', W/2, 130);
 
-  ctx.strokeStyle = 'rgba(184, 135, 58, 0.6)';
-  ctx.lineWidth = 2;
+  ctx.fillStyle = '#B8873A';
+  ctx.font = '700 52px "Helvetica Neue", sans-serif';
+  ctx.shadowColor = 'rgba(184, 135, 58, 0.3)';
+  ctx.shadowBlur = 12;
+  ctx.fillText('READII', W/2, 130);
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = 'rgba(250, 248, 243, 0.75)';
+  ctx.font = 'italic 24px Georgia, serif';
+  ctx.fillText('Read British', W/2, 170);
+
+  ctx.strokeStyle = 'rgba(184, 135, 58, 0.5)';
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(W/2 - 60, 160);
-  ctx.lineTo(W/2 + 60, 160);
+  ctx.moveTo(W/2 - 80, 200);
+  ctx.lineTo(W/2 + 80, 200);
   ctx.stroke();
 
   if (playerName) {
     ctx.fillStyle = '#FAF8F3';
     ctx.font = '700 56px Georgia, serif';
-    ctx.fillText(playerName, W/2, 240);
+    ctx.fillText(playerName, W/2, 280);
 
     ctx.fillStyle = 'rgba(250, 248, 243, 0.6)';
-    ctx.font = '300 28px "Helvetica Neue", sans-serif';
-    ctx.fillText('reads', W/2, 290);
+    ctx.font = '300 26px "Helvetica Neue", sans-serif';
+    ctx.fillText('reads', W/2, 322);
   }
 
   ctx.fillStyle = '#FAF8F3';
-  ctx.font = 'italic 48px Georgia, serif';
-  ctx.fillText(article.title, W/2, 380);
+  ctx.font = 'italic 46px Georgia, serif';
+  ctx.fillText(article.title, W/2, 400);
 
-  // 字幕(沿用之前的 renderKaraokeFromSegments)
+  // 字幕
   renderKaraokeFromSegments(ctx, article, elapsed, W, H);
-
-  // v11.6: 底部 Brand + Slogan (替换原来的 readii.co.uk)
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(184, 135, 58, 0.85)';
-  ctx.font = '600 28px "Helvetica Neue", sans-serif';
-  ctx.fillText('READII', W/2, H - 80);
-
-  ctx.fillStyle = 'rgba(250, 248, 243, 0.65)';
-  ctx.font = 'italic 22px Georgia, serif';
-  ctx.fillText('Read British', W/2, H - 45);
 }
 
 function renderKaraokeFromSegments(ctx, article, elapsed, W, H) {
@@ -4112,6 +4114,12 @@ async function saveClipFromTimeline() {
   const btn = document.getElementById('clipSaveBtn');
   if (!btn) return;
 
+  // v11.7 修复2a: 暂停前台视频,避免与生成时音轨重叠
+  const sourceVideo = document.getElementById('clipSourceVideo');
+  if (sourceVideo && !sourceVideo.paused) {
+    sourceVideo.pause();
+  }
+
   const article = ARTICLES_DATA[currentArticleId];
   if (!article || !ecAudioContext) {
     toast('Cannot create clip — source data missing');
@@ -4193,8 +4201,12 @@ async function generateClipVideoFromBuffer(audioBuffer) {
   audioSource.buffer = audioBuffer;
 
   const audioDest = audioCtx.createMediaStreamDestination();
-  audioSource.connect(audioDest);
-  audioSource.connect(audioCtx.destination);
+  // v11.7 修复2b: 静音监听(用户已看过预览,生成时不需要再听,避免与前台播放重叠)
+  const monitorGain = audioCtx.createGain();
+  monitorGain.gain.value = 0;
+  audioSource.connect(audioDest);           // 录到 MediaRecorder
+  audioSource.connect(monitorGain);
+  monitorGain.connect(audioCtx.destination);
 
   const videoStream = canvas.captureStream(30);
   const combinedStream = new MediaStream();
@@ -4288,55 +4300,86 @@ function renderClipVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
   ctx.fillStyle = 'rgba(184, 135, 58, 0.05)';
   ctx.fillRect(0, 0, W, H);
 
-  // 用户名 + 文章标题(顶部)
+  // v11.7 修复4: 顶部统一布局 — READII + Slogan + 装饰线
+  ctx.textAlign = 'center';
+
+  ctx.fillStyle = '#B8873A';
+  ctx.font = '700 52px "Helvetica Neue", sans-serif';
+  ctx.shadowColor = 'rgba(184, 135, 58, 0.3)';
+  ctx.shadowBlur = 12;
+  ctx.fillText('READII', W/2, 130);
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = 'rgba(250, 248, 243, 0.75)';
+  ctx.font = 'italic 24px Georgia, serif';
+  ctx.fillText('Read British', W/2, 170);
+
+  ctx.strokeStyle = 'rgba(184, 135, 58, 0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(W/2 - 80, 200);
+  ctx.lineTo(W/2 + 80, 200);
+  ctx.stroke();
+
   if (playerName) {
     ctx.fillStyle = '#FAF8F3';
     ctx.font = '700 56px Georgia, serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(playerName, W/2, 200);
+    ctx.fillText(playerName, W/2, 280);
 
     ctx.fillStyle = 'rgba(250, 248, 243, 0.6)';
-    ctx.font = '300 28px "Helvetica Neue", sans-serif';
-    ctx.fillText('reads', W/2, 250);
+    ctx.font = '300 26px "Helvetica Neue", sans-serif';
+    ctx.fillText('reads', W/2, 322);
   }
 
   ctx.fillStyle = '#FAF8F3';
-  ctx.font = 'italic 48px Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(article.title, W/2, 340);
+  ctx.font = 'italic 46px Georgia, serif';
+  ctx.fillText(article.title, W/2, 400);
 
-  // 字幕(简化版,跟着进度滚动)
+  // 字幕
   renderClipKaraoke(ctx, article, elapsed, totalDuration, W, H);
-
-  // 右下角 Brand + Slogan (v11.6 新增)
-  ctx.textAlign = 'right';
-  ctx.fillStyle = 'rgba(184, 135, 58, 0.85)';
-  ctx.font = '700 32px "Helvetica Neue", sans-serif';
-  ctx.fillText('READII', W - 40, H - 70);
-
-  ctx.fillStyle = 'rgba(250, 248, 243, 0.7)';
-  ctx.font = '300 22px Georgia, serif';
-  ctx.fillText('Read British', W - 40, H - 40);
 }
 
 function renderClipKaraoke(ctx, article, elapsed, totalDuration, W, H) {
-  // 简化:取整段文章,根据进度高亮"当前估算位置"
-  const fullText = article.full_text || article.segments.map(s => s.text).join(' ');
-  const progress = elapsed / totalDuration;
+  // v11.7 修复3: 基于 segments 的精准映射(不再用整篇线性进度)
+  // clipStartTime 是用户在完整视频上选的起点
+  const sourceElapsed = clipStartTime + elapsed;
 
-  const words = fullText.split(/\s+/);
-  const currentWordIdx = Math.floor(progress * words.length);
+  // 找出当前在哪个 segment
+  let cumulative = 0;
+  let activeSegIdx = 0;
+  let activeSegProgress = 0;
 
-  // 显示上下文窗口(当前词前后各 8 个词)
-  const start = Math.max(0, currentWordIdx - 8);
-  const end = Math.min(words.length, currentWordIdx + 8);
-  const contextWords = words.slice(start, end);
+  for (let i = 0; i < segments.length; i++) {
+    const rec = segmentRecordings[i];
+    if (!rec) continue;
+
+    const segDuration = rec.duration;
+
+    if (sourceElapsed >= cumulative && sourceElapsed < cumulative + segDuration) {
+      activeSegIdx = i;
+      activeSegProgress = (sourceElapsed - cumulative) / segDuration;
+      break;
+    }
+
+    cumulative += segDuration;
+    if (i === segments.length - 1) {
+      // 已经到最后了
+      activeSegIdx = i;
+      activeSegProgress = 1;
+    }
+  }
+
+  const segment = segments[activeSegIdx];
+  if (!segment) return;
+
+  const words = segment.text.split(/\s+/).filter(w => w.length > 0);
+  const currentWordIdx = Math.floor(activeSegProgress * words.length);
 
   ctx.font = 'italic 700 56px Georgia, serif';
   ctx.textAlign = 'center';
 
   const maxWidth = W - 160;
-  const lines = wrapTextIntoLines(ctx, contextWords.join(' '), maxWidth);
+  const lines = wrapTextIntoLines(ctx, segment.text, maxWidth);
 
   const lineHeight = 78;
   const totalHeight = lines.length * lineHeight;
@@ -4355,17 +4398,16 @@ function renderClipKaraoke(ctx, article, elapsed, totalDuration, W, H) {
 
     lineWords.forEach(word => {
       const wordWidth = ctx.measureText(word + ' ').width;
-      const absoluteWordIdx = start + wordCounter;
 
       ctx.save();
       ctx.textAlign = 'left';
 
-      if (absoluteWordIdx === currentWordIdx) {
+      if (wordCounter === currentWordIdx) {
         ctx.shadowColor = 'rgba(184, 135, 58, 0.8)';
         ctx.shadowBlur = 20;
         ctx.fillStyle = '#FFD68C';
         ctx.fillText(word, x, lineY);
-      } else if (absoluteWordIdx < currentWordIdx) {
+      } else if (wordCounter < currentWordIdx) {
         ctx.fillStyle = 'rgba(250, 248, 243, 0.85)';
         ctx.fillText(word, x, lineY);
       } else {
