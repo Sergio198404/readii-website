@@ -417,10 +417,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <!-- Transition: Pass 1 → Pass 2 -->
   <div class="screen" id="screenTransition12">
     <div class="transition-page">
-      <div style="font-size:48px;margin-bottom:14px">📖</div>
-      <h2>Nice reading!</h2>
-      <p class="transition-stats" id="trans12Stats">You read 12 sentences</p>
-      <p class="transition-sub">Now let's work on the key British pronunciation words from this text.</p>
+      <div style="font-size:48px;margin-bottom:14px">🎧</div>
+      <h2>Lovely listening.</h2>
+      <p class="transition-stats" id="trans12Stats">You listened to 12 sentences</p>
+      <p class="transition-sub">Now let's decode the British subtext — what the English really mean.</p>
       <div id="trans12Quiz"></div>
       <button class="btn-start" id="btnStartPass2" onclick="startPass2()">Start pronunciation drills →</button>
     </div>
@@ -1343,7 +1343,7 @@ function finishPass1() {
 
   showScreen('Transition12');
   document.getElementById('trans12Stats').textContent =
-    `You read ${segments.length} sentences · +${xp} XP`;
+    `You listened to ${segments.length} sentences · +${xp} XP`;
 
   if (decodeQuestions.length > 0) {
     decodeIdx = 0;
