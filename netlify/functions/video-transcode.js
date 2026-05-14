@@ -105,6 +105,28 @@ exports.handler = async (event) => {
       .update({ mp4_path: mp4Path, mp4_url: mp4PublicUrl })
       .eq('id', videoId);
 
+    // v12: 转码完成后,如果已有用户邮箱且未发送,自动触发邮件
+    const { data: updatedVideo } = await supabase
+      .from('pretotype_videos')
+      .select('user_email, email_status')
+      .eq('id', videoId)
+      .single();
+
+    if (updatedVideo?.user_email && updatedVideo?.email_status !== 'sent') {
+      try {
+        await fetch(`https://readii.co.uk/.netlify/functions/send-video-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            videoId: videoId,
+            userEmail: updatedVideo.user_email
+          })
+        });
+      } catch (e) {
+        console.warn('Auto-email trigger failed:', e);
+      }
+    }
+
     // Cleanup temp files
     try { fs.unlinkSync(inputPath); } catch (e) {}
     try { fs.unlinkSync(outputPath); } catch (e) {}
