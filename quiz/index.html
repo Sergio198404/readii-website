@@ -58,6 +58,25 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .char-count{text-align:right;font-size:11px;color:var(--muted);margin-top:4px}
 .length-hint{font-size:11px;color:var(--yellow);text-align:right;margin-top:2px;font-weight:600}
 .paste-hint{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6;text-align:center}
+
+/* Library (v10) */
+.library-header{text-align:center;margin-bottom:20px}
+.lib-sub-label{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.library-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);line-height:1.3;padding:0 10px}
+.library-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.lib-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .2s;text-align:left}
+.lib-card:hover,.lib-card:active{border-color:var(--gold);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.lib-card-tag{display:inline-block;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.lib-card-title{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.lib-card-meta{font-size:11px;color:var(--muted);margin-bottom:8px}
+.lib-card-desc{font-family:var(--serif);font-size:13px;line-height:1.5;color:var(--ink);font-style:italic;opacity:.8}
+.library-footer{text-align:center;font-size:11px;color:var(--muted);margin-top:8px;margin-bottom:20px}
+.byoc-toggle{margin-top:16px}
+.byoc-toggle summary{font-size:13px;color:var(--muted);text-align:center;cursor:pointer;padding:8px;list-style:none;text-decoration:underline}
+.byoc-toggle summary::-webkit-details-marker{display:none}
+.byoc-toggle summary:hover{color:var(--ink)}
+.byoc-toggle[open] summary{margin-bottom:8px}
+
 .btn-start{display:block;width:100%;padding:16px;margin-top:18px;background:var(--forest);color:var(--white);border:none;border-radius:var(--radius);font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;transition:background .15s,transform .1s;letter-spacing:.03em}
 .btn-start:hover{background:var(--forest-light);transform:translateY(-1px)}
 .btn-start:active{transform:none}
@@ -109,6 +128,23 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .btn-record.recording{background:var(--red);animation:pulse-rec 1.2s infinite}
 @keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(211,47,47,.3)}50%{box-shadow:0 0 0 16px rgba(211,47,47,0)}}
 .record-hint{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+
+/* Pass 1 Listen-along (v10.1) */
+.listen-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.listen-progress-fill{height:100%;width:0%;background:linear-gradient(90deg, var(--forest), var(--forest-light));border-radius:2px;transition:width .3s linear}
+.listen-status{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:12px;color:var(--muted)}
+.listen-status #listenStatusText{font-weight:600;color:var(--forest)}
+.listen-article-view{max-height:50vh}
+.listen-controls{display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+
+/* Decode the Britishness (v10.1) */
+.decode-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:22px 20px;margin:20px 0;text-align:left;box-shadow:var(--shadow)}
+.decode-label{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.decode-context{font-family:var(--serif);font-size:14px;color:var(--muted);font-style:italic;border-left:3px solid var(--gold);padding:6px 0 6px 12px;margin-bottom:14px;line-height:1.5}
+.decode-question{font-size:16px;font-weight:700;line-height:1.4;margin-bottom:16px;color:var(--ink)}
+.decode-complete{text-align:center;padding:14px 0}
+.decode-score{font-size:14px;color:var(--green);font-weight:700}
+.decode-next{margin-top:14px;width:100%}
 
 /* Transition pages */
 .transition-page{text-align:center;padding:48px 20px 32px}
@@ -278,15 +314,28 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
   <div class="lives-bar" id="livesBar"></div>
 
-  <!-- Paste -->
-  <div class="screen active" id="screenPaste">
-    <div class="paste-box">
-      <textarea id="inputText" placeholder="Paste any English text here… (up to ~800 words)" maxlength="5000"></textarea>
-      <div class="char-count"><span id="charCount">0</span> / 5,000</div>
-      <p class="length-hint" id="lengthHint" style="display:none"></p>
+  <!-- Library: Article Selection -->
+  <div class="screen active" id="screenLibrary">
+    <div class="library-header">
+      <p class="lib-sub-label">TODAY'S CURATED READING</p>
+      <h2 class="library-title">Pick a piece. Read aloud. Feel English.</h2>
     </div>
-    <p class="paste-hint">Three passes: read, drill, perform. We'll guide your British pronunciation.</p>
-    <button class="btn-start" id="btnStart" disabled>Start reading →</button>
+
+    <div class="library-grid" id="libraryGrid"></div>
+
+    <p class="library-footer">
+      3 pieces curated · New articles every Monday
+    </p>
+
+    <details class="byoc-toggle">
+      <summary>Or paste your own text →</summary>
+      <div class="paste-box" style="margin-top:14px">
+        <textarea id="inputText" placeholder="Paste any English text here…" maxlength="5000"></textarea>
+        <div class="char-count"><span id="charCount">0</span> / 5,000</div>
+        <p class="length-hint" id="lengthHint" style="display:none"></p>
+      </div>
+      <button class="btn-start" id="btnStart" disabled style="margin-top:12px">Start reading →</button>
+    </details>
   </div>
 
   <!-- Loading -->
@@ -298,29 +347,36 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
   </div>
 
-  <!-- Pass 1: First Read -->
+  <!-- Pass 1: Listen-along (v10.1) -->
   <div class="screen" id="screenPass1">
     <div class="pass-header">
-      <div class="pass-badge pass1-badge">Pass 1 of 3</div>
-      <h2 class="pass-title">First Read</h2>
-      <p class="pass-sub">Read each sentence aloud. Don't worry about mistakes — just read.</p>
+      <div class="pass-badge pass1-badge">Pass 1 of 3 · Listen Along</div>
+      <h2 class="pass-title" id="pass1ArticleTitle">Article Title</h2>
+      <p class="pass-sub">Listen to Daisy read it in British accent. Follow the words.</p>
     </div>
-    <div class="seg-progress"><div class="seg-progress-fill" id="pass1Progress"></div></div>
-    <div class="session-meta">
-      <span class="seg-num" id="pass1Num">1 of 12</span>
-      <span class="seg-xp" id="xpDisplay">+ 0 XP</span>
+
+    <!-- Audio progress -->
+    <div class="listen-progress">
+      <div class="listen-progress-fill" id="listenProgressFill"></div>
     </div>
-    <div class="article-view" id="pass1Article"></div>
-    <div class="segment-controls" id="pass1Controls">
-      <div class="seg-actions">
-        <button class="btn-listen" onclick="listenSegment(1)">▶ Listen</button>
-        <button class="btn-listen" onclick="listenSegment(0.6)">🐢 Slow</button>
-      </div>
-      <div class="center-mic">
-        <button class="btn-record" id="btnRecord" onclick="togglePass1Recording()">🎤</button>
-        <p class="record-hint" id="recordHint">Tap to read this sentence</p>
-      </div>
+    <div class="listen-status">
+      <span id="listenStatusText">▶ Playing...</span>
+      <span id="listenSegmentNum">1 / 13</span>
     </div>
+
+    <!-- Article view with sentence highlighting -->
+    <div class="article-view listen-article-view" id="pass1Article"></div>
+
+    <!-- Controls -->
+    <div class="listen-controls">
+      <button class="btn-listen" id="listenPlayPause" onclick="toggleListenPlayback()">⏸ Pause</button>
+      <button class="btn-listen" onclick="restartListenSegment()">↻ Replay this</button>
+      <button class="btn-listen" onclick="skipToNextSegment()">↘ Next</button>
+    </div>
+
+    <button class="btn-start" id="listenContinueBtn" onclick="finishPass1()" style="display:none;margin-top:16px">
+      Continue to decode →
+    </button>
   </div>
 
   <!-- Transition: Pass 1 → Pass 2 -->
@@ -474,6 +530,251 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
 <script>
 // ═════════════════════════════════════════════════════
+// CURATED ARTICLES DATA (v10)
+// ═════════════════════════════════════════════════════
+const SUPABASE_PROJECT_REF = 'bltfljdgjxhcmbfduert';
+const STORAGE_BASE = `https://${SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public`;
+
+const ARTICLES_DATA = {
+  'apology': {
+    id: 'apology',
+    title: 'The Apology',
+    tag: 'Daily Life',
+    description: '"I apologise to objects. Last Tuesday, I bumped into a chair…"',
+    estimated_minutes: 5,
+    word_count: 240,
+    audio_url: `${STORAGE_BASE}/article-audio/apology.mp3`,
+    full_text: `There is a thing the English do, and after a year of living here, I have started doing it too.\n\nI apologise to objects.\n\nLast Tuesday, I bumped into a chair in a café. Not a person. A chair. Wooden, motionless, entirely innocent. And what did I say?\n\n"Sorry."\n\nOut loud. With feeling. The chair, naturally, said nothing back, which I have decided to interpret as passive aggression on its part.\n\nIt gets worse. I apologise when other people bump into me. I apologise when I cannot hear what someone has said. I apologised, last week, to a pigeon that walked rather too close to my shoe. The pigeon, like the chair, did not respond.\n\nMy English friends find this entirely normal. "Quite," they say, when I bring it up, which is the English way of meaning absolutely nothing.\n\nI have come to believe that "sorry" in England is not really an apology. It is more like a verbal handshake. A way of saying: I see you, you see me, neither of us wants any trouble. Let us continue avoiding each other politely for the remainder of our lives.\n\nAnd honestly?\n\nI rather like it.`,
+    segments: [
+      { position: 1, audio_filename: 'apology-01.mp3', text: "There is a thing the English do, and after a year of living here, I have started doing it too." },
+      { position: 2, audio_filename: 'apology-02.mp3', text: "I apologise to objects." },
+      { position: 3, audio_filename: 'apology-03.mp3', text: "Last Tuesday, I bumped into a chair in a café. Not a person. A chair." },
+      { position: 4, audio_filename: 'apology-04.mp3', text: "Wooden, motionless, entirely innocent. And what did I say?" },
+      { position: 5, audio_filename: 'apology-05.mp3', text: "\"Sorry.\" Out loud. With feeling." },
+      { position: 6, audio_filename: 'apology-06.mp3', text: "The chair, naturally, said nothing back, which I have decided to interpret as passive aggression on its part." },
+      { position: 7, audio_filename: 'apology-07.mp3', text: "It gets worse. I apologise when other people bump into me. I apologise when I cannot hear what someone has said." },
+      { position: 8, audio_filename: 'apology-08.mp3', text: "I apologised, last week, to a pigeon that walked rather too close to my shoe. The pigeon, like the chair, did not respond." },
+      { position: 9, audio_filename: 'apology-09.mp3', text: "My English friends find this entirely normal. \"Quite,\" they say, when I bring it up, which is the English way of meaning absolutely nothing." },
+      { position: 10, audio_filename: 'apology-10.mp3', text: "I have come to believe that \"sorry\" in England is not really an apology. It is more like a verbal handshake." },
+      { position: 11, audio_filename: 'apology-11.mp3', text: "A way of saying: I see you, you see me, neither of us wants any trouble." },
+      { position: 12, audio_filename: 'apology-12.mp3', text: "Let us continue avoiding each other politely for the remainder of our lives." },
+      { position: 13, audio_filename: 'apology-13.mp3', text: "And honestly? I rather like it." }
+    ],
+    drill_words: [
+      { word: 'sorry', from_segment: 5, context_sentence: '"Sorry." Out loud. With feeling.', phonemes: 'S.O.R.EE', tip: "Round your lips for the O. Don't say 'sah-ree'.", body: "Short rounded O is the British signature.", feature: 'short O' },
+      { word: 'rather', from_segment: 8, context_sentence: 'a pigeon that walked rather too close to my shoe', phonemes: 'R.AH.TH.UH', tip: "Silent R at the end. Say 'rah-thuh'.", body: "Open mouth for AH, drop the final R.", feature: 'non-rhotic R' },
+      { word: 'café', from_segment: 3, context_sentence: 'I bumped into a chair in a café', phonemes: 'K.A.F.AY', tip: "Stress on first syllable: 'KAF-ay'.", body: "British keeps the original French stress pattern.", feature: 'stress pattern' },
+      { word: 'ordinary', from_segment: 4, context_sentence: 'Wooden, motionless, entirely innocent', phonemes: 'OR.D.UH.N.REE', tip: "Three syllables: 'OR-d\\'n-ree'.", body: "British drops a syllable Americans keep.", feature: 'compressed syllables' },
+      { word: 'absolutely', from_segment: 9, context_sentence: 'the English way of meaning absolutely nothing', phonemes: 'AB.S.UH.LOOT.LEE', tip: "Stress on 3rd: 'ab-suh-LOOT-lee'.", body: "Long OO with main stress on 'loot'.", feature: 'stress + long OO' },
+      { word: 'pigeon', from_segment: 8, context_sentence: 'I apologised, last week, to a pigeon', phonemes: 'P.I.J.UN', tip: "Soft G + schwa: 'PIJ-un'.", body: "Don't say 'pi-JEEN'.", feature: 'soft G' },
+      { word: 'naturally', from_segment: 6, context_sentence: 'The chair, naturally, said nothing back', phonemes: 'N.A.CH.UH.R.LEE', tip: "Say 'NACH-uh-r-lee', 4 syllables.", body: "Compressed but clear.", feature: 'compressed syllables' }
+    ],
+    decode_questions: [
+      {
+        question: "When the narrator's English friends say \"Quite,\" what do they really mean?",
+        context: "\"Quite,\" they say, when I bring it up...",
+        options: [
+          "I completely agree with you",
+          "I'm acknowledging what you said without committing to anything",
+          "I think you're wrong",
+          "I find this very funny"
+        ],
+        correct: 1,
+        explanation: "\"Quite\" as a one-word response is classic English non-committal agreement. It means 'I'm hearing you, but I'm not going to engage further.' The author explicitly calls this 'the English way of meaning absolutely nothing.'"
+      },
+      {
+        question: "The narrator says \"I rather like it\" at the end. What does this actually mean?",
+        context: "And honestly? I rather like it.",
+        options: [
+          "I slightly enjoy it",
+          "I'm undecided about it",
+          "I genuinely love it",
+          "I'm being sarcastic"
+        ],
+        correct: 2,
+        explanation: "'I rather like it' is peak English understatement. When an English person says 'I rather like X,' they almost always mean they love X deeply. Direct enthusiasm feels uncomfortable, so feelings are diluted with 'rather.'"
+      },
+      {
+        question: "The narrator describes saying sorry as \"a verbal handshake.\" What's the deeper cultural meaning?",
+        context: "\"Sorry\" in England is more like a verbal handshake.",
+        options: [
+          "A formal greeting between strangers",
+          "A way to start a real conversation",
+          "A polite signal: I see you, neither of us wants trouble",
+          "A sign of genuine remorse"
+        ],
+        correct: 2,
+        explanation: "The narrator captures the entire English social contract here. Saying 'sorry' isn't apology — it's social lubricant designed to avoid friction. The English say sorry to maintain polite distance, not to express regret."
+      }
+    ],
+    bgm_style: 'classical',
+    background_hint: 'london cafe wooden interior'
+  },
+
+  'seven-novembers': {
+    id: 'seven-novembers',
+    title: 'Seven Novembers',
+    tag: 'Reflection',
+    description: '"I have lived in London for seven Novembers now. I still do not understand…"',
+    estimated_minutes: 6,
+    word_count: 255,
+    audio_url: `${STORAGE_BASE}/article-audio/seven-novembers.mp3`,
+    full_text: `I have lived in London for seven Novembers now.\n\nBill Bryson once wrote that the English have a particular gift for making the appalling seem charming. He was, I think, referring to the weather. But it works for almost everything here.\n\nI still do not understand how anyone affords a house in this city. I still do not know where the sun goes between October and April. I still cannot tell you what an English person means when they say their weekend was "fine."\n\nBut here is what I have learned.\n\nI have learned that "interesting" is rarely a compliment. That "I'll bear it in mind" usually means I have already forgotten. That when someone says "we should get coffee sometime," they are not, in fact, suggesting coffee.\n\nI have learned to find a strange comfort in grey light. To expect rain in June. To carry an umbrella I will not use because opening it would feel, somehow, like making a fuss.\n\nI am not English. I will never be English. My accent slips. My silences are not quite the right length.\n\nBut after seven Novembers, I have started apologising to furniture. I have started saying "rather" without meaning to. And last week, when someone asked how I was, I said —\n\n"Not too bad, thanks."\n\nAnd meant it.`,
+    segments: [
+      { position: 1, audio_filename: 'seven-novembers-01.mp3', text: "I have lived in London for seven Novembers now." },
+      { position: 2, audio_filename: 'seven-novembers-02.mp3', text: "Bill Bryson once wrote that the English have a particular gift for making the appalling seem charming." },
+      { position: 3, audio_filename: 'seven-novembers-03.mp3', text: "He was, I think, referring to the weather. But it works for almost everything here." },
+      { position: 4, audio_filename: 'seven-novembers-04.mp3', text: "I still do not understand how anyone affords a house in this city." },
+      { position: 5, audio_filename: 'seven-novembers-05.mp3', text: "I still do not know where the sun goes between October and April." },
+      { position: 6, audio_filename: 'seven-novembers-06.mp3', text: "I still cannot tell you what an English person means when they say their weekend was \"fine.\"" },
+      { position: 7, audio_filename: 'seven-novembers-07.mp3', text: "But here is what I have learned." },
+      { position: 8, audio_filename: 'seven-novembers-08.mp3', text: "I have learned that \"interesting\" is rarely a compliment." },
+      { position: 9, audio_filename: 'seven-novembers-09.mp3', text: "That \"I'll bear it in mind\" usually means I have already forgotten." },
+      { position: 10, audio_filename: 'seven-novembers-10.mp3', text: "That when someone says \"we should get coffee sometime,\" they are not, in fact, suggesting coffee." },
+      { position: 11, audio_filename: 'seven-novembers-11.mp3', text: "I have learned to find a strange comfort in grey light. To expect rain in June." },
+      { position: 12, audio_filename: 'seven-novembers-12.mp3', text: "To carry an umbrella I will not use because opening it would feel, somehow, like making a fuss." },
+      { position: 13, audio_filename: 'seven-novembers-13.mp3', text: "I am not English. I will never be English. My accent slips. My silences are not quite the right length." },
+      { position: 14, audio_filename: 'seven-novembers-14.mp3', text: "But after seven Novembers, I have started apologising to furniture. I have started saying \"rather\" without meaning to." },
+      { position: 15, audio_filename: 'seven-novembers-15.mp3', text: "And last week, when someone asked how I was, I said —" },
+      { position: 16, audio_filename: 'seven-novembers-16.mp3', text: "\"Not too bad, thanks.\" And meant it." }
+    ],
+    drill_words: [
+      { word: 'november', from_segment: 1, context_sentence: 'I have lived in London for seven Novembers now', phonemes: 'N.UH.V.EM.B.UH', tip: "Non-rhotic ending: 'nuh-VEM-buh'.", body: "Drop the final R completely. Schwa ending.", feature: 'non-rhotic R' },
+      { word: 'weather', from_segment: 3, context_sentence: 'He was referring to the weather', phonemes: 'W.E.TH.UH', tip: "Voiced TH + silent R. Say 'WETH-uh'.", body: "Tongue between teeth, vibrate for voiced TH.", feature: 'voiced TH + non-rhotic' },
+      { word: 'umbrella', from_segment: 12, context_sentence: 'To carry an umbrella I will not use', phonemes: 'UM.B.R.EL.UH', tip: "Stress on 2nd: 'um-BRELL-uh'.", body: "Schwa start, strong middle, schwa end.", feature: 'stress pattern' },
+      { word: 'furniture', from_segment: 14, context_sentence: 'I have started apologising to furniture', phonemes: 'F.ER.N.I.CH.UH', tip: "Two silent Rs: 'FUR-ni-chuh'.", body: "British drops both R sounds here.", feature: 'double non-rhotic R' },
+      { word: 'accent', from_segment: 13, context_sentence: 'My accent slips', phonemes: 'AK.S.UNT', tip: "Stress on first: 'AK-sent' (UK).", body: "Not 'ak-SENT' (that's American).", feature: 'stress pattern' },
+      { word: 'rarely', from_segment: 8, context_sentence: '"interesting" is rarely a compliment', phonemes: 'RAIR.LEE', tip: "Long AIR: 'RAIR-lee'.", body: "Open mouth wider than 'really'.", feature: 'AIR diphthong' },
+      { word: 'fine', from_segment: 6, context_sentence: 'their weekend was "fine."', phonemes: 'F.AHY.N', tip: "Long I diphthong: 'fyne'.", body: "Don't shorten the I.", feature: 'diphthong' }
+    ],
+    decode_questions: [
+      {
+        question: "What does it usually mean when an English person describes their weekend as \"fine\"?",
+        context: "What an English person means when they say their weekend was \"fine.\"",
+        options: [
+          "It was genuinely good",
+          "Anywhere from 'okay' to 'I'm having a breakdown but won't tell you'",
+          "It was disappointing",
+          "It was extraordinary"
+        ],
+        correct: 1,
+        explanation: "\"Fine\" is the most ambiguous word in British English. Tone determines everything. \"It was FINE\" (with emphasis) often means it was not fine at all. The narrator points out you cannot decode this without knowing the speaker very well."
+      },
+      {
+        question: "When an English colleague says \"I'll bear it in mind,\" what's likely happening?",
+        context: "\"I'll bear it in mind\" usually means I have already forgotten.",
+        options: [
+          "They will carefully consider your suggestion",
+          "They will share it with their team",
+          "They have already mentally dismissed it",
+          "They need more time to decide"
+        ],
+        correct: 2,
+        explanation: "This is one of the most reliably deceptive English phrases. \"I'll bear it in mind\" is almost always a polite dismissal, not genuine consideration. English people who actually want to engage with your idea will ask follow-up questions."
+      },
+      {
+        question: "Why does the ending \"Not too bad, thanks\" carry such emotional weight?",
+        context: "\"Not too bad, thanks.\" And meant it.",
+        options: [
+          "It's a complaint disguised as a greeting",
+          "It signals that the narrator finally speaks English-style: warm feelings expressed through understatement",
+          "It means the narrator is still struggling",
+          "It's a formal response required in business settings"
+        ],
+        correct: 1,
+        explanation: "The English struggle to express positivity directly. \"Not too bad\" is one of the warmest casual responses many English people will give — saying \"brilliant\" or \"amazing\" feels uncomfortably enthusiastic. The narrator finally speaks the local emotional code, and means it."
+      }
+    ],
+    bgm_style: 'lofi',
+    background_hint: 'london rainy november grey'
+  },
+
+  'shop-closes-for-lunch': {
+    id: 'shop-closes-for-lunch',
+    title: 'The Shop That Closes for Lunch',
+    tag: 'Business & Life',
+    description: '"There is a bookshop near my flat in Marylebone that closes between one and two…"',
+    estimated_minutes: 6,
+    word_count: 258,
+    audio_url: `${STORAGE_BASE}/article-audio/shop-closes-for-lunch.mp3`,
+    full_text: `There is a bookshop near my flat in Marylebone that closes between one and two o'clock.\n\nI do not mean it gets busy at lunchtime. I mean it closes. A handwritten sign appears in the window: "Back at 2."\n\nFor the first six months, I found this infuriating. In London. A capital city. Closing the shop because the owner, presumably, wants a sandwich.\n\nThen, slowly, I came to admire it.\n\nThe shop is run by a woman in her sixties who has, as far as I can tell, no interest in scaling, no plan to franchise, and no ambition to be on Instagram. She knows her customers by name. She remembers what their daughters are reading. She orders three copies of a novel because she thinks three people might want it, and she is usually right.\n\nThere is a particular kind of British business that exists quietly in this way. It does not optimise. It does not pivot. It simply continues, year after year, doing one thing rather well, closing for lunch, and shutting altogether on Sundays because that is what Sundays are for.\n\nI sometimes think the rest of the world has lost something the English never quite gave up.\n\nThe bookshop, last I checked, has been there for thirty-one years.\n\nLong may it close for lunch.`,
+    segments: [
+      { position: 1, audio_filename: 'shop-closes-for-lunch-01.mp3', text: "There is a bookshop near my flat in Marylebone that closes between one and two o'clock." },
+      { position: 2, audio_filename: 'shop-closes-for-lunch-02.mp3', text: "I do not mean it gets busy at lunchtime. I mean it closes." },
+      { position: 3, audio_filename: 'shop-closes-for-lunch-03.mp3', text: "A handwritten sign appears in the window: \"Back at 2.\"" },
+      { position: 4, audio_filename: 'shop-closes-for-lunch-04.mp3', text: "For the first six months, I found this infuriating. In London. A capital city." },
+      { position: 5, audio_filename: 'shop-closes-for-lunch-05.mp3', text: "Closing the shop because the owner, presumably, wants a sandwich." },
+      { position: 6, audio_filename: 'shop-closes-for-lunch-06.mp3', text: "Then, slowly, I came to admire it." },
+      { position: 7, audio_filename: 'shop-closes-for-lunch-07.mp3', text: "The shop is run by a woman in her sixties who has, as far as I can tell, no interest in scaling, no plan to franchise, and no ambition to be on Instagram." },
+      { position: 8, audio_filename: 'shop-closes-for-lunch-08.mp3', text: "She knows her customers by name. She remembers what their daughters are reading." },
+      { position: 9, audio_filename: 'shop-closes-for-lunch-09.mp3', text: "She orders three copies of a novel because she thinks three people might want it, and she is usually right." },
+      { position: 10, audio_filename: 'shop-closes-for-lunch-10.mp3', text: "There is a particular kind of British business that exists quietly in this way." },
+      { position: 11, audio_filename: 'shop-closes-for-lunch-11.mp3', text: "It does not optimise. It does not pivot." },
+      { position: 12, audio_filename: 'shop-closes-for-lunch-12.mp3', text: "It simply continues, year after year, doing one thing rather well, closing for lunch, and shutting altogether on Sundays because that is what Sundays are for." },
+      { position: 13, audio_filename: 'shop-closes-for-lunch-13.mp3', text: "I sometimes think the rest of the world has lost something the English never quite gave up." },
+      { position: 14, audio_filename: 'shop-closes-for-lunch-14.mp3', text: "The bookshop, last I checked, has been there for thirty-one years." },
+      { position: 15, audio_filename: 'shop-closes-for-lunch-15.mp3', text: "Long may it close for lunch." }
+    ],
+    drill_words: [
+      { word: 'marylebone', from_segment: 1, context_sentence: 'There is a bookshop near my flat in Marylebone', phonemes: 'MAR.LEE.BUN', tip: "Tricky! Say 'MAR-lee-bun'. Silent E.", body: "London place name, 3 syllables.", feature: 'place name' },
+      { word: 'bookshop', from_segment: 1, context_sentence: 'There is a bookshop near my flat', phonemes: 'B.OOK.SH.OP', tip: "Compound stress: 'BOOK-shop'.", body: "First half stressed, like all British compounds.", feature: 'compound word' },
+      { word: 'daughters', from_segment: 8, context_sentence: 'She remembers what their daughters are reading', phonemes: 'D.OR.T.UHZ', tip: "Silent GH + non-rhotic: 'DOR-tuhz'.", body: "'augh' sounds like 'or'. Drop final R.", feature: 'silent letters' },
+      { word: 'franchise', from_segment: 7, context_sentence: 'no plan to franchise', phonemes: 'FR.AN.CH.AHYZ', tip: "Full diphthong: 'FRAN-chyze'.", body: "British keeps long I diphthong fully.", feature: 'long I' },
+      { word: 'altogether', from_segment: 12, context_sentence: 'shutting altogether on Sundays', phonemes: 'AWL.T.UH.GE.TH.UH', tip: "Long AW + silent R: 'AWL-tuh-geth-uh'.", body: "Round lips for AW, drop final R.", feature: 'long AW' },
+      { word: 'quietly', from_segment: 10, context_sentence: 'British business that exists quietly', phonemes: 'KW.AHY.UT.LEE', tip: "Tricky cluster: 'KWY-ut-lee'.", body: "Crisp K-W start.", feature: 'consonant cluster' },
+      { word: 'sundays', from_segment: 12, context_sentence: 'shutting altogether on Sundays', phonemes: 'S.UN.DAYZ', tip: "Stress on 'SUN': 'SUN-dayz'.", body: "Day name, first syllable stressed.", feature: 'stress pattern' }
+    ],
+    decode_questions: [
+      {
+        question: "What does \"presumably\" signal here?",
+        context: "Closing the shop because the owner, presumably, wants a sandwich.",
+        options: [
+          "Strong certainty about the reason",
+          "A mild, slightly amused critical assumption",
+          "Genuine confusion",
+          "Sympathy with the owner"
+        ],
+        correct: 1,
+        explanation: "\"Presumably\" lets the speaker imply something slightly mocking while sounding neutral. The English use it constantly to soften observations that might otherwise sound judgemental. Here it adds gentle irony to the narrator's frustration."
+      },
+      {
+        question: "When the narrator says the shop does \"one thing rather well,\" what's the real meaning?",
+        context: "Doing one thing rather well, closing for lunch...",
+        options: [
+          "Doing one thing acceptably",
+          "Doing one thing in a mediocre way",
+          "Doing one thing excellently (English understatement)",
+          "Doing one thing by accident"
+        ],
+        correct: 2,
+        explanation: "Like \"rather like it\" in The Apology, \"rather well\" almost always means \"excellently.\" The English dilute praise to avoid sounding boastful or overly emotional. Native English ears hear \"rather well\" and understand 'very well indeed.'"
+      },
+      {
+        question: "Why does the final line \"Long may it close for lunch\" sound so quintessentially English?",
+        context: "Long may it close for lunch.",
+        options: [
+          "It's a translation of a French toast",
+          "It's grand language (like 'Long may she reign') applied affectionately to something small and ordinary",
+          "It's a religious blessing",
+          "It's a business slogan"
+        ],
+        correct: 1,
+        explanation: "\"Long may it...\" is a quintessentially British construction echoing royal blessings like \"Long may she reign.\" Applied to a tiny bookshop's lunch break, it becomes warm, ironic, and uniquely English — the use of grand language for small, beloved things is peak British humour."
+      }
+    ],
+    bgm_style: 'cinematic',
+    background_hint: 'london independent bookshop warm wood'
+  }
+};
+
+// Article golden quotes (for video output)
+const ARTICLE_QUOTES = {
+  'apology': 'And honestly? I rather like it.',
+  'seven-novembers': 'Not too bad, thanks. And meant it.',
+  'shop-closes-for-lunch': 'Long may it close for lunch.'
+};
+
+// ═════════════════════════════════════════════════════
 // CONFIG
 // ═════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://bltfljdgjxhcmbfduert.supabase.co';
@@ -491,6 +792,24 @@ const COOLDOWN_KEY = 'readii_cooldown';
 const MAX_LIVES = 15;
 
 let lives = parseInt(localStorage.getItem(LIVES_KEY)) || MAX_LIVES;
+
+// v10 state
+let currentArticleId = null;
+let decodeQuestions = [];
+let decodeResults = [];
+let decodeIdx = 0;
+let pass1Score = null;  // { totalDrillWords, matched, percent }
+let pass3Score = null;  // { totalDrillWords, matched, percent }
+
+// MediaRecorder + video state (used in Module 6)
+let userRecordingBlob = null;
+let userRecordingUrl = null;
+let videoBlob = null;
+let videoUrl = null;
+let videoMediaRecorder = null;
+let videoCanvas = null;
+let videoCtx = null;
+let wordTimestamps = []; // { word, time } during Pass 3 for karaoke
 
 // Three-pass state
 let currentPass = 1;
@@ -560,6 +879,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Render library cards
+  renderLibrary();
+
   track('page_view', { referrer: document.referrer, challenge: slug || null });
   const lastVisit = localStorage.getItem('readii_last_visit');
   if (lastVisit) {
@@ -613,6 +935,55 @@ function startCooldown() {
   localStorage.setItem(COOLDOWN_KEY, endsAt.toString());
   showNoLivesModal(endsAt);
 }
+
+// ═════════════════════════════════════════════════════
+// LIBRARY (v10)
+// ═════════════════════════════════════════════════════
+function renderLibrary() {
+  const grid = document.getElementById('libraryGrid');
+  if (!grid) return;
+  grid.innerHTML = Object.values(ARTICLES_DATA).map(article => `
+    <article class="lib-card" onclick="selectArticle('${article.id}')">
+      <div class="lib-card-tag">${article.tag}</div>
+      <h3 class="lib-card-title">${escapeHtml(article.title)}</h3>
+      <p class="lib-card-meta">${article.estimated_minutes} min · ${article.word_count} words</p>
+      <p class="lib-card-desc">${escapeHtml(article.description)}</p>
+    </article>
+  `).join('');
+}
+
+function selectArticle(articleId) {
+  const article = ARTICLES_DATA[articleId];
+  if (!article) return;
+
+  currentArticleId = articleId;
+  segments = article.segments;
+  drillWords = article.drill_words;
+  decodeQuestions = article.decode_questions || [];
+  // Keep quizCards as fallback for old challenge invites
+  quizCards = [];
+
+  // Reset state
+  currentPass = 1;
+  segIdx = 0;
+  drillIdx = 0;
+  decodeIdx = 0;
+  xp = 0;
+  pass1Transcript = [];
+  drillResults = [];
+  decodeResults = [];
+  fullReadTranscript = '';
+  fullReadStartTime = null;
+  userStoppedPass3 = false;
+  transAnswered = false;
+  pass1Score = null;
+  pass3Score = null;
+  updateXP();
+
+  track('article_selected', { article_id: articleId });
+  startPass1();
+}
+
 function checkCooldown() {
   const endsAt = parseInt(localStorage.getItem(COOLDOWN_KEY));
   if (!endsAt) return;
@@ -659,6 +1030,7 @@ function showScreen(name) {
 document.getElementById('btnStart')?.addEventListener('click', async () => {
   const sourceText = document.getElementById('inputText').value.trim();
   if (sourceText.length < 30) return;
+  track('byoc_used', { chars: sourceText.length });  // v10
   track('paste_submit', { chars: sourceText.length });
   showScreen('Loading');
 
@@ -691,82 +1063,217 @@ document.getElementById('btnStart')?.addEventListener('click', async () => {
   } catch (err) {
     console.error(err);
     toast(err.message || 'Generation failed, try again');
-    showScreen('Paste');
+    showScreen('Library');
   }
 });
 
 // ═════════════════════════════════════════════════════
 // PASS 1: FIRST READ
 // ═════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
+// PASS 1: LISTEN-ALONG (v10.1)
+// ═════════════════════════════════════════════════════
+let listenAudio = null;
+let listenCurrentSegment = 0;
+let listenIsPaused = false;
+let listenFinished = false;
+
 function startPass1() {
   currentPass = 1;
   segIdx = 0;
+  listenCurrentSegment = 0;
+  listenIsPaused = false;
+  listenFinished = false;
+
   showScreen('Pass1');
-  showPass1Segment();
+
+  // Set article title
+  const article = ARTICLES_DATA[currentArticleId];
+  if (article) {
+    document.getElementById('pass1ArticleTitle').textContent = article.title;
+  }
+
+  renderListenArticleView();
+  document.getElementById('listenContinueBtn').style.display = 'none';
+  document.getElementById('listenSegmentNum').textContent = `1 / ${segments.length}`;
+
+  // Start playing first segment after a short delay
+  setTimeout(() => playSegmentAudio(0), 500);
 }
 
-function showPass1Segment() {
-  renderArticleView();
-  document.getElementById('pass1Num').textContent = `${segIdx + 1} of ${segments.length}`;
-  const pct = (segIdx / segments.length) * 100;
-  document.getElementById('pass1Progress').style.width = pct + '%';
-  document.getElementById('recordHint').textContent = 'Tap to read this sentence';
-  document.getElementById('btnRecord').classList.remove('recording');
-  document.getElementById('pass1Controls').style.display = 'block';
-  track('pass1_segment_shown', { segment_idx: segIdx });
-}
-
-function renderArticleView() {
+function renderListenArticleView() {
   const container = document.getElementById('pass1Article');
   if (!container) return;
+
   container.innerHTML = segments.map((seg, i) => {
     let cls = 'article-segment';
     let prefix = '';
-    if (i === segIdx) cls += ' seg-active';
-    else if (i < segIdx) { cls += ' seg-done'; prefix = '<span class="seg-check">✓ </span>'; }
+    if (i === listenCurrentSegment) cls += ' seg-active';
+    else if (i < listenCurrentSegment) { cls += ' seg-done'; prefix = '<span class="seg-check">✓ </span>'; }
     else cls += ' seg-upcoming';
     return `<div class="${cls}" id="seg-${i}">${prefix}${escapeHtml(seg.text)}</div>`;
   }).join('');
-  const active = document.getElementById(`seg-${segIdx}`);
+
+  const active = document.getElementById(`seg-${listenCurrentSegment}`);
   if (active && active.scrollIntoView) {
     active.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+
+  document.getElementById('listenSegmentNum').textContent =
+    `${listenCurrentSegment + 1} / ${segments.length}`;
+
+  const pct = (listenCurrentSegment / segments.length) * 100;
+  document.getElementById('listenProgressFill').style.width = pct + '%';
 }
 
-function togglePass1Recording() {
-  startContextualRecording({
-    btn: document.getElementById('btnRecord'),
-    hint: document.getElementById('recordHint'),
-    hintIdle: 'Tap to read this sentence',
-    hintRecording: 'Recording… tap to stop',
-    timeoutMs: 15000,
-    onResult: (alts) => pass1RecordingDone(alts[0].transcript || ''),
+function playSegmentAudio(segmentIdx) {
+  if (segmentIdx >= segments.length) {
+    listenFinishedHandler();
+    return;
+  }
+
+  listenCurrentSegment = segmentIdx;
+  renderListenArticleView();
+
+  const segment = segments[segmentIdx];
+  if (!segment || !segment.audio_filename) {
+    // No audio file → fallback to Web Speech
+    speakPhrase(segment ? segment.text : '', 0.95);
+    setTimeout(() => {
+      if (!listenIsPaused) playSegmentAudio(segmentIdx + 1);
+    }, Math.max(2000, (segment ? segment.text.length * 60 : 2000)));
+    return;
+  }
+
+  // Play from Supabase Storage
+  const url = `${STORAGE_BASE}/article-audio/${segment.audio_filename}`;
+
+  if (listenAudio) {
+    listenAudio.pause();
+    listenAudio = null;
+  }
+
+  listenAudio = new Audio(url);
+
+  listenAudio.onended = () => {
+    if (listenIsPaused || listenFinished) return;
+    // Small pause between segments
+    setTimeout(() => {
+      if (!listenIsPaused && !listenFinished) {
+        playSegmentAudio(segmentIdx + 1);
+      }
+    }, 200);
+  };
+
+  listenAudio.onerror = () => {
+    console.warn(`Audio failed for segment ${segmentIdx + 1}, falling back to TTS`);
+    // Fallback to Web Speech for this segment
+    speakPhrase(segment.text, 0.95);
+    setTimeout(() => {
+      if (!listenIsPaused && !listenFinished) playSegmentAudio(segmentIdx + 1);
+    }, Math.max(2500, segment.text.length * 60));
+  };
+
+  listenAudio.play().catch(err => {
+    console.warn('Audio play failed:', err);
+  });
+
+  document.getElementById('listenStatusText').textContent = '▶ Playing...';
+  document.getElementById('listenPlayPause').textContent = '⏸ Pause';
+}
+
+function toggleListenPlayback() {
+  if (!listenAudio) {
+    // Resume from current segment
+    listenIsPaused = false;
+    playSegmentAudio(listenCurrentSegment);
+    return;
+  }
+
+  if (listenAudio.paused) {
+    listenIsPaused = false;
+    listenAudio.play();
+    document.getElementById('listenStatusText').textContent = '▶ Playing...';
+    document.getElementById('listenPlayPause').textContent = '⏸ Pause';
+  } else {
+    listenIsPaused = true;
+    listenAudio.pause();
+    document.getElementById('listenStatusText').textContent = '⏸ Paused';
+    document.getElementById('listenPlayPause').textContent = '▶ Resume';
+  }
+}
+
+function restartListenSegment() {
+  if (listenAudio) {
+    listenAudio.currentTime = 0;
+    listenAudio.play();
+    listenIsPaused = false;
+    document.getElementById('listenStatusText').textContent = '▶ Playing...';
+    document.getElementById('listenPlayPause').textContent = '⏸ Pause';
+  } else {
+    playSegmentAudio(listenCurrentSegment);
+  }
+}
+
+function skipToNextSegment() {
+  if (listenAudio) {
+    listenAudio.pause();
+    listenAudio = null;
+  }
+  playSegmentAudio(listenCurrentSegment + 1);
+}
+
+function listenFinishedHandler() {
+  listenFinished = true;
+  if (listenAudio) {
+    listenAudio.pause();
+    listenAudio = null;
+  }
+
+  // Mark all as done
+  listenCurrentSegment = segments.length;
+  renderListenArticleView();
+
+  document.getElementById('listenProgressFill').style.width = '100%';
+  document.getElementById('listenStatusText').textContent = '✓ Listen complete';
+  document.getElementById('listenContinueBtn').style.display = 'block';
+
+  bumpXP(20); // XP for completing Pass 1
+  playSound('correct');
+
+  track('pass1_listen_complete', {
+    article_id: currentArticleId,
+    segments_total: segments.length
   });
 }
 
-function pass1RecordingDone(transcript) {
-  pass1Transcript.push({ seg: segIdx, transcript });
-  bumpXP(5);
-  playSound('correct');
-
-  // Pop animation on the just-completed segment, then advance
-  const justDoneEl = document.getElementById(`seg-${segIdx}`);
-  if (justDoneEl) justDoneEl.classList.add('seg-complete-anim');
-
-  segIdx++;
-  if (segIdx >= segments.length) {
-    finishPass1();
-    return;
+// Stop audio when leaving Pass 1
+function stopListenAudio() {
+  if (listenAudio) {
+    listenAudio.pause();
+    listenAudio = null;
   }
-  showPass1Segment();
+  listenFinished = true;
 }
 
 function finishPass1() {
-  track('pass1_complete', { segments_count: segments.length, xp });
+  stopListenAudio();
+
+  track('pass1_complete', {
+    segments_count: segments.length,
+    xp,
+    article_id: currentArticleId
+  });
+
   showScreen('Transition12');
   document.getElementById('trans12Stats').textContent =
     `You read ${segments.length} sentences · +${xp} XP`;
-  if (quizCards.length > 0) {
+
+  if (decodeQuestions.length > 0) {
+    decodeIdx = 0;
+    decodeResults = [];
+    renderDecodeQuestion();
+  } else if (quizCards.length > 0) {
     renderTransitionQuiz(quizCards[0]);
   } else {
     document.getElementById('trans12Quiz').innerHTML = '';
@@ -826,6 +1333,98 @@ function answerTransQuiz(selected) {
     playSound('wrong');
   }
   track('transition_quiz_answer', { correct: isCorrect });
+}
+
+// ═════════════════════════════════════════════════════
+// DECODE THE BRITISHNESS (v10.1)
+// ═════════════════════════════════════════════════════
+function renderDecodeQuestion() {
+  if (decodeIdx >= decodeQuestions.length) {
+    const correctCount = decodeResults.filter(r => r.correct).length;
+    document.getElementById('trans12Quiz').innerHTML = `
+      <div class="decode-complete">
+        <p class="decode-score">
+          🇬🇧 Britishness decoded: ${correctCount} of ${decodeQuestions.length}
+        </p>
+      </div>
+    `;
+    track('decode_complete', {
+      total: decodeQuestions.length,
+      correct: correctCount,
+      article_id: currentArticleId
+    });
+    return;
+  }
+
+  const q = decodeQuestions[decodeIdx];
+
+  document.getElementById('trans12Quiz').innerHTML = `
+    <div class="decode-card">
+      <p class="decode-label">💡 DECODE THE BRITISHNESS · ${decodeIdx + 1} of ${decodeQuestions.length}</p>
+      <p class="decode-context">${escapeHtml(q.context)}</p>
+      <p class="decode-question">${escapeHtml(q.question)}</p>
+      <div class="recall-gate" id="decodeGate" onclick="revealDecodeOptions()">
+        <div class="recall-icon">💭</div>
+        <p class="recall-text">Think first</p>
+        <p class="recall-sub">what would an English person really mean?</p>
+        <div class="recall-btn">Show options</div>
+      </div>
+      <div class="options" id="decodeOptions" style="display:none">
+        ${q.options.map((opt, i) =>
+          `<button class="option" onclick="answerDecode(${i})">${escapeHtml(opt)}</button>`
+        ).join('')}
+      </div>
+      <div class="card-explain" id="decodeExplain"></div>
+      <button class="btn-start decode-next" id="decodeNextBtn" style="display:none" onclick="nextDecode()">Next →</button>
+    </div>
+  `;
+}
+
+function revealDecodeOptions() {
+  document.getElementById('decodeGate').style.display = 'none';
+  const opts = document.getElementById('decodeOptions');
+  opts.style.display = 'flex';
+  opts.classList.add('options-reveal');
+}
+
+function answerDecode(selected) {
+  const q = decodeQuestions[decodeIdx];
+  const isCorrect = selected === q.correct;
+
+  decodeResults.push({ question_idx: decodeIdx, correct: isCorrect });
+
+  const options = document.querySelectorAll('#decodeOptions .option');
+  options.forEach((opt, i) => {
+    opt.style.pointerEvents = 'none';
+    if (i === q.correct) opt.classList.add('correct');
+    else if (i === selected) opt.classList.add('wrong');
+    else opt.classList.add('dimmed');
+  });
+
+  const explain = document.getElementById('decodeExplain');
+  explain.textContent = q.explanation;
+  explain.classList.add('show', isCorrect ? 'correct-explain' : 'wrong-explain');
+
+  if (isCorrect) {
+    bumpXP(15);
+    playSound('correct');
+  } else {
+    deductLife();
+    playSound('wrong');
+  }
+
+  document.getElementById('decodeNextBtn').style.display = 'block';
+
+  track('decode_answer', {
+    article_id: currentArticleId,
+    question_idx: decodeIdx,
+    correct: isCorrect
+  });
+}
+
+function nextDecode() {
+  decodeIdx++;
+  renderDecodeQuestion();
 }
 
 // ═════════════════════════════════════════════════════
@@ -1404,7 +2003,7 @@ async function loadChallenge(slug) {
     showScreen('Invite');
   } catch {
     toast('Challenge not found');
-    showScreen('Paste');
+    showScreen('Library');
   }
 }
 
@@ -1463,7 +2062,14 @@ function submitEmail() {
 // ═════════════════════════════════════════════════════
 function resetAll() {
   segments = []; drillWords = []; quizCards = [];
+  decodeQuestions = []; decodeResults = []; decodeIdx = 0;  // v10
+  currentArticleId = null;  // v10
+  pass1Score = null; pass3Score = null;  // v10
+  userRecordingBlob = null; userRecordingUrl = null;  // v10
+  videoBlob = null; videoUrl = null;  // v10
+  wordTimestamps = [];  // v10
   currentPass = 1; segIdx = 0; drillIdx = 0;
+  stopListenAudio(); listenCurrentSegment = 0; listenIsPaused = false; listenFinished = false;  // v10.1
   xp = 0; pass1Transcript = []; drillResults = []; challengeData = null;
   fullReadTranscript = ''; fullReadStartTime = null; userStoppedPass3 = false;
   transAnswered = false; pendingAction = null;
@@ -1472,11 +2078,12 @@ function resetAll() {
   clearTimeout(recordingTimeout);
   document.getElementById('inputText').value = '';
   document.getElementById('charCount').textContent = '0';
-  document.getElementById('btnStart').disabled = true;
+  const btn = document.getElementById('btnStart');
+  if (btn) btn.disabled = true;
   document.getElementById('lengthHint').style.display = 'none';
   document.getElementById('linkBox').classList.remove('show');
   updateXP();
-  showScreen('Paste');
+  showScreen('Library');  // v10: changed from 'Paste'
   window.history.replaceState({}, '', window.location.pathname);
 }
 
