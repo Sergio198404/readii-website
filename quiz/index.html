@@ -348,6 +348,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .ec-pulse{width:40px;height:40px;background:var(--forest);border-radius:50%;margin:0 auto;animation:ec-pulse 1.5s infinite;opacity:.5}
 @keyframes ec-pulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.2);opacity:.9}}
 
+.ec-ready-indicator{text-align:center;padding:18px 0;background:var(--gold-pale);border-radius:10px;border:1px dashed var(--gold);margin-bottom:14px}
+.ec-ready-indicator .ec-stage-msg{color:var(--ink);font-size:15px;font-weight:600}
+.ec-ready-indicator .ec-stage-sub{color:var(--muted);font-size:12px;margin-top:6px}
+
 .ec-recording-indicator{text-align:center;padding:14px 0}
 .ec-mic-pulse{font-size:44px;animation:ec-mic-bounce 1s infinite}
 @keyframes ec-mic-bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
@@ -540,6 +544,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <button class="btn-listen" onclick="setDaisyRate(1.0)">▶ Normal</button>
         <button class="btn-listen" onclick="replayDaisySegment()">↻ Replay</button>
       </div>
+    </div>
+
+    <!-- Stage B.5: Daisy finished, ready check -->
+    <div class="ec-stage-panel" id="ecStageReadyCheck" style="display:none">
+      <div class="ec-ready-indicator">
+        <p class="ec-stage-msg">🎧 Listened. Ready to read it back?</p>
+        <p class="ec-stage-sub">Tap 🎤 when you're ready</p>
+      </div>
+      <div class="ec-stage-actions">
+        <button class="btn-listen" onclick="replayDaisyFromReadyCheck()">↻ Listen again</button>
+        <button class="btn-listen" onclick="replayDaisyFromReadyCheck(0.75)">🐢 Listen slowly</button>
+      </div>
+      <button class="btn-start" onclick="userReadyToRecord()" style="margin-top:14px">🎤 Start speaking</button>
     </div>
 
     <!-- Stage C: User recording -->
@@ -2075,7 +2092,7 @@ function startPass3() {
 }
 
 function hideAllStagePanels() {
-  ['ecStagePreStart', 'ecStageDaisy', 'ecStageRecording', 'ecStageReview', 'ecStageGenerating', 'ecStageResult']
+  ['ecStagePreStart', 'ecStageDaisy', 'ecStageReadyCheck', 'ecStageRecording', 'ecStageReview', 'ecStageGenerating', 'ecStageResult']
     .forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
@@ -2116,6 +2133,7 @@ function updateProgress() {
     switch (ecStage) {
       case 'prestart': badge.textContent = 'Ready'; break;
       case 'daisy': badge.textContent = '🎧 Listening'; break;
+      case 'readycheck': badge.textContent = '⏸ Ready?'; break;
       case 'recording': badge.textContent = '🎤 Recording'; break;
       case 'review': badge.textContent = '✓ Captured'; break;
       case 'generating': badge.textContent = '✨ Crafting'; break;
@@ -2160,7 +2178,8 @@ function playCurrentDaisySegment() {
 
   ecDaisyAudio.onended = () => {
     if (ecStage === 'daisy') {
-      setTimeout(enterRecordingStage, 400);
+      // v10.1 fix #1: 不再直接进入录音,先到 ready check 阶段
+      enterReadyCheckStage();
     }
   };
 
@@ -2192,6 +2211,48 @@ function replayDaisySegment() {
     playCurrentDaisySegment();
   }
   track('pass3_daisy_replayed', { segment_idx: ecCurrentSegmentIdx });
+}
+
+// Stage B.5: Ready check (v10.1 fix #1)
+function enterReadyCheckStage() {
+  ecStage = 'readycheck';
+  updateProgress();
+  showStagePanel('ecStageReadyCheck');
+
+  // 句子框样式回到中性
+  const boxEl = document.getElementById('ecSentenceBox');
+  if (boxEl) boxEl.className = 'ec-sentence-box';
+
+  const badge = document.getElementById('ecStageBadge');
+  if (badge) badge.textContent = '⏸ Ready?';
+
+  track('pass3_ready_check_shown', { segment_idx: ecCurrentSegmentIdx });
+
+  // 安全网:用户太久不动 → 30 秒后自动进入录音
+  ecMaxTimeoutHandle = setTimeout(() => {
+    if (ecStage === 'readycheck') {
+      enterRecordingStage();
+    }
+  }, 30000);
+}
+
+function replayDaisyFromReadyCheck(rate) {
+  if (ecMaxTimeoutHandle) {
+    clearTimeout(ecMaxTimeoutHandle);
+    ecMaxTimeoutHandle = null;
+  }
+
+  if (rate) ecDaisyPlaybackRate = rate;
+
+  enterDaisyStage();
+}
+
+function userReadyToRecord() {
+  if (ecMaxTimeoutHandle) {
+    clearTimeout(ecMaxTimeoutHandle);
+    ecMaxTimeoutHandle = null;
+  }
+  enterRecordingStage();
 }
 
 // Stage C: User records this segment
@@ -2532,8 +2593,8 @@ async function mixWithBGM(userBuffer) {
   bgmSource.loop = true;
   const bgmGain = offline.createGain();
   bgmGain.gain.setValueAtTime(0, 0);
-  bgmGain.gain.linearRampToValueAtTime(0.15, 1);
-  bgmGain.gain.setValueAtTime(0.15, Math.max(0, userDuration - 1.5));
+  bgmGain.gain.linearRampToValueAtTime(0.08, 1); // fade in 1 sec, peak 8%
+  bgmGain.gain.setValueAtTime(0.08, Math.max(0, userDuration - 1.5));
   bgmGain.gain.linearRampToValueAtTime(0, userDuration);
   bgmSource.connect(bgmGain);
   bgmGain.connect(offline.destination);
@@ -2807,37 +2868,104 @@ function preloadBGM() {
     .catch(err => console.warn('BGM preload failed:', err));
 }
 
-function downloadVideo() {
-  if (!videoBlob || !videoUrl) { toast('Video not ready yet'); return; }
-  const a = document.createElement('a');
-  a.href = videoUrl;
-  const name = (playerName || 'readii').toLowerCase().replace(/[^a-z0-9]/g, '-');
-  a.download = `${name}-reading.webm`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  track('video_downloaded', { article_id: currentArticleId });
-}
+async function downloadVideo() {
+  if (!videoBlob || !videoUrl) {
+    toast('Video not ready');
+    return;
+  }
 
-async function shareVideo() {
-  if (!videoBlob) { toast('Video not ready yet'); return; }
-  const file = new File([videoBlob], 'readii-reading.webm', { type: videoBlob.type || 'video/webm' });
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+  // 检测是否手机 + Web Share API 支持
+  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  const file = new File([videoBlob], `readii-reading.webm`, { type: videoBlob.type });
+
+  // 手机端 + 支持文件分享 → 走系统分享(可保存到相册)
+  if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
       await navigator.share({
         files: [file],
-        title: 'My Readii reading',
-        text: 'I read this in a British accent on Readii'
+        title: 'My Readii Reading',
       });
-      track('video_shared', { method: 'native', article_id: currentArticleId });
+      track('video_saved_via_share', { article_id: currentArticleId });
       return;
-    } catch (err) {
-      if (err.name === 'AbortError') return;
-      console.warn('Native share failed:', err);
+    } catch (e) {
+      if (e.name === 'AbortError') return; // 用户取消了
+      console.warn('Share failed, falling back to download:', e);
     }
   }
-  downloadVideo();
-  toast('Saved — share it from your gallery');
+
+  // Fallback:浏览器下载
+  const a = document.createElement('a');
+  a.href = videoUrl;
+  const name = (playerName || 'reader').replace(/[^a-zA-Z0-9-]/g, '');
+  const articleSlug = currentArticleId || 'reading';
+  a.download = `readii-${name}-${articleSlug}.webm`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  if (isMobile) {
+    toast('Saved to Downloads. Open from Files app to share.');
+  } else {
+    toast('Video downloaded. Use mobile to share to social media.');
+  }
+  track('video_downloaded', { article_id: currentArticleId, mobile: isMobile });
+}
+
+async function shareVideo() {
+  if (!videoBlob || !videoUrl) {
+    toast('Video not ready');
+    return;
+  }
+
+  // 第一步:总是复制文案到剪贴板(无论后续走哪条路径)
+  const article = ARTICLES_DATA[currentArticleId];
+  const title = article ? article.title : 'British reading';
+  const shareText =
+    `🇬🇧 I just read "${title}" on Readii.\n\n` +
+    `Three-pass British pronunciation reader — try it: readii.co.uk/quiz`;
+
+  try {
+    await navigator.clipboard.writeText(shareText);
+    toast('Text copied to clipboard');
+  } catch (e) {
+    console.warn('Clipboard copy failed:', e);
+  }
+
+  // 第二步:尝试系统分享(带文件)
+  const file = new File([videoBlob], `readii-${currentArticleId || 'reading'}.webm`, { type: videoBlob.type });
+
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: `My Readii Reading: ${title}`,
+        text: shareText
+      });
+      track('video_shared', { article_id: currentArticleId });
+      return;
+    }
+  } catch (e) {
+    if (e.name === 'AbortError') return; // 用户主动取消
+    console.warn('Share file failed, trying text only:', e);
+  }
+
+  // 第三步 fallback:只分享文字(没有文件)
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: `My Readii Reading: ${title}`,
+        text: shareText,
+        url: 'https://readii.co.uk/quiz'
+      });
+      track('text_shared', { article_id: currentArticleId });
+      return;
+    }
+  } catch (e) {
+    if (e.name === 'AbortError') return;
+  }
+
+  // 第四步 最终 fallback:剪贴板已复制 + 提示用户手动下载视频
+  toast('Text copied! Tap Download to save the video.');
 }
 
 // ═════════════════════════════════════════════════════
