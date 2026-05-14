@@ -4592,10 +4592,13 @@ async function uploadSingleVideo({ blob, videoType, articleId, playerName }) {
     contentType: blob.type || 'video/webm'
   });
 
+  // 提取干净的 MIME(去掉 ;codecs=xxx 部分)—— bucket allowed_mime_types 是精确匹配
+  const cleanMime = (blob.type || 'video/webm').split(';')[0].trim();
+
   const { data: uploadData, error: uploadError } = await sb.storage
     .from('user-videos')
     .upload(storagePath, blob, {
-      contentType: blob.type || 'video/webm',
+      contentType: cleanMime,
       upsert: false
     });
 
