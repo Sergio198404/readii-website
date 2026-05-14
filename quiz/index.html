@@ -395,6 +395,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .video-section video{width:100%;max-width:320px;border-radius:var(--radius);background:#000;display:block;margin:0 auto}
 .video-actions{display:flex;gap:8px;justify-content:center;margin-top:12px}
 .video-hint{font-size:12px;color:var(--muted);margin-top:8px}
+.video-format-note{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;font-style:italic}
+
+/* Shared preview screen (v10.1) */
+.shared-header{text-align:center;margin-bottom:20px}
+.shared-from{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px}
+.shared-title-creator{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.shared-by-text{font-size:13px;color:var(--muted)}
+.shared-article-card{background:var(--white);border:2px solid var(--gold);border-radius:var(--radius);padding:22px 20px;margin-bottom:18px;box-shadow:var(--shadow)}
+.shared-article-tag{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.shared-article-title{font-family:var(--serif);font-size:24px;font-weight:700;margin-bottom:10px;color:var(--ink)}
+.shared-article-preview{font-family:var(--serif);font-size:14px;line-height:1.6;color:var(--ink);font-style:italic;opacity:.85}
+.shared-try-btn{width:100%;margin-top:12px}
+.shared-skip{display:block;background:none;border:none;color:var(--muted);font-size:12px;margin:14px auto 0;text-decoration:underline;cursor:pointer}
 
 @media(max-width:540px){
   .container{padding:12px 12px 32px}
@@ -427,6 +440,33 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   </div>
 
   <div class="lives-bar" id="livesBar"></div>
+
+  <!-- Shared preview screen (v10.1) -->
+  <div class="screen" id="screenSharedPreview">
+    <div class="shared-header">
+      <p class="shared-from">📬 A reading shared with you</p>
+      <h2 class="shared-title-creator" id="sharedCreatorName">A friend</h2>
+      <p class="shared-by-text">picked this for you</p>
+    </div>
+
+    <div class="shared-article-card">
+      <p class="shared-article-tag" id="sharedArticleTag">Daily Life</p>
+      <h3 class="shared-article-title" id="sharedArticleTitle">Article Title</h3>
+      <p class="shared-article-preview" id="sharedArticlePreview">First three sentences preview...</p>
+    </div>
+
+    <button class="btn-start" onclick="listenToSharedSample()">
+      🎧 Hear how it sounds
+    </button>
+
+    <button class="btn-listen shared-try-btn" onclick="acceptSharedAndStart()">
+      Read it yourself →
+    </button>
+
+    <button class="shared-skip" onclick="dismissSharedAndGoLibrary()">
+      Browse other readings instead
+    </button>
+  </div>
 
   <!-- Library: Article Selection -->
   <div class="screen active" id="screenLibrary">
@@ -642,6 +682,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <button class="btn-listen" onclick="shareVideo()">📤 Share</button>
         </div>
         <p class="video-hint">Save to phone · Send to friends · Post on Xiaohongshu</p>
+        <p class="video-format-note">
+          💡 Tip for iOS: After downloading, open the Files app →
+          tap the video → Share → save or send to friends
+        </p>
       </div>
 
       <button class="btn-start" onclick="showRoundComplete()" style="margin-top:14px">See my results →</button>
@@ -1132,7 +1176,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const params = new URLSearchParams(window.location.search);
   const slug = params.get('c');
-  if (slug) loadChallenge(slug);
+  const sharedArticleId = params.get('a');  // v10.1: 分享文章 id
+  if (slug || sharedArticleId) handleSharedEntry(slug, sharedArticleId);
 
   const ta = document.getElementById('inputText');
   const btn = document.getElementById('btnStart');
@@ -1619,7 +1664,7 @@ function finishPass1() {
 
   showScreen('Transition12');
   document.getElementById('trans12Stats').textContent =
-    `You listened to ${segments.length} sentences · +${xp} XP`;
+    `You listened to all ${segments.length} sentences ✓`;
 
   if (decodeQuestions.length > 0) {
     decodeIdx = 0;
@@ -1760,6 +1805,8 @@ function answerDecode(selected) {
   if (isCorrect) {
     bumpXP(15);
     playSound('correct');
+    triggerConfetti();  // v10.1: 烟花庆祝
+    setTimeout(() => playSound('correct'), 200);  // 双音效更欢快
   } else {
     deductLife();
     playSound('wrong');
@@ -2165,8 +2212,8 @@ function finishPass2() {
   const totalEchoed = drillResults.length;
   document.getElementById('trans23Stats').textContent =
     totalEchoed > 0
-      ? `You echoed ${totalEchoed} words · +${xp} XP`
-      : `+${xp} XP earned so far`;
+      ? `You echoed ${totalEchoed} words ✓`
+      : `Words explored ✓`;
 }
 
 // ═════════════════════════════════════════════════════
@@ -3185,22 +3232,31 @@ async function downloadVideo() {
     return;
   }
 
-  // 检测是否手机 + Web Share API 支持
-  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const isMobile = isIOS || isAndroid;
+
   const file = new File([videoBlob], `readii-reading.webm`, { type: videoBlob.type });
 
-  // 手机端 + 支持文件分享 → 走系统分享(可保存到相册)
+  // 移动端优先用 Web Share API
   if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
       await navigator.share({
         files: [file],
         title: 'My Readii Reading',
       });
-      track('video_saved_via_share', { article_id: currentArticleId });
+
+      // 不同平台不同提示
+      if (isIOS) {
+        toast('Tip: Save to Files → Share to WeChat / Photos');
+      } else {
+        toast('Saved! Find it in your share menu.');
+      }
+
+      track('video_saved_via_share', { article_id: currentArticleId, platform: isIOS ? 'ios' : 'android' });
       return;
     } catch (e) {
-      if (e.name === 'AbortError') return; // 用户取消了
-      console.warn('Share failed, falling back to download:', e);
+      if (e.name === 'AbortError') return;
     }
   }
 
@@ -3214,11 +3270,14 @@ async function downloadVideo() {
   a.click();
   document.body.removeChild(a);
 
-  if (isMobile) {
-    toast('Saved to Downloads. Open from Files app to share.');
+  if (isIOS) {
+    toast('Downloaded! Open Files app → tap video → Share to WeChat');
+  } else if (isAndroid) {
+    toast('Downloaded! Check your Downloads folder');
   } else {
-    toast('Video downloaded. Use mobile to share to social media.');
+    toast('Video saved. Use mobile to share to social media.');
   }
+
   track('video_downloaded', { article_id: currentArticleId, mobile: isMobile });
 }
 
@@ -3231,9 +3290,7 @@ async function shareVideo() {
   // 第一步:总是复制文案到剪贴板(无论后续走哪条路径)
   const article = ARTICLES_DATA[currentArticleId];
   const title = article ? article.title : 'British reading';
-  const shareText =
-    `🇬🇧 I just read "${title}" on Readii.\n\n` +
-    `Three-pass British pronunciation reader — try it: readii.co.uk/quiz`;
+  const shareText = buildShareText({ article, mode: 'video' });
 
   try {
     await navigator.clipboard.writeText(shareText);
@@ -3519,7 +3576,9 @@ function triggerConfetti() {
 // ROUND COMPLETE
 // ═════════════════════════════════════════════════════
 function showRoundComplete() {
-  document.getElementById('finalXP').textContent = xp;
+  // v10.1: 不再显示 XP 数字,bumpXP 内部累加保留
+  const finalXPEl = document.getElementById('finalXP');
+  if (finalXPEl && finalXPEl.parentElement) finalXPEl.parentElement.style.display = 'none';
 
   const nameBadge = document.getElementById('badgeName');
   if (playerName) { nameBadge.textContent = playerName; nameBadge.style.display = ''; }
@@ -3632,10 +3691,14 @@ async function createChallenge() {
     });
     const data = await resp.json();
     if (data.url) {
+      // v10.1: 链接带上文章 id,朋友点开可进 SharedPreview 作品预览
+      const shareUrl = currentArticleId
+        ? `${data.url}${data.url.includes('?') ? '&' : '?'}a=${currentArticleId}`
+        : data.url;
       const linkInput = document.getElementById('challengeLink');
-      linkInput.value = data.url;
+      linkInput.value = shareUrl;
       document.getElementById('linkBox').classList.add('show');
-      try { await navigator.clipboard.writeText(data.url); } catch {}
+      try { await navigator.clipboard.writeText(shareUrl); } catch {}
       track('challenge_created', { slug: data.slug, score: pct });
       toast('Challenge link ready!');
     } else {
@@ -3703,16 +3766,113 @@ function acceptChallenge() {
 }
 
 // ═════════════════════════════════════════════════════
+// SHARED ENTRY — 朋友点分享链接先看作品 (v10.1)
+// ═════════════════════════════════════════════════════
+let sharedContext = null;
+let sharedSampleAudio = null;
+
+async function handleSharedEntry(slug, articleId) {
+  let shareData = null;
+  if (slug) {
+    try {
+      const resp = await fetch(`/.netlify/functions/quiz-challenge?slug=${slug}`);
+      if (resp.ok) shareData = await resp.json();
+    } catch (e) {}
+  }
+
+  const aId = articleId || (shareData && shareData.article_id);
+
+  if (!aId || !ARTICLES_DATA[aId]) {
+    // 没有有效文章信息:有挑战数据则退回旧 Invite 流程,否则留在 Library
+    if (slug && shareData) loadChallenge(slug);
+    return;
+  }
+
+  showSharedPreview({
+    articleId: aId,
+    creatorName: (shareData && shareData.creator_name) || 'A friend',
+    challengeSlug: slug
+  });
+}
+
+function showSharedPreview({ articleId, creatorName, challengeSlug }) {
+  const article = ARTICLES_DATA[articleId];
+  if (!article) return;
+
+  sharedContext = { articleId, creatorName, challengeSlug };
+
+  document.getElementById('sharedCreatorName').textContent = creatorName || 'A friend';
+  document.getElementById('sharedArticleTag').textContent = article.tag;
+  document.getElementById('sharedArticleTitle').textContent = article.title;
+
+  const previewSentences = article.segments.slice(0, 3).map(s => s.text).join(' ');
+  document.getElementById('sharedArticlePreview').textContent = previewSentences;
+
+  showScreen('SharedPreview');
+  track('shared_preview_shown', { article_id: articleId, creator: creatorName });
+}
+
+function listenToSharedSample() {
+  if (!sharedContext) return;
+  const article = ARTICLES_DATA[sharedContext.articleId];
+  if (!article) return;
+
+  const firstSeg = article.segments[0];
+  if (!firstSeg || !firstSeg.audio_filename) return;
+
+  if (sharedSampleAudio) {
+    sharedSampleAudio.pause();
+    sharedSampleAudio = null;
+  }
+
+  const url = `${STORAGE_BASE}/article-audio/${firstSeg.audio_filename}`;
+  sharedSampleAudio = new Audio(url);
+  if (!IS_MOBILE) sharedSampleAudio.volume = globalVolume;
+  sharedSampleAudio.play().catch(err => console.warn('Sample play failed:', err));
+
+  track('shared_sample_played', { article_id: sharedContext.articleId });
+}
+
+function acceptSharedAndStart() {
+  if (sharedSampleAudio) sharedSampleAudio.pause();
+  if (!sharedContext) return;
+  track('shared_accepted', { article_id: sharedContext.articleId });
+  selectArticle(sharedContext.articleId);
+}
+
+function dismissSharedAndGoLibrary() {
+  if (sharedSampleAudio) sharedSampleAudio.pause();
+  track('shared_dismissed', sharedContext || {});
+  showScreen('Library');
+}
+
+// ═════════════════════════════════════════════════════
 // SHARE / EMAIL
 // ═════════════════════════════════════════════════════
+// v10.1: 作品口吻分享文案(去掉假分数 / 挑战口吻)
+function buildShareText({ article, mode, link }) {
+  const articleTitle = article ? article.title : 'a British English piece';
+  const playerLine = playerName ? `${playerName}'s reading` : 'My reading';
+
+  if (mode === 'video') {
+    return `🇬🇧 ${playerLine}: "${articleTitle}"\n\n` +
+      `Recorded on Readii — a British English reading studio.\n` +
+      `Try it: readii.co.uk/quiz`;
+  } else if (mode === 'challenge') {
+    return `🇬🇧 I just recorded my reading of "${articleTitle}" on Readii.\n\n` +
+      `Listen to my version + try it yourself:\n` +
+      `${link || (window.location.origin + '/quiz')}`;
+  } else {
+    return `🇬🇧 ${playerLine} on Readii — British English reading studio.\n\n` +
+      `readii.co.uk/quiz`;
+  }
+}
+
 function shareGeneric() {
   const link = document.getElementById('challengeLink')?.value;
-  const score = document.getElementById('ringScore')?.textContent || '??';
   if (link) {
-    const text =
-      `🇬🇧 I scored ${score} on a British English pronunciation quiz! Can you beat me?\n\n` +
-      `${link}\n\n` +
-      `Try it — paste any English text and test your British accent 🎤`;
+    const article = ARTICLES_DATA[currentArticleId];
+    const text = buildShareText({ article, mode: 'challenge', link });
     navigator.clipboard.writeText(text).then(() => toast('Copied! Paste to share'));
   } else {
     toast('Create a challenge first');
