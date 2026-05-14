@@ -177,6 +177,41 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .card-explain.correct-explain{background:var(--green-pale);color:#1b5e20}
 .card-explain.wrong-explain{background:var(--red-pale);color:#b71c1c}
 
+/* Pass 2 Echo (v10.1) — BoldVoice-style but non-judgmental */
+.echo-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:28px 22px;text-align:center;box-shadow:var(--shadow)}
+.echo-progress{font-size:11px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.echo-feature{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.echo-word{font-family:var(--serif);font-size:54px;font-weight:700;margin:6px 0 4px;color:var(--ink);letter-spacing:.01em;line-height:1.1}
+.echo-phonemes{font-family:monospace;font-size:18px;color:var(--gold);letter-spacing:3px;margin-bottom:14px;font-weight:600}
+.echo-tip{font-size:13px;line-height:1.6;margin:12px 0;padding:10px 14px;background:var(--gold-pale);border-left:3px solid var(--gold);border-radius:6px;text-align:left}
+.echo-context{font-size:12px;color:var(--muted);font-style:italic;margin:10px 0;padding:8px 12px;background:var(--bg);border-radius:6px;line-height:1.5;text-align:left}
+
+.echo-action-row{display:flex;gap:12px;justify-content:center;margin:18px 0 8px;align-items:center}
+.echo-listen-btn{padding:14px 24px;border:1.5px solid var(--forest);border-radius:10px;background:var(--white);font-size:14px;font-weight:700;cursor:pointer;color:var(--forest);font-family:var(--sans);transition:all .15s}
+.echo-listen-btn:hover{background:var(--forest);color:var(--white)}
+.echo-rec-btn{width:64px;height:64px;border-radius:50%;background:var(--forest);border:none;color:var(--white);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 4px 16px rgba(45,90,79,.25)}
+.echo-rec-btn:hover{transform:scale(1.05)}
+.echo-rec-btn.recording{background:var(--red);animation:pulse-rec 1.2s infinite}
+
+.echo-feedback{margin:14px 0;padding:14px;border-radius:10px;text-align:center;font-size:15px;line-height:1.5;display:none}
+.echo-feedback.show{display:block;animation:slide-up .25s ease-out}
+.echo-feedback.hit{background:var(--green-pale);color:#1b5e20;font-weight:600}
+.echo-feedback.partial{background:var(--blue-pale);color:#0d47a1}
+.echo-feedback.irrelevant{background:var(--yellow-pale);color:#5a4a1a}
+.echo-feedback.silent{background:var(--bg);color:var(--muted)}
+
+.echo-compare{display:none;margin:14px 0}
+.echo-compare.show{display:flex;gap:10px;justify-content:center}
+.echo-compare-btn{flex:1;max-width:140px;padding:10px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink)}
+.echo-compare-btn:hover{border-color:var(--gold)}
+.echo-compare-btn .compare-label{display:block;font-size:10px;color:var(--muted);margin-top:2px;font-weight:400}
+
+.echo-bottom{margin-top:16px;display:flex;gap:10px;justify-content:center}
+.echo-skip{font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline}
+.echo-skip:hover{color:var(--ink)}
+.echo-next-btn{padding:12px 24px;background:var(--forest);color:var(--white);border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+.echo-next-btn:hover{background:var(--forest-light)}
+
 /* Pass 2: Word Drill card */
 .drill-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:28px 22px;text-align:center;box-shadow:var(--shadow)}
 .drill-progress{font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
@@ -391,15 +426,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
   </div>
 
-  <!-- Pass 2: Word Drill -->
+  <!-- Pass 2: Echo (v10.1) -->
   <div class="screen" id="screenPass2">
     <div class="pass-header">
-      <div class="pass-badge pass2-badge">Pass 2 of 3</div>
-      <h2 class="pass-title">Word Drill</h2>
-      <p class="pass-sub">Practise the British pronunciation of key words.</p>
+      <div class="pass-badge pass2-badge">Pass 2 of 3 · Echo</div>
+      <h2 class="pass-title">Echo the words</h2>
+      <p class="pass-sub">Hear Daisy. Try it. Hear yourself. Feel the British rhythm.</p>
     </div>
     <div class="seg-progress"><div class="seg-progress-fill" id="pass2Progress"></div></div>
-    <div class="drill-container" id="drillContainer"></div>
+    <div class="echo-container" id="echoContainer"></div>
   </div>
 
   <!-- Transition: Pass 2 → Pass 3 -->
@@ -851,6 +886,7 @@ function isWeChatBrowser() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  checkDailyRefill();  // v10.1 fix: 每日自动回满
   renderLives();
   checkCooldown();
   primeTTS();
@@ -984,6 +1020,44 @@ function selectArticle(articleId) {
   startPass1();
 }
 
+// ═════════════════════════════════════════════════════
+// DAILY LIVES REFILL (v10.1 fix)
+// 如果距离上次回满超过 12 小时,自动恢复满血
+// ═════════════════════════════════════════════════════
+function checkDailyRefill() {
+  const REFILL_KEY = 'readii_last_full';
+  const lastFull = parseInt(localStorage.getItem(REFILL_KEY)) || 0;
+  const now = Date.now();
+  const HOURS_12 = 12 * 60 * 60 * 1000;
+
+  // 第一次访问 → 设置当前为基准
+  if (!lastFull) {
+    localStorage.setItem(REFILL_KEY, now.toString());
+    return;
+  }
+
+  // 间隔超过 12 小时 → 回满
+  if (now - lastFull >= HOURS_12 && lives < MAX_LIVES) {
+    const previousLives = lives;
+    lives = MAX_LIVES;
+    localStorage.setItem(LIVES_KEY, lives);
+    localStorage.setItem(REFILL_KEY, now.toString());
+    // 同时清掉冷却(如果有)
+    localStorage.removeItem(COOLDOWN_KEY);
+
+    track('lives_daily_refill', {
+      from: previousLives,
+      to: MAX_LIVES,
+      hours_since: Math.round((now - lastFull) / 3600000)
+    });
+  }
+
+  // 用户正在满血时,更新"最后满血时间"
+  if (lives === MAX_LIVES) {
+    localStorage.setItem(REFILL_KEY, now.toString());
+  }
+}
+
 function checkCooldown() {
   const endsAt = parseInt(localStorage.getItem(COOLDOWN_KEY));
   if (!endsAt) return;
@@ -1000,6 +1074,7 @@ function showNoLivesModal(endsAt) {
     if (remaining <= 0) {
       clearInterval(interval);
       lives = MAX_LIVES; localStorage.setItem(LIVES_KEY, lives); localStorage.removeItem(COOLDOWN_KEY);
+      localStorage.setItem('readii_last_full', Date.now().toString());  // v10.1 fix
       renderLives(); closeNoLivesModal(); return;
     }
     const m = Math.floor(remaining / 60000);
@@ -1013,6 +1088,7 @@ function emailSkipCooldown() {
   if (!email || !email.includes('@')) return toast('Please enter a valid email');
   track('email_submitted', { email, context: 'cooldown_skip' });
   lives = MAX_LIVES; localStorage.setItem(LIVES_KEY, lives); localStorage.removeItem(COOLDOWN_KEY);
+  localStorage.setItem('readii_last_full', Date.now().toString());  // v10.1 fix
   renderLives(); closeNoLivesModal(); toast('Lives restored!');
 }
 
@@ -1430,120 +1506,374 @@ function nextDecode() {
 // ═════════════════════════════════════════════════════
 // PASS 2: WORD DRILL
 // ═════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
+// PASS 2: ECHO (v10.1) — BoldVoice-style without judgment
+// ═════════════════════════════════════════════════════
+let echoUserRecording = null; // {blob, url} for last user attempt
+
 function startPass2() {
   currentPass = 2;
   drillIdx = 0;
   drillResults = [];
+
   if (drillWords.length === 0) {
-    // No drill words generated — skip straight to Pass 3
     finishPass2();
     return;
   }
+
   showScreen('Pass2');
-  showDrillWord();
+  showEchoWord();
 }
 
-function showDrillWord() {
-  if (drillIdx >= drillWords.length) { finishPass2(); return; }
+function showEchoWord() {
+  if (drillIdx >= drillWords.length) {
+    finishPass2();
+    return;
+  }
+
   const dw = drillWords[drillIdx];
+  echoUserRecording = null;
+
+  // Update progress bar
   document.getElementById('pass2Progress').style.width =
-    ((drillIdx) / drillWords.length * 100) + '%';
+    (drillIdx / drillWords.length * 100) + '%';
 
-  const phonemesHtml = dw.phonemes ? `<p class="drill-phonemes">${escapeHtml(dw.phonemes)}</p>` : '';
-  const contextHtml = dw.context_sentence
-    ? `<p class="drill-context">"${escapeHtml(dw.context_sentence)}"</p>`
-    : '';
+  document.getElementById('echoContainer').innerHTML = `
+    <div class="echo-card">
+      <p class="echo-progress">Word ${drillIdx + 1} of ${drillWords.length}</p>
+      <p class="echo-feature">${escapeHtml(dw.feature || 'pronunciation')}</p>
+      <p class="echo-word">${escapeHtml(dw.word)}</p>
+      <p class="echo-phonemes">${escapeHtml(dw.phonemes || '')}</p>
 
-  document.getElementById('drillContainer').innerHTML = `
-    <div class="drill-card">
-      <p class="drill-progress">Word ${drillIdx + 1} of ${drillWords.length}</p>
-      <p class="drill-feature">${escapeHtml(dw.feature || 'pronunciation')}</p>
-      <p class="drill-word">${escapeHtml(dw.word)}</p>
-      ${phonemesHtml}
-      ${contextHtml}
-      <p class="drill-tip">${escapeHtml(dw.tip || '')}</p>
-      <p class="drill-body">${escapeHtml(dw.body || '')}</p>
-      <div class="drill-actions">
-        <button class="btn-listen" onclick="playWordAudio('${escapeJs(dw.word)}')">▶ Hear it</button>
+      ${dw.tip ? `<p class="echo-tip">${escapeHtml(dw.tip)}</p>` : ''}
+      ${dw.context_sentence ? `<p class="echo-context">"${escapeHtml(dw.context_sentence)}"</p>` : ''}
+
+      <div class="echo-action-row">
+        <button class="echo-listen-btn" onclick="playWordAudio('${escapeJs(dw.word)}')">▶ Listen</button>
+        <button class="echo-rec-btn" id="echoRecBtn" onclick="recordEchoWord()">🎤</button>
       </div>
-      <button class="btn-record drill-rec-btn" id="drillRecBtn" onclick="recordDrillWord()">🎤</button>
-      <p class="drill-rec-hint" id="drillRecHint">Tap to try this word</p>
-      <div id="drillResultArea"></div>
-      <div class="drill-bottom" id="drillBottom">
-        <button class="drill-skip" onclick="skipDrillWord()">Skip →</button>
+
+      <div class="echo-feedback" id="echoFeedback"></div>
+
+      <div class="echo-compare" id="echoCompare">
+        <button class="echo-compare-btn" onclick="playUserEchoRecording()">
+          ▶ You
+          <span class="compare-label">your version</span>
+        </button>
+        <button class="echo-compare-btn" onclick="playWordAudio('${escapeJs(dw.word)}')">
+          ▶ Daisy
+          <span class="compare-label">the reference</span>
+        </button>
+      </div>
+
+      <div class="echo-bottom">
+        <button class="echo-skip" onclick="skipEchoWord()">Skip →</button>
+        <button class="echo-next-btn" id="echoNextBtn" style="display:none" onclick="nextEchoWord()">Next →</button>
       </div>
     </div>
   `;
-  // Auto-play the word once on entry
+
+  // Auto-play the word on entry
   setTimeout(() => playWordAudio(dw.word), 350);
-  track('drill_shown', { word: dw.word });
+  track('echo_shown', { word: dw.word, article_id: currentArticleId });
 }
 
-function recordDrillWord() {
+function recordEchoWord() {
   const word = drillWords[drillIdx].word;
-  startContextualRecording({
-    btn: document.getElementById('drillRecBtn'),
-    hint: document.getElementById('drillRecHint'),
-    hintIdle: 'Tap to try this word',
-    hintRecording: 'Recording… tap to stop',
-    timeoutMs: 4000,
-    onResult: (alts) => {
-      let matched = false;
-      for (const a of alts) {
-        if (checkWordMatch(word, a.transcript)) { matched = true; break; }
-      }
-      const resArea = document.getElementById('drillResultArea');
-      const bottomEl = document.getElementById('drillBottom');
-      if (matched) {
-        resArea.innerHTML = '<p class="drill-result-pass">✅ Sounds great!</p>';
-        playSound('correct');
-        bumpXP(10);
-        drillResults.push({ word, attempts: 1, passed: true });
-        bottomEl.innerHTML = `<button class="btn-start" onclick="nextDrillWord()">Next word →</button>`;
-      } else {
-        resArea.innerHTML = '<p class="drill-result-retry">Not quite — listen again and try to match the sound.</p>';
-        playSound('wrong');
-        bottomEl.innerHTML = `
-          <div class="drill-choice">
-            <button class="btn-listen" onclick="retryDrillWord()">🎤 Try again</button>
-            <button class="btn-start" onclick="nextDrillWord(false)">Next word →</button>
-          </div>
-          <button class="drill-skip" onclick="skipDrillWord()">Skip →</button>
-        `;
-      }
-      track('drill_attempt', { word, matched });
-    },
+
+  startEchoRecording({
+    btn: document.getElementById('echoRecBtn'),
+    timeoutMs: 5000,
+    onResult: (transcript, audioBlob, audioUrl) => {
+      // Save user's recording for compare button
+      echoUserRecording = { blob: audioBlob, url: audioUrl };
+
+      // Classify the attempt
+      const classification = classifyEchoAttempt(word, transcript);
+
+      // Track result
+      drillResults.push({
+        word,
+        transcript,
+        classification,
+        passed: classification === 'hit' || classification === 'partial'
+      });
+
+      // Show feedback based on classification
+      showEchoFeedback(classification);
+
+      track('echo_attempt', {
+        word,
+        classification,
+        article_id: currentArticleId
+      });
+    }
   });
 }
 
-function retryDrillWord() {
-  const word = drillWords[drillIdx].word;
-  playWordAudio(word);
-  // Restore mic UI then auto-start recording after a short beat
-  document.getElementById('drillResultArea').innerHTML = '';
-  document.getElementById('drillBottom').innerHTML =
-    `<button class="drill-skip" onclick="skipDrillWord()">Skip →</button>`;
-  setTimeout(() => recordDrillWord(), 1200);
+function classifyEchoAttempt(targetWord, transcript) {
+  if (!transcript || transcript.trim().length === 0) {
+    return 'silent';
+  }
+
+  const target = String(targetWord).toLowerCase().replace(/[^a-z]/g, '');
+  const got = String(transcript).toLowerCase().replace(/[^a-z]/g, '');
+
+  if (got.length < 2) return 'silent';
+
+  // Direct match
+  if (got === target) return 'hit';
+
+  // Word contains target or target contains word (allow trailing/leading sounds)
+  if (got.includes(target)) return 'hit';
+  if (target.includes(got) && got.length >= Math.max(2, target.length - 2)) return 'hit';
+
+  // Levenshtein distance
+  const dist = levenshtein(got, target);
+
+  if (dist <= 2) return 'hit';
+
+  // Partial: within 1/3 of target length OR within 4 edits for short words
+  const tolerance = Math.max(3, Math.floor(target.length / 3));
+  if (dist <= tolerance) return 'partial';
+
+  // Not related — user said something completely different
+  return 'irrelevant';
 }
 
-function nextDrillWord(passed) {
-  const word = drillWords[drillIdx].word;
-  // Record result if we haven't already (happens when user clicks Next after a missed attempt)
-  if (!drillResults.find(r => r.word === word)) {
-    drillResults.push({ word, attempts: 1, passed: passed === true });
+function showEchoFeedback(classification) {
+  const feedbackEl = document.getElementById('echoFeedback');
+  const compareEl = document.getElementById('echoCompare');
+  const nextBtn = document.getElementById('echoNextBtn');
+
+  if (!feedbackEl) return;
+
+  // Pool of feedback phrases (positive/neutral, never "wrong")
+  const hitPhrases = [
+    "Beautiful!",
+    "Exactly that.",
+    "Very Daisy.",
+    "Lovely rhythm.",
+    "That's it.",
+    "Spot on.",
+    "Sounds great!"
+  ];
+  const partialPhrases = [
+    "Nice rhythm — let's hear the next one.",
+    "Lovely effort — keep going.",
+    "Getting there — listen again if you want.",
+    "Good — try once more for the polish."
+  ];
+  const irrelevantPhrases = [
+    "Didn't quite catch that — give it another go?",
+    "Hmm, can you try the word again?",
+    "Let's hear that word once more."
+  ];
+  const silentPhrases = [
+    "Tap the mic and try the word.",
+    "Speak right after the beep."
+  ];
+
+  feedbackEl.className = `echo-feedback show ${classification}`;
+
+  switch (classification) {
+    case 'hit':
+      feedbackEl.textContent = hitPhrases[Math.floor(Math.random() * hitPhrases.length)];
+      playSound('correct');
+      bumpXP(10);
+      compareEl.classList.add('show');
+      nextBtn.style.display = 'inline-block';
+      break;
+
+    case 'partial':
+      feedbackEl.textContent = partialPhrases[Math.floor(Math.random() * partialPhrases.length)];
+      playSound('correct');
+      bumpXP(5);
+      compareEl.classList.add('show');
+      nextBtn.style.display = 'inline-block';
+      break;
+
+    case 'irrelevant':
+      feedbackEl.textContent = irrelevantPhrases[Math.floor(Math.random() * irrelevantPhrases.length)];
+      compareEl.classList.remove('show');
+      nextBtn.style.display = 'inline-block'; // can still proceed
+      break;
+
+    case 'silent':
+      feedbackEl.textContent = silentPhrases[Math.floor(Math.random() * silentPhrases.length)];
+      compareEl.classList.remove('show');
+      nextBtn.style.display = 'none'; // need to try again
+      break;
   }
-  drillIdx++;
-  showDrillWord();
 }
 
-function skipDrillWord() {
+function playUserEchoRecording() {
+  if (!echoUserRecording || !echoUserRecording.url) {
+    toast('No recording yet — try the mic first');
+    return;
+  }
+  const audio = new Audio(echoUserRecording.url);
+  audio.play().catch(err => {
+    console.warn('User recording playback failed:', err);
+  });
+}
+
+function nextEchoWord() {
+  drillIdx++;
+  showEchoWord();
+}
+
+function skipEchoWord() {
   const word = drillWords[drillIdx].word;
   if (!drillResults.find(r => r.word === word)) {
-    drillResults.push({ word, attempts: 0, passed: false });
+    drillResults.push({ word, classification: 'skipped', passed: false });
   }
-  track('drill_skipped', { word });
+  track('echo_skipped', { word, article_id: currentArticleId });
   drillIdx++;
-  showDrillWord();
+  showEchoWord();
+}
+
+// ═════════════════════════════════════════════════════
+// Echo recording — uses MediaRecorder + SpeechRecognition together
+// ═════════════════════════════════════════════════════
+let echoMediaRecorder = null;
+let echoMediaStream = null;
+
+async function startEchoRecording(opts) {
+  if (currentRecognition || echoMediaRecorder) {
+    // Already recording, stop it
+    try {
+      if (currentRecognition) currentRecognition.stop();
+      if (echoMediaRecorder && echoMediaRecorder.state !== 'inactive') echoMediaRecorder.stop();
+    } catch (e) {}
+    return;
+  }
+
+  if (isWeChatBrowser()) {
+    toast('Please open in Safari or Chrome to record');
+    return;
+  }
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    toast('Speech recognition needs Chrome');
+    return;
+  }
+
+  // Get mic for both MediaRecorder + SpeechRecognition
+  let micStream;
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true
+      }
+    });
+    echoMediaStream = micStream;
+  } catch (e) {
+    toast('Microphone access needed');
+    return;
+  }
+
+  // Setup MediaRecorder to capture user audio
+  const chunks = [];
+  try {
+    echoMediaRecorder = new MediaRecorder(micStream, {
+      mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : ''
+    });
+
+    echoMediaRecorder.ondataavailable = (e) => {
+      if (e.data && e.data.size > 0) chunks.push(e.data);
+    };
+  } catch (e) {
+    console.warn('MediaRecorder setup failed:', e);
+  }
+
+  // Setup SpeechRecognition for transcript
+  let resultFired = false;
+  let finalTranscript = '';
+
+  currentRecognition = new SR();
+  currentRecognition.lang = 'en-GB';
+  currentRecognition.continuous = false;
+  currentRecognition.interimResults = false;
+  currentRecognition.maxAlternatives = 3;
+
+  currentRecognition.onstart = () => {
+    opts.btn.classList.add('recording');
+    // Start MediaRecorder
+    if (echoMediaRecorder) {
+      try { echoMediaRecorder.start(); } catch (e) {}
+    }
+  };
+
+  currentRecognition.onresult = (e) => {
+    resultFired = true;
+    finalTranscript = e.results[0][0].transcript || '';
+    // Stop everything
+    setTimeout(() => stopEchoRecording(opts, finalTranscript, chunks), 200);
+  };
+
+  currentRecognition.onerror = (e) => {
+    if (e.error !== 'no-speech') {
+      console.warn('SR error:', e.error);
+    }
+    stopEchoRecording(opts, '', chunks);
+  };
+
+  currentRecognition.onend = () => {
+    opts.btn.classList.remove('recording');
+    if (!resultFired) {
+      stopEchoRecording(opts, '', chunks);
+    }
+  };
+
+  currentRecognition.start();
+
+  // Hard timeout
+  recordingTimeout = setTimeout(() => {
+    if (currentRecognition) {
+      try { currentRecognition.stop(); } catch (e) {}
+    }
+  }, opts.timeoutMs || 5000);
+}
+
+function stopEchoRecording(opts, transcript, chunks) {
+  clearTimeout(recordingTimeout);
+
+  opts.btn.classList.remove('recording');
+
+  // Stop MediaRecorder
+  if (echoMediaRecorder && echoMediaRecorder.state !== 'inactive') {
+    try {
+      echoMediaRecorder.stop();
+    } catch (e) {}
+  }
+
+  // Wait briefly for final data, then build blob
+  setTimeout(() => {
+    let audioBlob = null;
+    let audioUrl = null;
+
+    if (chunks.length > 0) {
+      try {
+        audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        audioUrl = URL.createObjectURL(audioBlob);
+      } catch (e) {
+        console.warn('Blob creation failed:', e);
+      }
+    }
+
+    // Clean up
+    if (echoMediaStream) {
+      echoMediaStream.getTracks().forEach(t => t.stop());
+      echoMediaStream = null;
+    }
+    echoMediaRecorder = null;
+    currentRecognition = null;
+
+    opts.onResult(transcript, audioBlob, audioUrl);
+  }, 200);
 }
 
 function finishPass2() {
@@ -1552,11 +1882,14 @@ function finishPass2() {
   track('pass2_complete', {
     words_total: drillWords.length,
     words_passed: passed,
-    words_skipped: drillResults.filter(r => r.attempts === 0).length,
+    article_id: currentArticleId
   });
   showScreen('Transition23');
+  const totalEchoed = drillResults.length;
   document.getElementById('trans23Stats').textContent =
-    `You drilled ${drillWords.length} words · ${passed} nailed it`;
+    totalEchoed > 0
+      ? `You echoed ${totalEchoed} words · +${xp} XP`
+      : `+${xp} XP earned so far`;
 }
 
 // ═════════════════════════════════════════════════════
@@ -1713,9 +2046,19 @@ function speakWord(word) { speakPhrase(String(word || ''), 0.75); }
 function playWordAudio(word) {
   const key = String(word || '').toLowerCase().replace(/[^a-z']/g, '');
   if (!key) return;
-  const audio = new Audio(`/audio/${key}.mp3`);
+
+  // v10.1: 优先使用 Supabase Storage word-audio bucket
+  const url = `${STORAGE_BASE}/word-audio/${key}.mp3`;
+  const audio = new Audio(url);
   let fellBack = false;
-  const fallback = () => { if (!fellBack) { fellBack = true; speakWord(key); } };
+
+  const fallback = () => {
+    if (!fellBack) {
+      fellBack = true;
+      speakWord(key);
+    }
+  };
+
   audio.onerror = fallback;
   const p = audio.play();
   if (p && typeof p.catch === 'function') p.catch(fallback);
