@@ -429,14 +429,24 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .clip-tool-label{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.1em;margin-bottom:4px}
 .clip-locked-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.1em;margin-bottom:8px}
 .clip-tool-hint,.clip-locked-hint{font-size:12px;color:var(--muted);margin-bottom:16px}
-.clip-time-display{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;font-size:14px;font-weight:700;color:var(--ink)}
-.clip-time-divider{color:var(--gold)}
-.clip-duration{font-weight:400;color:var(--muted);font-size:12px;margin-left:4px}
-.clip-slider-wrapper{position:relative;margin:14px 0;padding:8px 0}
-.clip-slider{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:3px;outline:none;cursor:pointer;margin:6px 0}
-.clip-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--white);box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.clip-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--white)}
-.clip-generate-btn{width:100%;margin-top:8px}
+/* Clip Player Wrapper (v11.6) */
+.clip-player-wrapper{position:relative;max-width:320px;margin:0 auto 14px}
+#clipSourceVideo{width:100%;aspect-ratio:9/16;border-radius:10px;background:#000;display:block}
+.clip-timeline-container{margin-top:12px;padding:12px;background:var(--white);border-radius:10px;border:1px solid var(--border)}
+.clip-play-btn{width:36px;height:36px;border-radius:50%;background:var(--forest);color:var(--white);border:none;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-right:10px}
+.clip-time-info{display:inline-block;vertical-align:middle;font-size:12px;color:var(--muted);font-weight:600}
+.clip-time-sep{margin:0 4px;opacity:0.5}
+.clip-timeline{position:relative;height:32px;margin:14px 0 10px;padding:14px 0;cursor:pointer;user-select:none;touch-action:none}
+.clip-track-bg{position:absolute;top:50%;left:0;right:0;height:6px;background:var(--border);border-radius:3px;transform:translateY(-50%)}
+.clip-track-selected{position:absolute;top:50%;height:6px;background:linear-gradient(90deg,#B8873A,#D4A55C);border-radius:3px;transform:translateY(-50%);pointer-events:none}
+.clip-track-playhead{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);border-radius:1px;pointer-events:none}
+.clip-handle{position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:var(--gold);border:3px solid var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.25);transform:translate(-50%,-50%);cursor:grab;touch-action:none;z-index:3}
+.clip-handle:active{cursor:grabbing;transform:translate(-50%,-50%) scale(1.15)}
+.clip-selection-info{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink);justify-content:center}
+.clip-selection-label{color:var(--muted);font-weight:400;font-size:12px}
+.clip-duration{color:var(--gold);font-weight:700;margin-left:4px}
+.clip-save-btn{width:100%}
+.clip-result-label{font-size:11px;font-weight:700;color:var(--green);letter-spacing:0.1em;margin-bottom:8px;text-align:center}
 #clipVideoPreview{width:100%;max-width:300px;height:auto;aspect-ratio:9/16;border-radius:10px;background:#000;display:block;margin:12px auto}
 
 /* Shared preview screen (v10.1) */
@@ -746,34 +756,52 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <p class="video-hint">Keep this for yourself — practice and progress</p>
       </div>
 
-      <!-- Viral cut tool (v11.5) -->
+      <!-- Viral cut tool (v11.6) — 内嵌时间轴交互 -->
       <div class="clip-tool-section" id="clipToolSection" style="display:none">
-        <p class="clip-tool-label">✨ VIRAL CUT TOOL · TOP 30% UNLOCKED</p>
-        <p class="clip-tool-hint">Pick any 15-30 seconds from your reading</p>
+        <p class="clip-tool-label">✨ CLIP TOOL · TOP 30% UNLOCKED</p>
+        <p class="clip-tool-hint">Drag the gold handles to pick your 15-30 seconds</p>
 
-        <div class="clip-controls">
-          <div class="clip-time-display">
-            <span id="clipStartLabel">0:00</span>
-            <span class="clip-time-divider">→</span>
-            <span id="clipEndLabel">0:15</span>
-            <span class="clip-duration" id="clipDuration">(15s)</span>
+        <!-- 自定义视频播放器 -->
+        <div class="clip-player-wrapper">
+          <video id="clipSourceVideo" playsinline preload="auto" muted></video>
+
+          <!-- 自定义时间轴 -->
+          <div class="clip-timeline-container">
+            <button class="clip-play-btn" id="clipPlayBtn" onclick="toggleClipPlayback()">▶</button>
+            <div class="clip-time-info">
+              <span id="clipCurrentTime">0:00</span>
+              <span class="clip-time-sep">/</span>
+              <span id="clipTotalTime">0:00</span>
+            </div>
+
+            <div class="clip-timeline" id="clipTimeline">
+              <div class="clip-track-bg"></div>
+              <div class="clip-track-selected" id="clipTrackSelected"></div>
+              <div class="clip-track-playhead" id="clipPlayhead"></div>
+              <div class="clip-handle clip-handle-start" id="clipHandleStart"></div>
+              <div class="clip-handle clip-handle-end" id="clipHandleEnd"></div>
+            </div>
+
+            <div class="clip-selection-info">
+              <span class="clip-selection-label">Selection:</span>
+              <span id="clipSelectionStart">0:00</span>
+              <span class="clip-time-sep">→</span>
+              <span id="clipSelectionEnd">0:15</span>
+              <span class="clip-duration" id="clipSelectionDuration">(15s)</span>
+            </div>
           </div>
 
-          <div class="clip-slider-wrapper">
-            <input type="range" id="clipStartSlider" class="clip-slider" min="0" max="100" value="0" step="0.1" />
-            <input type="range" id="clipEndSlider" class="clip-slider" min="0" max="100" value="25" step="0.1" />
-          </div>
-
-          <button class="btn-start clip-generate-btn" id="clipGenerateBtn" onclick="generateClipVideo()">
-            ✨ Create my viral cut
+          <button class="btn-start clip-save-btn" id="clipSaveBtn" onclick="saveClipFromTimeline()">
+            📌 Save this clip
           </button>
         </div>
 
         <div id="clipResultSection" style="display:none">
-          <p class="viral-label">YOUR VIRAL CUT</p>
+          <p class="clip-result-label">✓ YOUR CLIP IS READY</p>
           <video id="clipVideoPreview" controls playsinline preload="auto"></video>
           <div class="video-actions">
             <button class="btn-start" onclick="downloadClipVideo()">📤 Save & Share</button>
+            <button class="btn-listen" onclick="resetClipTool()">↻ Make another clip</button>
           </div>
         </div>
       </div>
@@ -3657,15 +3685,30 @@ function renderVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
   const W = canvas.width;
   const H = canvas.height;
 
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, '#2D5A4F');
-  grad.addColorStop(1, '#1a1a1a');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
+  // 背景(带文章图)
+  if (articleBackgroundImage) {
+    ctx.save();
+    ctx.filter = 'blur(15px)';
+    const scale = Math.max(W / articleBackgroundImage.width, H / articleBackgroundImage.height) * 1.2;
+    const sw = articleBackgroundImage.width * scale;
+    const sh = articleBackgroundImage.height * scale;
+    ctx.drawImage(articleBackgroundImage, (W - sw) / 2, (H - sh) / 2, sw, sh);
+    ctx.restore();
+
+    ctx.fillStyle = 'rgba(31, 77, 64, 0.7)';
+    ctx.fillRect(0, 0, W, H);
+  } else {
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#2D5A4F');
+    grad.addColorStop(1, '#1a1a1a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
 
   ctx.fillStyle = 'rgba(184, 135, 58, 0.05)';
   ctx.fillRect(0, 0, W, H);
 
+  // 顶部 Brand
   ctx.fillStyle = '#B8873A';
   ctx.font = '600 36px "Helvetica Neue", sans-serif';
   ctx.textAlign = 'center';
@@ -3692,13 +3735,18 @@ function renderVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
   ctx.font = 'italic 48px Georgia, serif';
   ctx.fillText(article.title, W/2, 380);
 
+  // 字幕(沿用之前的 renderKaraokeFromSegments)
   renderKaraokeFromSegments(ctx, article, elapsed, W, H);
 
-  // v11.5: 只显示品牌字标,不带 URL(避免平台限流)
-  ctx.fillStyle = 'rgba(184, 135, 58, 0.75)';
-  ctx.font = '600 28px "Helvetica Neue", sans-serif';
+  // v11.6: 底部 Brand + Slogan (替换原来的 readii.co.uk)
   ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(184, 135, 58, 0.85)';
+  ctx.font = '600 28px "Helvetica Neue", sans-serif';
   ctx.fillText('READII', W/2, H - 80);
+
+  ctx.fillStyle = 'rgba(250, 248, 243, 0.65)';
+  ctx.font = 'italic 22px Georgia, serif';
+  ctx.fillText('Read British', W/2, H - 45);
 }
 
 function renderKaraokeFromSegments(ctx, article, elapsed, W, H) {
@@ -3863,135 +3911,315 @@ function enterResultStage() {
 // VIRAL CUT TOOL — 用户自选截取 (v11.5)
 // ═════════════════════════════════════════════════════
 function setupClipTool() {
-  const videoEl = document.getElementById('videoPreview');
-  if (!videoEl) return;
+  const sourceVideo = document.getElementById('clipSourceVideo');
+  if (!sourceVideo) return;
 
-  const onMeta = () => {
-    fullVideoDuration = videoEl.duration;
+  // 设置视频源(用完整视频的 blob URL)
+  if (videoUrl) {
+    sourceVideo.src = videoUrl;
+    sourceVideo.load();
+  }
 
-    const startSlider = document.getElementById('clipStartSlider');
-    const endSlider = document.getElementById('clipEndSlider');
+  sourceVideo.addEventListener('loadedmetadata', () => {
+    fullVideoDuration = sourceVideo.duration;
 
-    if (!startSlider || !endSlider) return;
-
-    // 默认选 0 - 15 秒
+    // 初始化:默认选 0 到 min(15, total) 秒
     clipStartTime = 0;
     clipEndTime = Math.min(15, fullVideoDuration);
 
-    startSlider.max = Math.max(0, fullVideoDuration - 15);
-    endSlider.max = fullVideoDuration;
-    startSlider.value = 0;
-    endSlider.value = clipEndTime;
+    document.getElementById('clipTotalTime').textContent = formatTimeMMSS(fullVideoDuration);
 
-    updateClipDisplay();
+    updateTimelineUI();
+    setupTimelineDragging();
+  }, { once: true });
 
-    startSlider.oninput = (e) => {
-      clipStartTime = parseFloat(e.target.value);
-      // 确保 end - start 在 15-30 秒区间
-      if (clipEndTime - clipStartTime < 15) {
-        clipEndTime = Math.min(fullVideoDuration, clipStartTime + 15);
-        endSlider.value = clipEndTime;
-      } else if (clipEndTime - clipStartTime > 30) {
-        clipEndTime = clipStartTime + 30;
-        endSlider.value = clipEndTime;
-      }
-      updateClipDisplay();
-      videoEl.currentTime = clipStartTime;
-    };
+  sourceVideo.addEventListener('timeupdate', () => {
+    updatePlayheadPosition();
 
-    endSlider.oninput = (e) => {
-      clipEndTime = parseFloat(e.target.value);
-      // 确保 end - start 在 15-30 秒区间
-      if (clipEndTime - clipStartTime < 15) {
-        clipStartTime = Math.max(0, clipEndTime - 15);
-        startSlider.value = clipStartTime;
-      } else if (clipEndTime - clipStartTime > 30) {
-        clipStartTime = clipEndTime - 30;
-        startSlider.value = clipStartTime;
-      }
-      updateClipDisplay();
-      videoEl.currentTime = clipStartTime;
-    };
-  };
+    // 如果播放越过 end,自动跳回 start(循环播放选中区域)
+    if (sourceVideo.currentTime >= clipEndTime) {
+      sourceVideo.currentTime = clipStartTime;
+    }
 
-  videoEl.addEventListener('loadedmetadata', onMeta, { once: true });
+    document.getElementById('clipCurrentTime').textContent = formatTimeMMSS(sourceVideo.currentTime);
+  });
 
-  // 如果 metadata 已加载
-  if (videoEl.readyState >= 1) {
-    onMeta();
+  sourceVideo.addEventListener('pause', () => {
+    document.getElementById('clipPlayBtn').textContent = '▶';
+  });
+  sourceVideo.addEventListener('play', () => {
+    document.getElementById('clipPlayBtn').textContent = '⏸';
+  });
+
+  // 如果 metadata 已加载(快速重入)
+  if (sourceVideo.readyState >= 1) {
+    sourceVideo.dispatchEvent(new Event('loadedmetadata'));
   }
 }
 
-function updateClipDisplay() {
-  const formatTime = (s) => {
-    const min = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${min}:${sec.toString().padStart(2, '0')}`;
-  };
+function formatTimeMMSS(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
 
-  document.getElementById('clipStartLabel').textContent = formatTime(clipStartTime);
-  document.getElementById('clipEndLabel').textContent = formatTime(clipEndTime);
-  document.getElementById('clipDuration').textContent =
+function toggleClipPlayback() {
+  const video = document.getElementById('clipSourceVideo');
+  if (!video) return;
+
+  // 取消静音(让用户能听)
+  video.muted = false;
+
+  // 如果当前时间不在选区,跳到 start
+  if (video.currentTime < clipStartTime || video.currentTime >= clipEndTime) {
+    video.currentTime = clipStartTime;
+  }
+
+  if (video.paused) {
+    video.play().catch(err => console.warn('Play failed:', err));
+  } else {
+    video.pause();
+  }
+}
+
+function updateTimelineUI() {
+  const startPct = (clipStartTime / fullVideoDuration) * 100;
+  const endPct = (clipEndTime / fullVideoDuration) * 100;
+
+  const selected = document.getElementById('clipTrackSelected');
+  if (selected) {
+    selected.style.left = startPct + '%';
+    selected.style.width = (endPct - startPct) + '%';
+  }
+
+  const handleStart = document.getElementById('clipHandleStart');
+  if (handleStart) handleStart.style.left = startPct + '%';
+
+  const handleEnd = document.getElementById('clipHandleEnd');
+  if (handleEnd) handleEnd.style.left = endPct + '%';
+
+  document.getElementById('clipSelectionStart').textContent = formatTimeMMSS(clipStartTime);
+  document.getElementById('clipSelectionEnd').textContent = formatTimeMMSS(clipEndTime);
+  document.getElementById('clipSelectionDuration').textContent =
     `(${Math.round(clipEndTime - clipStartTime)}s)`;
 }
 
-async function generateClipVideo() {
-  const btn = document.getElementById('clipGenerateBtn');
+function updatePlayheadPosition() {
+  const video = document.getElementById('clipSourceVideo');
+  const playhead = document.getElementById('clipPlayhead');
+  if (!video || !playhead || !fullVideoDuration) return;
+
+  const pct = (video.currentTime / fullVideoDuration) * 100;
+  playhead.style.left = pct + '%';
+}
+
+function setupTimelineDragging() {
+  const timeline = document.getElementById('clipTimeline');
+  const handleStart = document.getElementById('clipHandleStart');
+  const handleEnd = document.getElementById('clipHandleEnd');
+
+  if (!timeline || !handleStart || !handleEnd) return;
+
+  const MIN_DURATION = 15;
+  const MAX_DURATION = 30;
+
+  let isDragging = null; // 'start' / 'end' / null
+
+  function getPositionFromEvent(e) {
+    const rect = timeline.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const x = clientX - rect.left;
+    const pct = Math.max(0, Math.min(1, x / rect.width));
+    return pct * fullVideoDuration;
+  }
+
+  function onDragMove(e) {
+    if (!isDragging || !fullVideoDuration) return;
+    e.preventDefault();
+
+    const time = getPositionFromEvent(e);
+
+    if (isDragging === 'start') {
+      let newStart = time;
+
+      // 确保 end - start 在 [15, 30] 区间内
+      if (clipEndTime - newStart < MIN_DURATION) {
+        if (newStart + MIN_DURATION <= fullVideoDuration) {
+          clipEndTime = newStart + MIN_DURATION;
+        } else {
+          newStart = fullVideoDuration - MIN_DURATION;
+          clipEndTime = fullVideoDuration;
+        }
+      } else if (clipEndTime - newStart > MAX_DURATION) {
+        clipEndTime = newStart + MAX_DURATION;
+      }
+
+      clipStartTime = Math.max(0, newStart);
+
+      const video = document.getElementById('clipSourceVideo');
+      if (video) video.currentTime = clipStartTime;
+
+    } else if (isDragging === 'end') {
+      let newEnd = time;
+
+      if (newEnd - clipStartTime < MIN_DURATION) {
+        if (newEnd - MIN_DURATION >= 0) {
+          clipStartTime = newEnd - MIN_DURATION;
+        } else {
+          clipStartTime = 0;
+          newEnd = MIN_DURATION;
+        }
+      } else if (newEnd - clipStartTime > MAX_DURATION) {
+        clipStartTime = newEnd - MAX_DURATION;
+      }
+
+      clipEndTime = Math.min(fullVideoDuration, newEnd);
+    }
+
+    updateTimelineUI();
+  }
+
+  function startDrag(type) {
+    return (e) => {
+      e.preventDefault();
+      isDragging = type;
+
+      const video = document.getElementById('clipSourceVideo');
+      if (video && !video.paused) video.pause();
+
+      document.addEventListener('mousemove', onDragMove);
+      document.addEventListener('touchmove', onDragMove, { passive: false });
+      document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchend', endDrag);
+    };
+  }
+
+  function endDrag() {
+    isDragging = null;
+    document.removeEventListener('mousemove', onDragMove);
+    document.removeEventListener('touchmove', onDragMove);
+    document.removeEventListener('mouseup', endDrag);
+    document.removeEventListener('touchend', endDrag);
+  }
+
+  handleStart.addEventListener('mousedown', startDrag('start'));
+  handleStart.addEventListener('touchstart', startDrag('start'), { passive: false });
+  handleEnd.addEventListener('mousedown', startDrag('end'));
+  handleEnd.addEventListener('touchstart', startDrag('end'), { passive: false });
+}
+
+async function saveClipFromTimeline() {
+  const btn = document.getElementById('clipSaveBtn');
   if (!btn) return;
 
   const article = ARTICLES_DATA[currentArticleId];
-  if (!videoBlob || !article) {
-    toast('Full video not ready');
+  if (!article || !ecAudioContext) {
+    toast('Cannot create clip — source data missing');
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = '✨ Creating...';
+  btn.textContent = '✨ Creating clip...';
 
   try {
-    const tempVideo = document.createElement('video');
-    tempVideo.src = videoUrl;
-    tempVideo.muted = false;
-    tempVideo.playsInline = true;
+    // 步骤 1:重新 stitch + mix 完整音频(更稳定,不依赖 tempVideo)
+    const stitchedBuffer = await stitchSegmentRecordings();
+    const mixedBuffer = await mixWithBGM(stitchedBuffer, false);
 
-    await new Promise((resolve) => {
-      tempVideo.addEventListener('loadedmetadata', resolve, { once: true });
-    });
+    // 步骤 2:从 mixedBuffer 切出选中区间
+    const clipBuffer = extractAudioBufferSlice(mixedBuffer, clipStartTime, clipEndTime);
 
-    const canvas = document.getElementById('videoCanvas');
-    canvas.width = 1080;
-    canvas.height = 1920;
-    const ctx = canvas.getContext('2d');
+    // 步骤 3:用 Canvas + clipBuffer 生成视频
+    await generateClipVideoFromBuffer(clipBuffer);
 
-    // 捕捉 tempVideo 的音频流
-    const sourceStream = tempVideo.captureStream();
-
-    // canvas 视频流
-    const canvasStream = canvas.captureStream(30);
-
-    // 合并:canvas 视频 + tempVideo 音频
-    const combinedStream = new MediaStream();
-    canvasStream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
-    sourceStream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
-
-    const mimeTypes = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
-    let mimeType = '';
-    for (const m of mimeTypes) {
-      if (MediaRecorder.isTypeSupported(m)) { mimeType = m; break; }
+    const clipPreview = document.getElementById('clipVideoPreview');
+    if (clipPreview && clipVideoUrl) {
+      clipPreview.src = clipVideoUrl;
+      clipPreview.load();
     }
+    document.getElementById('clipResultSection').style.display = 'block';
 
-    const chunks = [];
-    const recorder = new MediaRecorder(combinedStream, {
-      mimeType,
-      videoBitsPerSecond: 3000000,
-      audioBitsPerSecond: 192000
+    btn.disabled = false;
+    btn.textContent = '📌 Save this clip';
+
+    track('clip_saved', {
+      duration: clipEndTime - clipStartTime,
+      start: clipStartTime,
+      end: clipEndTime,
+      size_kb: clipVideoBlob ? Math.round(clipVideoBlob.size / 1024) : 0,
+      article_id: currentArticleId
     });
 
-    recorder.ondataavailable = (e) => {
-      if (e.data && e.data.size > 0) chunks.push(e.data);
-    };
+  } catch (e) {
+    console.error('Clip save failed:', e);
+    btn.disabled = false;
+    btn.textContent = '📌 Save this clip';
+    toast('Couldn\'t create clip — try again?');
+  }
+}
 
-    await new Promise((resolve, reject) => {
+function extractAudioBufferSlice(sourceBuffer, startSec, endSec) {
+  const sampleRate = sourceBuffer.sampleRate;
+  const startSample = Math.floor(startSec * sampleRate);
+  const endSample = Math.min(Math.floor(endSec * sampleRate), sourceBuffer.length);
+  const length = endSample - startSample;
+  const channels = sourceBuffer.numberOfChannels;
+
+  const audioCtx = ecAudioContext;
+  const slicedBuffer = audioCtx.createBuffer(channels, length, sampleRate);
+
+  for (let ch = 0; ch < channels; ch++) {
+    const sourceData = sourceBuffer.getChannelData(ch);
+    const targetData = slicedBuffer.getChannelData(ch);
+    for (let i = 0; i < length; i++) {
+      targetData[i] = sourceData[startSample + i];
+    }
+  }
+
+  return slicedBuffer;
+}
+
+async function generateClipVideoFromBuffer(audioBuffer) {
+  const article = ARTICLES_DATA[currentArticleId];
+  if (!article) throw new Error('No article data');
+
+  const canvas = document.getElementById('videoCanvas');
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const ctx = canvas.getContext('2d');
+
+  const audioCtx = ecAudioContext;
+  const audioSource = audioCtx.createBufferSource();
+  audioSource.buffer = audioBuffer;
+
+  const audioDest = audioCtx.createMediaStreamDestination();
+  audioSource.connect(audioDest);
+  audioSource.connect(audioCtx.destination);
+
+  const videoStream = canvas.captureStream(30);
+  const combinedStream = new MediaStream();
+  videoStream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
+  audioDest.stream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
+
+  const mimeTypes = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  let mimeType = '';
+  for (const m of mimeTypes) {
+    if (MediaRecorder.isTypeSupported(m)) { mimeType = m; break; }
+  }
+
+  return new Promise((resolve, reject) => {
+    try {
+      const recorder = new MediaRecorder(combinedStream, {
+        mimeType,
+        videoBitsPerSecond: 3000000,
+        audioBitsPerSecond: 192000
+      });
+
+      const chunks = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) chunks.push(e.data);
+      };
+
       recorder.onstop = () => {
         clipVideoBlob = new Blob(chunks, { type: mimeType });
         clipVideoUrl = URL.createObjectURL(clipVideoBlob);
@@ -4000,53 +4228,174 @@ async function generateClipVideo() {
 
       recorder.onerror = reject;
 
-      // 启动:跳到 start,开始播放和录制
-      tempVideo.currentTime = clipStartTime;
-      tempVideo.play();
       recorder.start();
 
+      const startTime = Date.now();
+      const totalDuration = audioBuffer.duration;
+
       function renderFrame() {
-        if (tempVideo.ended || tempVideo.currentTime >= clipEndTime) {
-          tempVideo.pause();
-          if (recorder.state !== 'inactive') recorder.stop();
+        const elapsed = (Date.now() - startTime) / 1000;
+        if (elapsed >= totalDuration) {
+          if (recorder.state !== 'inactive') {
+            try { recorder.stop(); } catch (e) {}
+          }
           return;
         }
 
-        ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
-
-        // 右下角小 Logo(品牌,无 URL)
-        ctx.fillStyle = 'rgba(184, 135, 58, 0.85)';
-        ctx.font = '600 32px "Helvetica Neue", sans-serif';
-        ctx.textAlign = 'right';
-        ctx.fillText('READII', canvas.width - 40, canvas.height - 40);
-
+        renderClipVideoFrame(ctx, canvas, article, elapsed, totalDuration);
         requestAnimationFrame(renderFrame);
       }
       renderFrame();
-    });
 
-    const clipPreview = document.getElementById('clipVideoPreview');
-    if (clipPreview) {
-      clipPreview.src = clipVideoUrl;
-      clipPreview.load();
+      audioSource.start(0);
+
+      setTimeout(() => {
+        if (recorder.state !== 'inactive') {
+          try { recorder.stop(); } catch (e) {}
+        }
+      }, (totalDuration + 0.5) * 1000);
+
+    } catch (err) {
+      reject(err);
     }
-    document.getElementById('clipResultSection').style.display = 'block';
+  });
+}
 
-    btn.disabled = false;
-    btn.textContent = '✨ Create another cut';
+function renderClipVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
+  const W = canvas.width;
+  const H = canvas.height;
 
-    track('clip_video_generated', {
-      duration: clipEndTime - clipStartTime,
-      size_kb: Math.round(clipVideoBlob.size / 1024),
-      article_id: currentArticleId
+  // 背景
+  if (articleBackgroundImage) {
+    ctx.save();
+    ctx.filter = 'blur(15px)';
+    const scale = Math.max(W / articleBackgroundImage.width, H / articleBackgroundImage.height) * 1.2;
+    const sw = articleBackgroundImage.width * scale;
+    const sh = articleBackgroundImage.height * scale;
+    ctx.drawImage(articleBackgroundImage, (W - sw) / 2, (H - sh) / 2, sw, sh);
+    ctx.restore();
+
+    ctx.fillStyle = 'rgba(31, 77, 64, 0.7)';
+    ctx.fillRect(0, 0, W, H);
+  } else {
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#2D5A4F');
+    grad.addColorStop(1, '#1a1a1a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  ctx.fillStyle = 'rgba(184, 135, 58, 0.05)';
+  ctx.fillRect(0, 0, W, H);
+
+  // 用户名 + 文章标题(顶部)
+  if (playerName) {
+    ctx.fillStyle = '#FAF8F3';
+    ctx.font = '700 56px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(playerName, W/2, 200);
+
+    ctx.fillStyle = 'rgba(250, 248, 243, 0.6)';
+    ctx.font = '300 28px "Helvetica Neue", sans-serif';
+    ctx.fillText('reads', W/2, 250);
+  }
+
+  ctx.fillStyle = '#FAF8F3';
+  ctx.font = 'italic 48px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(article.title, W/2, 340);
+
+  // 字幕(简化版,跟着进度滚动)
+  renderClipKaraoke(ctx, article, elapsed, totalDuration, W, H);
+
+  // 右下角 Brand + Slogan (v11.6 新增)
+  ctx.textAlign = 'right';
+  ctx.fillStyle = 'rgba(184, 135, 58, 0.85)';
+  ctx.font = '700 32px "Helvetica Neue", sans-serif';
+  ctx.fillText('READII', W - 40, H - 70);
+
+  ctx.fillStyle = 'rgba(250, 248, 243, 0.7)';
+  ctx.font = '300 22px Georgia, serif';
+  ctx.fillText('Read British', W - 40, H - 40);
+}
+
+function renderClipKaraoke(ctx, article, elapsed, totalDuration, W, H) {
+  // 简化:取整段文章,根据进度高亮"当前估算位置"
+  const fullText = article.full_text || article.segments.map(s => s.text).join(' ');
+  const progress = elapsed / totalDuration;
+
+  const words = fullText.split(/\s+/);
+  const currentWordIdx = Math.floor(progress * words.length);
+
+  // 显示上下文窗口(当前词前后各 8 个词)
+  const start = Math.max(0, currentWordIdx - 8);
+  const end = Math.min(words.length, currentWordIdx + 8);
+  const contextWords = words.slice(start, end);
+
+  ctx.font = 'italic 700 56px Georgia, serif';
+  ctx.textAlign = 'center';
+
+  const maxWidth = W - 160;
+  const lines = wrapTextIntoLines(ctx, contextWords.join(' '), maxWidth);
+
+  const lineHeight = 78;
+  const totalHeight = lines.length * lineHeight;
+  const startY = H/2 - totalHeight/2 + 60;
+
+  let wordCounter = 0;
+  lines.forEach((lineWords, lineIdx) => {
+    const lineY = startY + lineIdx * lineHeight;
+
+    let lineWidth = 0;
+    lineWords.forEach(w => {
+      lineWidth += ctx.measureText(w + ' ').width;
     });
 
-  } catch (e) {
-    console.error('Clip generation failed:', e);
-    btn.disabled = false;
-    btn.textContent = '✨ Create my viral cut';
-    toast('Clip generation failed — try again?');
+    let x = W/2 - lineWidth/2;
+
+    lineWords.forEach(word => {
+      const wordWidth = ctx.measureText(word + ' ').width;
+      const absoluteWordIdx = start + wordCounter;
+
+      ctx.save();
+      ctx.textAlign = 'left';
+
+      if (absoluteWordIdx === currentWordIdx) {
+        ctx.shadowColor = 'rgba(184, 135, 58, 0.8)';
+        ctx.shadowBlur = 20;
+        ctx.fillStyle = '#FFD68C';
+        ctx.fillText(word, x, lineY);
+      } else if (absoluteWordIdx < currentWordIdx) {
+        ctx.fillStyle = 'rgba(250, 248, 243, 0.85)';
+        ctx.fillText(word, x, lineY);
+      } else {
+        ctx.fillStyle = 'rgba(250, 248, 243, 0.4)';
+        ctx.fillText(word, x, lineY);
+      }
+      ctx.restore();
+
+      x += wordWidth;
+      wordCounter++;
+    });
+  });
+
+  ctx.textAlign = 'center';
+}
+
+function resetClipTool() {
+  // 清掉旧的 clip
+  if (clipVideoUrl) {
+    URL.revokeObjectURL(clipVideoUrl);
   }
+  clipVideoBlob = null;
+  clipVideoUrl = null;
+
+  // 隐藏结果区
+  document.getElementById('clipResultSection').style.display = 'none';
+
+  // 滚动回工具区顶部
+  const tool = document.getElementById('clipToolSection');
+  if (tool && tool.scrollIntoView) tool.scrollIntoView({ behavior: 'smooth' });
 }
 
 async function downloadClipVideo() {
