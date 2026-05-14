@@ -1057,6 +1057,10 @@ let ecDaisyAudioCache = {};
 let globalVolume = parseFloat(localStorage.getItem('readii_volume') || '0.8');
 let isMuted = false;
 let preMuteVolume = 0.8;
+// SpeechSynthesis 无法实时改音量,记录当前朗读内容以便用新音量重播
+let currentSpeechText = '';
+let currentSpeechRate = 1;
+let _speechRevolumeTimer = null;
 
 // Three-pass state
 let currentPass = 1;
@@ -3305,8 +3309,18 @@ function toggleMute() {
 function applyVolumeToAllAudio() {
   if (listenAudio) listenAudio.volume = globalVolume;
   if (ecDaisyAudio) ecDaisyAudio.volume = globalVolume;
-  // 动态创建的 audio 元素若在 DOM 中也一并更新
-  document.querySelectorAll('audio').forEach(a => a.volume = globalVolume);
+  // DOM 中的 audio / video 元素(如视频预览)
+  document.querySelectorAll('audio, video').forEach(el => el.volume = globalVolume);
+
+  // SpeechSynthesis(TTS 兜底)无法实时改音量 —— 防抖后用新音量重播当前内容
+  if ('speechSynthesis' in window && window.speechSynthesis.speaking && currentSpeechText) {
+    clearTimeout(_speechRevolumeTimer);
+    _speechRevolumeTimer = setTimeout(() => {
+      if (window.speechSynthesis.speaking && currentSpeechText) {
+        speakPhrase(currentSpeechText, currentSpeechRate);
+      }
+    }, 250);
+  }
 }
 
 // ═════════════════════════════════════════════════════
@@ -3315,6 +3329,8 @@ function applyVolumeToAllAudio() {
 function speakPhrase(phrase, rate) {
   if (!('speechSynthesis' in window)) return toast('Speech not supported');
   if (!phrase) return;
+  currentSpeechText = phrase;        // v10.1 fix #3: 记录用于音量变更时重播
+  currentSpeechRate = rate || 1;
   window.speechSynthesis.cancel();
   setTimeout(() => {
     const warmup = new SpeechSynthesisUtterance(' ');
