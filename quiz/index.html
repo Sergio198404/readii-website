@@ -3951,9 +3951,15 @@ async function checkAuthAndShowForm() {
 async function attachVideoToUser(userId, email) {
   if (!currentPass3SessionId) return;
   try {
-    await sb.from('pretotype_videos')
+    const { data, error } = await sb.from('pretotype_videos')
       .update({ user_id: userId, user_email: email })
-      .eq('session_id', currentPass3SessionId);
+      .eq('session_id', currentPass3SessionId)
+      .select();
+    console.log('🔧 attach video result:', {
+      rowsAffected: data?.length,
+      error: error?.message,
+      sessionId: currentPass3SessionId
+    });
   } catch (e) {
     console.warn('Attach video failed:', e);
   }
@@ -3967,16 +3973,23 @@ async function submitSignedInForm() {
   try {
     const { data: { session } } = await sb.auth.getSession();
     if (!session) throw new Error('Not logged in');
+    console.log('🔧 submitSignedInForm session:', session?.user?.id);
 
     const subDaily = document.getElementById('signedInSubDaily').checked;
     const subEdu = document.getElementById('signedInSubEdu').checked;
 
-    await sb.from('user_profiles')
+    const { data, error } = await sb.from('user_profiles')
       .update({
         newsletter_daily_readings: subDaily,
         newsletter_edu_entrepreneurship: subEdu
       })
-      .eq('id', session.user.id);
+      .eq('id', session.user.id)
+      .select();
+
+    console.log('🔧 update profile result:', {
+      rowsAffected: data?.length,
+      error: error?.message
+    });
 
     document.getElementById('signedInSection').style.display = 'none';
     document.getElementById('emailDoneSection').style.display = 'block';
