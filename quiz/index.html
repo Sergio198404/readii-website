@@ -326,6 +326,59 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .confetti-particle{position:absolute;top:-12px;width:9px;height:14px;border-radius:2px;animation:confetti-fall 2.8s ease-out forwards}
 @keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
+/* Pass 3 Echo-and-Capture (v10.1 final) */
+.ec-status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px}
+.ec-segment-num{color:var(--muted);font-weight:600}
+.ec-stage-badge{background:var(--gold-pale);color:var(--gold);padding:4px 12px;border-radius:14px;font-weight:700;font-size:11px}
+
+.ec-sentence-box{background:var(--white);border:2px solid var(--gold);border-radius:var(--radius);padding:22px 20px;margin-bottom:18px;box-shadow:var(--shadow);min-height:80px;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.ec-sentence-box.listening{border-color:var(--forest);background:var(--forest-pale)}
+.ec-sentence-box.recording{border-color:var(--red);background:#FFEDED;animation:ec-record-pulse 1.5s infinite}
+.ec-sentence-box.reviewing{border-color:var(--green);background:var(--green-pale)}
+@keyframes ec-record-pulse{0%,100%{box-shadow:0 0 0 0 rgba(211,47,47,.15)}50%{box-shadow:0 0 0 12px rgba(211,47,47,0)}}
+
+.ec-sentence-text{font-family:var(--serif);font-size:20px;line-height:1.5;color:var(--ink);text-align:center}
+
+.ec-stage-panel{margin-top:8px}
+.ec-stage-hint{text-align:center;color:var(--muted);font-size:13px;margin-top:14px;line-height:1.5}
+.ec-stage-msg{font-size:15px;font-weight:600;color:var(--ink);margin-top:10px}
+.ec-stage-sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+.ec-listening-indicator{text-align:center;padding:18px 0}
+.ec-pulse{width:40px;height:40px;background:var(--forest);border-radius:50%;margin:0 auto;animation:ec-pulse 1.5s infinite;opacity:.5}
+@keyframes ec-pulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.2);opacity:.9}}
+
+.ec-recording-indicator{text-align:center;padding:14px 0}
+.ec-mic-pulse{font-size:44px;animation:ec-mic-bounce 1s infinite}
+@keyframes ec-mic-bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
+.ec-stage-actions{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.ec-stop-btn{display:block;margin:14px auto 0;background:var(--white);border:1.5px solid var(--forest);color:var(--forest);font-weight:700}
+
+.ec-review-msg{text-align:center;color:var(--green);font-size:16px;font-weight:700;margin-bottom:14px}
+.ec-compare-row{display:flex;gap:10px;justify-content:center;margin-bottom:18px}
+.ec-compare-btn{flex:1;max-width:160px;padding:14px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;text-align:center;font-family:var(--sans);color:var(--ink);transition:all .15s}
+.ec-compare-btn:hover{border-color:var(--gold);background:var(--gold-pale)}
+.ec-compare-icon{display:block;font-size:18px;color:var(--gold);margin-bottom:4px}
+.ec-compare-label{display:block;font-size:12px;font-weight:600}
+
+.ec-decision-row{display:flex;gap:10px;justify-content:center}
+.ec-rerecord{flex:0 0 auto;padding:12px 18px;background:var(--white);border:1.5px solid var(--border);color:var(--ink)}
+.ec-rerecord:hover{border-color:var(--ink);background:var(--bg)}
+.ec-keep{flex:1;max-width:200px}
+
+.ec-generating-box{text-align:center;padding:40px 20px;background:var(--white);border-radius:var(--radius);border:1px solid var(--border)}
+.ec-generating-title{font-family:var(--serif);font-size:20px;margin:14px 0 18px;color:var(--ink)}
+.ec-generating-steps{list-style:none;padding:0;text-align:left;max-width:280px;margin:0 auto}
+.ec-generating-steps li{padding:6px 0;font-size:14px;color:var(--ink);opacity:.7;transition:all .3s}
+.ec-generating-steps li.active{opacity:1;color:var(--forest);font-weight:700}
+.ec-generating-steps li.done{opacity:1;color:var(--muted);text-decoration:line-through}
+
+.video-section{margin-top:16px;text-align:center}
+.video-section video{width:100%;max-width:320px;border-radius:var(--radius);background:#000;display:block;margin:0 auto}
+.video-actions{display:flex;gap:8px;justify-content:center;margin-top:12px}
+.video-hint{font-size:12px;color:var(--muted);margin-top:8px}
+
 @media(max-width:540px){
   .container{padding:12px 12px 32px}
   .pass-title{font-family:var(--serif);font-size:22px}
@@ -448,38 +501,111 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
   </div>
 
-  <!-- Pass 3: Final Read -->
+  <!-- Pass 3: Echo-and-Capture (v10.1 final) -->
   <div class="screen" id="screenPass3">
     <div class="pass-header">
-      <div class="pass-badge pass3-badge">Pass 3 of 3</div>
-      <h2 class="pass-title">Final Read</h2>
-      <p class="pass-sub">Read the complete article. Your pronunciation has improved — feel it.</p>
+      <div class="pass-badge pass3-badge">Pass 3 of 3 · Read Along</div>
+      <h2 class="pass-title">Listen, then speak</h2>
+      <p class="pass-sub">Sentence by sentence. We'll capture the best of you.</p>
     </div>
-    <div class="fullread-article" id="pass3Article"></div>
-    <div class="fullread-controls">
-      <button class="btn-listen" onclick="listenFullArticle(1)">▶ Listen to full article</button>
-      <button class="btn-listen" onclick="listenFullArticle(0.7)">🐢 Slow</button>
+
+    <!-- Progress bar (overall segment progress) -->
+    <div class="seg-progress"><div class="seg-progress-fill" id="echoCaptureProgress"></div></div>
+
+    <!-- Status bar -->
+    <div class="ec-status-row">
+      <span class="ec-segment-num" id="ecSegmentNum">Sentence 1 of 13</span>
+      <span class="ec-stage-badge" id="ecStageBadge">🎧 Listening</span>
     </div>
-    <div class="fullread-record" id="pass3RecordPanel">
-      <button class="btn-record" id="btnPass3Record" onclick="togglePass3Recording()">🎤</button>
-      <p class="record-hint" id="pass3Hint">Tap to read the full article</p>
-      <button class="fullread-skip" onclick="skipPass3()">Skip and see results →</button>
+
+    <!-- Current sentence display -->
+    <div class="ec-sentence-box" id="ecSentenceBox">
+      <p class="ec-sentence-text" id="ecSentenceText"></p>
     </div>
-    <div id="pass3Result" style="display:none">
+
+    <!-- Stage A: Pre-start -->
+    <div class="ec-stage-panel" id="ecStagePreStart">
+      <button class="btn-start" onclick="startEchoCapture()">▶ Start reading along</button>
+      <p class="ec-stage-hint">We'll play one sentence at a time. After each, you read it.</p>
+    </div>
+
+    <!-- Stage B: Daisy is reading -->
+    <div class="ec-stage-panel" id="ecStageDaisy" style="display:none">
+      <div class="ec-listening-indicator">
+        <div class="ec-pulse"></div>
+        <p class="ec-stage-msg">🎧 Daisy is reading...</p>
+      </div>
+      <div class="ec-stage-actions">
+        <button class="btn-listen" onclick="setDaisyRate(0.75)">🐢 Slow</button>
+        <button class="btn-listen" onclick="setDaisyRate(1.0)">▶ Normal</button>
+        <button class="btn-listen" onclick="replayDaisySegment()">↻ Replay</button>
+      </div>
+    </div>
+
+    <!-- Stage C: User recording -->
+    <div class="ec-stage-panel" id="ecStageRecording" style="display:none">
+      <div class="ec-recording-indicator">
+        <div class="ec-mic-pulse">🎤</div>
+        <p class="ec-stage-msg">Your turn — speak now</p>
+        <p class="ec-stage-sub">We'll detect when you stop</p>
+      </div>
+      <button class="btn-listen ec-stop-btn" onclick="stopUserRecordingManually()">✓ Done speaking</button>
+    </div>
+
+    <!-- Stage D: Review -->
+    <div class="ec-stage-panel" id="ecStageReview" style="display:none">
+      <p class="ec-review-msg">✓ Captured</p>
+      <div class="ec-compare-row">
+        <button class="ec-compare-btn" onclick="playMySegmentRecording()">
+          <span class="ec-compare-icon">▶</span>
+          <span class="ec-compare-label">Hear yourself</span>
+        </button>
+        <button class="ec-compare-btn" onclick="playDaisySegment()">
+          <span class="ec-compare-icon">▶</span>
+          <span class="ec-compare-label">Hear Daisy</span>
+        </button>
+      </div>
+      <div class="ec-decision-row">
+        <button class="btn-listen ec-rerecord" onclick="reRecordCurrentSegment()">↻ Re-record</button>
+        <button class="btn-start ec-keep" onclick="keepAndContinue()">→ Keep going</button>
+      </div>
+    </div>
+
+    <!-- Stage E: Generating video -->
+    <div class="ec-stage-panel" id="ecStageGenerating" style="display:none">
+      <div class="ec-generating-box">
+        <div class="spinner"></div>
+        <h3 class="ec-generating-title">Crafting your reading video</h3>
+        <ul class="ec-generating-steps" id="ecGeneratingSteps">
+          <li id="ecStepStitch">🔄 Stitching your sentences...</li>
+          <li id="ecStepMusic" style="display:none">🎵 Adding music...</li>
+          <li id="ecStepVideo" style="display:none">🎬 Creating video...</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Stage F: Result -->
+    <div class="ec-stage-panel" id="ecStageResult" style="display:none">
       <div class="fullread-done">
         <div style="font-size:48px;margin-bottom:12px">🎉</div>
-        <h3>Beautiful reading!</h3>
+        <h3>Your reading is ready!</h3>
         <p class="fullread-stats" id="pass3Stats"></p>
       </div>
-      <div class="fullread-share-option">
-        <label class="share-toggle">
-          <input type="checkbox" id="shareRecordingToggle" checked>
-          <span>Include my recording when sharing</span>
-        </label>
-        <p class="share-note">Others can hear how you read this article</p>
+
+      <div class="video-section">
+        <video id="videoPreview" controls playsinline preload="auto"></video>
+        <div class="video-actions">
+          <button class="btn-listen" onclick="downloadVideo()">⬇ Download</button>
+          <button class="btn-listen" onclick="shareVideo()">📤 Share</button>
+        </div>
+        <p class="video-hint">Save to phone · Send to friends · Post on Xiaohongshu</p>
       </div>
-      <button class="btn-start" onclick="showRoundComplete()">See my results →</button>
+
+      <button class="btn-start" onclick="showRoundComplete()" style="margin-top:14px">See my results →</button>
     </div>
+
+    <!-- Hidden canvas for video generation -->
+    <canvas id="videoCanvas" width="1080" height="1920" style="display:none"></canvas>
   </div>
 
   <!-- Round Complete -->
@@ -845,6 +971,34 @@ let videoMediaRecorder = null;
 let videoCanvas = null;
 let videoCtx = null;
 let wordTimestamps = []; // { word, time } during Pass 3 for karaoke
+
+// ═════════════════════════════════════════════════════
+// Pass 3 Echo-and-Capture state (v10.1 final)
+// ═════════════════════════════════════════════════════
+const BGM_URL = `${STORAGE_BASE}/bgm-audio/bgm-lofi.mp3`;
+let bgmAudioBuffer = null;
+let ecCurrentSegmentIdx = 0;
+let ecStage = 'prestart'; // prestart / daisy / recording / review / generating / result
+let ecDaisyAudio = null;
+let ecDaisyPlaybackRate = 1.0;
+let ecUserMediaRecorder = null;
+let ecUserMediaStream = null;
+let ecCurrentChunks = [];
+let ecAudioContext = null;
+let ecSilenceAnalyser = null;
+let ecSilenceCheckRAF = null;
+let ecSilenceThreshold = 0.02;       // 音量阈值(0-1)
+let ecSilenceDuration = 0;            // 静音持续时长(ms)
+let ecSilenceCutoffMs = 1500;         // 1.5 秒静音 = 这句录完
+let ecMaxRecordingMs = 25000;         // 单句最长 25 秒
+let ecRecordingStartTime = 0;
+let ecMaxTimeoutHandle = null;
+
+// 每段独立录音存储:segmentRecordings[i] = { blob, url, duration }
+let segmentRecordings = [];
+
+// Daisy 单句 audio cache (for replay/review)
+let ecDaisyAudioCache = {};
 
 // Three-pass state
 let currentPass = 1;
@@ -1895,126 +2049,795 @@ function finishPass2() {
 // ═════════════════════════════════════════════════════
 // PASS 3: FINAL READ
 // ═════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
+// PASS 3: ECHO-AND-CAPTURE (v10.1 final)
+// ═════════════════════════════════════════════════════
+
 function startPass3() {
   currentPass = 3;
+  ecCurrentSegmentIdx = 0;
+  ecStage = 'prestart';
+  segmentRecordings = [];
+  ecDaisyAudioCache = {};
+  ecDaisyPlaybackRate = 1.0;
+
   showScreen('Pass3');
 
-  const passedSet = new Set(drillResults.filter(r => r.passed).map(r => r.word.toLowerCase()));
-  const notPassedSet = new Set(drillResults.filter(r => !r.passed).map(r => r.word.toLowerCase()));
+  hideAllStagePanels();
+  document.getElementById('ecStagePreStart').style.display = 'block';
 
-  const fullHtml = segments.map(seg => {
-    const re = /[A-Za-z']+|[^A-Za-z']+/g;
-    let segHtml = '';
-    let m;
-    while ((m = re.exec(seg.text)) !== null) {
-      const tok = m[0];
-      if (/[A-Za-z']/.test(tok[0])) {
-        const lower = tok.toLowerCase().replace(/[^a-z]/g, '');
-        const safe = escapeHtml(tok);
-        if (passedSet.has(lower)) {
-          segHtml += `<span class="pass3-good" onclick="playWordAudio('${escapeJs(lower)}')">${safe}</span>`;
-        } else if (notPassedSet.has(lower)) {
-          segHtml += `<span class="pass3-watch" onclick="playWordAudio('${escapeJs(lower)}')">${safe}</span>`;
-        } else {
-          segHtml += safe;
-        }
+  updateSentenceDisplay();
+  updateProgress();
+
+  preloadBGM();
+
+  track('pass3_started', { article_id: currentArticleId });
+}
+
+function hideAllStagePanels() {
+  ['ecStagePreStart', 'ecStageDaisy', 'ecStageRecording', 'ecStageReview', 'ecStageGenerating', 'ecStageResult']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+}
+
+function showStagePanel(panelId) {
+  hideAllStagePanels();
+  document.getElementById(panelId).style.display = 'block';
+}
+
+function updateSentenceDisplay() {
+  const segment = segments[ecCurrentSegmentIdx];
+  const textEl = document.getElementById('ecSentenceText');
+  const boxEl = document.getElementById('ecSentenceBox');
+
+  if (textEl && segment) {
+    textEl.textContent = segment.text;
+  }
+
+  if (boxEl) {
+    boxEl.className = 'ec-sentence-box';
+    if (ecStage === 'daisy') boxEl.classList.add('listening');
+    else if (ecStage === 'recording') boxEl.classList.add('recording');
+    else if (ecStage === 'review') boxEl.classList.add('reviewing');
+  }
+}
+
+function updateProgress() {
+  document.getElementById('ecSegmentNum').textContent =
+    `Sentence ${ecCurrentSegmentIdx + 1} of ${segments.length}`;
+
+  const pct = (ecCurrentSegmentIdx / segments.length) * 100;
+  document.getElementById('echoCaptureProgress').style.width = pct + '%';
+
+  const badge = document.getElementById('ecStageBadge');
+  if (badge) {
+    switch (ecStage) {
+      case 'prestart': badge.textContent = 'Ready'; break;
+      case 'daisy': badge.textContent = '🎧 Listening'; break;
+      case 'recording': badge.textContent = '🎤 Recording'; break;
+      case 'review': badge.textContent = '✓ Captured'; break;
+      case 'generating': badge.textContent = '✨ Crafting'; break;
+      case 'result': badge.textContent = '🎉 Ready'; break;
+    }
+  }
+}
+
+// User clicks "Start reading along"
+function startEchoCapture() {
+  track('pass3_echo_capture_started', { article_id: currentArticleId });
+  enterDaisyStage();
+}
+
+// Stage B: Daisy reads current segment
+function enterDaisyStage() {
+  ecStage = 'daisy';
+  updateSentenceDisplay();
+  updateProgress();
+  showStagePanel('ecStageDaisy');
+
+  playCurrentDaisySegment();
+}
+
+function playCurrentDaisySegment() {
+  const segment = segments[ecCurrentSegmentIdx];
+  if (!segment || !segment.audio_filename) {
+    setTimeout(enterRecordingStage, 500);
+    return;
+  }
+
+  if (ecDaisyAudio) {
+    ecDaisyAudio.pause();
+    ecDaisyAudio = null;
+  }
+
+  const url = `${STORAGE_BASE}/article-audio/${segment.audio_filename}`;
+  ecDaisyAudio = new Audio(url);
+  ecDaisyAudio.playbackRate = ecDaisyPlaybackRate;
+
+  ecDaisyAudioCache[ecCurrentSegmentIdx] = ecDaisyAudio;
+
+  ecDaisyAudio.onended = () => {
+    if (ecStage === 'daisy') {
+      setTimeout(enterRecordingStage, 400);
+    }
+  };
+
+  ecDaisyAudio.onerror = () => {
+    console.warn(`Daisy audio failed for segment ${ecCurrentSegmentIdx + 1}`);
+    speakPhrase(segment.text, ecDaisyPlaybackRate);
+    setTimeout(enterRecordingStage, Math.max(2000, segment.text.length * 60));
+  };
+
+  ecDaisyAudio.play().catch(err => {
+    console.warn('Daisy play failed:', err);
+    setTimeout(enterRecordingStage, 1000);
+  });
+}
+
+function setDaisyRate(rate) {
+  ecDaisyPlaybackRate = rate;
+  if (ecDaisyAudio) {
+    ecDaisyAudio.playbackRate = rate;
+  }
+  track('pass3_daisy_rate_changed', { rate });
+}
+
+function replayDaisySegment() {
+  if (ecDaisyAudio) {
+    ecDaisyAudio.currentTime = 0;
+    ecDaisyAudio.play();
+  } else {
+    playCurrentDaisySegment();
+  }
+  track('pass3_daisy_replayed', { segment_idx: ecCurrentSegmentIdx });
+}
+
+// Stage C: User records this segment
+async function enterRecordingStage() {
+  ecStage = 'recording';
+  updateSentenceDisplay();
+  updateProgress();
+  showStagePanel('ecStageRecording');
+
+  if (ecDaisyAudio) {
+    ecDaisyAudio.pause();
+  }
+
+  let micStream;
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true }
+    });
+    ecUserMediaStream = micStream;
+  } catch (e) {
+    toast('Microphone access needed');
+    console.error('Mic access failed:', e);
+    return;
+  }
+
+  ecCurrentChunks = [];
+  try {
+    ecUserMediaRecorder = new MediaRecorder(micStream, {
+      mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : ''
+    });
+
+    ecUserMediaRecorder.ondataavailable = (e) => {
+      if (e.data && e.data.size > 0) ecCurrentChunks.push(e.data);
+    };
+
+    ecUserMediaRecorder.onstop = () => {
+      const blob = new Blob(ecCurrentChunks, { type: 'audio/webm' });
+      const url = URL.createObjectURL(blob);
+      const duration = (Date.now() - ecRecordingStartTime) / 1000;
+
+      segmentRecordings[ecCurrentSegmentIdx] = { blob, url, duration };
+
+      if (ecUserMediaStream) {
+        ecUserMediaStream.getTracks().forEach(t => t.stop());
+        ecUserMediaStream = null;
+      }
+      ecUserMediaRecorder = null;
+      stopSilenceDetection();
+
+      enterReviewStage();
+    };
+  } catch (e) {
+    console.error('MediaRecorder setup failed:', e);
+    toast('Recording not supported in this browser');
+    return;
+  }
+
+  ecRecordingStartTime = Date.now();
+  ecUserMediaRecorder.start();
+
+  startSilenceDetection(micStream);
+
+  ecMaxTimeoutHandle = setTimeout(() => {
+    if (ecUserMediaRecorder && ecUserMediaRecorder.state !== 'inactive') {
+      try { ecUserMediaRecorder.stop(); } catch (e) {}
+    }
+  }, ecMaxRecordingMs);
+
+  track('pass3_segment_recording_started', { segment_idx: ecCurrentSegmentIdx });
+}
+
+// Silence detection using Web Audio API
+function startSilenceDetection(micStream) {
+  try {
+    if (!ecAudioContext) {
+      ecAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (ecAudioContext.state === 'suspended') ecAudioContext.resume();
+
+    const source = ecAudioContext.createMediaStreamSource(micStream);
+    const analyser = ecAudioContext.createAnalyser();
+    analyser.fftSize = 1024;
+    source.connect(analyser);
+
+    ecSilenceAnalyser = analyser;
+    ecSilenceDuration = 0;
+
+    const buffer = new Uint8Array(analyser.frequencyBinCount);
+    let lastCheckTime = Date.now();
+    let hasSpoken = false;
+
+    function check() {
+      analyser.getByteTimeDomainData(buffer);
+
+      let sum = 0;
+      for (let i = 0; i < buffer.length; i++) {
+        const normalized = (buffer[i] - 128) / 128;
+        sum += normalized * normalized;
+      }
+      const rms = Math.sqrt(sum / buffer.length);
+
+      const now = Date.now();
+      const delta = now - lastCheckTime;
+      lastCheckTime = now;
+
+      if (rms > ecSilenceThreshold) {
+        ecSilenceDuration = 0;
+        hasSpoken = true;
       } else {
-        segHtml += escapeHtml(tok);
-      }
-    }
-    return segHtml;
-  }).join(' ');
+        ecSilenceDuration += delta;
 
-  document.getElementById('pass3Article').innerHTML = fullHtml;
-  document.getElementById('pass3RecordPanel').style.display = '';
-  document.getElementById('pass3Result').style.display = 'none';
-  document.getElementById('btnPass3Record').classList.remove('recording');
-  document.getElementById('pass3Hint').textContent = 'Tap to read the full article';
-  fullReadTranscript = ''; fullReadStartTime = null; userStoppedPass3 = false;
+        if (hasSpoken && ecSilenceDuration >= ecSilenceCutoffMs) {
+          if (ecUserMediaRecorder && ecUserMediaRecorder.state !== 'inactive') {
+            try { ecUserMediaRecorder.stop(); } catch (e) {}
+          }
+          return;
+        }
+      }
+
+      ecSilenceCheckRAF = requestAnimationFrame(check);
+    }
+
+    ecSilenceCheckRAF = requestAnimationFrame(check);
+  } catch (e) {
+    console.warn('Silence detection setup failed:', e);
+  }
 }
 
-function togglePass3Recording() {
-  if (currentRecognition) {
-    userStoppedPass3 = true;
-    try { currentRecognition.stop(); } catch (e) {}
-    return;
+function stopSilenceDetection() {
+  if (ecSilenceCheckRAF) {
+    cancelAnimationFrame(ecSilenceCheckRAF);
+    ecSilenceCheckRAF = null;
   }
-  if (isWeChatBrowser()) { toast('Please open in Safari or Chrome to record'); return; }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { toast('Speech recognition needs Chrome'); return; }
-
-  fullReadTranscript = '';
-  fullReadStartTime = Date.now();
-  userStoppedPass3 = false;
-
-  currentRecognition = new SR();
-  currentRecognition.lang = 'en-GB';
-  currentRecognition.continuous = true;
-  currentRecognition.interimResults = false;
-
-  currentRecognition.onstart = () => {
-    document.getElementById('btnPass3Record').classList.add('recording');
-    document.getElementById('pass3Hint').textContent = 'Recording… tap 🎤 when done';
-  };
-  currentRecognition.onresult = (e) => {
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) {
-        fullReadTranscript += e.results[i][0].transcript + ' ';
-      }
-    }
-  };
-  currentRecognition.onerror = (e) => { if (e.error === 'no-speech') return; };
-  currentRecognition.onend = () => {
-    const elapsed = fullReadStartTime ? Date.now() - fullReadStartTime : 999999;
-    if (!userStoppedPass3 && elapsed < 110000 && fullReadStartTime) {
-      try { currentRecognition.start(); return; } catch (e) {}
-    }
-    finishPass3Recording();
-  };
-  currentRecognition.start();
-
-  recordingTimeout = setTimeout(() => {
-    userStoppedPass3 = true;
-    if (currentRecognition) { try { currentRecognition.stop(); } catch (e) {} }
-  }, 120000);
+  if (ecMaxTimeoutHandle) {
+    clearTimeout(ecMaxTimeoutHandle);
+    ecMaxTimeoutHandle = null;
+  }
 }
 
-function finishPass3Recording() {
-  clearTimeout(recordingTimeout);
-  const durationMs = fullReadStartTime ? Date.now() - fullReadStartTime : 0;
-  if (currentRecognition) {
-    currentRecognition.onend = null;
-    currentRecognition.onresult = null;
-    currentRecognition.onerror = null;
+// User manually stops recording
+function stopUserRecordingManually() {
+  if (ecUserMediaRecorder && ecUserMediaRecorder.state !== 'inactive') {
+    try { ecUserMediaRecorder.stop(); } catch (e) {}
   }
-  currentRecognition = null;
+  track('pass3_manual_stop', { segment_idx: ecCurrentSegmentIdx });
+}
 
-  document.getElementById('btnPass3Record').classList.remove('recording');
+// Stage D: Review
+function enterReviewStage() {
+  ecStage = 'review';
+  updateSentenceDisplay();
+  updateProgress();
+  showStagePanel('ecStageReview');
 
-  const transcript = fullReadTranscript.trim();
-  if (transcript.length < 10) {
-    document.getElementById('pass3Hint').textContent = 'Recording too short — try again or skip.';
-    fullReadStartTime = null;
+  track('pass3_segment_recorded', {
+    segment_idx: ecCurrentSegmentIdx,
+    duration: segmentRecordings[ecCurrentSegmentIdx]?.duration || 0
+  });
+}
+
+function playMySegmentRecording() {
+  const rec = segmentRecordings[ecCurrentSegmentIdx];
+  if (!rec || !rec.url) return;
+
+  if (ecDaisyAudio) ecDaisyAudio.pause();
+
+  const audio = new Audio(rec.url);
+  audio.play().catch(err => console.warn('Playback failed:', err));
+
+  track('pass3_user_replay', { segment_idx: ecCurrentSegmentIdx });
+}
+
+function playDaisySegment() {
+  if (ecDaisyAudio) ecDaisyAudio.pause();
+
+  const segment = segments[ecCurrentSegmentIdx];
+  if (!segment || !segment.audio_filename) {
+    speakPhrase(segment ? segment.text : '', 1);
     return;
   }
 
-  const wordCount = transcript.split(/\s+/).length;
-  const durationSec = Math.round(durationMs / 1000);
+  const url = `${STORAGE_BASE}/article-audio/${segment.audio_filename}`;
+  ecDaisyAudio = new Audio(url);
+  ecDaisyAudio.playbackRate = ecDaisyPlaybackRate;
+  ecDaisyAudio.play().catch(err => console.warn('Daisy replay failed:', err));
+
+  track('pass3_daisy_review_replay', { segment_idx: ecCurrentSegmentIdx });
+}
+
+function reRecordCurrentSegment() {
+  const rec = segmentRecordings[ecCurrentSegmentIdx];
+  if (rec && rec.url) URL.revokeObjectURL(rec.url);
+  segmentRecordings[ecCurrentSegmentIdx] = null;
+
+  track('pass3_segment_rerecorded', { segment_idx: ecCurrentSegmentIdx });
+
+  enterDaisyStage();
+}
+
+function keepAndContinue() {
+  ecCurrentSegmentIdx++;
+
+  if (ecCurrentSegmentIdx >= segments.length) {
+    enterGeneratingStage();
+  } else {
+    enterDaisyStage();
+  }
+}
+
+// Stage E: Generating video
+async function enterGeneratingStage() {
+  ecStage = 'generating';
+  updateProgress();
+  showStagePanel('ecStageGenerating');
+
+  const stepStitch = document.getElementById('ecStepStitch');
+  const stepMusic = document.getElementById('ecStepMusic');
+  const stepVideo = document.getElementById('ecStepVideo');
+
+  stepStitch.classList.add('active');
+
+  try {
+    const stitchedBuffer = await stitchSegmentRecordings();
+    stepStitch.classList.remove('active');
+    stepStitch.classList.add('done');
+
+    await sleep(300);
+    stepMusic.style.display = 'block';
+    stepMusic.classList.add('active');
+
+    const mixedBuffer = await mixWithBGM(stitchedBuffer);
+    stepMusic.classList.remove('active');
+    stepMusic.classList.add('done');
+
+    await sleep(300);
+    stepVideo.style.display = 'block';
+    stepVideo.classList.add('active');
+
+    await generateFinalVideo(mixedBuffer);
+    stepVideo.classList.remove('active');
+    stepVideo.classList.add('done');
+
+    await sleep(500);
+
+    enterResultStage();
+  } catch (err) {
+    console.error('Generation failed:', err);
+    toast('Video generation failed. Try again?');
+    ecCurrentSegmentIdx = segments.length - 1;
+    enterReviewStage();
+  }
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Stitch all segment recordings into one continuous AudioBuffer
+async function stitchSegmentRecordings() {
+  if (!ecAudioContext) {
+    ecAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (ecAudioContext.state === 'suspended') await ecAudioContext.resume();
+
+  const buffers = [];
+  for (let i = 0; i < segments.length; i++) {
+    const rec = segmentRecordings[i];
+    if (!rec || !rec.blob) {
+      continue;
+    }
+    try {
+      const arrayBuffer = await rec.blob.arrayBuffer();
+      const audioBuffer = await ecAudioContext.decodeAudioData(arrayBuffer);
+      buffers.push(audioBuffer);
+    } catch (e) {
+      console.warn(`Decoding segment ${i} failed:`, e);
+    }
+  }
+
+  if (buffers.length === 0) {
+    throw new Error('No valid segment recordings');
+  }
+
+  const GAP_MS = 200;
+  const gapSeconds = GAP_MS / 1000;
+  const sampleRate = buffers[0].sampleRate;
+  const channels = Math.max(...buffers.map(b => b.numberOfChannels));
+
+  let totalSamples = 0;
+  buffers.forEach(b => {
+    totalSamples += b.length;
+    totalSamples += Math.floor(gapSeconds * sampleRate);
+  });
+
+  const offline = new OfflineAudioContext(channels, totalSamples, sampleRate);
+
+  let currentOffset = 0;
+  buffers.forEach(b => {
+    const source = offline.createBufferSource();
+    source.buffer = b;
+    source.connect(offline.destination);
+    source.start(currentOffset);
+    currentOffset += b.duration + gapSeconds;
+  });
+
+  return await offline.startRendering();
+}
+
+// Mix user audio with BGM
+async function mixWithBGM(userBuffer) {
+  let bgmBuffer = bgmAudioBuffer;
+  if (!bgmBuffer) {
+    try {
+      const resp = await fetch(BGM_URL);
+      const arrayBuffer = await resp.arrayBuffer();
+      bgmBuffer = await ecAudioContext.decodeAudioData(arrayBuffer);
+      bgmAudioBuffer = bgmBuffer;
+    } catch (e) {
+      console.warn('BGM load failed, returning user buffer only');
+      return userBuffer;
+    }
+  }
+
+  const sampleRate = userBuffer.sampleRate;
+  const userDuration = userBuffer.duration;
+  const channels = userBuffer.numberOfChannels;
+
+  const offline = new OfflineAudioContext(channels, userBuffer.length, sampleRate);
+
+  const userSource = offline.createBufferSource();
+  userSource.buffer = userBuffer;
+  const userGain = offline.createGain();
+  userGain.gain.value = 0.85;
+  userSource.connect(userGain);
+  userGain.connect(offline.destination);
+  userSource.start(0);
+
+  const bgmSource = offline.createBufferSource();
+  bgmSource.buffer = bgmBuffer;
+  bgmSource.loop = true;
+  const bgmGain = offline.createGain();
+  bgmGain.gain.setValueAtTime(0, 0);
+  bgmGain.gain.linearRampToValueAtTime(0.15, 1);
+  bgmGain.gain.setValueAtTime(0.15, Math.max(0, userDuration - 1.5));
+  bgmGain.gain.linearRampToValueAtTime(0, userDuration);
+  bgmSource.connect(bgmGain);
+  bgmGain.connect(offline.destination);
+  bgmSource.start(0);
+  bgmSource.stop(userDuration);
+
+  return await offline.startRendering();
+}
+
+// Generate video using Canvas + the mixed audio buffer
+async function generateFinalVideo(audioBuffer) {
+  const article = ARTICLES_DATA[currentArticleId];
+  if (!article) throw new Error('No article data');
+
+  const canvas = document.getElementById('videoCanvas');
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const ctx = canvas.getContext('2d');
+  videoCanvas = canvas;
+  videoCtx = ctx;
+
+  const audioCtx = ecAudioContext;
+  const audioSource = audioCtx.createBufferSource();
+  audioSource.buffer = audioBuffer;
+
+  const audioDest = audioCtx.createMediaStreamDestination();
+  audioSource.connect(audioDest);
+  audioSource.connect(audioCtx.destination);
+
+  const videoStream = canvas.captureStream(30);
+  const combinedStream = new MediaStream();
+  videoStream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
+  audioDest.stream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
+
+  const mimeTypes = [
+    'video/webm;codecs=vp9,opus',
+    'video/webm;codecs=vp8,opus',
+    'video/webm',
+  ];
+  let mimeType = '';
+  for (const m of mimeTypes) {
+    if (MediaRecorder.isTypeSupported(m)) { mimeType = m; break; }
+  }
+
+  return new Promise((resolve, reject) => {
+    try {
+      const recorder = new MediaRecorder(combinedStream, {
+        mimeType,
+        videoBitsPerSecond: 2500000,
+        audioBitsPerSecond: 128000
+      });
+
+      const chunks = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        videoBlob = new Blob(chunks, { type: mimeType });
+        videoUrl = URL.createObjectURL(videoBlob);
+
+        const preview = document.getElementById('videoPreview');
+        if (preview) {
+          preview.src = videoUrl;
+          preview.load();
+        }
+
+        track('video_generated', {
+          article_id: currentArticleId,
+          size_kb: Math.round(videoBlob.size / 1024)
+        });
+        resolve();
+      };
+
+      recorder.start();
+      videoMediaRecorder = recorder;
+
+      const startTime = Date.now();
+      const totalDuration = audioBuffer.duration;
+
+      function renderFrame() {
+        const elapsed = (Date.now() - startTime) / 1000;
+        if (elapsed >= totalDuration) {
+          recorder.stop();
+          return;
+        }
+
+        renderVideoFrame(ctx, canvas, article, elapsed, totalDuration);
+        requestAnimationFrame(renderFrame);
+      }
+      renderFrame();
+
+      audioSource.start(0);
+
+      setTimeout(() => {
+        if (recorder.state !== 'inactive') {
+          try { recorder.stop(); } catch (e) {}
+        }
+      }, (totalDuration + 0.5) * 1000);
+
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+function renderVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
+  const W = canvas.width;
+  const H = canvas.height;
+
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#2D5A4F');
+  grad.addColorStop(1, '#1a1a1a');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = 'rgba(184, 135, 58, 0.05)';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = '#B8873A';
+  ctx.font = '600 36px "Helvetica Neue", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('READII', W/2, 130);
+
+  ctx.strokeStyle = 'rgba(184, 135, 58, 0.6)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(W/2 - 60, 160);
+  ctx.lineTo(W/2 + 60, 160);
+  ctx.stroke();
+
+  if (playerName) {
+    ctx.fillStyle = '#FAF8F3';
+    ctx.font = '700 56px Georgia, serif';
+    ctx.fillText(playerName, W/2, 240);
+
+    ctx.fillStyle = 'rgba(250, 248, 243, 0.6)';
+    ctx.font = '300 28px "Helvetica Neue", sans-serif';
+    ctx.fillText('reads', W/2, 290);
+  }
+
+  ctx.fillStyle = '#FAF8F3';
+  ctx.font = 'italic 48px Georgia, serif';
+  ctx.fillText(article.title, W/2, 380);
+
+  renderKaraokeFromSegments(ctx, article, elapsed, W, H);
+
+  ctx.fillStyle = 'rgba(250, 248, 243, 0.5)';
+  ctx.font = '24px "Helvetica Neue", sans-serif';
+  ctx.fillText('readii.co.uk', W/2, H - 80);
+}
+
+function renderKaraokeFromSegments(ctx, article, elapsed, W, H) {
+  const GAP_S = 0.2;
+  let cumulative = 0;
+  let activeSegIdx = -1;
+
+  for (let i = 0; i < segments.length; i++) {
+    const rec = segmentRecordings[i];
+    const dur = rec ? rec.duration : 2;
+    if (elapsed >= cumulative && elapsed < cumulative + dur + GAP_S) {
+      activeSegIdx = i;
+      break;
+    }
+    cumulative += dur + GAP_S;
+  }
+
+  if (activeSegIdx === -1 && segments.length > 0) {
+    activeSegIdx = segments.length - 1;
+  }
+
+  const activeSegment = segments[activeSegIdx];
+  if (!activeSegment) return;
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'italic 700 60px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(184, 135, 58, 0.4)';
+  ctx.shadowBlur = 20;
+
+  const words = activeSegment.text.split(/\s+/);
+  const maxWidth = W - 160;
+  const lines = [];
+  let currentLine = '';
+
+  for (const w of words) {
+    const test = currentLine ? currentLine + ' ' + w : w;
+    if (ctx.measureText(test).width > maxWidth && currentLine) {
+      lines.push(currentLine);
+      currentLine = w;
+    } else {
+      currentLine = test;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+
+  const lineHeight = 80;
+  const totalHeight = lines.length * lineHeight;
+  const startY = H/2 - totalHeight/2 + 80;
+
+  lines.forEach((line, i) => {
+    ctx.fillText(line, W/2, startY + i * lineHeight);
+  });
+
+  ctx.shadowBlur = 0;
+
+  ctx.font = '300 36px Georgia, serif';
+  ctx.fillStyle = 'rgba(250, 248, 243, 0.3)';
+
+  if (activeSegIdx > 0) {
+    const prev = segments[activeSegIdx - 1].text;
+    const prevShort = prev.length > 80 ? prev.slice(0, 80) + '…' : prev;
+    ctx.fillText(prevShort, W/2, startY - 100);
+  }
+  if (activeSegIdx < segments.length - 1) {
+    const next = segments[activeSegIdx + 1].text;
+    const nextShort = next.length > 80 ? next.slice(0, 80) + '…' : next;
+    ctx.fillText(nextShort, W/2, startY + totalHeight + 60);
+  }
+}
+
+// Stage F: Result
+function enterResultStage() {
+  ecStage = 'result';
+  updateProgress();
+  showStagePanel('ecStageResult');
+
+  let totalDuration = 0;
+  let totalWords = 0;
+  segmentRecordings.forEach((rec, i) => {
+    if (rec) {
+      totalDuration += rec.duration;
+      const seg = segments[i];
+      if (seg) totalWords += seg.text.split(/\s+/).length;
+    }
+  });
+
+  const durationSec = Math.round(totalDuration);
   const durationMin = Math.floor(durationSec / 60);
   const durationRem = durationSec % 60;
-  document.getElementById('pass3Stats').textContent =
-    `You read ${wordCount} words in ${durationMin}m ${durationRem.toString().padStart(2, '0')}s`;
 
-  document.getElementById('pass3RecordPanel').style.display = 'none';
-  document.getElementById('pass3Result').style.display = 'block';
+  document.getElementById('pass3Stats').textContent =
+    `You read ${totalWords} words in ${durationMin}m ${durationRem.toString().padStart(2, '0')}s`;
+
   playSound('correct');
   triggerConfetti();
-  track('pass3_complete', { word_count: wordCount, duration_sec: durationSec });
+
+  fullReadTranscript = segments.map(s => s.text).join(' ');
+
+  track('pass3_complete', {
+    word_count: totalWords,
+    duration_sec: durationSec,
+    segments_count: segments.length,
+    has_video: !!videoBlob,
+    article_id: currentArticleId
+  });
 }
 
-function skipPass3() {
-  track('pass3_skipped', {});
-  showRoundComplete();
+// ─────────── BGM + video export helpers (v10.1) ───────────
+function preloadBGM() {
+  if (bgmAudioBuffer) return;
+  fetch(BGM_URL)
+    .then(resp => resp.arrayBuffer())
+    .then(arrayBuffer => {
+      if (!ecAudioContext) {
+        ecAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return ecAudioContext.decodeAudioData(arrayBuffer);
+    })
+    .then(buffer => { bgmAudioBuffer = buffer; })
+    .catch(err => console.warn('BGM preload failed:', err));
+}
+
+function downloadVideo() {
+  if (!videoBlob || !videoUrl) { toast('Video not ready yet'); return; }
+  const a = document.createElement('a');
+  a.href = videoUrl;
+  const name = (playerName || 'readii').toLowerCase().replace(/[^a-z0-9]/g, '-');
+  a.download = `${name}-reading.webm`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  track('video_downloaded', { article_id: currentArticleId });
+}
+
+async function shareVideo() {
+  if (!videoBlob) { toast('Video not ready yet'); return; }
+  const file = new File([videoBlob], 'readii-reading.webm', { type: videoBlob.type || 'video/webm' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'My Readii reading',
+        text: 'I read this in a British accent on Readii'
+      });
+      track('video_shared', { method: 'native', article_id: currentArticleId });
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      console.warn('Native share failed:', err);
+    }
+  }
+  downloadVideo();
+  toast('Saved — share it from your gallery');
 }
 
 // ═════════════════════════════════════════════════════
@@ -2204,34 +3027,45 @@ function triggerConfetti() {
 // ROUND COMPLETE
 // ═════════════════════════════════════════════════════
 function showRoundComplete() {
-  const passed = drillResults.filter(r => r.passed).length;
-  const pct = drillWords.length ? Math.round((passed / drillWords.length) * 100) : 100;
-
   document.getElementById('finalXP').textContent = xp;
 
   const nameBadge = document.getElementById('badgeName');
   if (playerName) { nameBadge.textContent = playerName; nameBadge.style.display = ''; }
   else { nameBadge.style.display = 'none'; }
 
-  document.getElementById('scoreRing').style.background =
-    `conic-gradient(var(--green) 0% ${pct}%, var(--border) ${pct}% 100%)`;
-  document.getElementById('ringScore').textContent = pct + '%';
+  // Hide the score ring (no longer relevant — no pass/fail)
+  const ringContainer = document.querySelector('.result-ring-container');
+  if (ringContainer) ringContainer.style.display = 'none';
 
-  // Summary rows
+  const decodeCorrect = decodeResults.filter(r => r.correct).length;
+  const decodeTotal = decodeQuestions.length;
+  const echoTotal = drillResults.length;
+  const recordedSegments = segmentRecordings.filter(r => r != null).length;
+
   const rows = [
-    { lbl: 'Sentences read', val: `${segments.length}` },
-    { lbl: 'Words drilled', val: `${drillResults.length} of ${drillWords.length}` },
-    { lbl: 'Nailed it', val: `${passed}` },
+    { lbl: 'Article', val: currentArticleId ? ARTICLES_DATA[currentArticleId].title : 'Custom text' },
   ];
-  document.getElementById('resultSummary').innerHTML = rows.map(r =>
-    `<div class="summary-row"><span class="lbl">${r.lbl}</span><span class="val">${r.val}</span></div>`
-  ).join('');
+  if (decodeTotal > 0) {
+    rows.push({ lbl: 'Britishness decoded', val: `${decodeCorrect} of ${decodeTotal}` });
+  }
+  if (echoTotal > 0) {
+    rows.push({ lbl: 'Words practised', val: `${echoTotal}` });
+  }
+  if (recordedSegments > 0) {
+    rows.push({ lbl: 'Sentences recorded', val: `${recordedSegments} of ${segments.length}` });
+  }
 
-  // Full Read badge if user did Pass 3
+  document.getElementById('resultSummary').innerHTML =
+    `<h3 style="margin-top:8px">Summary</h3>` +
+    rows.map(r =>
+      `<div class="summary-row"><span class="lbl">${r.lbl}</span><span class="val">${r.val}</span></div>`
+    ).join('');
+
   const fullReadSummary = document.getElementById('fullReadSummary');
-  if (fullReadTranscript && fullReadTranscript.trim().length > 0) {
-    const wc = fullReadTranscript.trim().split(/\s+/).length;
-    fullReadSummary.innerHTML = `<div class="fullread-badge">📖 Full article read-through: ${wc} words</div>`;
+  if (recordedSegments > 0) {
+    let badgeText = `📖 ${recordedSegments} sentences captured`;
+    if (videoBlob) badgeText += ` · 🎬 Video saved`;
+    fullReadSummary.innerHTML = `<div class="fullread-badge">${badgeText}</div>`;
     fullReadSummary.style.display = 'block';
   } else {
     fullReadSummary.style.display = 'none';
@@ -2242,11 +3076,13 @@ function showRoundComplete() {
 
   track('round_complete', {
     segments_total: segments.length,
-    drill_total: drillWords.length,
-    drill_passed: passed,
+    segments_recorded: recordedSegments,
+    echo_total: echoTotal,
+    decode_correct: decodeCorrect,
+    decode_total: decodeTotal,
     xp,
-    accuracy_pct: pct,
-    did_full_read: fullReadTranscript.trim().length > 0,
+    has_video: !!videoBlob,
+    article_id: currentArticleId,
     lives,
   });
 }
@@ -2413,6 +3249,23 @@ function resetAll() {
   wordTimestamps = [];  // v10
   currentPass = 1; segIdx = 0; drillIdx = 0;
   stopListenAudio(); listenCurrentSegment = 0; listenIsPaused = false; listenFinished = false;  // v10.1
+  // v10.1 Pass 3 Echo-and-Capture cleanup
+  ecCurrentSegmentIdx = 0;
+  ecStage = 'prestart';
+  if (ecDaisyAudio) { ecDaisyAudio.pause(); ecDaisyAudio = null; }
+  ecDaisyAudioCache = {};
+  ecDaisyPlaybackRate = 1.0;
+  if (ecUserMediaRecorder && ecUserMediaRecorder.state !== 'inactive') {
+    try { ecUserMediaRecorder.stop(); } catch (e) {}
+  }
+  if (ecUserMediaStream) {
+    ecUserMediaStream.getTracks().forEach(t => t.stop());
+    ecUserMediaStream = null;
+  }
+  ecUserMediaRecorder = null;
+  stopSilenceDetection();
+  segmentRecordings.forEach(rec => { if (rec && rec.url) URL.revokeObjectURL(rec.url); });
+  segmentRecordings = [];
   xp = 0; pass1Transcript = []; drillResults = []; challengeData = null;
   fullReadTranscript = ''; fullReadStartTime = null; userStoppedPass3 = false;
   transAnswered = false; pendingAction = null;
