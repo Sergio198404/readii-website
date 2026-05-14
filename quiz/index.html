@@ -4569,6 +4569,29 @@ async function uploadSingleVideo({ blob, videoType, articleId, playerName }) {
 
   console.log('📤 uploading directly to Supabase Storage:', storagePath);
 
+  console.log('🔍 sb client state:', {
+    sbExists: typeof sb !== 'undefined',
+    sbStorage: typeof sb?.storage,
+    sbAuth: typeof sb?.auth,
+    hasSession: !!(sb?.auth?.session?.()),
+  });
+
+  if (sb?.auth?.getSession) {
+    try {
+      const { data } = await sb.auth.getSession();
+      console.log('🔍 current session:', data?.session ? 'EXISTS' : 'null');
+    } catch (e) {
+      console.log('🔍 session check failed:', e.message);
+    }
+  }
+
+  console.log('🔍 about to upload:', {
+    storagePath,
+    blobSize: blob.size,
+    blobType: blob.type,
+    contentType: blob.type || 'video/webm'
+  });
+
   const { data: uploadData, error: uploadError } = await sb.storage
     .from('user-videos')
     .upload(storagePath, blob, {
