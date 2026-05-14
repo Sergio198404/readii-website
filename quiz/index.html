@@ -422,6 +422,23 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .rewatch-videos-btn{background:var(--forest);color:var(--white);border:none;font-weight:600}
 .rewatch-videos-btn:hover{background:var(--forest-light)}
 
+/* v11.5: 用户自选截取工具 */
+.clip-tool-section,.clip-locked-section{margin:20px 0;padding:18px;background:var(--white);border-radius:var(--radius);text-align:center}
+.clip-tool-section{border:2px solid var(--gold);background:linear-gradient(135deg,#FFF8E7 0%,#FFFFFF 100%);box-shadow:0 4px 20px rgba(184,135,58,0.15)}
+.clip-locked-section{border:1.5px dashed var(--border);background:var(--bg)}
+.clip-tool-label{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.1em;margin-bottom:4px}
+.clip-locked-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.1em;margin-bottom:8px}
+.clip-tool-hint,.clip-locked-hint{font-size:12px;color:var(--muted);margin-bottom:16px}
+.clip-time-display{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;font-size:14px;font-weight:700;color:var(--ink)}
+.clip-time-divider{color:var(--gold)}
+.clip-duration{font-weight:400;color:var(--muted);font-size:12px;margin-left:4px}
+.clip-slider-wrapper{position:relative;margin:14px 0;padding:8px 0}
+.clip-slider{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:3px;outline:none;cursor:pointer;margin:6px 0}
+.clip-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--white);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.clip-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--white)}
+.clip-generate-btn{width:100%;margin-top:8px}
+#clipVideoPreview{width:100%;max-width:300px;height:auto;aspect-ratio:9/16;border-radius:10px;background:#000;display:block;margin:12px auto}
+
 /* Shared preview screen (v10.1) */
 .shared-header{text-align:center;margin-bottom:20px}
 .shared-from{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px}
@@ -727,6 +744,46 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <button class="btn-listen" onclick="downloadVideo()">⬇ Download Full</button>
         </div>
         <p class="video-hint">Keep this for yourself — practice and progress</p>
+      </div>
+
+      <!-- Viral cut tool (v11.5) -->
+      <div class="clip-tool-section" id="clipToolSection" style="display:none">
+        <p class="clip-tool-label">✨ VIRAL CUT TOOL · TOP 30% UNLOCKED</p>
+        <p class="clip-tool-hint">Pick any 15-30 seconds from your reading</p>
+
+        <div class="clip-controls">
+          <div class="clip-time-display">
+            <span id="clipStartLabel">0:00</span>
+            <span class="clip-time-divider">→</span>
+            <span id="clipEndLabel">0:15</span>
+            <span class="clip-duration" id="clipDuration">(15s)</span>
+          </div>
+
+          <div class="clip-slider-wrapper">
+            <input type="range" id="clipStartSlider" class="clip-slider" min="0" max="100" value="0" step="0.1" />
+            <input type="range" id="clipEndSlider" class="clip-slider" min="0" max="100" value="25" step="0.1" />
+          </div>
+
+          <button class="btn-start clip-generate-btn" id="clipGenerateBtn" onclick="generateClipVideo()">
+            ✨ Create my viral cut
+          </button>
+        </div>
+
+        <div id="clipResultSection" style="display:none">
+          <p class="viral-label">YOUR VIRAL CUT</p>
+          <video id="clipVideoPreview" controls playsinline preload="auto"></video>
+          <div class="video-actions">
+            <button class="btn-start" onclick="downloadClipVideo()">📤 Save & Share</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Locked state (when not unlocked) -->
+      <div class="clip-locked-section" id="clipLockedSection" style="display:none">
+        <p class="clip-locked-label">🔒 VIRAL CUT TOOL</p>
+        <p class="clip-locked-hint" id="clipLockedHint">
+          Decode 2 more cultural insights to unlock the viral cut tool
+        </p>
       </div>
 
       <button class="btn-start" onclick="showRoundComplete()" style="margin-top:14px">See my results →</button>
@@ -1164,6 +1221,13 @@ let videoShareSlug = null;         // 分享 slug
 // v11: External sound effects
 const SFX_CORRECT_URL = `${STORAGE_BASE}/sfx-audio/correct.mp3`;
 let sfxCorrectAudio = null;
+
+// v11.5: user-selectable clip tool
+let clipVideoBlob = null;
+let clipVideoUrl = null;
+let clipStartTime = 0;
+let clipEndTime = 15;
+let fullVideoDuration = 0;
 
 // Global volume control (v10.1 fix #3)
 const IS_MOBILE = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
@@ -2792,6 +2856,18 @@ function evaluateViralQualification() {
   return { qualified: true };
 }
 
+// v11.5: clip 工具解锁条件 — Decode 3 题答对至少 2 题
+function evaluateClipUnlock() {
+  const correctCount = decodeResults.filter(r => r.correct).length;
+  const total = decodeQuestions.length || 0;
+  return {
+    unlocked: correctCount >= 2,
+    correctCount,
+    total,
+    displayPercent: 30 // UI 显示"top 30%"
+  };
+}
+
 async function enterGeneratingStage() {
   ecStage = 'generating';
   updateProgress();
@@ -2860,30 +2936,8 @@ async function enterGeneratingStage() {
     stepVideo.classList.remove('active');
     stepVideo.classList.add('done');
 
-    // v11: 如果解锁,生成 viral 短视频
-    if (viralUnlocked) {
-      await sleep(300);
-      const stepViral = document.getElementById('ecStepViral');
-      if (stepViral) {
-        stepViral.style.display = 'block';
-        stepViral.classList.add('active');
-      }
-
-      try {
-        const viralBuffer = await stitchViralSegments();
-        const viralMixed = await mixWithBGM(viralBuffer, true);
-        await generateViralVideo(viralMixed);
-
-        if (stepViral) {
-          stepViral.classList.remove('active');
-          stepViral.classList.add('done');
-        }
-      } catch (err) {
-        console.error('Viral video generation failed:', err);
-        viralUnlocked = false; // 降级
-        track('viral_generation_failed', { error: err.message });
-      }
-    }
+    // v11.5: viral 自动生成已移除,改为 Result 屏的用户自选截取工具
+    // (stitchViralSegments / generateViralVideo / mixWithBGM(_,true) 函数保留备用)
 
     await sleep(500);
 
@@ -2928,7 +2982,7 @@ function startUnlockAnimation() {
       <div class="unlock-content">
         <div class="unlock-icon">✨</div>
         <h2 class="unlock-title">You nailed the closing</h2>
-        <p class="unlock-subtitle">A 15-second viral cut has been crafted</p>
+        <p class="unlock-subtitle">The viral cut tool is now yours to play with</p>
       </div>
     </div>
   `;
@@ -3640,9 +3694,11 @@ function renderVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
 
   renderKaraokeFromSegments(ctx, article, elapsed, W, H);
 
-  ctx.fillStyle = 'rgba(250, 248, 243, 0.5)';
-  ctx.font = '24px "Helvetica Neue", sans-serif';
-  ctx.fillText('readii.co.uk', W/2, H - 80);
+  // v11.5: 只显示品牌字标,不带 URL(避免平台限流)
+  ctx.fillStyle = 'rgba(184, 135, 58, 0.75)';
+  ctx.font = '600 28px "Helvetica Neue", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('READII', W/2, H - 80);
 }
 
 function renderKaraokeFromSegments(ctx, article, elapsed, W, H) {
@@ -3774,7 +3830,258 @@ function enterResultStage() {
     article_id: currentArticleId
   });
 
+  // v11.5: Clip tool unlock check (基于 Decode 答题)
+  const clipEval = evaluateClipUnlock();
+  const clipToolSection = document.getElementById('clipToolSection');
+  const clipLockedSection = document.getElementById('clipLockedSection');
+
+  if (clipEval.unlocked) {
+    if (clipToolSection) {
+      clipToolSection.style.display = 'block';
+      setupClipTool();
+    }
+    if (clipLockedSection) clipLockedSection.style.display = 'none';
+    track('clip_tool_unlocked', {
+      decode_correct: clipEval.correctCount,
+      decode_total: clipEval.total
+    });
+  } else {
+    if (clipToolSection) clipToolSection.style.display = 'none';
+    if (clipLockedSection) {
+      clipLockedSection.style.display = 'block';
+      const need = 2 - clipEval.correctCount;
+      document.getElementById('clipLockedHint').textContent =
+        `Decode ${need} more cultural insight${need > 1 ? 's' : ''} to unlock the viral cut tool`;
+    }
+    track('clip_tool_locked', { decode_correct: clipEval.correctCount });
+  }
+
   clearIDBProgress(); // v10.1 fix #1: 完成了就清掉持久化进度
+}
+
+// ═════════════════════════════════════════════════════
+// VIRAL CUT TOOL — 用户自选截取 (v11.5)
+// ═════════════════════════════════════════════════════
+function setupClipTool() {
+  const videoEl = document.getElementById('videoPreview');
+  if (!videoEl) return;
+
+  const onMeta = () => {
+    fullVideoDuration = videoEl.duration;
+
+    const startSlider = document.getElementById('clipStartSlider');
+    const endSlider = document.getElementById('clipEndSlider');
+
+    if (!startSlider || !endSlider) return;
+
+    // 默认选 0 - 15 秒
+    clipStartTime = 0;
+    clipEndTime = Math.min(15, fullVideoDuration);
+
+    startSlider.max = Math.max(0, fullVideoDuration - 15);
+    endSlider.max = fullVideoDuration;
+    startSlider.value = 0;
+    endSlider.value = clipEndTime;
+
+    updateClipDisplay();
+
+    startSlider.oninput = (e) => {
+      clipStartTime = parseFloat(e.target.value);
+      // 确保 end - start 在 15-30 秒区间
+      if (clipEndTime - clipStartTime < 15) {
+        clipEndTime = Math.min(fullVideoDuration, clipStartTime + 15);
+        endSlider.value = clipEndTime;
+      } else if (clipEndTime - clipStartTime > 30) {
+        clipEndTime = clipStartTime + 30;
+        endSlider.value = clipEndTime;
+      }
+      updateClipDisplay();
+      videoEl.currentTime = clipStartTime;
+    };
+
+    endSlider.oninput = (e) => {
+      clipEndTime = parseFloat(e.target.value);
+      // 确保 end - start 在 15-30 秒区间
+      if (clipEndTime - clipStartTime < 15) {
+        clipStartTime = Math.max(0, clipEndTime - 15);
+        startSlider.value = clipStartTime;
+      } else if (clipEndTime - clipStartTime > 30) {
+        clipStartTime = clipEndTime - 30;
+        startSlider.value = clipStartTime;
+      }
+      updateClipDisplay();
+      videoEl.currentTime = clipStartTime;
+    };
+  };
+
+  videoEl.addEventListener('loadedmetadata', onMeta, { once: true });
+
+  // 如果 metadata 已加载
+  if (videoEl.readyState >= 1) {
+    onMeta();
+  }
+}
+
+function updateClipDisplay() {
+  const formatTime = (s) => {
+    const min = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${min}:${sec.toString().padStart(2, '0')}`;
+  };
+
+  document.getElementById('clipStartLabel').textContent = formatTime(clipStartTime);
+  document.getElementById('clipEndLabel').textContent = formatTime(clipEndTime);
+  document.getElementById('clipDuration').textContent =
+    `(${Math.round(clipEndTime - clipStartTime)}s)`;
+}
+
+async function generateClipVideo() {
+  const btn = document.getElementById('clipGenerateBtn');
+  if (!btn) return;
+
+  const article = ARTICLES_DATA[currentArticleId];
+  if (!videoBlob || !article) {
+    toast('Full video not ready');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '✨ Creating...';
+
+  try {
+    const tempVideo = document.createElement('video');
+    tempVideo.src = videoUrl;
+    tempVideo.muted = false;
+    tempVideo.playsInline = true;
+
+    await new Promise((resolve) => {
+      tempVideo.addEventListener('loadedmetadata', resolve, { once: true });
+    });
+
+    const canvas = document.getElementById('videoCanvas');
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const ctx = canvas.getContext('2d');
+
+    // 捕捉 tempVideo 的音频流
+    const sourceStream = tempVideo.captureStream();
+
+    // canvas 视频流
+    const canvasStream = canvas.captureStream(30);
+
+    // 合并:canvas 视频 + tempVideo 音频
+    const combinedStream = new MediaStream();
+    canvasStream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
+    sourceStream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
+
+    const mimeTypes = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+    let mimeType = '';
+    for (const m of mimeTypes) {
+      if (MediaRecorder.isTypeSupported(m)) { mimeType = m; break; }
+    }
+
+    const chunks = [];
+    const recorder = new MediaRecorder(combinedStream, {
+      mimeType,
+      videoBitsPerSecond: 3000000,
+      audioBitsPerSecond: 192000
+    });
+
+    recorder.ondataavailable = (e) => {
+      if (e.data && e.data.size > 0) chunks.push(e.data);
+    };
+
+    await new Promise((resolve, reject) => {
+      recorder.onstop = () => {
+        clipVideoBlob = new Blob(chunks, { type: mimeType });
+        clipVideoUrl = URL.createObjectURL(clipVideoBlob);
+        resolve();
+      };
+
+      recorder.onerror = reject;
+
+      // 启动:跳到 start,开始播放和录制
+      tempVideo.currentTime = clipStartTime;
+      tempVideo.play();
+      recorder.start();
+
+      function renderFrame() {
+        if (tempVideo.ended || tempVideo.currentTime >= clipEndTime) {
+          tempVideo.pause();
+          if (recorder.state !== 'inactive') recorder.stop();
+          return;
+        }
+
+        ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
+
+        // 右下角小 Logo(品牌,无 URL)
+        ctx.fillStyle = 'rgba(184, 135, 58, 0.85)';
+        ctx.font = '600 32px "Helvetica Neue", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('READII', canvas.width - 40, canvas.height - 40);
+
+        requestAnimationFrame(renderFrame);
+      }
+      renderFrame();
+    });
+
+    const clipPreview = document.getElementById('clipVideoPreview');
+    if (clipPreview) {
+      clipPreview.src = clipVideoUrl;
+      clipPreview.load();
+    }
+    document.getElementById('clipResultSection').style.display = 'block';
+
+    btn.disabled = false;
+    btn.textContent = '✨ Create another cut';
+
+    track('clip_video_generated', {
+      duration: clipEndTime - clipStartTime,
+      size_kb: Math.round(clipVideoBlob.size / 1024),
+      article_id: currentArticleId
+    });
+
+  } catch (e) {
+    console.error('Clip generation failed:', e);
+    btn.disabled = false;
+    btn.textContent = '✨ Create my viral cut';
+    toast('Clip generation failed — try again?');
+  }
+}
+
+async function downloadClipVideo() {
+  if (!clipVideoBlob || !clipVideoUrl) {
+    toast('Clip not ready');
+    return;
+  }
+
+  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const file = new File([clipVideoBlob], `readii-clip.webm`, { type: clipVideoBlob.type });
+
+  const article = ARTICLES_DATA[currentArticleId];
+  const shareText = `🇬🇧 ${playerName || 'My'} reading: "${article.title}"\n\nRecorded on Readii`;
+
+  try { await navigator.clipboard.writeText(shareText); } catch (e) {}
+
+  if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], text: shareText });
+      if (isIOS) toast('Save to Files → then open Files app to share');
+      else toast('Choose where to save or share');
+      return;
+    } catch (e) {
+      if (e.name === 'AbortError') return;
+    }
+  }
+
+  const a = document.createElement('a');
+  a.href = clipVideoUrl;
+  a.download = `readii-clip.webm`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast(isIOS ? 'Downloaded! Open Files app to share' : 'Clip saved');
 }
 
 // ═════════════════════════════════════════════════════
