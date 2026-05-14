@@ -309,6 +309,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .modal .email-skip-input:focus{outline:none;border-color:var(--gold)}
 .modal .wait-msg{font-size:12px;color:var(--muted);margin-top:8px}
 .modal .close-modal{margin-top:12px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer}
+.modal .resume-sub{font-size:13px;color:var(--muted);margin-bottom:10px}
+.modal .resume-detail{font-size:14px;color:var(--ink);line-height:1.6;margin-bottom:18px;padding:12px;background:var(--gold-pale);border-radius:10px}
 
 /* Name modal */
 .name-modal{max-width:340px}
@@ -325,6 +327,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;overflow:hidden}
 .confetti-particle{position:absolute;top:-12px;width:9px;height:14px;border-radius:2px;animation:confetti-fall 2.8s ease-out forwards}
 @keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* Global volume control (v10.1 fix #3) */
+.volume-control{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--white);border-radius:10px;border:1px solid var(--border);margin-bottom:14px}
+.volume-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s}
+.volume-btn:hover{background:var(--bg)}
+.volume-slider{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+.volume-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--forest);cursor:pointer;border:2px solid var(--white);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.volume-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--forest);cursor:pointer;border:2px solid var(--white)}
+.volume-display{font-size:11px;color:var(--muted);font-weight:700;min-width:36px;text-align:right}
 
 /* Pass 3 Echo-and-Capture (v10.1 final) */
 .ec-status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px}
@@ -402,6 +413,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <div class="brand">
     <h1>Readii</h1>
     <p>British Pronunciation Reader</p>
+  </div>
+
+  <!-- Global volume control (v10.1 fix #3) -->
+  <div class="volume-control">
+    <button class="volume-btn" onclick="toggleMute()" id="volBtn" aria-label="Mute">🔊</button>
+    <input type="range" id="volSlider" min="0" max="100" value="80"
+           oninput="setGlobalVolume(this.value)"
+           class="volume-slider" aria-label="Volume">
+    <span class="volume-display" id="volDisplay">80%</span>
   </div>
 
   <div class="lives-bar" id="livesBar"></div>
@@ -577,9 +597,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <span class="ec-compare-icon">▶</span>
           <span class="ec-compare-label">Hear yourself</span>
         </button>
-        <button class="ec-compare-btn" onclick="playDaisySegment()">
+        <button class="ec-compare-btn" onclick="playDaisySegment(1.0)">
           <span class="ec-compare-icon">▶</span>
           <span class="ec-compare-label">Hear Daisy</span>
+        </button>
+        <button class="ec-compare-btn" onclick="playDaisySegment(0.75)">
+          <span class="ec-compare-icon">🐢</span>
+          <span class="ec-compare-label">Slow Daisy</span>
         </button>
       </div>
       <div class="ec-decision-row">
@@ -688,6 +712,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     <button class="btn-email-skip" onclick="emailSkipCooldown()">Submit & Continue</button>
     <p class="wait-msg">Or wait for cooldown</p>
     <button class="close-modal" onclick="closeNoLivesModal()">Later</button>
+  </div>
+</div>
+
+<!-- Resume unfinished Pass 3 session (v10.1 fix #1) -->
+<div class="modal-overlay" id="resumeModal">
+  <div class="modal">
+    <div class="big-emoji">📖</div>
+    <h2>Continue your reading?</h2>
+    <p class="resume-sub">You have an unfinished recording session</p>
+    <p class="resume-detail"><b id="resumeArticleName"></b><br><span id="resumeProgress"></span></p>
+    <button class="btn-start" onclick="resumePass3FromIDB()" style="width:100%;margin-bottom:10px">→ Continue where I left off</button>
+    <button class="close-modal" onclick="dismissResume()">Start fresh instead</button>
   </div>
 </div>
 
@@ -1017,6 +1053,11 @@ let segmentRecordings = [];
 // Daisy 单句 audio cache (for replay/review)
 let ecDaisyAudioCache = {};
 
+// Global volume control (v10.1 fix #3)
+let globalVolume = parseFloat(localStorage.getItem('readii_volume') || '0.8');
+let isMuted = false;
+let preMuteVolume = 0.8;
+
 // Three-pass state
 let currentPass = 1;
 let segments = [];
@@ -1062,6 +1103,13 @@ document.addEventListener('DOMContentLoaded', () => {
   checkCooldown();
   primeTTS();
 
+  // Initialize volume slider (v10.1 fix #3)
+  const volSlider = document.getElementById('volSlider');
+  if (volSlider) {
+    volSlider.value = globalVolume * 100;
+    setGlobalVolume(globalVolume * 100);
+  }
+
   if (isWeChatBrowser()) {
     document.getElementById('wechatBanner').style.display = 'block';
     track('wechat_browser_detected');
@@ -1096,6 +1144,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hoursSince > 1) track('return_visit', { hours_since: Math.round(hoursSince) });
   }
   localStorage.setItem('readii_last_visit', Date.now().toString());
+
+  // v10.1 fix #1: 检测未完成的 Pass 3 会话(挑战链接场景跳过)
+  if (!slug) checkForUnfinishedPass3();
+});
+
+// v10.1 fix #1: 页面切到后台时暂停播放(不 reset,录音继续)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (ecDaisyAudio) ecDaisyAudio.pause();
+    if (listenAudio) listenAudio.pause();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
 });
 
 function primeTTS() {
@@ -1401,6 +1461,7 @@ function playSegmentAudio(segmentIdx) {
   }
 
   listenAudio = new Audio(url);
+  listenAudio.volume = globalVolume;  // v10.1 fix #3
 
   listenAudio.onended = () => {
     if (listenIsPaused || listenFinished) return;
@@ -1430,6 +1491,15 @@ function playSegmentAudio(segmentIdx) {
 }
 
 function toggleListenPlayback() {
+  // v10.1 fix #2: 如果已经听完,从头重听
+  if (listenFinished) {
+    listenFinished = false;
+    listenIsPaused = false;
+    listenCurrentSegment = 0;
+    playSegmentAudio(0);
+    return;
+  }
+
   if (!listenAudio) {
     // Resume from current segment
     listenIsPaused = false;
@@ -1451,6 +1521,15 @@ function toggleListenPlayback() {
 }
 
 function restartListenSegment() {
+  // v10.1 fix #2: 已完成时,跳回最后一句重听
+  if (listenFinished) {
+    const targetIdx = Math.max(0, segments.length - 1);
+    listenFinished = false;
+    listenCurrentSegment = targetIdx;
+    playSegmentAudio(targetIdx);
+    return;
+  }
+
   if (listenAudio) {
     listenAudio.currentTime = 0;
     listenAudio.play();
@@ -1463,6 +1542,12 @@ function restartListenSegment() {
 }
 
 function skipToNextSegment() {
+  // v10.1 fix #2: 已完成时,直接进入下一步 (Continue to decode)
+  if (listenFinished) {
+    finishPass1();
+    return;
+  }
+
   if (listenAudio) {
     listenAudio.pause();
     listenAudio = null;
@@ -1483,6 +1568,11 @@ function listenFinishedHandler() {
 
   document.getElementById('listenProgressFill').style.width = '100%';
   document.getElementById('listenStatusText').textContent = '✓ Listen complete';
+
+  // v10.1 fix #2: 更新按钮状态
+  const playPauseBtn = document.getElementById('listenPlayPause');
+  if (playPauseBtn) playPauseBtn.textContent = '▶ Listen again';
+
   document.getElementById('listenContinueBtn').style.display = 'block';
 
   bumpXP(20); // XP for completing Pass 1
@@ -1884,6 +1974,7 @@ function playUserEchoRecording() {
     return;
   }
   const audio = new Audio(echoUserRecording.url);
+  audio.volume = globalVolume;  // v10.1 fix #3
   audio.play().catch(err => {
     console.warn('User recording playback failed:', err);
   });
@@ -2077,6 +2168,7 @@ function startPass3() {
   segmentRecordings = [];
   ecDaisyAudioCache = {};
   ecDaisyPlaybackRate = 1.0;
+  clearIDBProgress(); // v10.1 fix #1: 全新一轮,清掉旧的持久化进度
 
   showScreen('Pass3');
 
@@ -2172,6 +2264,7 @@ function playCurrentDaisySegment() {
 
   const url = `${STORAGE_BASE}/article-audio/${segment.audio_filename}`;
   ecDaisyAudio = new Audio(url);
+  ecDaisyAudio.volume = globalVolume;  // v10.1 fix #3
   ecDaisyAudio.playbackRate = ecDaisyPlaybackRate;
 
   ecDaisyAudioCache[ecCurrentSegmentIdx] = ecDaisyAudio;
@@ -2420,26 +2513,31 @@ function playMySegmentRecording() {
   if (ecDaisyAudio) ecDaisyAudio.pause();
 
   const audio = new Audio(rec.url);
+  audio.volume = globalVolume;  // v10.1 fix #3
   audio.play().catch(err => console.warn('Playback failed:', err));
 
   track('pass3_user_replay', { segment_idx: ecCurrentSegmentIdx });
 }
 
-function playDaisySegment() {
+function playDaisySegment(rate) {
+  // v10.1 fix #4: 支持指定速度
+  const playRate = (typeof rate === 'number') ? rate : ecDaisyPlaybackRate;
+
   if (ecDaisyAudio) ecDaisyAudio.pause();
 
   const segment = segments[ecCurrentSegmentIdx];
   if (!segment || !segment.audio_filename) {
-    speakPhrase(segment ? segment.text : '', 1);
+    speakPhrase(segment ? segment.text : '', playRate);
     return;
   }
 
   const url = `${STORAGE_BASE}/article-audio/${segment.audio_filename}`;
   ecDaisyAudio = new Audio(url);
-  ecDaisyAudio.playbackRate = ecDaisyPlaybackRate;
+  ecDaisyAudio.volume = globalVolume;  // v10.1 fix #3
+  ecDaisyAudio.playbackRate = playRate;
   ecDaisyAudio.play().catch(err => console.warn('Daisy replay failed:', err));
 
-  track('pass3_daisy_review_replay', { segment_idx: ecCurrentSegmentIdx });
+  track('pass3_daisy_review_replay', { segment_idx: ecCurrentSegmentIdx, rate: playRate });
 }
 
 function reRecordCurrentSegment() {
@@ -2453,7 +2551,10 @@ function reRecordCurrentSegment() {
 }
 
 function keepAndContinue() {
+  // v10.1 fix #1: persist this segment's recording before advancing
+  const justRecorded = ecCurrentSegmentIdx;
   ecCurrentSegmentIdx++;
+  saveProgressToIDB(justRecorded); // fire-and-forget
 
   if (ecCurrentSegmentIdx >= segments.length) {
     enterGeneratingStage();
@@ -2851,6 +2952,201 @@ function enterResultStage() {
     has_video: !!videoBlob,
     article_id: currentArticleId
   });
+
+  clearIDBProgress(); // v10.1 fix #1: 完成了就清掉持久化进度
+}
+
+// ═════════════════════════════════════════════════════
+// PASS 3 PROGRESS PERSISTENCE — IndexedDB (v10.1 fix #1)
+// 根因:移动浏览器后台回收页面 → 整页 reload → 内存进度清零。
+// 对策:每录完一句把 Blob + 元数据持久化到 IndexedDB,
+//       reload 后检测到未完成会话 → 提示用户恢复。
+// ═════════════════════════════════════════════════════
+const IDB_NAME = 'readii_pass3';
+let _idbPromise = null;
+
+function openProgressDB() {
+  if (_idbPromise) return _idbPromise;
+  _idbPromise = new Promise((resolve, reject) => {
+    let req;
+    try {
+      req = indexedDB.open(IDB_NAME, 1);
+    } catch (e) {
+      reject(e);
+      return;
+    }
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('recordings')) db.createObjectStore('recordings');
+      if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta');
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  return _idbPromise;
+}
+
+function idbPut(storeName, key, value) {
+  return openProgressDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).put(value, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  }));
+}
+
+function idbGet(storeName, key) {
+  return openProgressDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  }));
+}
+
+function idbGetAllRecordings() {
+  return openProgressDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction('recordings', 'readonly');
+    const req = tx.objectStore('recordings').openCursor();
+    const result = {};
+    req.onsuccess = () => {
+      const cursor = req.result;
+      if (cursor) { result[cursor.key] = cursor.value; cursor.continue(); }
+      else resolve(result);
+    };
+    req.onerror = () => reject(req.error);
+  }));
+}
+
+function idbClearAll() {
+  return openProgressDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(['recordings', 'meta'], 'readwrite');
+    tx.objectStore('recordings').clear();
+    tx.objectStore('meta').clear();
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  }));
+}
+
+// 录完一句、advance 后调用:持久化该句录音 + 当前进度元数据
+async function saveProgressToIDB(recordedIdx) {
+  const rec = segmentRecordings[recordedIdx];
+  if (!rec || !rec.blob) return;
+  try {
+    await idbPut('recordings', recordedIdx, { blob: rec.blob, duration: rec.duration });
+    await idbPut('meta', 'current', {
+      articleId: currentArticleId,
+      segmentIdx: ecCurrentSegmentIdx,
+      playerName,
+      xp,
+      decodeResults,
+      drillResults,
+      timestamp: Date.now()
+    });
+  } catch (e) {
+    console.warn('IDB progress save failed:', e);
+  }
+}
+
+async function clearIDBProgress() {
+  _idbPromise = null;
+  try {
+    await idbClearAll();
+  } catch (e) {
+    console.warn('IDB clear failed:', e);
+  }
+}
+
+// reload 后调用:检测有无未完成会话
+async function checkForUnfinishedPass3() {
+  let meta;
+  try {
+    meta = await idbGet('meta', 'current');
+  } catch (e) {
+    return;
+  }
+  if (!meta || !meta.articleId) return;
+
+  // 太老的会话(>24h)直接丢弃
+  if (Date.now() - (meta.timestamp || 0) > 24 * 3600 * 1000) {
+    clearIDBProgress();
+    return;
+  }
+  // 文章数据不存在则丢弃
+  if (!ARTICLES_DATA[meta.articleId]) {
+    clearIDBProgress();
+    return;
+  }
+
+  const article = ARTICLES_DATA[meta.articleId];
+  document.getElementById('resumeArticleName').textContent = article.title;
+  document.getElementById('resumeProgress').textContent =
+    `Recorded ${Math.min(meta.segmentIdx, article.segments.length)} of ${article.segments.length} sentences`;
+  window._pendingResumeMeta = meta;
+  document.getElementById('resumeModal').classList.add('show');
+}
+
+async function resumePass3FromIDB() {
+  const meta = window._pendingResumeMeta;
+  document.getElementById('resumeModal').classList.remove('show');
+  if (!meta) return;
+
+  const article = ARTICLES_DATA[meta.articleId];
+  if (!article) { clearIDBProgress(); return; }
+
+  // 重建文章状态
+  currentArticleId = meta.articleId;
+  segments = article.segments;
+  drillWords = article.drill_words;
+  decodeQuestions = article.decode_questions || [];
+  quizCards = [];
+  if (meta.playerName) playerName = meta.playerName;
+  xp = meta.xp || 0;
+  decodeResults = meta.decodeResults || [];
+  drillResults = meta.drillResults || [];
+
+  // 读回所有已录音频 Blob
+  segmentRecordings = [];
+  try {
+    const recs = await idbGetAllRecordings();
+    Object.keys(recs).forEach(k => {
+      const idx = parseInt(k, 10);
+      const { blob, duration } = recs[k];
+      segmentRecordings[idx] = { blob, url: URL.createObjectURL(blob), duration };
+    });
+  } catch (e) {
+    console.warn('IDB recordings restore failed:', e);
+  }
+
+  // 恢复 Pass 3 位置
+  currentPass = 3;
+  ecCurrentSegmentIdx = meta.segmentIdx;
+  ecStage = 'prestart';
+  ecDaisyAudioCache = {};
+  ecDaisyPlaybackRate = 1.0;
+  updateXP();
+
+  showScreen('Pass3');
+  hideAllStagePanels();
+  updateSentenceDisplay();
+  updateProgress();
+  preloadBGM();
+
+  window._pendingResumeMeta = null;
+  track('pass3_resumed', { article_id: currentArticleId, segment_idx: ecCurrentSegmentIdx });
+
+  // 全部句子已录完 → 直接生成视频;否则继续听读下一句
+  if (ecCurrentSegmentIdx >= segments.length) {
+    enterGeneratingStage();
+  } else {
+    enterDaisyStage();
+  }
+}
+
+function dismissResume() {
+  document.getElementById('resumeModal').classList.remove('show');
+  window._pendingResumeMeta = null;
+  clearIDBProgress();
 }
 
 // ─────────── BGM + video export helpers (v10.1) ───────────
@@ -2969,6 +3265,51 @@ async function shareVideo() {
 }
 
 // ═════════════════════════════════════════════════════
+// GLOBAL VOLUME CONTROL (v10.1 fix #3)
+// ═════════════════════════════════════════════════════
+function setGlobalVolume(percent) {
+  globalVolume = percent / 100;
+  isMuted = globalVolume === 0;
+  localStorage.setItem('readii_volume', globalVolume.toString());
+
+  applyVolumeToAllAudio();
+
+  const display = document.getElementById('volDisplay');
+  if (display) display.textContent = `${Math.round(percent)}%`;
+
+  const btn = document.getElementById('volBtn');
+  if (btn) {
+    if (globalVolume === 0) btn.textContent = '🔇';
+    else if (globalVolume < 0.3) btn.textContent = '🔈';
+    else if (globalVolume < 0.7) btn.textContent = '🔉';
+    else btn.textContent = '🔊';
+  }
+}
+
+function toggleMute() {
+  if (isMuted || globalVolume === 0) {
+    isMuted = false;
+    globalVolume = preMuteVolume || 0.8;
+  } else {
+    preMuteVolume = globalVolume;
+    isMuted = true;
+    globalVolume = 0;
+  }
+
+  const slider = document.getElementById('volSlider');
+  if (slider) slider.value = globalVolume * 100;
+
+  setGlobalVolume(globalVolume * 100);
+}
+
+function applyVolumeToAllAudio() {
+  if (listenAudio) listenAudio.volume = globalVolume;
+  if (ecDaisyAudio) ecDaisyAudio.volume = globalVolume;
+  // 动态创建的 audio 元素若在 DOM 中也一并更新
+  document.querySelectorAll('audio').forEach(a => a.volume = globalVolume);
+}
+
+// ═════════════════════════════════════════════════════
 // TTS + AUDIO
 // ═════════════════════════════════════════════════════
 function speakPhrase(phrase, rate) {
@@ -2983,6 +3324,7 @@ function speakPhrase(phrase, rate) {
       const u = new SpeechSynthesisUtterance(phrase);
       u.lang = 'en-GB';
       u.rate = rate;
+      u.volume = globalVolume;  // v10.1 fix #3
       const voices = ttsVoices.length ? ttsVoices : (window.speechSynthesis.getVoices() || []);
       const brit = voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang && v.lang.startsWith('en'));
       if (brit) u.voice = brit;
@@ -3001,6 +3343,7 @@ function playWordAudio(word) {
   // v10.1: 优先使用 Supabase Storage word-audio bucket
   const url = `${STORAGE_BASE}/word-audio/${key}.mp3`;
   const audio = new Audio(url);
+  audio.volume = globalVolume;  // v10.1 fix #3
   let fellBack = false;
 
   const fallback = () => {
@@ -3407,6 +3750,7 @@ function resetAll() {
   document.getElementById('lengthHint').style.display = 'none';
   document.getElementById('linkBox').classList.remove('show');
   updateXP();
+  clearIDBProgress(); // v10.1 fix #1
   showScreen('Library');  // v10: changed from 'Paste'
   window.history.replaceState({}, '', window.location.pathname);
 }
