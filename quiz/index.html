@@ -422,32 +422,40 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .rewatch-videos-btn{background:var(--forest);color:var(--white);border:none;font-weight:600}
 .rewatch-videos-btn:hover{background:var(--forest-light)}
 
-/* v11.5: 用户自选截取工具 */
-.clip-tool-section,.clip-locked-section{margin:20px 0;padding:18px;background:var(--white);border-radius:var(--radius);text-align:center}
-.clip-tool-section{border:2px solid var(--gold);background:linear-gradient(135deg,#FFF8E7 0%,#FFFFFF 100%);box-shadow:0 4px 20px rgba(184,135,58,0.15)}
-.clip-locked-section{border:1.5px dashed var(--border);background:var(--bg)}
-.clip-tool-label{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.1em;margin-bottom:4px}
-.clip-locked-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.1em;margin-bottom:8px}
-.clip-tool-hint,.clip-locked-hint{font-size:12px;color:var(--muted);margin-bottom:16px}
-/* Clip Player Wrapper (v11.6) */
-.clip-player-wrapper{position:relative;max-width:320px;margin:0 auto 14px}
-#clipSourceVideo{width:100%;aspect-ratio:9/16;border-radius:10px;background:#000;display:block}
-.clip-timeline-container{margin-top:12px;padding:12px;background:var(--white);border-radius:10px;border:1px solid var(--border)}
-.clip-play-btn{width:36px;height:36px;border-radius:50%;background:var(--forest);color:var(--white);border:none;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-right:10px}
-.clip-time-info{display:inline-block;vertical-align:middle;font-size:12px;color:var(--muted);font-weight:600}
-.clip-time-sep{margin:0 4px;opacity:0.5}
-.clip-timeline{position:relative;height:32px;margin:14px 0 10px;padding:14px 0;cursor:pointer;user-select:none;touch-action:none}
-.clip-track-bg{position:absolute;top:50%;left:0;right:0;height:6px;background:var(--border);border-radius:3px;transform:translateY(-50%)}
-.clip-track-selected{position:absolute;top:50%;height:6px;background:linear-gradient(90deg,#B8873A,#D4A55C);border-radius:3px;transform:translateY(-50%);pointer-events:none}
-.clip-track-playhead{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);border-radius:1px;pointer-events:none}
-.clip-handle{position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:var(--gold);border:3px solid var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.25);transform:translate(-50%,-50%);cursor:grab;touch-action:none;z-index:3}
-.clip-handle:active{cursor:grabbing;transform:translate(-50%,-50%) scale(1.15)}
-.clip-selection-info{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink);justify-content:center}
-.clip-selection-label{color:var(--muted);font-weight:400;font-size:12px}
-.clip-duration{color:var(--gold);font-weight:700;margin-left:4px}
-.clip-save-btn{width:100%}
-.clip-result-label{font-size:11px;font-weight:700;color:var(--green);letter-spacing:0.1em;margin-bottom:8px;text-align:center}
-#clipVideoPreview{width:100%;max-width:300px;height:auto;aspect-ratio:9/16;border-radius:10px;background:#000;display:block;margin:12px auto}
+/* v12: Result 屏邮件交付 UI */
+.full-video-section{margin:20px 0;text-align:center}
+#videoPreview{width:100%;max-width:280px;aspect-ratio:9/16;border-radius:10px;background:#000;display:block;margin:0 auto 12px}
+.email-form-section{margin:24px 0;padding:24px 20px;background:linear-gradient(135deg,#FFF8E7 0%,#FFFFFF 100%);border:2px solid var(--gold);border-radius:var(--radius);box-shadow:0 4px 20px rgba(184,135,58,0.15)}
+.email-form-header{text-align:center;margin-bottom:16px}
+.email-form-label{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.12em;margin-bottom:6px}
+.email-form-hint{font-size:13px;color:var(--muted);font-style:italic}
+.email-form-fields{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.email-input{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:14px;background:var(--white);box-sizing:border-box}
+.email-input:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(184,135,58,0.1)}
+.newsletter-options{margin:16px 0;display:flex;flex-direction:column;gap:10px}
+.newsletter-option{display:flex;align-items:flex-start;gap:10px;padding:10px;background:rgba(255,255,255,0.5);border-radius:8px;cursor:pointer}
+.newsletter-option:hover{background:var(--white)}
+.newsletter-option input[type="checkbox"]{margin-top:2px;width:16px;height:16px;cursor:pointer;flex-shrink:0}
+.newsletter-text{display:flex;flex-direction:column;gap:2px;font-family:var(--sans)}
+.newsletter-text strong{font-size:13px;color:var(--ink)}
+.newsletter-sub{font-size:11px;color:var(--muted)}
+.email-submit-btn{width:100%;margin-top:8px}
+.email-skip-btn{display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;padding:6px;font-family:var(--sans)}
+.email-form-note{font-size:11px;color:var(--muted);margin-top:12px;text-align:center;line-height:1.4;font-style:italic}
+.otp-form-section{margin:24px 0;padding:24px 20px;background:var(--white);border:2px solid var(--forest);border-radius:var(--radius);text-align:center}
+.otp-label{font-size:11px;font-weight:700;color:var(--forest);letter-spacing:0.12em;margin-bottom:6px}
+.otp-hint{font-size:13px;color:var(--muted);margin-bottom:20px}
+.otp-input{width:200px;padding:16px;border:2px solid var(--border);border-radius:10px;font-family:'Courier New',monospace;font-size:28px;font-weight:700;text-align:center;letter-spacing:0.3em;background:var(--bg);display:block;margin:0 auto 16px}
+.otp-input:focus{border-color:var(--gold);outline:none;background:var(--white)}
+.otp-submit-btn{margin-bottom:10px}
+.otp-resend-btn{display:block;width:100%;background:none;border:none;color:var(--gold);font-size:13px;text-decoration:underline;cursor:pointer;font-family:var(--sans)}
+.otp-error{color:#C44;font-size:13px;margin-top:8px;font-weight:600}
+.email-done-section{margin:24px 0;padding:32px 20px;background:linear-gradient(135deg,#E8F5E9 0%,#FFFFFF 100%);border:2px solid var(--forest);border-radius:var(--radius);text-align:center}
+.email-done-icon{width:56px;height:56px;border-radius:50%;background:var(--forest);color:var(--white);font-size:32px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.email-done-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.email-done-text{font-size:14px;color:var(--ink);margin-bottom:6px}
+.email-done-text span{font-weight:700;color:var(--forest)}
+.email-done-sub{font-size:12px;color:var(--muted);font-style:italic}
 
 /* Shared preview screen (v10.1) */
 .shared-header{text-align:center;margin-bottom:20px}
@@ -738,86 +746,104 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <p class="fullread-stats" id="pass3Stats"></p>
       </div>
 
-      <!-- Viral short video (if unlocked) -->
-      <div class="viral-video-section" id="viralVideoSection" style="display:none">
-        <p class="viral-label">✨ YOUR VIRAL CUT · 15 SEC</p>
-        <video id="viralVideoPreview" controls playsinline preload="auto"></video>
-        <div class="video-actions">
-          <button class="btn-start" onclick="downloadViralVideo()">📤 Save & Share</button>
-        </div>
-        <p class="viral-hint">Perfect for Xiaohongshu, TikTok, WeChat Moments</p>
-      </div>
-
-      <!-- Full reading video (always shown) -->
+      <!-- 视频预览(完整版,可在线播放) -->
       <div class="full-video-section">
-        <p class="full-label">📖 FULL READING</p>
         <video id="videoPreview" controls playsinline preload="auto"></video>
-        <div class="video-actions">
-          <button class="btn-listen" onclick="downloadVideo()">⬇ Download Full</button>
-        </div>
-        <p class="video-hint">Keep this for yourself — practice and progress</p>
       </div>
 
-      <!-- Viral cut tool (v11.6) — 内嵌时间轴交互 -->
-      <div class="clip-tool-section" id="clipToolSection" style="display:none">
-        <p class="clip-tool-label">✨ CLIP TOOL · TOP 30% UNLOCKED</p>
-        <p class="clip-tool-hint">Drag the gold handles to pick your 15-30 seconds</p>
-
-        <!-- 自定义视频播放器 -->
-        <div class="clip-player-wrapper">
-          <video id="clipSourceVideo" playsinline preload="auto" muted></video>
-
-          <!-- 自定义时间轴 -->
-          <div class="clip-timeline-container">
-            <button class="clip-play-btn" id="clipPlayBtn" onclick="toggleClipPlayback()">▶</button>
-            <div class="clip-time-info">
-              <span id="clipCurrentTime">0:00</span>
-              <span class="clip-time-sep">/</span>
-              <span id="clipTotalTime">0:00</span>
-            </div>
-
-            <div class="clip-timeline" id="clipTimeline">
-              <div class="clip-track-bg"></div>
-              <div class="clip-track-selected" id="clipTrackSelected"></div>
-              <div class="clip-track-playhead" id="clipPlayhead"></div>
-              <div class="clip-handle clip-handle-start" id="clipHandleStart"></div>
-              <div class="clip-handle clip-handle-end" id="clipHandleEnd"></div>
-            </div>
-
-            <div class="clip-selection-info">
-              <span class="clip-selection-label">Selection:</span>
-              <span id="clipSelectionStart">0:00</span>
-              <span class="clip-time-sep">→</span>
-              <span id="clipSelectionEnd">0:15</span>
-              <span class="clip-duration" id="clipSelectionDuration">(15s)</span>
-            </div>
-          </div>
-
-          <button class="btn-start clip-save-btn" id="clipSaveBtn" onclick="saveClipFromTimeline()">
-            📌 Save this clip
-          </button>
+      <!-- 邮件交付表单(嵌入式) -->
+      <div class="email-form-section" id="emailFormSection">
+        <div class="email-form-header">
+          <p class="email-form-label">📧 GET YOUR VIDEO DELIVERED</p>
+          <p class="email-form-hint">We'll email you the MP4 (works on iOS &amp; Android)</p>
         </div>
 
-        <div id="clipResultSection" style="display:none">
-          <p class="clip-result-label">✓ YOUR CLIP IS READY</p>
-          <video id="clipVideoPreview" controls playsinline preload="auto"></video>
-          <div class="video-actions">
-            <button class="btn-start" onclick="downloadClipVideo()">📤 Save & Share</button>
-            <button class="btn-listen" id="downloadMp4Btn" style="display:none" onclick="downloadMp4()">📱 iOS-ready (mp4)</button>
-            <button class="btn-listen" onclick="resetClipTool()">↻ Make another clip</button>
-          </div>
+        <div class="email-form-fields">
+          <input
+            type="text"
+            id="userNameInput"
+            class="email-input"
+            placeholder="Your name"
+            autocomplete="given-name"
+            maxlength="50">
+          <input
+            type="email"
+            id="userEmailInput"
+            class="email-input"
+            placeholder="your@email.com"
+            autocomplete="email">
         </div>
-      </div>
 
-      <!-- Locked state (when not unlocked) -->
-      <div class="clip-locked-section" id="clipLockedSection" style="display:none">
-        <p class="clip-locked-label">🔒 VIRAL CUT TOOL</p>
-        <p class="clip-locked-hint" id="clipLockedHint">
-          Decode 2 more cultural insights to unlock the viral cut tool
+        <div class="newsletter-options">
+          <label class="newsletter-option">
+            <input type="checkbox" id="subscribeDailyReadings">
+            <span class="newsletter-text">
+              <strong>Daily British readings</strong>
+              <span class="newsletter-sub">One short article each morning</span>
+            </span>
+          </label>
+
+          <label class="newsletter-option">
+            <input type="checkbox" id="subscribeEduEntrepreneurship">
+            <span class="newsletter-text">
+              <strong>British education &amp; entrepreneurship</strong>
+              <span class="newsletter-sub">Weekly insights from Xiaoyu</span>
+            </span>
+          </label>
+        </div>
+
+        <button class="btn-start email-submit-btn" id="emailSubmitBtn" onclick="submitEmailForm()">
+          📧 Send me my video
+        </button>
+
+        <button class="email-skip-btn" onclick="skipEmailForm()">
+          ↗ Skip for now
+        </button>
+
+        <p class="email-form-note">
+          We use your email only to deliver your video and (if you opt-in)
+          our newsletters. Unsubscribe anytime.
         </p>
       </div>
 
-      <button class="btn-start" onclick="showRoundComplete()" style="margin-top:14px">See my results →</button>
+      <!-- OTP 验证表单(初始隐藏) -->
+      <div class="otp-form-section" id="otpFormSection" style="display:none">
+        <p class="otp-label">📩 CHECK YOUR INBOX</p>
+        <p class="otp-hint">We sent a 6-digit code to <span id="otpEmailDisplay"></span></p>
+
+        <input
+          type="text"
+          id="otpInput"
+          class="otp-input"
+          placeholder="000000"
+          maxlength="6"
+          inputmode="numeric"
+          autocomplete="one-time-code">
+
+        <button class="btn-start otp-submit-btn" id="otpSubmitBtn" onclick="submitOtp()">
+          ✓ Confirm
+        </button>
+
+        <button class="otp-resend-btn" onclick="resendOtp()">
+          Resend code
+        </button>
+
+        <p class="otp-error" id="otpError" style="display:none"></p>
+      </div>
+
+      <!-- 完成确认(初始隐藏) -->
+      <div class="email-done-section" id="emailDoneSection" style="display:none">
+        <div class="email-done-icon">✓</div>
+        <h3 class="email-done-title">Email confirmed!</h3>
+        <p class="email-done-text">
+          Your video will arrive at <span id="confirmedEmailDisplay"></span> in 1-2 minutes.
+        </p>
+        <p class="email-done-sub">You can close this page — the email will reach you.</p>
+
+        <button class="btn-start" onclick="showRoundComplete()" style="margin-top:14px">
+          See my results →
+        </button>
+      </div>
     </div>
 
     <!-- Hidden canvas for video generation -->
@@ -1254,12 +1280,12 @@ let currentPass3SessionId = null;  // v11 Session 3: 本轮 Pass 3 会话 id(上
 const SFX_CORRECT_URL = `${STORAGE_BASE}/sfx-audio/correct.mp3`;
 let sfxCorrectAudio = null;
 
-// v11.5: user-selectable clip tool
-let clipVideoBlob = null;
-let clipVideoUrl = null;
-let clipStartTime = 0;
-let clipEndTime = 15;
-let fullVideoDuration = 0;
+// v12: email-based delivery
+let pendingEmail = null;
+let pendingUserName = null;
+let pendingSubscribeDaily = false;
+let pendingSubscribeEdu = false;
+let resentOtpCount = 0;
 
 // Global volume control (v10.1 fix #3)
 const IS_MOBILE = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
@@ -2891,18 +2917,6 @@ function evaluateViralQualification() {
   return { qualified: true };
 }
 
-// v11.5: clip 工具解锁条件 — Decode 3 题答对至少 2 题
-function evaluateClipUnlock() {
-  const correctCount = decodeResults.filter(r => r.correct).length;
-  const total = decodeQuestions.length || 0;
-  return {
-    unlocked: correctCount >= 2,
-    correctCount,
-    total,
-    displayPercent: 30 // UI 显示"top 30%"
-  };
-}
-
 async function enterGeneratingStage() {
   ecStage = 'generating';
   updateProgress();
@@ -2942,9 +2956,6 @@ async function enterGeneratingStage() {
   stepStitch.classList.add('active');
 
   try {
-    // 预加载背景图(并行)
-    const bgPromise = preloadArticleBackgroundImage();
-
     // 拼接完整音频
     const stitchedBuffer = await stitchSegmentRecordings();
     stepStitch.classList.remove('active');
@@ -2962,9 +2973,6 @@ async function enterGeneratingStage() {
     await sleep(300);
     stepVideo.style.display = 'block';
     stepVideo.classList.add('active');
-
-    // 等背景图加载完
-    await bgPromise;
 
     // 生成完整视频
     await generateFinalVideo(mixedBuffer);
@@ -3037,29 +3045,6 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 // VIRAL SHORT VIDEO (v11 模块 5+6)
 // 注:articleBackgroundImage / viralVideoBlob / viralVideoUrl 已在模块 2 声明
 // ═════════════════════════════════════════════════════
-async function preloadArticleBackgroundImage() {
-  const article = ARTICLES_DATA[currentArticleId];
-  if (!article || !article.background_image) {
-    articleBackgroundImage = null;
-    return;
-  }
-
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      articleBackgroundImage = img;
-      resolve();
-    };
-    img.onerror = () => {
-      console.warn('Background image failed to load');
-      articleBackgroundImage = null;
-      resolve();
-    };
-    img.src = article.background_image;
-  });
-}
-
 async function stitchViralSegments() {
   if (!ecAudioContext) {
     ecAudioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -3703,43 +3688,33 @@ function renderVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
   const W = canvas.width;
   const H = canvas.height;
 
-  // 背景(带文章图)
-  if (articleBackgroundImage) {
-    ctx.save();
-    ctx.filter = 'blur(15px)';
-    const scale = Math.max(W / articleBackgroundImage.width, H / articleBackgroundImage.height) * 1.2;
-    const sw = articleBackgroundImage.width * scale;
-    const sh = articleBackgroundImage.height * scale;
-    ctx.drawImage(articleBackgroundImage, (W - sw) / 2, (H - sh) / 2, sw, sh);
-    ctx.restore();
-
-    ctx.fillStyle = 'rgba(31, 77, 64, 0.7)';
-    ctx.fillRect(0, 0, W, H);
-  } else {
-    const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0, '#2D5A4F');
-    grad.addColorStop(1, '#1a1a1a');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-  }
-
-  ctx.fillStyle = 'rgba(184, 135, 58, 0.05)';
+  // v12: 纯色背景(替代 articleBackgroundImage)
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#1F4D40');
+  grad.addColorStop(0.5, '#2D5A4F');
+  grad.addColorStop(1, '#0F2520');
+  ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
 
-  // v11.7 修复4: 顶部统一布局 — READII + Slogan + 装饰线
-  ctx.textAlign = 'center';
+  // 微妙金色纹理
+  ctx.fillStyle = 'rgba(184, 135, 58, 0.04)';
+  ctx.fillRect(0, 0, W, H);
 
+  // 顶部 Brand
   ctx.fillStyle = '#B8873A';
   ctx.font = '700 52px "Helvetica Neue", sans-serif';
+  ctx.textAlign = 'center';
   ctx.shadowColor = 'rgba(184, 135, 58, 0.3)';
   ctx.shadowBlur = 12;
   ctx.fillText('READII', W/2, 130);
   ctx.shadowBlur = 0;
 
+  // Slogan
   ctx.fillStyle = 'rgba(250, 248, 243, 0.75)';
   ctx.font = 'italic 24px Georgia, serif';
   ctx.fillText('Read British', W/2, 170);
 
+  // 装饰线
   ctx.strokeStyle = 'rgba(184, 135, 58, 0.5)';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -3747,6 +3722,7 @@ function renderVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
   ctx.lineTo(W/2 + 80, 200);
   ctx.stroke();
 
+  // 用户名
   if (playerName) {
     ctx.fillStyle = '#FAF8F3';
     ctx.font = '700 56px Georgia, serif';
@@ -3757,12 +3733,15 @@ function renderVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
     ctx.fillText('reads', W/2, 322);
   }
 
+  // 文章标题
   ctx.fillStyle = '#FAF8F3';
   ctx.font = 'italic 46px Georgia, serif';
   ctx.fillText(article.title, W/2, 400);
 
   // 字幕
   renderKaraokeFromSegments(ctx, article, elapsed, W, H);
+
+  // 底部留空(不放任何东西)
 }
 
 function renderKaraokeFromSegments(ctx, article, elapsed, W, H) {
@@ -3840,28 +3819,14 @@ function enterResultStage() {
   updateProgress();
   showStagePanel('ecStageResult');
 
-  // 加载完整视频预览
+  // 加载视频预览
   const fullPreview = document.getElementById('videoPreview');
   if (fullPreview && videoUrl) {
     fullPreview.src = videoUrl;
     fullPreview.load();
   }
 
-  // v11: 加载 viral 视频预览(如果解锁)
-  const viralSection = document.getElementById('viralVideoSection');
-  const viralPreview = document.getElementById('viralVideoPreview');
-  const resultTitle = document.getElementById('resultTitle');
-
-  if (viralUnlocked && viralVideoUrl && viralSection && viralPreview) {
-    viralPreview.src = viralVideoUrl;
-    viralPreview.load();
-    viralSection.style.display = 'block';
-    if (resultTitle) resultTitle.textContent = 'Your readings are ready';
-  } else if (viralSection) {
-    viralSection.style.display = 'none';
-    if (resultTitle) resultTitle.textContent = 'Your reading is ready';
-  }
-
+  // Stats
   let totalDuration = 0;
   let totalWords = 0;
   segmentRecordings.forEach((rec, i) => {
@@ -3884,620 +3849,209 @@ function enterResultStage() {
 
   fullReadTranscript = segments.map(s => s.text).join(' ');
 
+  // 自动填充已知信息
+  const savedEmail = localStorage.getItem('readii_user_email');
+  const savedName = localStorage.getItem('readii_user_name') || playerName;
+
+  if (savedName) {
+    document.getElementById('userNameInput').value = savedName;
+  }
+  if (savedEmail) {
+    document.getElementById('userEmailInput').value = savedEmail;
+  }
+
+  // 重置表单状态
+  document.getElementById('emailFormSection').style.display = 'block';
+  document.getElementById('otpFormSection').style.display = 'none';
+  document.getElementById('emailDoneSection').style.display = 'none';
+  resentOtpCount = 0;
+
   track('pass3_complete', {
     word_count: totalWords,
     duration_sec: durationSec,
-    segments_count: segments.length,
-    has_video: !!videoBlob,
-    has_viral_video: !!viralVideoBlob,
-    viral_unlocked: viralUnlocked,
     article_id: currentArticleId
   });
-
-  // v11.5: Clip tool unlock check (基于 Decode 答题)
-  const clipEval = evaluateClipUnlock();
-  const clipToolSection = document.getElementById('clipToolSection');
-  const clipLockedSection = document.getElementById('clipLockedSection');
-
-  if (clipEval.unlocked) {
-    if (clipToolSection) {
-      clipToolSection.style.display = 'block';
-      setupClipTool();
-    }
-    if (clipLockedSection) clipLockedSection.style.display = 'none';
-    track('clip_tool_unlocked', {
-      decode_correct: clipEval.correctCount,
-      decode_total: clipEval.total
-    });
-  } else {
-    if (clipToolSection) clipToolSection.style.display = 'none';
-    if (clipLockedSection) {
-      clipLockedSection.style.display = 'block';
-      const need = 2 - clipEval.correctCount;
-      document.getElementById('clipLockedHint').textContent =
-        `Decode ${need} more cultural insight${need > 1 ? 's' : ''} to unlock the viral cut tool`;
-    }
-    track('clip_tool_locked', { decode_correct: clipEval.correctCount });
-  }
 
   clearIDBProgress(); // v10.1 fix #1: 完成了就清掉持久化进度
 }
 
 // ═════════════════════════════════════════════════════
-// VIRAL CUT TOOL — 用户自选截取 (v11.5)
+// EMAIL DELIVERY — OTP form (v12)
 // ═════════════════════════════════════════════════════
-function setupClipTool() {
-  const sourceVideo = document.getElementById('clipSourceVideo');
-  if (!sourceVideo) return;
+async function submitEmailForm() {
+  const nameInput = document.getElementById('userNameInput');
+  const emailInput = document.getElementById('userEmailInput');
+  const dailyCheck = document.getElementById('subscribeDailyReadings');
+  const eduCheck = document.getElementById('subscribeEduEntrepreneurship');
+  const submitBtn = document.getElementById('emailSubmitBtn');
 
-  // 设置视频源(用完整视频的 blob URL)
-  if (videoUrl) {
-    sourceVideo.src = videoUrl;
-    sourceVideo.load();
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
+
+  if (!name) {
+    toast('Please enter your name');
+    nameInput.focus();
+    return;
   }
-
-  sourceVideo.addEventListener('loadedmetadata', () => {
-    fullVideoDuration = sourceVideo.duration;
-
-    // 初始化:默认选 0 到 min(15, total) 秒
-    clipStartTime = 0;
-    clipEndTime = Math.min(15, fullVideoDuration);
-
-    document.getElementById('clipTotalTime').textContent = formatTimeMMSS(fullVideoDuration);
-
-    updateTimelineUI();
-    setupTimelineDragging();
-  }, { once: true });
-
-  sourceVideo.addEventListener('timeupdate', () => {
-    updatePlayheadPosition();
-
-    // 如果播放越过 end,自动跳回 start(循环播放选中区域)
-    if (sourceVideo.currentTime >= clipEndTime) {
-      sourceVideo.currentTime = clipStartTime;
-    }
-
-    document.getElementById('clipCurrentTime').textContent = formatTimeMMSS(sourceVideo.currentTime);
-  });
-
-  sourceVideo.addEventListener('pause', () => {
-    document.getElementById('clipPlayBtn').textContent = '▶';
-  });
-  sourceVideo.addEventListener('play', () => {
-    document.getElementById('clipPlayBtn').textContent = '⏸';
-  });
-
-  // 如果 metadata 已加载(快速重入)
-  if (sourceVideo.readyState >= 1) {
-    sourceVideo.dispatchEvent(new Event('loadedmetadata'));
-  }
-}
-
-function formatTimeMMSS(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
-
-function toggleClipPlayback() {
-  const video = document.getElementById('clipSourceVideo');
-  if (!video) return;
-
-  // 取消静音(让用户能听)
-  video.muted = false;
-
-  // 如果当前时间不在选区,跳到 start
-  if (video.currentTime < clipStartTime || video.currentTime >= clipEndTime) {
-    video.currentTime = clipStartTime;
-  }
-
-  if (video.paused) {
-    video.play().catch(err => console.warn('Play failed:', err));
-  } else {
-    video.pause();
-  }
-}
-
-function updateTimelineUI() {
-  const startPct = (clipStartTime / fullVideoDuration) * 100;
-  const endPct = (clipEndTime / fullVideoDuration) * 100;
-
-  const selected = document.getElementById('clipTrackSelected');
-  if (selected) {
-    selected.style.left = startPct + '%';
-    selected.style.width = (endPct - startPct) + '%';
-  }
-
-  const handleStart = document.getElementById('clipHandleStart');
-  if (handleStart) handleStart.style.left = startPct + '%';
-
-  const handleEnd = document.getElementById('clipHandleEnd');
-  if (handleEnd) handleEnd.style.left = endPct + '%';
-
-  document.getElementById('clipSelectionStart').textContent = formatTimeMMSS(clipStartTime);
-  document.getElementById('clipSelectionEnd').textContent = formatTimeMMSS(clipEndTime);
-  document.getElementById('clipSelectionDuration').textContent =
-    `(${Math.round(clipEndTime - clipStartTime)}s)`;
-}
-
-function updatePlayheadPosition() {
-  const video = document.getElementById('clipSourceVideo');
-  const playhead = document.getElementById('clipPlayhead');
-  if (!video || !playhead || !fullVideoDuration) return;
-
-  const pct = (video.currentTime / fullVideoDuration) * 100;
-  playhead.style.left = pct + '%';
-}
-
-function setupTimelineDragging() {
-  const timeline = document.getElementById('clipTimeline');
-  const handleStart = document.getElementById('clipHandleStart');
-  const handleEnd = document.getElementById('clipHandleEnd');
-
-  if (!timeline || !handleStart || !handleEnd) return;
-
-  const MIN_DURATION = 15;
-  const MAX_DURATION = 30;
-
-  let isDragging = null; // 'start' / 'end' / null
-
-  function getPositionFromEvent(e) {
-    const rect = timeline.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const x = clientX - rect.left;
-    const pct = Math.max(0, Math.min(1, x / rect.width));
-    return pct * fullVideoDuration;
-  }
-
-  function onDragMove(e) {
-    if (!isDragging || !fullVideoDuration) return;
-    e.preventDefault();
-
-    const time = getPositionFromEvent(e);
-
-    if (isDragging === 'start') {
-      let newStart = time;
-
-      // 确保 end - start 在 [15, 30] 区间内
-      if (clipEndTime - newStart < MIN_DURATION) {
-        if (newStart + MIN_DURATION <= fullVideoDuration) {
-          clipEndTime = newStart + MIN_DURATION;
-        } else {
-          newStart = fullVideoDuration - MIN_DURATION;
-          clipEndTime = fullVideoDuration;
-        }
-      } else if (clipEndTime - newStart > MAX_DURATION) {
-        clipEndTime = newStart + MAX_DURATION;
-      }
-
-      clipStartTime = Math.max(0, newStart);
-
-      const video = document.getElementById('clipSourceVideo');
-      if (video) video.currentTime = clipStartTime;
-
-    } else if (isDragging === 'end') {
-      let newEnd = time;
-
-      if (newEnd - clipStartTime < MIN_DURATION) {
-        if (newEnd - MIN_DURATION >= 0) {
-          clipStartTime = newEnd - MIN_DURATION;
-        } else {
-          clipStartTime = 0;
-          newEnd = MIN_DURATION;
-        }
-      } else if (newEnd - clipStartTime > MAX_DURATION) {
-        clipStartTime = newEnd - MAX_DURATION;
-      }
-
-      clipEndTime = Math.min(fullVideoDuration, newEnd);
-    }
-
-    updateTimelineUI();
-  }
-
-  function startDrag(type) {
-    return (e) => {
-      e.preventDefault();
-      isDragging = type;
-
-      const video = document.getElementById('clipSourceVideo');
-      if (video && !video.paused) video.pause();
-
-      document.addEventListener('mousemove', onDragMove);
-      document.addEventListener('touchmove', onDragMove, { passive: false });
-      document.addEventListener('mouseup', endDrag);
-      document.addEventListener('touchend', endDrag);
-    };
-  }
-
-  function endDrag() {
-    isDragging = null;
-    document.removeEventListener('mousemove', onDragMove);
-    document.removeEventListener('touchmove', onDragMove);
-    document.removeEventListener('mouseup', endDrag);
-    document.removeEventListener('touchend', endDrag);
-  }
-
-  handleStart.addEventListener('mousedown', startDrag('start'));
-  handleStart.addEventListener('touchstart', startDrag('start'), { passive: false });
-  handleEnd.addEventListener('mousedown', startDrag('end'));
-  handleEnd.addEventListener('touchstart', startDrag('end'), { passive: false });
-}
-
-async function saveClipFromTimeline() {
-  const btn = document.getElementById('clipSaveBtn');
-  if (!btn) return;
-
-  // v11.7 修复2a: 暂停前台视频,避免与生成时音轨重叠
-  const sourceVideo = document.getElementById('clipSourceVideo');
-  if (sourceVideo && !sourceVideo.paused) {
-    sourceVideo.pause();
-  }
-
-  const article = ARTICLES_DATA[currentArticleId];
-  if (!article || !ecAudioContext) {
-    toast('Cannot create clip — source data missing');
+  if (!email || !email.includes('@')) {
+    toast('Please enter a valid email');
+    emailInput.focus();
     return;
   }
 
-  btn.disabled = true;
-  btn.textContent = '✨ Creating clip...';
+  // 暂存
+  pendingEmail = email;
+  pendingUserName = name;
+  pendingSubscribeDaily = dailyCheck.checked;
+  pendingSubscribeEdu = eduCheck.checked;
+
+  // 更新 playerName
+  if (name !== playerName) {
+    playerName = name;
+    try { localStorage.setItem('readii_player_name', name); } catch (e) {}
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending code...';
 
   try {
-    // 步骤 1:重新 stitch + mix 完整音频(更稳定,不依赖 tempVideo)
-    const stitchedBuffer = await stitchSegmentRecordings();
-    const mixedBuffer = await mixWithBGM(stitchedBuffer, false);
-
-    // 步骤 2:从 mixedBuffer 切出选中区间
-    const clipBuffer = extractAudioBufferSlice(mixedBuffer, clipStartTime, clipEndTime);
-
-    // 步骤 3:用 Canvas + clipBuffer 生成视频
-    await generateClipVideoFromBuffer(clipBuffer);
-
-    const clipPreview = document.getElementById('clipVideoPreview');
-    if (clipPreview && clipVideoUrl) {
-      clipPreview.src = clipVideoUrl;
-      clipPreview.load();
-    }
-    document.getElementById('clipResultSection').style.display = 'block';
-
-    btn.disabled = false;
-    btn.textContent = '📌 Save this clip';
-
-    // v11 Session 3: 异步上传 clip(不阻塞用户)
-    uploadClipVideoToServer().catch(err => console.warn('Clip upload failed:', err));
-
-    track('clip_saved', {
-      duration: clipEndTime - clipStartTime,
-      start: clipStartTime,
-      end: clipEndTime,
-      size_kb: clipVideoBlob ? Math.round(clipVideoBlob.size / 1024) : 0,
-      article_id: currentArticleId
+    const resp = await fetch('/.netlify/functions/auth-send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, playerName: name })
     });
 
-  } catch (e) {
-    console.error('Clip save failed:', e);
-    btn.disabled = false;
-    btn.textContent = '📌 Save this clip';
-    toast('Couldn\'t create clip — try again?');
-  }
-}
-
-function extractAudioBufferSlice(sourceBuffer, startSec, endSec) {
-  const sampleRate = sourceBuffer.sampleRate;
-  const startSample = Math.floor(startSec * sampleRate);
-  const endSample = Math.min(Math.floor(endSec * sampleRate), sourceBuffer.length);
-  const length = endSample - startSample;
-  const channels = sourceBuffer.numberOfChannels;
-
-  const audioCtx = ecAudioContext;
-  const slicedBuffer = audioCtx.createBuffer(channels, length, sampleRate);
-
-  for (let ch = 0; ch < channels; ch++) {
-    const sourceData = sourceBuffer.getChannelData(ch);
-    const targetData = slicedBuffer.getChannelData(ch);
-    for (let i = 0; i < length; i++) {
-      targetData[i] = sourceData[startSample + i];
-    }
-  }
-
-  return slicedBuffer;
-}
-
-async function generateClipVideoFromBuffer(audioBuffer) {
-  const article = ARTICLES_DATA[currentArticleId];
-  if (!article) throw new Error('No article data');
-
-  const canvas = document.getElementById('videoCanvas');
-  canvas.width = 1080;
-  canvas.height = 1920;
-  const ctx = canvas.getContext('2d');
-
-  const audioCtx = ecAudioContext;
-  const audioSource = audioCtx.createBufferSource();
-  audioSource.buffer = audioBuffer;
-
-  const audioDest = audioCtx.createMediaStreamDestination();
-  // v11.7 修复2b: 静音监听(用户已看过预览,生成时不需要再听,避免与前台播放重叠)
-  const monitorGain = audioCtx.createGain();
-  monitorGain.gain.value = 0;
-  audioSource.connect(audioDest);           // 录到 MediaRecorder
-  audioSource.connect(monitorGain);
-  monitorGain.connect(audioCtx.destination);
-
-  const videoStream = canvas.captureStream(30);
-  const combinedStream = new MediaStream();
-  videoStream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
-  audioDest.stream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
-
-  const mimeTypes = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
-  let mimeType = '';
-  for (const m of mimeTypes) {
-    if (MediaRecorder.isTypeSupported(m)) { mimeType = m; break; }
-  }
-
-  return new Promise((resolve, reject) => {
-    try {
-      const recorder = new MediaRecorder(combinedStream, {
-        mimeType,
-        videoBitsPerSecond: 3000000,
-        audioBitsPerSecond: 192000
-      });
-
-      const chunks = [];
-      recorder.ondataavailable = (e) => {
-        if (e.data && e.data.size > 0) chunks.push(e.data);
-      };
-
-      recorder.onstop = () => {
-        console.log('🎬 clip recorder.onstop, chunks count:', chunks.length, 'total bytes:',
-          chunks.reduce((sum, c) => sum + c.size, 0));
-        clipVideoBlob = new Blob(chunks, { type: mimeType });
-        clipVideoUrl = URL.createObjectURL(clipVideoBlob);
-        console.log('🎬 clipVideoBlob created, size:', clipVideoBlob.size, 'duration estimate:', audioBuffer.duration);
-        resolve();
-      };
-
-      recorder.onerror = reject;
-
-      console.log('🎬 clip recorder.start() called');
-      recorder.start();
-
-      const startTime = Date.now();
-      const totalDuration = audioBuffer.duration;
-
-      function renderFrame() {
-        const elapsed = (Date.now() - startTime) / 1000;
-        if (elapsed >= totalDuration) {
-          if (recorder.state !== 'inactive') {
-            try { recorder.stop(); } catch (e) {}
-          }
-          return;
-        }
-
-        renderClipVideoFrame(ctx, canvas, article, elapsed, totalDuration);
-        requestAnimationFrame(renderFrame);
-      }
-      renderFrame();
-
-      audioSource.start(0);
-
-      setTimeout(() => {
-        if (recorder.state !== 'inactive') {
-          try { recorder.stop(); } catch (e) {}
-        }
-      }, (totalDuration + 0.5) * 1000);
-
-    } catch (err) {
-      reject(err);
-    }
-  });
-}
-
-function renderClipVideoFrame(ctx, canvas, article, elapsed, totalDuration) {
-  const W = canvas.width;
-  const H = canvas.height;
-
-  // 背景
-  if (articleBackgroundImage) {
-    ctx.save();
-    ctx.filter = 'blur(15px)';
-    const scale = Math.max(W / articleBackgroundImage.width, H / articleBackgroundImage.height) * 1.2;
-    const sw = articleBackgroundImage.width * scale;
-    const sh = articleBackgroundImage.height * scale;
-    ctx.drawImage(articleBackgroundImage, (W - sw) / 2, (H - sh) / 2, sw, sh);
-    ctx.restore();
-
-    ctx.fillStyle = 'rgba(31, 77, 64, 0.7)';
-    ctx.fillRect(0, 0, W, H);
-  } else {
-    const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0, '#2D5A4F');
-    grad.addColorStop(1, '#1a1a1a');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-  }
-
-  ctx.fillStyle = 'rgba(184, 135, 58, 0.05)';
-  ctx.fillRect(0, 0, W, H);
-
-  // v11.7 修复4: 顶部统一布局 — READII + Slogan + 装饰线
-  ctx.textAlign = 'center';
-
-  ctx.fillStyle = '#B8873A';
-  ctx.font = '700 52px "Helvetica Neue", sans-serif';
-  ctx.shadowColor = 'rgba(184, 135, 58, 0.3)';
-  ctx.shadowBlur = 12;
-  ctx.fillText('READII', W/2, 130);
-  ctx.shadowBlur = 0;
-
-  ctx.fillStyle = 'rgba(250, 248, 243, 0.75)';
-  ctx.font = 'italic 24px Georgia, serif';
-  ctx.fillText('Read British', W/2, 170);
-
-  ctx.strokeStyle = 'rgba(184, 135, 58, 0.5)';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(W/2 - 80, 200);
-  ctx.lineTo(W/2 + 80, 200);
-  ctx.stroke();
-
-  if (playerName) {
-    ctx.fillStyle = '#FAF8F3';
-    ctx.font = '700 56px Georgia, serif';
-    ctx.fillText(playerName, W/2, 280);
-
-    ctx.fillStyle = 'rgba(250, 248, 243, 0.6)';
-    ctx.font = '300 26px "Helvetica Neue", sans-serif';
-    ctx.fillText('reads', W/2, 322);
-  }
-
-  ctx.fillStyle = '#FAF8F3';
-  ctx.font = 'italic 46px Georgia, serif';
-  ctx.fillText(article.title, W/2, 400);
-
-  // 字幕
-  renderClipKaraoke(ctx, article, elapsed, totalDuration, W, H);
-}
-
-function renderClipKaraoke(ctx, article, elapsed, totalDuration, W, H) {
-  // v11.7 修复3: 基于 segments 的精准映射(不再用整篇线性进度)
-  // clipStartTime 是用户在完整视频上选的起点
-  const sourceElapsed = clipStartTime + elapsed;
-
-  // 找出当前在哪个 segment
-  let cumulative = 0;
-  let activeSegIdx = 0;
-  let activeSegProgress = 0;
-
-  for (let i = 0; i < segments.length; i++) {
-    const rec = segmentRecordings[i];
-    if (!rec) continue;
-
-    const segDuration = rec.duration;
-
-    if (sourceElapsed >= cumulative && sourceElapsed < cumulative + segDuration) {
-      activeSegIdx = i;
-      activeSegProgress = (sourceElapsed - cumulative) / segDuration;
-      break;
+    if (!resp.ok) {
+      const err = await resp.json();
+      throw new Error(err.error || 'Failed to send code');
     }
 
-    cumulative += segDuration;
-    if (i === segments.length - 1) {
-      // 已经到最后了
-      activeSegIdx = i;
-      activeSegProgress = 1;
-    }
+    document.getElementById('emailFormSection').style.display = 'none';
+    document.getElementById('otpFormSection').style.display = 'block';
+    document.getElementById('otpEmailDisplay').textContent = email;
+    document.getElementById('otpInput').focus();
+
+    track('otp_sent', { email_provided: true });
+
+  } catch (err) {
+    console.error('Send OTP failed:', err);
+    toast(err.message || 'Failed to send code. Try again?');
+    submitBtn.disabled = false;
+    submitBtn.textContent = '📧 Send me my video';
   }
-
-  const segment = segments[activeSegIdx];
-  if (!segment) return;
-
-  const words = segment.text.split(/\s+/).filter(w => w.length > 0);
-  const currentWordIdx = Math.floor(activeSegProgress * words.length);
-
-  ctx.font = 'italic 700 56px Georgia, serif';
-  ctx.textAlign = 'center';
-
-  const maxWidth = W - 160;
-  const lines = wrapTextIntoLines(ctx, segment.text, maxWidth);
-
-  const lineHeight = 78;
-  const totalHeight = lines.length * lineHeight;
-  const startY = H/2 - totalHeight/2 + 60;
-
-  let wordCounter = 0;
-  lines.forEach((lineWords, lineIdx) => {
-    const lineY = startY + lineIdx * lineHeight;
-
-    let lineWidth = 0;
-    lineWords.forEach(w => {
-      lineWidth += ctx.measureText(w + ' ').width;
-    });
-
-    let x = W/2 - lineWidth/2;
-
-    lineWords.forEach(word => {
-      const wordWidth = ctx.measureText(word + ' ').width;
-
-      ctx.save();
-      ctx.textAlign = 'left';
-
-      if (wordCounter === currentWordIdx) {
-        ctx.shadowColor = 'rgba(184, 135, 58, 0.8)';
-        ctx.shadowBlur = 20;
-        ctx.fillStyle = '#FFD68C';
-        ctx.fillText(word, x, lineY);
-      } else if (wordCounter < currentWordIdx) {
-        ctx.fillStyle = 'rgba(250, 248, 243, 0.85)';
-        ctx.fillText(word, x, lineY);
-      } else {
-        ctx.fillStyle = 'rgba(250, 248, 243, 0.4)';
-        ctx.fillText(word, x, lineY);
-      }
-      ctx.restore();
-
-      x += wordWidth;
-      wordCounter++;
-    });
-  });
-
-  ctx.textAlign = 'center';
 }
 
-function resetClipTool() {
-  // 清掉旧的 clip
-  if (clipVideoUrl) {
-    URL.revokeObjectURL(clipVideoUrl);
-  }
-  clipVideoBlob = null;
-  clipVideoUrl = null;
+async function submitOtp() {
+  const otpInput = document.getElementById('otpInput');
+  const submitBtn = document.getElementById('otpSubmitBtn');
+  const errorEl = document.getElementById('otpError');
 
-  // 隐藏结果区
-  document.getElementById('clipResultSection').style.display = 'none';
+  const otp = otpInput.value.trim();
 
-  // 滚动回工具区顶部
-  const tool = document.getElementById('clipToolSection');
-  if (tool && tool.scrollIntoView) tool.scrollIntoView({ behavior: 'smooth' });
-}
-
-async function downloadClipVideo() {
-  if (!clipVideoBlob || !clipVideoUrl) {
-    toast('Clip not ready');
+  if (!/^\d{6}$/.test(otp)) {
+    errorEl.textContent = 'Please enter the 6-digit code';
+    errorEl.style.display = 'block';
     return;
   }
 
-  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const file = new File([clipVideoBlob], `readii-clip.webm`, { type: clipVideoBlob.type });
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Verifying...';
+  errorEl.style.display = 'none';
 
-  const article = ARTICLES_DATA[currentArticleId];
-  // v11 Session 3: 分享文案带 ?v= slug,朋友点开能看真实视频
-  const shareUrl = videoShareSlug
-    ? `${window.location.origin}/quiz?v=${videoShareSlug}`
-    : `${window.location.origin}/quiz`;
-  const shareText = `🇬🇧 ${playerName || 'My'} reading: "${article.title}"\n\nListen on Readii: ${shareUrl}`;
+  try {
+    const resp = await fetch('/.netlify/functions/auth-verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: pendingEmail,
+        otp,
+        playerName: pendingUserName,
+        subscribeDaily: pendingSubscribeDaily,
+        subscribeEdu: pendingSubscribeEdu
+      })
+    });
 
-  try { await navigator.clipboard.writeText(shareText); } catch (e) {}
+    const result = await resp.json();
 
-  if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
-    try {
-      await navigator.share({ files: [file], text: shareText });
-      if (isIOS) toast('Save to Files → then open Files app to share');
-      else toast('Choose where to save or share');
-      return;
-    } catch (e) {
-      if (e.name === 'AbortError') return;
+    if (!resp.ok) {
+      throw new Error(result.error || 'Verification failed');
     }
+
+    // 验证成功:绑定 email 到当前 session 的视频
+    try {
+      await fetch('/.netlify/functions/auth-video-attach-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: currentPass3SessionId,
+          email: pendingEmail
+        })
+      });
+    } catch (e) {
+      console.warn('Email attach failed:', e);
+    }
+
+    // 显示完成确认
+    document.getElementById('otpFormSection').style.display = 'none';
+    document.getElementById('emailDoneSection').style.display = 'block';
+    document.getElementById('confirmedEmailDisplay').textContent = pendingEmail;
+
+    // 存 localStorage(下次免登录)
+    try {
+      localStorage.setItem('readii_user_email', pendingEmail);
+      localStorage.setItem('readii_user_name', pendingUserName);
+    } catch (e) {}
+
+    track('email_confirmed', {
+      email_provided: true,
+      subscribed_daily: pendingSubscribeDaily,
+      subscribed_edu: pendingSubscribeEdu
+    });
+
+  } catch (err) {
+    console.error('Verify OTP failed:', err);
+    errorEl.textContent = err.message || 'Invalid code. Try again?';
+    errorEl.style.display = 'block';
+    submitBtn.disabled = false;
+    submitBtn.textContent = '✓ Confirm';
+  }
+}
+
+async function resendOtp() {
+  if (!pendingEmail) return;
+  if (resentOtpCount >= 3) {
+    toast('Too many resends. Please wait a moment.');
+    return;
+  }
+  resentOtpCount++;
+
+  try {
+    await fetch('/.netlify/functions/auth-send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: pendingEmail,
+        playerName: pendingUserName
+      })
+    });
+    toast('New code sent!');
+  } catch (e) {
+    toast('Failed to resend. Try again?');
+  }
+}
+
+function skipEmailForm() {
+  if (!confirm('Skip the email? Your reading may be lost when you close this page. Continue?')) {
+    return;
   }
 
-  const a = document.createElement('a');
-  a.href = clipVideoUrl;
-  a.download = `readii-clip.webm`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  toast(isIOS ? 'Downloaded! Open Files app to share' : 'Clip saved');
+  document.getElementById('emailFormSection').style.display = 'none';
+
+  track('email_skipped', { user_skipped: true });
+
+  setTimeout(() => {
+    showRoundComplete();
+  }, 800);
 }
 
 // ═════════════════════════════════════════════════════
@@ -4520,38 +4074,6 @@ async function uploadFullVideoToServer() {
     }
   } catch (e) {
     console.warn('Full video upload failed:', e);
-  }
-}
-
-async function uploadClipVideoToServer() {
-  if (!clipVideoBlob || !currentPass3SessionId) return;
-
-  try {
-    const result = await uploadSingleVideo({
-      blob: clipVideoBlob,
-      videoType: 'viral',  // 用 viral 上报(数据库 check 约束兼容 clip)
-      articleId: currentArticleId,
-      playerName: playerName || 'reader'
-    });
-    if (result) {
-      viralUploadedUrl = result.publicUrl;
-      videoShareSlug = result.shareSlug;
-      track('clip_uploaded', { url: result.publicUrl, slug: result.shareSlug });
-
-      // 触发 mp4 转码(异步)
-      triggerMp4Transcoding(result.videoId).catch(e => console.warn('Transcode trigger failed:', e));
-
-      // 启动 mp4 轮询(用于显示 iOS-ready 按钮)
-      pollForMp4(result.shareSlug).then(mp4Url => {
-        if (mp4Url) {
-          viralMp4Url = mp4Url;
-          const mp4Btn = document.getElementById('downloadMp4Btn');
-          if (mp4Btn) mp4Btn.style.display = 'inline-block';
-        }
-      });
-    }
-  } catch (e) {
-    console.warn('Clip upload failed:', e);
   }
 }
 

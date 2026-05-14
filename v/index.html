@@ -1,0 +1,70 @@
+<!-- v/index.html — Readii video landing page (/v/:slug) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Readii Video</title>
+  <style>
+    body { font-family: Georgia, serif; background: #FAF8F3; margin: 0; padding: 20px; color: #1F4D40; }
+    .container { max-width: 480px; margin: 40px auto; text-align: center; }
+    .brand { font-family: 'Helvetica Neue', sans-serif; font-weight: 700; font-size: 32px; color: #B8873A; letter-spacing: 0.15em; }
+    .slogan { font-style: italic; font-size: 14px; opacity: 0.7; margin-bottom: 32px; }
+    video { width: 100%; max-width: 300px; aspect-ratio: 9/16; border-radius: 12px; background: #000; margin: 20px 0; }
+    .btn { display: inline-block; background: #B8873A; color: #FAF8F3; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-family: 'Helvetica Neue', sans-serif; font-weight: 600; margin: 8px; }
+    .btn-secondary { background: #1F4D40; }
+    .footer-cta { margin-top: 40px; }
+    .footer-cta a { color: #B8873A; }
+    #loading { color: #1F4D40; opacity: 0.6; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="brand">READII</div>
+    <div class="slogan">Read British</div>
+
+    <p id="loading">Loading your video...</p>
+
+    <video id="videoPlayer" controls playsinline style="display:none"></video>
+
+    <div id="actions" style="display:none">
+      <a id="downloadBtn" class="btn" download>📥 Save to my device</a>
+      <br>
+      <a class="btn btn-secondary" href="/quiz">Try yourself →</a>
+    </div>
+
+    <div class="footer-cta">
+      <p style="font-size: 12px; opacity: 0.6;">
+        Use any short-video editor (CapCut, TikTok, Xiaohongshu) to clip a highlight.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const slug = window.location.pathname.split('/').pop();
+
+    fetch(`/.netlify/functions/quiz-video-status?slug=${slug}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data && (data.mp4_url || data.public_url)) {
+          const videoUrl = data.mp4_url || data.public_url;
+          const player = document.getElementById('videoPlayer');
+          const dlBtn = document.getElementById('downloadBtn');
+
+          player.src = videoUrl;
+          dlBtn.href = videoUrl;
+          dlBtn.download = `readii-${slug}.${data.mp4_url ? 'mp4' : 'webm'}`;
+
+          document.getElementById('loading').style.display = 'none';
+          player.style.display = 'block';
+          document.getElementById('actions').style.display = 'block';
+        } else {
+          document.getElementById('loading').textContent = 'Video not found.';
+        }
+      })
+      .catch(() => {
+        document.getElementById('loading').textContent = 'Video not found.';
+      });
+  </script>
+</body>
+</html>
