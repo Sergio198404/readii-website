@@ -76,6 +76,19 @@ exports.handler = async (event) => {
 
     fs.writeFileSync(inputPath, webmBuffer);
 
+    // === 🎬 诊断 webm 文件完整性 ===
+    const stats = fs.statSync(inputPath);
+    console.log('🎬 webmData blob size:', webmData.size, 'bytes');
+    console.log('🎬 webmBuffer length:', webmBuffer.length, 'bytes');
+    console.log('🎬 written file size:', stats.size, 'bytes');
+    console.log('🎬 storage_path:', videoRecord.storage_path);
+
+    // webm 文件应该以 EBML magic bytes (1a45dfa3) 开头
+    const header = fs.readFileSync(inputPath).slice(0, 16);
+    console.log('🎬 file header (hex):', header.toString('hex'));
+    console.log('🎬 is valid webm:', header.slice(0, 4).toString('hex') === '1a45dfa3');
+    // === 诊断结束 ===
+
     // Run ffmpeg
     await new Promise((resolve, reject) => {
       ffmpeg(inputPath)
