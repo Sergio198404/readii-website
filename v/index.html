@@ -1,70 +1,561 @@
 <!-- v/index.html — Readii video landing page (/v/:slug) -->
+<!-- 设计目标:朋友视角 — 5 秒决策"我也想试" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Readii Video</title>
+  <title>Readii · A British reading</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: Georgia, serif; background: #FAF8F3; margin: 0; padding: 20px; color: #1F4D40; }
-    .container { max-width: 480px; margin: 40px auto; text-align: center; }
-    .brand { font-family: 'Helvetica Neue', sans-serif; font-weight: 700; font-size: 32px; color: #B8873A; letter-spacing: 0.15em; }
-    .slogan { font-style: italic; font-size: 14px; opacity: 0.7; margin-bottom: 32px; }
-    video { width: 100%; max-width: 300px; aspect-ratio: 9/16; border-radius: 12px; background: #000; margin: 20px 0; }
-    .btn { display: inline-block; background: #B8873A; color: #FAF8F3; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-family: 'Helvetica Neue', sans-serif; font-weight: 600; margin: 8px; }
-    .btn-secondary { background: #1F4D40; }
-    .footer-cta { margin-top: 40px; }
-    .footer-cta a { color: #B8873A; }
-    #loading { color: #1F4D40; opacity: 0.6; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #FAF8F3;
+      color: #1F4D40;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ─── Top brand bar ───────────────────────── */
+    .brand-bar {
+      text-align: center;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: #B8873A;
+      margin-bottom: 56px;
+    }
+    .brand-bar .sep { opacity: 0.4; margin: 0 8px; }
+
+    /* ─── Eyebrow & title ─────────────────────── */
+    .eyebrow {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .eyebrow-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Caveat', Georgia, cursive;
+      font-size: 22px;
+      color: #B8873A;
+      font-weight: 500;
+    }
+    .eyebrow-line::before,
+    .eyebrow-line::after {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: #B8873A;
+      opacity: 0.4;
+    }
+
+    .player-name {
+      text-align: center;
+      font-size: 28px;
+      font-style: italic;
+      color: #1F4D40;
+      margin: 4px 0 32px;
+      font-weight: normal;
+    }
+
+    .article-title {
+      text-align: center;
+      font-size: 36px;
+      line-height: 1.2;
+      color: #1F4D40;
+      margin: 0 0 12px;
+      font-weight: normal;
+    }
+    .article-divider {
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: #1F4D40;
+      opacity: 0.3;
+      margin: 16px auto;
+      border: 0;
+    }
+    .article-author {
+      text-align: center;
+      font-size: 14px;
+      font-style: italic;
+      color: #1F4D40;
+      opacity: 0.7;
+      margin: 0 0 8px;
+      min-height: 1em;
+    }
+    .article-date {
+      text-align: center;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: #1F4D40;
+      opacity: 0.5;
+      margin: 0 0 40px;
+      text-transform: uppercase;
+      min-height: 1em;
+    }
+
+    /* ─── Video frame ─────────────────────────── */
+    .video-frame {
+      position: relative;
+      max-width: 320px;
+      margin: 0 auto 40px;
+      aspect-ratio: 9 / 16;
+      background: #1F4D40;
+      border: 1px solid #1F4D40;
+      box-shadow: 0 4px 24px rgba(31, 77, 64, 0.12);
+    }
+    .video-frame video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* Gold L-shape corner brackets */
+    .corner {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: #B8873A;
+      border-style: solid;
+      border-width: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .corner.tl { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; }
+    .corner.tr { top: -1px; right: -1px; border-top-width: 2px; border-right-width: 2px; }
+    .corner.bl { bottom: -1px; left: -1px; border-bottom-width: 2px; border-left-width: 2px; }
+    .corner.br { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; }
+
+    /* Poster overlay (shown before play) */
+    .poster {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #1F4D40 0%, #14342B 100%);
+      color: #FAF8F3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+    .poster.hidden { opacity: 0; pointer-events: none; }
+    .poster-label {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: #B8873A;
+      margin-bottom: 16px;
+    }
+    .poster-title {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.3;
+      margin-bottom: 32px;
+      color: #FAF8F3;
+    }
+    .poster-play {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #B8873A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FAF8F3;
+      font-size: 22px;
+      margin-bottom: 16px;
+      padding-left: 4px;
+    }
+    .poster-hint {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .video-frame.not-ready .poster { cursor: default; }
+    .video-frame.not-ready .poster-play {
+      background: transparent;
+      border: 2px solid #B8873A;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* ─── Article blurb ───────────────────────── */
+    .blurb {
+      max-width: 380px;
+      margin: 0 auto 48px;
+      padding: 0 8px;
+      text-align: center;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.7;
+      color: #1F4D40;
+      opacity: 0.85;
+    }
+
+    /* ─── Main CTA (forest card) ──────────────── */
+    .main-cta {
+      background: #1F4D40;
+      color: #FAF8F3;
+      padding: 36px 28px;
+      border-radius: 16px;
+      text-align: center;
+      margin: 0 0 32px;
+    }
+    .main-cta-eyebrow {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: #B8873A;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .main-cta-title {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 26px;
+      margin: 0 0 16px;
+      color: #FAF8F3;
+    }
+    .main-cta-text {
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0 0 24px;
+      opacity: 0.85;
+    }
+    .main-cta-btn {
+      display: inline-block;
+      background: #B8873A;
+      color: #FAF8F3;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: transform 0.2s ease;
+    }
+    .main-cta-btn:hover { transform: translateY(-1px); }
+
+    /* ─── Owner section (weak) ────────────────── */
+    .owner {
+      text-align: center;
+      margin: 40px 0 48px;
+    }
+    .owner-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: center;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #1F4D40;
+      opacity: 0.5;
+      margin-bottom: 16px;
+    }
+    .owner-divider::before,
+    .owner-divider::after {
+      content: '';
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: #1F4D40;
+      opacity: 0.3;
+    }
+    .owner-btn {
+      display: inline-block;
+      color: #1F4D40;
+      text-decoration: none;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      border-bottom: 1px solid #B8873A;
+      padding-bottom: 2px;
+    }
+    .owner-btn:hover { color: #B8873A; }
+
+    /* ─── What is Readii? ─────────────────────── */
+    .about {
+      background: #FFFFFF;
+      border: 1px solid rgba(31, 77, 64, 0.12);
+      padding: 28px 24px;
+      border-radius: 12px;
+      margin: 0 0 32px;
+    }
+    .about-title {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: #B8873A;
+      margin: 0 0 12px;
+      text-transform: uppercase;
+    }
+    .about-text {
+      font-family: Georgia, serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #1F4D40;
+      margin: 0;
+    }
+
+    /* ─── Footer ──────────────────────────────── */
+    .footer {
+      text-align: center;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: #1F4D40;
+      opacity: 0.5;
+      margin-top: 48px;
+      text-transform: uppercase;
+    }
+    .footer a { color: inherit; text-decoration: none; }
+    .footer .sep { margin: 0 8px; opacity: 0.6; }
+
+    /* ─── Empty state ─────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+    }
+    .empty-state h2 {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 24px;
+      color: #1F4D40;
+      margin: 0 0 16px;
+    }
+    .empty-state p {
+      font-size: 15px;
+      opacity: 0.7;
+      margin: 0 0 32px;
+    }
+
+    /* ─── Initial loading ─────────────────────── */
+    .initial-loading {
+      text-align: center;
+      padding: 80px 24px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #1F4D40;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 380px) {
+      .article-title { font-size: 30px; }
+      .player-name { font-size: 24px; }
+      .main-cta-title { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="brand">READII</div>
-    <div class="slogan">Read British</div>
 
-    <p id="loading">Loading your video...</p>
+  <div id="initialLoading" class="initial-loading">Loading...</div>
 
-    <video id="videoPlayer" controls playsinline style="display:none"></video>
+  <main id="content" class="page" style="display:none">
 
-    <div id="actions" style="display:none">
-      <a id="downloadBtn" class="btn" download>📥 Save to my device</a>
-      <br>
-      <a class="btn btn-secondary" href="/quiz">Try yourself →</a>
+    <div class="brand-bar">
+      READII <span class="sep">·</span> READ BRITISH
     </div>
 
-    <div class="footer-cta">
-      <p style="font-size: 12px; opacity: 0.6;">
-        Use any short-video editor (CapCut, TikTok, Xiaohongshu) to clip a highlight.
+    <div class="eyebrow">
+      <span class="eyebrow-line">a reading by</span>
+    </div>
+    <p id="playerName" class="player-name"></p>
+
+    <h1 id="articleTitle" class="article-title"></h1>
+    <hr class="article-divider">
+    <p id="articleAuthor" class="article-author"></p>
+    <p id="articleDate" class="article-date"></p>
+
+    <div id="videoFrame" class="video-frame">
+      <span class="corner tl"></span>
+      <span class="corner tr"></span>
+      <span class="corner bl"></span>
+      <span class="corner br"></span>
+
+      <div id="poster" class="poster">
+        <div class="poster-label">A READII READING</div>
+        <div id="posterTitle" class="poster-title"></div>
+        <div class="poster-play">▶</div>
+        <div id="posterHint" class="poster-hint">TAP TO PLAY</div>
+      </div>
+
+      <video id="videoPlayer" controls playsinline preload="metadata"></video>
+    </div>
+
+    <p id="articleBlurb" class="blurb"></p>
+
+    <div class="main-cta">
+      <div class="main-cta-eyebrow">YOUR TURN</div>
+      <h2 class="main-cta-title">Read your own story</h2>
+      <p class="main-cta-text">
+        Pick a British reading. Practise it out loud.
+        Get a video like this one — in about ten minutes.
+      </p>
+      <a href="/quiz" class="main-cta-btn">Start reading →</a>
+    </div>
+
+    <div id="ownerSection" class="owner" style="display:none">
+      <div class="owner-divider">Is this your reading?</div>
+      <a id="downloadBtn" href="#" download class="owner-btn">Download the MP4</a>
+    </div>
+
+    <div class="about">
+      <p class="about-title">What is Readii?</p>
+      <p class="about-text">
+        A British English reading studio for grown-ups.
+        Daisy reads you a short essay. You read it back.
+        We make you a video.
       </p>
     </div>
+
+    <div class="footer">
+      <a href="https://readii.co.uk">readii.co.uk</a>
+      <span class="sep">·</span>
+      Read British
+    </div>
+
+  </main>
+
+  <div id="emptyState" class="page empty-state" style="display:none">
+    <div class="brand-bar">
+      READII <span class="sep">·</span> READ BRITISH
+    </div>
+    <h2>This reading isn't here.</h2>
+    <p>The link may be old, or the reading is being prepared. Try yours instead?</p>
+    <a href="/quiz" class="main-cta-btn">Start a reading →</a>
   </div>
 
   <script>
-    const slug = window.location.pathname.split('/').pop();
+    // ─── Article metadata dictionary ────────────
+    // Author names left as "—" pending user input; blurbs are seed copy.
+    const ARTICLES = {
+      'apology': {
+        title: 'The Apology',
+        author: '—',
+        blurb: 'A small essay on the English art of saying sorry — when one word does the work of many.'
+      },
+      'seven-novembers': {
+        title: 'Seven Novembers',
+        author: '—',
+        blurb: 'Seven autumn evenings, seven quiet observations. A reading on time, weather, and the colour of November light.'
+      },
+      'shop-closes-for-lunch': {
+        title: 'A Shop That Closes for Lunch',
+        author: '—',
+        blurb: 'An afternoon in a small English town, where the corner shop still closes for lunch — and what that says about a slower life.'
+      }
+    };
 
-    fetch(`/.netlify/functions/quiz-video-status?slug=${slug}`)
-      .then(r => r.json())
-      .then(data => {
-        if (data && (data.mp4_url || data.public_url)) {
-          const videoUrl = data.mp4_url || data.public_url;
+    function fmtDate(iso) {
+      if (!iso) return '';
+      try {
+        const d = new Date(iso);
+        return d.toLocaleDateString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' });
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function showEmpty() {
+      document.getElementById('initialLoading').style.display = 'none';
+      document.getElementById('content').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'block';
+    }
+
+    const slug = window.location.pathname.split('/').filter(Boolean).pop();
+    if (!slug || slug === 'v') {
+      showEmpty();
+    } else {
+      fetch(`/.netlify/functions/quiz-video-status?slug=${encodeURIComponent(slug)}`)
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(data => {
+          if (!data) return showEmpty();
+
+          const article = ARTICLES[data.article_id] || {
+            title: 'A British reading',
+            author: '—',
+            blurb: ''
+          };
+
+          const playerName = data.player_name || 'A reader';
+
+          document.title = `${article.title} — read by ${playerName} · Readii`;
+
+          document.getElementById('playerName').textContent = playerName;
+          document.getElementById('articleTitle').textContent = article.title;
+          document.getElementById('articleAuthor').textContent =
+            article.author && article.author !== '—' ? `by ${article.author}` : '';
+          document.getElementById('articleDate').textContent = fmtDate(data.created_at);
+          document.getElementById('articleBlurb').textContent = article.blurb;
+          document.getElementById('posterTitle').textContent = article.title;
+
+          const videoFrame = document.getElementById('videoFrame');
           const player = document.getElementById('videoPlayer');
-          const dlBtn = document.getElementById('downloadBtn');
+          const poster = document.getElementById('poster');
+          const ownerSection = document.getElementById('ownerSection');
+          const downloadBtn = document.getElementById('downloadBtn');
 
-          player.src = videoUrl;
-          dlBtn.href = videoUrl;
-          dlBtn.download = `readii-${slug}.${data.mp4_url ? 'mp4' : 'webm'}`;
+          if (data.mp4_url) {
+            player.src = data.mp4_url;
+            downloadBtn.href = data.mp4_url;
+            downloadBtn.download = `readii-${slug}.mp4`;
+            ownerSection.style.display = 'block';
 
-          document.getElementById('loading').style.display = 'none';
-          player.style.display = 'block';
-          document.getElementById('actions').style.display = 'block';
-        } else {
-          document.getElementById('loading').textContent = 'Video not found.';
-        }
-      })
-      .catch(() => {
-        document.getElementById('loading').textContent = 'Video not found.';
-      });
+            poster.addEventListener('click', () => {
+              poster.classList.add('hidden');
+              player.play().catch(() => {});
+            }, { once: true });
+
+            player.addEventListener('play', () => {
+              poster.classList.add('hidden');
+            });
+          } else {
+            // mp4 still being transcoded — don't fall back to webm (Safari can't play it)
+            videoFrame.classList.add('not-ready');
+            document.getElementById('posterHint').textContent = 'POLISHING — REFRESH IN A MINUTE';
+            player.style.display = 'none';
+          }
+
+          document.getElementById('initialLoading').style.display = 'none';
+          document.getElementById('content').style.display = 'block';
+        })
+        .catch(() => showEmpty());
+    }
   </script>
 </body>
 </html>

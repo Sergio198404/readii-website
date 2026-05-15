@@ -835,12 +835,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <p class="password-error" id="passwordError" style="display:none"></p>
       </div>
 
-      <!-- 已登录用户简化 UI -->
+      <!-- 已登录用户简化 UI(邮件已在后台自动发送,这里只更新订阅偏好) -->
       <div class="signed-in-section" id="signedInSection" style="display:none">
-        <p class="signed-in-label">📧 SEND TO YOUR EMAIL</p>
+        <p class="signed-in-label">✨ ON ITS WAY TO YOUR INBOX</p>
         <p class="signed-in-hint">
-          Hi <strong id="signedInName"></strong>! We'll send your video to
-          <strong id="signedInEmail"></strong>
+          Hi <strong id="signedInName"></strong> — your reading is heading to
+          <strong id="signedInEmail"></strong>. Update your preferences below.
         </p>
 
         <div class="newsletter-options">
@@ -856,7 +856,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         </div>
 
         <button class="btn-start" id="signedInSubmitBtn" onclick="submitSignedInForm()">
-          📤 Send my video
+          Save my preferences →
         </button>
       </div>
 
@@ -4005,7 +4005,7 @@ async function submitSignedInForm() {
   } catch (err) {
     toast('Failed. Try again?');
     btn.disabled = false;
-    btn.textContent = '📤 Send my video';
+    btn.textContent = 'Save my preferences →';
   }
 }
 

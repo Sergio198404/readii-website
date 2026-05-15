@@ -13,7 +13,7 @@ exports.handler = async (event) => {
 
   const { data, error } = await supabase
     .from('pretotype_videos')
-    .select('public_url, mp4_url, player_name, article_id, video_type, share_slug')
+    .select('public_url, mp4_url, player_name, article_id, video_type, share_slug, created_at')
     .eq('share_slug', slug)
     .single();
 
