@@ -2937,9 +2937,20 @@ function reRecordCurrentSegment() {
 }
 
 function keepAndContinue() {
+  // v12: 在 user gesture 内 resume AudioContext,确保 generating stage 后续能播放 preview
+  // (iOS 严格要求 resume 必须在 user gesture handler 同步内)
+  if (!ecAudioContext) {
+    ecAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (ecAudioContext.state === 'suspended') {
+    ecAudioContext.resume().then(() => console.log('🔊 AudioContext resumed in keepAndContinue'));
+  }
+
   // v12: 跟读一句完成 → 给用户即时反馈(音效 + 烟花),延续 Pass 1/2 的节奏
+  // 注:不延迟切 stage(Pass 1 也是直接切的,confetti 容器是全局 fixed,会叠加在新 panel 上)
   playSound('correct');
   triggerConfetti();
+  console.log('🎉 keepAndContinue: SFX + confetti triggered');
 
   // v10.1 fix #1: persist this segment's recording before advancing
   const justRecorded = ecCurrentSegmentIdx;
@@ -2947,10 +2958,9 @@ function keepAndContinue() {
   saveProgressToIDB(justRecorded); // fire-and-forget
 
   if (ecCurrentSegmentIdx >= segments.length) {
-    // 延迟一点点进 generating,让烟花/音效有时间展现
-    setTimeout(() => enterGeneratingStage(), 400);
+    enterGeneratingStage();
   } else {
-    setTimeout(() => enterDaisyStage(), 400);
+    enterDaisyStage();
   }
 }
 
@@ -2958,18 +2968,27 @@ function keepAndContinue() {
 let __previewSource = null;
 function startPreviewPlayback(mixedBuffer) {
   stopPreviewPlayback();
+  console.log('▶️ startPreviewPlayback called, buffer:', !!mixedBuffer,
+    'duration:', mixedBuffer?.duration?.toFixed?.(1));
   try {
     if (!ecAudioContext) {
       ecAudioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
-    if (ecAudioContext.state === 'suspended') ecAudioContext.resume();
+    console.log('▶️ AudioContext state:', ecAudioContext.state);
+    if (ecAudioContext.state === 'suspended') {
+      ecAudioContext.resume().then(
+        () => console.log('▶️ AudioContext resumed (preview)'),
+        (e) => console.warn('▶️ AudioContext resume FAILED:', e.message)
+      );
+    }
     __previewSource = ecAudioContext.createBufferSource();
     __previewSource.buffer = mixedBuffer;
     __previewSource.connect(ecAudioContext.destination);
     __previewSource.start();
-    console.log('▶️ Preview playback started, duration:', mixedBuffer.duration.toFixed(1), 's');
+    __previewSource.onended = () => console.log('▶️ Preview playback ended naturally');
+    console.log('▶️ Preview source.start() OK');
   } catch (e) {
-    console.warn('Preview playback failed:', e);
+    console.warn('▶️ Preview playback threw:', e.message);
   }
 }
 function stopPreviewPlayback() {
