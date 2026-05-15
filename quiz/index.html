@@ -4309,7 +4309,7 @@ function blobToBase64(blob) {
 
 function triggerMp4Transcoding(videoId) {
   // 异步触发,不等响应
-  return fetch('/.netlify/functions/video-transcode', {
+  return fetch('/.netlify/functions/video-transcode-background', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ videoId })
