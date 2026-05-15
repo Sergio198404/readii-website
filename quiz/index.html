@@ -2937,15 +2937,46 @@ function reRecordCurrentSegment() {
 }
 
 function keepAndContinue() {
+  // v12: 跟读一句完成 → 给用户即时反馈(音效 + 烟花),延续 Pass 1/2 的节奏
+  playSound('correct');
+  triggerConfetti();
+
   // v10.1 fix #1: persist this segment's recording before advancing
   const justRecorded = ecCurrentSegmentIdx;
   ecCurrentSegmentIdx++;
   saveProgressToIDB(justRecorded); // fire-and-forget
 
   if (ecCurrentSegmentIdx >= segments.length) {
-    enterGeneratingStage();
+    // 延迟一点点进 generating,让烟花/音效有时间展现
+    setTimeout(() => enterGeneratingStage(), 400);
   } else {
-    enterDaisyStage();
+    setTimeout(() => enterDaisyStage(), 400);
+  }
+}
+
+// v12: 在 generating 阶段播放带 bgm 的作品给用户听(等视频生成期间)
+let __previewSource = null;
+function startPreviewPlayback(mixedBuffer) {
+  stopPreviewPlayback();
+  try {
+    if (!ecAudioContext) {
+      ecAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (ecAudioContext.state === 'suspended') ecAudioContext.resume();
+    __previewSource = ecAudioContext.createBufferSource();
+    __previewSource.buffer = mixedBuffer;
+    __previewSource.connect(ecAudioContext.destination);
+    __previewSource.start();
+    console.log('▶️ Preview playback started, duration:', mixedBuffer.duration.toFixed(1), 's');
+  } catch (e) {
+    console.warn('Preview playback failed:', e);
+  }
+}
+function stopPreviewPlayback() {
+  if (__previewSource) {
+    try { __previewSource.stop(); } catch (e) {}
+    try { __previewSource.disconnect(); } catch (e) {}
+    __previewSource = null;
   }
 }
 
@@ -3041,6 +3072,9 @@ async function enterGeneratingStage() {
     stepMusic.classList.remove('active');
     stepMusic.classList.add('done');
 
+    // v12: 立即播放给用户听,让 video 生成的等待变成"欣赏作品"
+    startPreviewPlayback(mixedBuffer);
+
     await sleep(300);
     stepVideo.style.display = 'block';
     stepVideo.classList.add('active');
@@ -3077,6 +3111,9 @@ async function enterGeneratingStage() {
 async function enterUnlockAnimationStage() {
   ecStage = 'unlocking';
   showStagePanel('ecStageUnlock');
+
+  // v12: 解锁动画屏不需要 preview audio
+  stopPreviewPlayback();
 
   track('viral_unlock_shown', { article_id: currentArticleId });
 
@@ -3889,6 +3926,9 @@ function enterResultStage() {
   ecStage = 'result';
   updateProgress();
   showStagePanel('ecStageResult');
+
+  // v12: 进 Result 屏前停止 preview audio,让 video 元素接管播放
+  stopPreviewPlayback();
 
   // 加载视频预览
   const fullPreview = document.getElementById('videoPreview');
@@ -5548,6 +5588,7 @@ function resetAll() {
   echoMediaRecorder = null;
   ecUserMediaRecorder = null;
   stopSilenceDetection();
+  if (typeof stopPreviewPlayback === 'function') stopPreviewPlayback();
   segmentRecordings.forEach(rec => { if (rec && rec.url) URL.revokeObjectURL(rec.url); });
   segmentRecordings = [];
   segmentRecordingMeta = [];  // v11
