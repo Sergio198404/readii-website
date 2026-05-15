@@ -2317,19 +2317,28 @@ async function startEchoRecording(opts) {
     return;
   }
 
-  // Get mic for both MediaRecorder + SpeechRecognition
+  // Get mic for both MediaRecorder + SpeechRecognition.
+  // 复用已有 stream:mobile Chrome 二次 getUserMedia 会拿到无声 stream,
+  // 因此 mic 权限申请一次后保活,在 resetAll 时统一释放。
   let micStream;
-  try {
-    micStream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true
-      }
-    });
-    echoMediaStream = micStream;
-  } catch (e) {
-    toast('Microphone access needed');
-    return;
+  const streamAlive = echoMediaStream
+    && echoMediaStream.active
+    && echoMediaStream.getTracks().every(t => t.readyState === 'live');
+  if (streamAlive) {
+    micStream = echoMediaStream;
+  } else {
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true
+        }
+      });
+      echoMediaStream = micStream;
+    } catch (e) {
+      toast('Microphone access needed');
+      return;
+    }
   }
 
   // Setup MediaRecorder to capture user audio
@@ -2437,11 +2446,8 @@ function stopEchoRecording(opts, transcript, chunks) {
       }
     }
 
-    // Clean up
-    if (echoMediaStream) {
-      echoMediaStream.getTracks().forEach(t => t.stop());
-      echoMediaStream = null;
-    }
+    // Clean up recorder/SR,但保留 echoMediaStream 给下一段录音复用
+    // (mobile Chrome 反复 getUserMedia 会拿到无声 stream)。stream 在 resetAll 时统一释放。
     echoMediaRecorder = null;
     currentRecognition = null;
 
@@ -2674,16 +2680,24 @@ async function enterRecordingStage() {
     ecDaisyAudio.pause();
   }
 
+  // 复用 stream(同 startEchoRecording 的注释);避免 mobile Chrome 二次申请 bug
   let micStream;
-  try {
-    micStream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true }
-    });
-    ecUserMediaStream = micStream;
-  } catch (e) {
-    toast('Microphone access needed');
-    console.error('Mic access failed:', e);
-    return;
+  const streamAlive = ecUserMediaStream
+    && ecUserMediaStream.active
+    && ecUserMediaStream.getTracks().every(t => t.readyState === 'live');
+  if (streamAlive) {
+    micStream = ecUserMediaStream;
+  } else {
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true }
+      });
+      ecUserMediaStream = micStream;
+    } catch (e) {
+      toast('Microphone access needed');
+      console.error('Mic access failed:', e);
+      return;
+    }
   }
 
   ecCurrentChunks = [];
@@ -2703,10 +2717,8 @@ async function enterRecordingStage() {
 
       segmentRecordings[ecCurrentSegmentIdx] = { blob, url, duration };
 
-      if (ecUserMediaStream) {
-        ecUserMediaStream.getTracks().forEach(t => t.stop());
-        ecUserMediaStream = null;
-      }
+      // 保留 ecUserMediaStream 给下一段录音复用(避免 mobile Chrome 二次申请 bug)
+      // stream 在 resetAll 时统一释放。
       ecUserMediaRecorder = null;
       stopSilenceDetection();
 
@@ -5493,6 +5505,15 @@ function resetAll() {
     ecUserMediaStream.getTracks().forEach(t => t.stop());
     ecUserMediaStream = null;
   }
+  // resetAll 时也释放 echo stream(录音 stream 是录音时复用保活的)
+  if (echoMediaStream) {
+    echoMediaStream.getTracks().forEach(t => t.stop());
+    echoMediaStream = null;
+  }
+  if (echoMediaRecorder && echoMediaRecorder.state !== 'inactive') {
+    try { echoMediaRecorder.stop(); } catch (e) {}
+  }
+  echoMediaRecorder = null;
   ecUserMediaRecorder = null;
   stopSilenceDetection();
   segmentRecordings.forEach(rec => { if (rec && rec.url) URL.revokeObjectURL(rec.url); });
