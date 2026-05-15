@@ -1444,12 +1444,24 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!slug) checkForUnfinishedPass3();
 });
 
-// v10.1 fix #1: 页面切到后台时暂停播放(不 reset,录音继续)
+// v10.1: 页面切到后台时暂停播放;v12: 切走时立即停止录音
+// (background 时 silence detection 的 RAF 暂停,会让录音被拉到几分钟,导致视频生成卡死)
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     if (ecDaisyAudio) ecDaisyAudio.pause();
     if (listenAudio) listenAudio.pause();
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+    // Pass 3:停止正在录音的 segment
+    if (ecUserMediaRecorder && ecUserMediaRecorder.state === 'recording') {
+      console.log('🛑 Tab hidden, stopping Pass 3 segment recording');
+      try { ecUserMediaRecorder.stop(); } catch (e) {}
+    }
+    // Pass 1 echo:停止单 word 录音
+    if (echoMediaRecorder && echoMediaRecorder.state === 'recording') {
+      console.log('🛑 Tab hidden, stopping Pass 1 echo recording');
+      try { echoMediaRecorder.stop(); } catch (e) {}
+    }
   }
 });
 
@@ -2418,7 +2430,62 @@ async function startEchoRecording(opts) {
 
   echoMediaRecorder.start();
 
-  // Hard timeout: 5s 自动停(用户也可再点按钮主动停)
+  // === Silence detection: 800ms 静音 + 最少 500ms 录音后自动停 ===
+  let echoSilenceRAF = null;
+  let echoLastCheck = Date.now();
+  let echoSilenceDur = 0;
+  let echoHasSpoken = false;
+  const echoRecStart = Date.now();
+  let echoAnalyserSource = null;
+
+  try {
+    if (!ecAudioContext) {
+      ecAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (ecAudioContext.state === 'suspended') ecAudioContext.resume();
+
+    echoAnalyserSource = ecAudioContext.createMediaStreamSource(micStream);
+    const analyser = ecAudioContext.createAnalyser();
+    analyser.fftSize = 1024;
+    echoAnalyserSource.connect(analyser);
+    const buf = new Uint8Array(analyser.frequencyBinCount);
+
+    function echoCheck() {
+      if (!echoMediaRecorder || echoMediaRecorder.state !== 'recording') {
+        if (echoSilenceRAF) cancelAnimationFrame(echoSilenceRAF);
+        echoSilenceRAF = null;
+        return;
+      }
+      analyser.getByteTimeDomainData(buf);
+      let sum = 0;
+      for (let i = 0; i < buf.length; i++) {
+        const n = (buf[i] - 128) / 128;
+        sum += n * n;
+      }
+      const rms = Math.sqrt(sum / buf.length);
+      const now = Date.now();
+      const dt = now - echoLastCheck;
+      echoLastCheck = now;
+
+      if (rms > 0.02) {
+        echoSilenceDur = 0;
+        echoHasSpoken = true;
+      } else {
+        echoSilenceDur += dt;
+        if (echoHasSpoken && echoSilenceDur >= 800 && (now - echoRecStart) >= 500) {
+          console.log(`🤫 [attempt ${_attempt}] silence detected, auto-stopping`);
+          try { echoMediaRecorder.stop(); } catch (e) {}
+          return;
+        }
+      }
+      echoSilenceRAF = requestAnimationFrame(echoCheck);
+    }
+    echoSilenceRAF = requestAnimationFrame(echoCheck);
+  } catch (silErr) {
+    console.warn('Echo silence detection setup failed:', silErr);
+  }
+
+  // Hard timeout: 5s 兜底自动停(silence detection 失效时)
   recordingTimeout = setTimeout(() => {
     if (echoMediaRecorder && echoMediaRecorder.state === 'recording') {
       try { echoMediaRecorder.stop(); } catch (e) {}
