@@ -167,7 +167,7 @@ exports.handler = async (event) => {
       .eq('id', videoId)
       .single();
 
-    if (updatedVideo?.user_email && updatedVideo?.email_status !== 'sent') {
+    if (updatedVideo?.user_email) {
       try {
         await fetch(`https://readii.co.uk/.netlify/functions/send-video-email`, {
           method: 'POST',
