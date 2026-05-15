@@ -2317,29 +2317,29 @@ async function startEchoRecording(opts) {
     return;
   }
 
-  // Get mic for both MediaRecorder + SpeechRecognition.
-  // 复用已有 stream:mobile Chrome 二次 getUserMedia 会拿到无声 stream,
-  // 因此 mic 权限申请一次后保活,在 resetAll 时统一释放。
+  // Get mic for both MediaRecorder + SpeechRecognition
   let micStream;
-  const streamAlive = echoMediaStream
-    && echoMediaStream.active
-    && echoMediaStream.getTracks().every(t => t.readyState === 'live');
-  if (streamAlive) {
-    micStream = echoMediaStream;
-  } else {
-    try {
-      micStream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true
-        }
-      });
-      echoMediaStream = micStream;
-    } catch (e) {
-      toast('Microphone access needed');
-      return;
-    }
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true
+      }
+    });
+    echoMediaStream = micStream;
+  } catch (e) {
+    toast('Microphone access needed');
+    console.error('🎤 getUserMedia failed:', e.name, e.message);
+    return;
   }
+
+  // === 🎤 诊断:第二段录音失败排查 ===
+  window.__readiiMicAttempt = (window.__readiiMicAttempt || 0) + 1;
+  const _attempt = window.__readiiMicAttempt;
+  const _tracks = micStream.getTracks();
+  console.log(`🎤 [attempt ${_attempt}] getUserMedia OK, tracks:`,
+    _tracks.map(t => ({ kind: t.kind, readyState: t.readyState, enabled: t.enabled, muted: t.muted })));
+  console.log(`🎤 [attempt ${_attempt}] stream.active:`, micStream.active);
 
   // Setup MediaRecorder to capture user audio
   const chunks = [];
@@ -2371,17 +2371,27 @@ async function startEchoRecording(opts) {
   currentRecognition.interimResults = false;
   currentRecognition.maxAlternatives = 3;
 
+  let srOnStartFired = false;
+
   currentRecognition.onstart = () => {
-    console.log('▶️ SR onstart fired');
+    srOnStartFired = true;
+    console.log(`▶️ [attempt ${_attempt}] SR onstart fired`);
     opts.btn.classList.add('recording');
     // Start MediaRecorder
     if (echoMediaRecorder) {
-      try { echoMediaRecorder.start(); } catch (e) {}
+      try {
+        echoMediaRecorder.start();
+        console.log(`🔴 [attempt ${_attempt}] MediaRecorder.start() OK, state:`, echoMediaRecorder.state);
+      } catch (mrErr) {
+        console.error(`🔴 [attempt ${_attempt}] MediaRecorder.start() THREW:`, mrErr.name, mrErr.message);
+      }
+    } else {
+      console.warn(`🔴 [attempt ${_attempt}] echoMediaRecorder is null at SR.onstart`);
     }
   };
 
   currentRecognition.onresult = (e) => {
-    console.log('📝 SR onresult:', e.results?.[0]?.[0]?.transcript);
+    console.log(`📝 [attempt ${_attempt}] SR onresult:`, e.results?.[0]?.[0]?.transcript);
     resultFired = true;
     finalTranscript = e.results[0][0].transcript || '';
     // Stop everything
@@ -2389,22 +2399,31 @@ async function startEchoRecording(opts) {
   };
 
   currentRecognition.onerror = (e) => {
-    console.log('❌ SR onerror:', e.error);
-    if (e.error !== 'no-speech') {
-      console.warn('SR error:', e.error);
-    }
+    console.log(`❌ [attempt ${_attempt}] SR onerror:`, e.error, 'message:', e.message);
     stopEchoRecording(opts, '', chunks);
   };
 
   currentRecognition.onend = () => {
-    console.log('🏁 SR onend, resultFired:', resultFired);
+    console.log(`🏁 [attempt ${_attempt}] SR onend, resultFired:`, resultFired, 'onStartFired:', srOnStartFired);
     opts.btn.classList.remove('recording');
     if (!resultFired) {
       stopEchoRecording(opts, '', chunks);
     }
   };
 
-  currentRecognition.start();
+  try {
+    currentRecognition.start();
+    console.log(`🚀 [attempt ${_attempt}] SR.start() called (waiting for onstart...)`);
+  } catch (srErr) {
+    console.error(`🚀 [attempt ${_attempt}] SR.start() THREW:`, srErr.name, srErr.message);
+  }
+
+  // 兜底诊断:如果 500ms 内 SR.onstart 没 fire,大概率是二次 start 死锁
+  setTimeout(() => {
+    if (!srOnStartFired) {
+      console.warn(`⚠️ [attempt ${_attempt}] SR.onstart did NOT fire within 500ms — likely silent failure (mobile Chrome bug)`);
+    }
+  }, 500);
 
   // Hard timeout
   recordingTimeout = setTimeout(() => {
@@ -2446,8 +2465,11 @@ function stopEchoRecording(opts, transcript, chunks) {
       }
     }
 
-    // Clean up recorder/SR,但保留 echoMediaStream 给下一段录音复用
-    // (mobile Chrome 反复 getUserMedia 会拿到无声 stream)。stream 在 resetAll 时统一释放。
+    // Clean up
+    if (echoMediaStream) {
+      echoMediaStream.getTracks().forEach(t => t.stop());
+      echoMediaStream = null;
+    }
     echoMediaRecorder = null;
     currentRecognition = null;
 
@@ -2680,24 +2702,16 @@ async function enterRecordingStage() {
     ecDaisyAudio.pause();
   }
 
-  // 复用 stream(同 startEchoRecording 的注释);避免 mobile Chrome 二次申请 bug
   let micStream;
-  const streamAlive = ecUserMediaStream
-    && ecUserMediaStream.active
-    && ecUserMediaStream.getTracks().every(t => t.readyState === 'live');
-  if (streamAlive) {
-    micStream = ecUserMediaStream;
-  } else {
-    try {
-      micStream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true }
-      });
-      ecUserMediaStream = micStream;
-    } catch (e) {
-      toast('Microphone access needed');
-      console.error('Mic access failed:', e);
-      return;
-    }
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true }
+    });
+    ecUserMediaStream = micStream;
+  } catch (e) {
+    toast('Microphone access needed');
+    console.error('Mic access failed:', e);
+    return;
   }
 
   ecCurrentChunks = [];
@@ -2717,8 +2731,10 @@ async function enterRecordingStage() {
 
       segmentRecordings[ecCurrentSegmentIdx] = { blob, url, duration };
 
-      // 保留 ecUserMediaStream 给下一段录音复用(避免 mobile Chrome 二次申请 bug)
-      // stream 在 resetAll 时统一释放。
+      if (ecUserMediaStream) {
+        ecUserMediaStream.getTracks().forEach(t => t.stop());
+        ecUserMediaStream = null;
+      }
       ecUserMediaRecorder = null;
       stopSilenceDetection();
 
