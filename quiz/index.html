@@ -2294,24 +2294,22 @@ function skipEchoWord() {
 }
 
 // ═════════════════════════════════════════════════════
-// Echo recording — uses MediaRecorder + SpeechRecognition together
+// Echo recording — pure MediaRecorder + Whisper backend STT
+// SpeechRecognition removed: iOS WebKit silent-fails on 2nd attempt
+// (fires onstart but doesn't actually listen → "No speech detected" abort)
 // ═════════════════════════════════════════════════════
 let echoMediaRecorder = null;
 let echoMediaStream = null;
 
 async function startEchoRecording(opts) {
   console.log('🎤 startEchoRecording:', {
-    currentRecognition,
-    echoMediaRecorder: echoMediaRecorder?.state,
-    echoMediaStream: echoMediaStream?.active,
+    state: echoMediaRecorder?.state,
     timestamp: Date.now()
   });
-  if (currentRecognition || echoMediaRecorder) {
-    // Already recording, stop it
-    try {
-      if (currentRecognition) currentRecognition.stop();
-      if (echoMediaRecorder && echoMediaRecorder.state !== 'inactive') echoMediaRecorder.stop();
-    } catch (e) {}
+
+  // Toggle: 已在录就停
+  if (echoMediaRecorder && echoMediaRecorder.state === 'recording') {
+    try { echoMediaRecorder.stop(); } catch (e) {}
     return;
   }
 
@@ -2320,20 +2318,11 @@ async function startEchoRecording(opts) {
     return;
   }
 
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    toast('Speech recognition needs Chrome');
-    return;
-  }
-
-  // Get mic for both MediaRecorder + SpeechRecognition
+  // 获取 mic
   let micStream;
   try {
     micStream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true
-      }
+      audio: { echoCancellation: true, noiseSuppression: true }
     });
     echoMediaStream = micStream;
   } catch (e) {
@@ -2342,148 +2331,99 @@ async function startEchoRecording(opts) {
     return;
   }
 
-  // === 🎤 诊断:第二段录音失败排查 ===
+  // === 🎤 诊断 ===
   window.__readiiMicAttempt = (window.__readiiMicAttempt || 0) + 1;
   const _attempt = window.__readiiMicAttempt;
   const _tracks = micStream.getTracks();
   console.log(`🎤 [attempt ${_attempt}] getUserMedia OK, tracks:`,
     _tracks.map(t => ({ kind: t.kind, readyState: t.readyState, enabled: t.enabled, muted: t.muted })));
-  console.log(`🎤 [attempt ${_attempt}] stream.active:`, micStream.active);
 
-  // Setup MediaRecorder to capture user audio
+  // 设置 MediaRecorder
   const chunks = [];
   try {
     echoMediaRecorder = new MediaRecorder(micStream, {
       mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : ''
     });
-
-    echoMediaRecorder.ondataavailable = (e) => {
-      if (e.data && e.data.size > 0) chunks.push(e.data);
-    };
-    echoMediaRecorder.onstart = () => {
-      console.log('🔴 MediaRecorder onstart');
-    };
-    echoMediaRecorder.onstop = () => {
-      console.log('⏹️ MediaRecorder onstop, chunks:', chunks.length);
-    };
   } catch (e) {
-    console.warn('MediaRecorder setup failed:', e);
+    console.error('MediaRecorder setup failed:', e);
+    toast('Recording not supported in this browser');
+    if (echoMediaStream) {
+      echoMediaStream.getTracks().forEach(t => t.stop());
+      echoMediaStream = null;
+    }
+    return;
   }
 
-  // Setup SpeechRecognition for transcript
-  let resultFired = false;
-  let finalTranscript = '';
+  echoMediaRecorder.ondataavailable = (e) => {
+    if (e.data && e.data.size > 0) chunks.push(e.data);
+  };
 
-  currentRecognition = new SR();
-  currentRecognition.lang = 'en-GB';
-  currentRecognition.continuous = false;
-  currentRecognition.interimResults = false;
-  currentRecognition.maxAlternatives = 3;
-
-  let srOnStartFired = false;
-
-  currentRecognition.onstart = () => {
-    srOnStartFired = true;
-    console.log(`▶️ [attempt ${_attempt}] SR onstart fired`);
+  echoMediaRecorder.onstart = () => {
+    console.log(`🔴 [attempt ${_attempt}] MediaRecorder onstart, state:`, echoMediaRecorder?.state);
     opts.btn.classList.add('recording');
-    // Start MediaRecorder
-    if (echoMediaRecorder) {
-      try {
-        echoMediaRecorder.start();
-        console.log(`🔴 [attempt ${_attempt}] MediaRecorder.start() OK, state:`, echoMediaRecorder.state);
-      } catch (mrErr) {
-        console.error(`🔴 [attempt ${_attempt}] MediaRecorder.start() THREW:`, mrErr.name, mrErr.message);
-      }
-    } else {
-      console.warn(`🔴 [attempt ${_attempt}] echoMediaRecorder is null at SR.onstart`);
-    }
   };
 
-  currentRecognition.onresult = (e) => {
-    console.log(`📝 [attempt ${_attempt}] SR onresult:`, e.results?.[0]?.[0]?.transcript);
-    resultFired = true;
-    finalTranscript = e.results[0][0].transcript || '';
-    // Stop everything
-    setTimeout(() => stopEchoRecording(opts, finalTranscript, chunks), 200);
-  };
-
-  currentRecognition.onerror = (e) => {
-    console.log(`❌ [attempt ${_attempt}] SR onerror:`, e.error, 'message:', e.message);
-    stopEchoRecording(opts, '', chunks);
-  };
-
-  currentRecognition.onend = () => {
-    console.log(`🏁 [attempt ${_attempt}] SR onend, resultFired:`, resultFired, 'onStartFired:', srOnStartFired);
+  echoMediaRecorder.onstop = async () => {
+    console.log(`⏹️ [attempt ${_attempt}] MediaRecorder onstop, chunks:`, chunks.length);
+    clearTimeout(recordingTimeout);
     opts.btn.classList.remove('recording');
-    if (!resultFired) {
-      stopEchoRecording(opts, '', chunks);
-    }
-  };
 
-  try {
-    currentRecognition.start();
-    console.log(`🚀 [attempt ${_attempt}] SR.start() called (waiting for onstart...)`);
-  } catch (srErr) {
-    console.error(`🚀 [attempt ${_attempt}] SR.start() THREW:`, srErr.name, srErr.message);
-  }
-
-  // 兜底诊断:如果 500ms 内 SR.onstart 没 fire,大概率是二次 start 死锁
-  setTimeout(() => {
-    if (!srOnStartFired) {
-      console.warn(`⚠️ [attempt ${_attempt}] SR.onstart did NOT fire within 500ms — likely silent failure (mobile Chrome bug)`);
-    }
-  }, 500);
-
-  // Hard timeout
-  recordingTimeout = setTimeout(() => {
-    if (currentRecognition) {
-      try { currentRecognition.stop(); } catch (e) {}
-    }
-  }, opts.timeoutMs || 5000);
-}
-
-function stopEchoRecording(opts, transcript, chunks) {
-  console.log('🛑 stopEchoRecording:', {
-    transcript: arguments[1],
-    chunksLength: arguments[2]?.length,
-    mediaRecorderState: echoMediaRecorder?.state,
-    timestamp: Date.now()
-  });
-  clearTimeout(recordingTimeout);
-
-  opts.btn.classList.remove('recording');
-
-  // Stop MediaRecorder
-  if (echoMediaRecorder && echoMediaRecorder.state !== 'inactive') {
-    try {
-      echoMediaRecorder.stop();
-    } catch (e) {}
-  }
-
-  // Wait briefly for final data, then build blob
-  setTimeout(() => {
-    let audioBlob = null;
-    let audioUrl = null;
-
-    if (chunks.length > 0) {
-      try {
-        audioBlob = new Blob(chunks, { type: 'audio/webm' });
-        audioUrl = URL.createObjectURL(audioBlob);
-      } catch (e) {
-        console.warn('Blob creation failed:', e);
-      }
-    }
-
-    // Clean up
+    // Cleanup stream (iOS will release mic indicator after this)
     if (echoMediaStream) {
       echoMediaStream.getTracks().forEach(t => t.stop());
       echoMediaStream = null;
     }
     echoMediaRecorder = null;
-    currentRecognition = null;
 
-    opts.onResult(transcript, audioBlob, audioUrl);
-  }, 200);
+    if (chunks.length === 0) {
+      console.warn(`⏹️ [attempt ${_attempt}] No audio data captured`);
+      opts.onResult('', null, null);
+      return;
+    }
+
+    let audioBlob, audioUrl;
+    try {
+      audioBlob = new Blob(chunks, { type: 'audio/webm' });
+      audioUrl = URL.createObjectURL(audioBlob);
+    } catch (e) {
+      console.warn('Blob creation failed:', e);
+      opts.onResult('', null, null);
+      return;
+    }
+
+    // 后端 Whisper STT
+    console.log(`📡 [attempt ${_attempt}] Sending to Whisper, size:`, audioBlob.size);
+    try {
+      const base64 = await blobToBase64(audioBlob);
+      const resp = await fetch('/.netlify/functions/transcribe-audio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ audio: base64, mimeType: 'audio/webm' })
+      });
+      const data = await resp.json();
+      console.log(`📡 [attempt ${_attempt}] Whisper response:`, resp.status, data);
+
+      if (!resp.ok) {
+        console.error('Whisper failed:', data);
+        opts.onResult('', audioBlob, audioUrl);
+        return;
+      }
+
+      opts.onResult((data.transcript || '').toLowerCase(), audioBlob, audioUrl);
+    } catch (e) {
+      console.error('STT call threw:', e);
+      opts.onResult('', audioBlob, audioUrl);
+    }
+  };
+
+  echoMediaRecorder.start();
+
+  // Hard timeout: 5s 自动停(用户也可再点按钮主动停)
+  recordingTimeout = setTimeout(() => {
+    if (echoMediaRecorder && echoMediaRecorder.state === 'recording') {
+      try { echoMediaRecorder.stop(); } catch (e) {}
+    }
+  }, opts.timeoutMs || 5000);
 }
 
 function finishPass2() {
