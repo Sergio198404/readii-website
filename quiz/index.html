@@ -15,6 +15,15 @@
 <meta name="twitter:description" content="Read English aloud in three passes. Can you beat my score?">
 <meta name="twitter:image" content="https://readii.co.uk/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Debug console (only when ?debug in URL) -->
+<script>
+  if (location.search.indexOf('debug') >= 0) {
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/eruda';
+    s.onload = function() { eruda.init(); };
+    document.head.appendChild(s);
+  }
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
