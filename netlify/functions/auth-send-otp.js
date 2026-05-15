@@ -22,13 +22,27 @@ exports.handler = async (event) => {
     const normalizedEmail = email.trim().toLowerCase();
     const safeName = (playerName || '').trim().substring(0, 50);
 
+    // Rate limit:同一邮箱 5 分钟内最多 3 次发送(防止邮件轰炸 / 资源耗尽)
+    // 注:这里依赖"不删旧 OTP"——verify-otp 已改为取最新一条
+    const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    const { count: recentCount } = await supabase
+      .from('quiz_otp_codes')
+      .select('*', { count: 'exact', head: true })
+      .eq('email', normalizedEmail)
+      .gte('created_at', fiveMinAgo);
+
+    if ((recentCount || 0) >= 3) {
+      console.warn('🚫 OTP rate limit hit for', normalizedEmail, 'count=', recentCount);
+      return {
+        statusCode: 429,
+        body: JSON.stringify({ error: 'Too many requests. Please wait 5 minutes before trying again.' })
+      };
+    }
+
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
 
-    // 删旧 OTP
-    await supabase.from('quiz_otp_codes').delete().eq('email', normalizedEmail);
-
-    // 插新 OTP
+    // 插新 OTP(不删旧的——verify 时取 created_at 最新的一条)
     const { error: insertError } = await supabase.from('quiz_otp_codes').insert({
       email: normalizedEmail,
       otp,

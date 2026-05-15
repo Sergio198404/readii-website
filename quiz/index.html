@@ -814,8 +814,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <label class="newsletter-option">
             <input type="checkbox" id="subscribeDailyReadings">
             <span class="newsletter-text">
-              <strong>Daily British readings</strong>
-              <span class="newsletter-sub">One short article each morning</span>
+              <strong>British readings</strong>
+              <span class="newsletter-sub">Short essays, when we publish them</span>
             </span>
           </label>
 
@@ -823,7 +823,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
             <input type="checkbox" id="subscribeEduEntrepreneurship">
             <span class="newsletter-text">
               <strong>British education &amp; entrepreneurship</strong>
-              <span class="newsletter-sub">Weekly insights from Xiaoyu</span>
+              <span class="newsletter-sub">Insights from Xiaoyu, when worth sharing</span>
             </span>
           </label>
         </div>
@@ -860,14 +860,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         </button>
       </div>
 
-      <!-- 完成 -->
+      <!-- 完成(新用户 / 已存在用户共用,JS 动态切换文案)-->
       <div class="email-done-section" id="emailDoneSection" style="display:none">
         <div class="email-done-icon">✓</div>
-        <h3 class="email-done-title">All set!</h3>
+        <h3 class="email-done-title" id="emailDoneTitle">All set!</h3>
         <p class="email-done-text">
           Your video will arrive at <span id="confirmedEmailDisplay"></span> in 1-2 minutes.
         </p>
-        <p class="email-done-sub">You can close this page — the email will reach you.</p>
+        <p class="email-done-sub" id="emailDoneSub">You can close this page — the email will reach you.</p>
 
         <button class="btn-start" onclick="showRoundComplete()" style="margin-top:14px">
           See my results →
@@ -3055,7 +3055,7 @@ function startUnlockAnimation() {
       <div class="unlock-content">
         <div class="unlock-icon">✨</div>
         <h2 class="unlock-title">You nailed the closing</h2>
-        <p class="unlock-subtitle">The viral cut tool is now yours to play with</p>
+        <p class="unlock-subtitle">Your reading is ready — let's see it</p>
       </div>
     </div>
   `;
@@ -4080,7 +4080,21 @@ async function submitOtp() {
     const result = await resp.json();
     if (!resp.ok) throw new Error(result.error);
 
-    // OTP 验证成功,切换到设置密码
+    // 已注册邮箱:跳过密码屏,直接关联视频 + 显示"Welcome back"完成屏
+    if (result.userExists) {
+      try { await attachVideoToUser(result.userId, result.email); } catch (e) { console.warn('attach failed:', e); }
+
+      document.getElementById('emailDoneTitle').textContent = 'Welcome back!';
+      document.getElementById('emailDoneSub').innerHTML =
+        'You can log in at <strong>readii.co.uk</strong> with your existing password.';
+
+      document.getElementById('otpFormSection').style.display = 'none';
+      document.getElementById('emailDoneSection').style.display = 'block';
+      document.getElementById('confirmedEmailDisplay').textContent = result.email;
+      return;
+    }
+
+    // 新用户:切换到设置密码
     document.getElementById('otpFormSection').style.display = 'none';
     document.getElementById('passwordFormSection').style.display = 'block';
     document.getElementById('passwordInput').focus();

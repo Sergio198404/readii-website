@@ -18,11 +18,14 @@ exports.handler = async (event) => {
 
     const normalizedEmail = email.trim().toLowerCase();
 
+    // 取最新一条 OTP(send-otp 不再 delete 旧的,可能有多行)
     const { data: otpRecord, error: fetchError } = await supabase
       .from('quiz_otp_codes')
       .select('*')
       .eq('email', normalizedEmail)
-      .single();
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     if (fetchError || !otpRecord) {
       return { statusCode: 404, body: JSON.stringify({ error: 'No OTP found. Request a new one.' }) };
@@ -45,12 +48,33 @@ exports.handler = async (event) => {
       return { statusCode: 401, body: JSON.stringify({ error: 'Invalid code.' }) };
     }
 
-    // 验证成功 — 注意:这里不创建用户,只确认 OTP 有效
+    // OTP 验证通过——检查邮箱是否已注册(避免"密码静默失败"陷阱)
+    const { data: usersList } = await supabase.auth.admin.listUsers();
+    const existingUser = usersList?.users?.find(u => u.email === normalizedEmail);
+
+    if (existingUser) {
+      console.log('🔁 OTP verified for EXISTING user:', existingUser.id);
+      // 已注册用户:前端会跳过密码屏,直接调 attachVideoToUser 完成关联
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: true,
+          userExists: true,
+          userId: existingUser.id,
+          email: normalizedEmail,
+          playerName: otpRecord.player_name
+        })
+      };
+    }
+
+    // 新用户:前端继续走设置密码屏
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         success: true,
+        userExists: false,
         email: normalizedEmail,
         playerName: otpRecord.player_name
       })
