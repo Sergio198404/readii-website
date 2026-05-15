@@ -1,7 +1,7 @@
 // netlify/functions/video-transcode.js
 // 把 user-videos 里的 webm 用 ffmpeg 转成 mp4(iOS 相册兼容)
 const { createClient } = require('@supabase/supabase-js');
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpegPath = require('ffmpeg-static');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const path = require('path');
@@ -14,17 +14,15 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUP
 
 exports.handler = async (event) => {
   // === 🎬 诊断 ffmpeg 在 Lambda 环境是否可用 ===
-  const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
-  console.log('🎬 ffmpeg path:', ffmpegInstaller.path);
-  console.log('🎬 ffmpeg exists:', fs.existsSync(ffmpegInstaller.path));
+  console.log('🎬 ffmpeg path:', ffmpegPath);
+  console.log('🎬 ffmpeg exists:', fs.existsSync(ffmpegPath));
 
   const { spawnSync } = require('child_process');
   try {
-    const result = spawnSync(ffmpegInstaller.path, ['-version'], { timeout: 5000 });
-    console.log('🎬 ffmpeg version output:', result.stdout?.toString());
-    console.log('🎬 ffmpeg version stderr:', result.stderr?.toString());
+    const result = spawnSync(ffmpegPath, ['-version'], { timeout: 5000 });
+    console.log('🎬 ffmpeg version output:',
+      result.stdout?.toString().split('\n')[0]);
     console.log('🎬 ffmpeg version exit code:', result.status);
-    console.log('🎬 ffmpeg error:', result.error?.message);
   } catch (e) {
     console.error('🎬 ffmpeg spawn failed:', e.message);
   }
