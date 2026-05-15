@@ -168,18 +168,37 @@ exports.handler = async (event) => {
       .single();
 
     if (updatedVideo?.user_email) {
+      console.log('🎬 about to trigger email for video', videoId,
+                  'to', updatedVideo.user_email);
+
       try {
-        await fetch(`https://readii.co.uk/.netlify/functions/send-video-email`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            videoId: videoId,
-            userEmail: updatedVideo.user_email
-          })
-        });
+        const emailResp = await fetch(
+          `https://readii.co.uk/.netlify/functions/send-video-email`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              videoId,
+              userEmail: updatedVideo.user_email
+            })
+          }
+        );
+
+        const respText = await emailResp.text();
+        console.log('🎬 email response status:', emailResp.status);
+        console.log('🎬 email response body:', respText);
+
+        if (!emailResp.ok) {
+          console.error('🎬 email trigger returned non-2xx');
+        }
+
       } catch (e) {
-        console.warn('Auto-email trigger failed:', e);
+        console.error('🎬 email fetch threw:', e.message);
       }
+    } else {
+      console.log('🎬 email SKIPPED:', {
+        has_user_email: !!updatedVideo?.user_email
+      });
     }
 
     // Cleanup temp files
