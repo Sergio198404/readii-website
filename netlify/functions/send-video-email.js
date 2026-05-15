@@ -32,6 +32,18 @@ exports.handler = async (event) => {
       return { statusCode: 404, body: JSON.stringify({ error: 'Video not found' }) };
     }
 
+    // 幂等保护:如果已发送过,直接返回成功(避免重复打扰用户)
+    if (video.email_status === 'sent') {
+      console.log('📧 already sent, skipping (idempotent) for video', videoId);
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alreadyDone: true, sent_to: video.user_email })
+      };
+    }
+
+    console.log('📧 sending to', userEmail, 'for video', videoId);
+
     // 查 user 拿 player_name
     // 查 user 拿 player_name(优先用 user_profiles)
     let playerName = video.player_name || 'there';
@@ -93,6 +105,8 @@ exports.handler = async (event) => {
         user_email: userEmail.toLowerCase()
       })
       .eq('id', videoId);
+
+    console.log('📧 sent OK to', userEmail, 'for video', videoId);
 
     return {
       statusCode: 200,

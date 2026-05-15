@@ -33,7 +33,7 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
     }
 
-    // 如果有 mp4 已就绪的 full 视频,触发邮件
+    // 如果有 mp4 已就绪的 full 视频,直接触发邮件(快路径)
     const fullVideo = (data || []).find(v => v.video_type === 'full');
     if (fullVideo && fullVideo.mp4_url) {
       try {
@@ -47,6 +47,22 @@ exports.handler = async (event) => {
         });
       } catch (e) {
         console.warn('Email trigger failed:', e);
+      }
+    }
+
+    // 双轨保证:无论 mp4_url 是否已就绪,都触发 transcode-background
+    // transcode-background 自身幂等(early-return),完成后会通过 maybeTriggerEmail 发邮件
+    if (fullVideo) {
+      try {
+        await fetch(`${process.env.URL || 'https://readii.co.uk'}/.netlify/functions/video-transcode-background`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ videoId: fullVideo.id }),
+          signal: AbortSignal.timeout(1500)
+        });
+        console.log('🔗 triggered transcode after attach for video', fullVideo.id);
+      } catch (e) {
+        console.warn('🔗 transcode trigger failed:', e.message);
       }
     }
 

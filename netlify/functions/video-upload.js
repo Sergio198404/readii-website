@@ -48,6 +48,22 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
     }
 
+    // 触发 transcode-background(只对完整 Pass 3 视频)
+    // await + 短超时:确保 fetch 真的发出去,Lambda 才能安全 freeze
+    if (videoType === 'full') {
+      try {
+        await fetch(`${process.env.URL || 'https://readii.co.uk'}/.netlify/functions/video-transcode-background`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ videoId: data.id }),
+          signal: AbortSignal.timeout(1500)
+        });
+        console.log('📤 triggered transcode for video', data.id);
+      } catch (e) {
+        console.warn('📤 transcode trigger failed:', e.message);
+      }
+    }
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },

@@ -12,6 +12,46 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+// 统一的邮件触发点:在【early return】和【转码完成】两条路径都调用
+// 自身做预筛(无 user_email / 已 sent 则跳过),send-video-email 内部还有第二层幂等保护
+async function maybeTriggerEmail(supabase, videoId) {
+  const { data: video } = await supabase
+    .from('pretotype_videos')
+    .select('user_email, email_status')
+    .eq('id', videoId)
+    .single();
+
+  if (!video?.user_email) {
+    console.log('🎬 maybeTriggerEmail SKIP: no user_email yet for video', videoId);
+    return;
+  }
+  if (video.email_status === 'sent') {
+    console.log('🎬 maybeTriggerEmail SKIP: already sent for video', videoId);
+    return;
+  }
+
+  console.log('🎬 maybeTriggerEmail ENTER: video', videoId, 'to', video.user_email);
+
+  try {
+    const emailResp = await fetch(
+      `https://readii.co.uk/.netlify/functions/send-video-email`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ videoId, userEmail: video.user_email })
+      }
+    );
+    const respText = await emailResp.text();
+    console.log('🎬 maybeTriggerEmail response status:', emailResp.status);
+    console.log('🎬 maybeTriggerEmail response body:', respText);
+    if (!emailResp.ok) {
+      console.error('🎬 maybeTriggerEmail non-2xx');
+    }
+  } catch (e) {
+    console.error('🎬 maybeTriggerEmail fetch threw:', e.message);
+  }
+}
+
 exports.handler = async (event) => {
   // === 🎬 诊断 ffmpeg 在 Lambda 环境是否可用 ===
   console.log('🎬 ffmpeg path:', ffmpegPath);
@@ -52,7 +92,9 @@ exports.handler = async (event) => {
     }
 
     if (videoRecord.mp4_url) {
-      // Already transcoded
+      // Already transcoded — 但邮件可能还没发,统一走 maybeTriggerEmail 兜底
+      console.log('🎬 early return — checking email for video', videoId);
+      await maybeTriggerEmail(supabase, videoId);
       return { statusCode: 200, body: JSON.stringify({ alreadyDone: true, mp4Url: videoRecord.mp4_url }) };
     }
 
@@ -160,46 +202,9 @@ exports.handler = async (event) => {
       .update({ mp4_path: mp4Path, mp4_url: mp4PublicUrl })
       .eq('id', videoId);
 
-    // v12: 转码完成后,如果已有用户邮箱且未发送,自动触发邮件
-    const { data: updatedVideo } = await supabase
-      .from('pretotype_videos')
-      .select('user_email, email_status')
-      .eq('id', videoId)
-      .single();
-
-    if (updatedVideo?.user_email) {
-      console.log('🎬 about to trigger email for video', videoId,
-                  'to', updatedVideo.user_email);
-
-      try {
-        const emailResp = await fetch(
-          `https://readii.co.uk/.netlify/functions/send-video-email`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              videoId,
-              userEmail: updatedVideo.user_email
-            })
-          }
-        );
-
-        const respText = await emailResp.text();
-        console.log('🎬 email response status:', emailResp.status);
-        console.log('🎬 email response body:', respText);
-
-        if (!emailResp.ok) {
-          console.error('🎬 email trigger returned non-2xx');
-        }
-
-      } catch (e) {
-        console.error('🎬 email fetch threw:', e.message);
-      }
-    } else {
-      console.log('🎬 email SKIPPED:', {
-        has_user_email: !!updatedVideo?.user_email
-      });
-    }
+    // 转码完成后通过统一入口触发邮件(和 early-return 路径走同一个函数)
+    console.log('🎬 transcode + DB update done, checking email for video', videoId);
+    await maybeTriggerEmail(supabase, videoId);
 
     // Cleanup temp files
     try { fs.unlinkSync(inputPath); } catch (e) {}

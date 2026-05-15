@@ -194,6 +194,7 @@ exports.handler = async (event) => {
         .eq('video_type', 'full');
 
       for (const video of videos || []) {
+        // 快路径:mp4 已就绪 → 直接发邮件
         if (video.mp4_url) {
           try {
             await fetch(`${process.env.URL || 'https://readii.co.uk'}/.netlify/functions/send-video-email`, {
@@ -204,6 +205,20 @@ exports.handler = async (event) => {
           } catch (e) {
             console.warn('Email trigger failed:', e);
           }
+        }
+
+        // 双轨保证:无论是否有 mp4_url,都触发 transcode-background
+        // transcode-background 自身幂等(early-return),完成后会通过 maybeTriggerEmail 发邮件
+        try {
+          await fetch(`${process.env.URL || 'https://readii.co.uk'}/.netlify/functions/video-transcode-background`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ videoId: video.id }),
+            signal: AbortSignal.timeout(1500)
+          });
+          console.log('🔐 triggered transcode after signup for video', video.id);
+        } catch (e) {
+          console.warn('🔐 transcode trigger failed:', e.message);
         }
       }
     }
