@@ -87,21 +87,48 @@ exports.handler = async (event) => {
     console.log('🎬 is valid webm:', header.slice(0, 4).toString('hex') === '1a45dfa3');
     // === 诊断结束 ===
 
-    // Run ffmpeg
+    // Run ffmpeg with aggressive speed optimization
+    // Goal: transcode within Netlify 26-second timeout
+    const ffmpegStartTime = Date.now();
+
     await new Promise((resolve, reject) => {
       ffmpeg(inputPath)
+        .videoFilters([
+          'scale=720:-2',  // 降到 720p(从 1080p)
+          'fps=24'         // 限制 24 fps
+        ])
         .outputOptions([
           '-c:v libx264',
-          '-preset fast',
-          '-crf 23',
+          '-preset ultrafast',     // 最快预设
+          '-crf 28',               // 质量稍降,文件更小
+          '-tune zerolatency',     // 实时优化
+          '-threads 0',            // 用所有 CPU 核心(0 = auto)
           '-c:a aac',
-          '-b:a 128k',
-          '-movflags +faststart',
-          '-pix_fmt yuv420p'
+          '-b:a 96k',              // 音频码率降低
+          '-ar 44100',             // 音频采样率
+          '-movflags +faststart',  // mp4 优化
+          '-pix_fmt yuv420p',
+          '-max_muxing_queue_size 1024'  // 防止缓冲区问题
         ])
         .output(outputPath)
-        .on('end', resolve)
-        .on('error', reject)
+        .on('start', (cmd) => {
+          console.log('🎬 ffmpeg command:', cmd);
+        })
+        .on('progress', (progress) => {
+          if (progress.percent) {
+            console.log('🎬 progress:', Math.round(progress.percent) + '%');
+          }
+        })
+        .on('end', () => {
+          const elapsed = ((Date.now() - ffmpegStartTime) / 1000).toFixed(1);
+          console.log('🎬 ffmpeg DONE in', elapsed, 's');
+          resolve();
+        })
+        .on('error', (err) => {
+          const elapsed = ((Date.now() - ffmpegStartTime) / 1000).toFixed(1);
+          console.error('🎬 ffmpeg FAILED after', elapsed, 's:', err.message);
+          reject(err);
+        })
         .run();
     });
 
