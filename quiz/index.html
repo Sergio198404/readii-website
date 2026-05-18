@@ -1261,6 +1261,310 @@ const ARTICLES_DATA = {
     background_image: `${STORAGE_BASE}/article-images/shop-closes-bg.jpg`,
     viral_segments: [12, 13, 14],
     viral_pass_threshold: { max_rerecords: 2, min_duration_each: 1.5, max_duration_each: 15 }
+  },
+
+  'the-queue': {
+    id: 'the-queue',
+    title: 'The Queue',
+    author: 'Readii Editorial',
+    tag: 'Observation',
+    description: '"In Britain, the queue is sacred. To break one is not impolite — it is criminal…"',
+    estimated_minutes: 5,
+    word_count: 268,
+    audio_url: `${STORAGE_BASE}/article-audio/the-queue.mp3`,
+    full_text: `In Britain, the queue is sacred.\n\nYou learn this on your first day. Not from a book — from a quiet, devastating look someone gives you at a bus stop.\n\nA queue is not just a line. It is a contract. An invisible agreement that says: I was here first. You were here next. We will all wait. Together. In silence.\n\nTo break a queue is not impolite. It is criminal. There is no act, short of murder, that a British person will resent more than someone pushing in.\n\nBut — and this is the interesting part — they will not say anything. They will tut. They will sigh. They will mutter to whoever is standing behind them. They will exchange glances of solidarity with strangers. But they will not, under any circumstances, speak to the offender directly.\n\nYou can join a queue without realising it. Three people standing vaguely near a counter? That is a queue. A small crowd at a bus stop? Look closer — there is order in there, somewhere.\n\nAmericans find this exhausting. Italians find it incomprehensible. The French refuse to participate.\n\nBut here is what no one tells you: queueing in Britain is a kind of love.\n\nIt is the country saying: I will wait, so that you may wait. I will not push, so that you are not pushed. We are all, briefly, equal — in our weary, drizzly patience.\n\nAfter six years here, I can spot a queue from across the street.\n\nAnd reader, I have come to find it beautiful.`,
+    segments: [
+      { position: 1, audio_filename: 'the-queue-01.mp3', text: "In Britain, the queue is sacred." },
+      { position: 2, audio_filename: 'the-queue-02.mp3', text: "You learn this on your first day. Not from a book — from a quiet, devastating look someone gives you at a bus stop." },
+      { position: 3, audio_filename: 'the-queue-03.mp3', text: "A queue is not just a line. It is a contract." },
+      { position: 4, audio_filename: 'the-queue-04.mp3', text: "An invisible agreement that says: I was here first. You were here next. We will all wait. Together. In silence." },
+      { position: 5, audio_filename: 'the-queue-05.mp3', text: "To break a queue is not impolite. It is criminal." },
+      { position: 6, audio_filename: 'the-queue-06.mp3', text: "There is no act, short of murder, that a British person will resent more than someone pushing in." },
+      { position: 7, audio_filename: 'the-queue-07.mp3', text: "But — and this is the interesting part — they will not say anything." },
+      { position: 8, audio_filename: 'the-queue-08.mp3', text: "They will tut. They will sigh. They will mutter to whoever is standing behind them." },
+      { position: 9, audio_filename: 'the-queue-09.mp3', text: "They will exchange glances of solidarity with strangers. But they will not, under any circumstances, speak to the offender directly." },
+      { position: 10, audio_filename: 'the-queue-10.mp3', text: "You can join a queue without realising it. Three people standing vaguely near a counter? That is a queue." },
+      { position: 11, audio_filename: 'the-queue-11.mp3', text: "Americans find this exhausting. Italians find it incomprehensible. The French refuse to participate." },
+      { position: 12, audio_filename: 'the-queue-12.mp3', text: "But here is what no one tells you: queueing in Britain is a kind of love." },
+      { position: 13, audio_filename: 'the-queue-13.mp3', text: "It is the country saying: I will wait, so that you may wait. I will not push, so that you are not pushed." },
+      { position: 14, audio_filename: 'the-queue-14.mp3', text: "We are all, briefly, equal — in our weary, drizzly patience." },
+      { position: 15, audio_filename: 'the-queue-15.mp3', text: "After six years here, I can spot a queue from across the street." },
+      { position: 16, audio_filename: 'the-queue-16.mp3', text: "And reader, I have come to find it beautiful." }
+    ],
+    drill_words: [
+      { word: 'queue', from_segment: 1, context_sentence: 'In Britain, the queue is sacred', phonemes: 'K.YOO', tip: "Sounds exactly like the letter 'Q'. Just 'kyoo'.", body: "Many silent letters. Don't pronounce u-e-u-e.", feature: 'silent letters' },
+      { word: 'sacred', from_segment: 1, context_sentence: 'the queue is sacred', phonemes: 'S.AY.K.R.UHD', tip: "'SAY-krid', stress on first syllable.", body: "Long 'AY' sound at start, soft ending.", feature: 'stress pattern' },
+      { word: 'criminal', from_segment: 5, context_sentence: 'it is criminal', phonemes: 'K.R.I.M.I.N.UHL', tip: "'CRIM-i-nuhl'. Three syllables. Stress on first.", body: "Soft schwa endings, British clipped.", feature: 'schwa endings' },
+      { word: 'devastating', from_segment: 2, context_sentence: 'a quiet, devastating look', phonemes: 'D.E.V.UH.S.T.AY.T.ING', tip: "'DEV-uh-stay-ting'. Four syllables, stress on first.", body: "British speakers often clip the middle.", feature: 'syllable stress' },
+      { word: 'solidarity', from_segment: 9, context_sentence: 'glances of solidarity', phonemes: 'S.O.L.I.D.A.R.UH.T.EE', tip: "'sol-i-DAR-i-tee'. Five syllables, stress on third.", body: "Long word — practice the rhythm: dah-dah-DAH-dah-dah.", feature: 'long word rhythm' },
+      { word: 'incomprehensible', from_segment: 11, context_sentence: 'Italians find it incomprehensible', phonemes: 'IN.K.O.M.P.R.I.H.E.N.S.I.B.UHL', tip: "Six syllables. Stress on 'HEN': in-com-pre-HEN-si-buhl.", body: "Don't rush. Each syllable distinct.", feature: 'long word stress' }
+    ],
+    decode_questions: [
+      {
+        question: "Someone pushes in front of you at a coffee shop. The woman behind you sighs loudly. What's she really saying?",
+        context: "They will tut. They will sigh. They will mutter to whoever is standing behind them.",
+        options: [
+          "She's tired from her day",
+          "She's outraged you pushed in but will never say it directly",
+          "She wants you to notice her",
+          "She's clearing her throat"
+        ],
+        correct: 1,
+        explanation: "In Britain, a sigh in a queue is a full sentence. It means: 'I cannot believe what just happened, and I will hold this against you forever — silently.' Direct confrontation is the one thing the British will not do."
+      },
+      {
+        question: "Three people are standing vaguely near a counter. You walk past them. One says 'Excuse me — I think there's a queue?' What's actually happening?",
+        context: "Three people standing vaguely near a counter? That is a queue.",
+        options: [
+          "They're asking a genuine question",
+          "They're being friendly",
+          "They're warning you — get to the back, now",
+          "They're confused themselves"
+        ],
+        correct: 2,
+        explanation: "'I think there's a queue?' is not a question. It's the British equivalent of 'STOP'. The rising tone is decorative; the meaning is firm. The polite phrasing is camouflage."
+      },
+      {
+        question: "Someone pushes in. The person behind you mutters 'Some people, honestly' to their friend. Why are you suddenly part of this?",
+        context: "They will mutter to whoever is standing behind them.",
+        options: [
+          "Just a general observation about humanity",
+          "Indirect attack on the queue-jumper, shared with you as an ally",
+          "A compliment about you",
+          "Nothing — just background noise"
+        ],
+        correct: 1,
+        explanation: "British complaint is always indirect. 'Some people, honestly' = 'That person is appalling, and I want you to know I noticed.' By muttering it near you, you are now allied — without speaking — against the offender."
+      },
+      {
+        question: "At a British bus stop, no one speaks. Everyone glances at their watch. The bus is late. What's the social rule?",
+        context: "We will all wait. Together. In silence.",
+        options: [
+          "Everyone is unfriendly",
+          "Silence is the correct queue behaviour — speaking would break the unspoken contract",
+          "Something has gone wrong",
+          "People are anti-social in Britain"
+        ],
+        correct: 1,
+        explanation: "Silence at a British bus stop is not coldness — it is the queue functioning correctly. The unspoken contract holds the strangers together. Watch-glancing is permitted; it counts as shared suffering."
+      },
+      {
+        question: "You reach a shop entrance with another person. They say 'After you.' What should you do?",
+        context: "We are all, briefly, equal — in our weary, drizzly patience.",
+        options: [
+          "Thank them and walk in",
+          "Offer it back: 'Oh no, after YOU' — politeness battle is the correct ritual",
+          "Ignore and enter",
+          "Apologise for being there"
+        ],
+        correct: 1,
+        explanation: "'After you' is rarely the end of the exchange. The correct British response is 'Oh no, after YOU.' This may continue 3-4 times before someone reluctantly goes first, with full eye contact and a small apologetic smile."
+      }
+    ],
+    bgm_style: 'lofi',
+    background_hint: 'london bus stop queue grey morning'
+  },
+
+  'talking-about-weather': {
+    id: 'talking-about-weather',
+    title: 'Talking About Weather',
+    author: 'Readii Editorial',
+    tag: 'Conversation',
+    description: '"In England, weather is not weather. It is a handshake. A door opener…"',
+    estimated_minutes: 5,
+    word_count: 252,
+    audio_url: `${STORAGE_BASE}/article-audio/talking-about-weather.mp3`,
+    full_text: `In England, weather is not weather.\n\nIt is a handshake. A door opener. A way of saying hello without saying hello.\n\n"Lovely day, isn't it?" — this is not a question about meteorology. It is an invitation. To stand near each other, briefly, and confirm that we are both here, both human, both willing to acknowledge the existence of clouds.\n\nYou can have an entire conversation in England about the weather. People do. For hours.\n\n"Bit chilly this morning."\n"Felt like proper autumn, didn't it?"\n"They said rain later."\n"Mm. Wouldn't surprise me."\n\nNothing has been said. Everything has been understood.\n\nThere are rules. You may complain about heat, but only above 25 degrees, and only with theatrical suffering. You may praise cold, but never enthusiastically. You must always say "they said" when referring to forecasts, as if "they" were some distant, unreliable government.\n\nIf someone says "lovely day", you do not disagree. Even if it is raining. Even if you are wet. You say "isn't it?" and you mean it — because the day is, by definition, lovely when shared.\n\nThe first time I refused to discuss the weather, my colleague looked stricken. I had broken something. Not the conversation — the small, daily, fragile contract that says: we acknowledge each other.\n\nI have since become fluent.\n\nYesterday, walking past a stranger in the rain, I said — without thinking — "miserable, isn't it?"\n\nHe smiled. "Always is."\n\nAnd I understood, finally, that we had not talked about the rain at all.`,
+    segments: [
+      { position: 1, audio_filename: 'talking-about-weather-01.mp3', text: "In England, weather is not weather." },
+      { position: 2, audio_filename: 'talking-about-weather-02.mp3', text: "It is a handshake. A door opener. A way of saying hello without saying hello." },
+      { position: 3, audio_filename: 'talking-about-weather-03.mp3', text: "\"Lovely day, isn't it?\" — this is not a question about meteorology." },
+      { position: 4, audio_filename: 'talking-about-weather-04.mp3', text: "It is an invitation. To stand near each other, briefly, and confirm that we are both here, both human." },
+      { position: 5, audio_filename: 'talking-about-weather-05.mp3', text: "You can have an entire conversation in England about the weather. People do. For hours." },
+      { position: 6, audio_filename: 'talking-about-weather-06.mp3', text: "\"Bit chilly this morning.\" \"Felt like proper autumn, didn't it?\"" },
+      { position: 7, audio_filename: 'talking-about-weather-07.mp3', text: "\"They said rain later.\" \"Mm. Wouldn't surprise me.\"" },
+      { position: 8, audio_filename: 'talking-about-weather-08.mp3', text: "Nothing has been said. Everything has been understood." },
+      { position: 9, audio_filename: 'talking-about-weather-09.mp3', text: "There are rules. You may complain about heat, but only above 25 degrees, and only with theatrical suffering." },
+      { position: 10, audio_filename: 'talking-about-weather-10.mp3', text: "You must always say \"they said\" when referring to forecasts, as if \"they\" were some distant, unreliable government." },
+      { position: 11, audio_filename: 'talking-about-weather-11.mp3', text: "If someone says \"lovely day\", you do not disagree. Even if it is raining. Even if you are wet." },
+      { position: 12, audio_filename: 'talking-about-weather-12.mp3', text: "You say \"isn't it?\" and you mean it — because the day is, by definition, lovely when shared." },
+      { position: 13, audio_filename: 'talking-about-weather-13.mp3', text: "Yesterday, walking past a stranger in the rain, I said — without thinking — \"miserable, isn't it?\"" },
+      { position: 14, audio_filename: 'talking-about-weather-14.mp3', text: "He smiled. \"Always is.\"" },
+      { position: 15, audio_filename: 'talking-about-weather-15.mp3', text: "And I understood, finally, that we had not talked about the rain at all." }
+    ],
+    drill_words: [
+      { word: 'weather', from_segment: 1, context_sentence: 'In England, weather is not weather', phonemes: 'W.E.TH.UH', tip: "Voiced TH + silent R. Say 'WETH-uh'.", body: "Tongue between teeth, vibrate. No R sound at end.", feature: 'voiced TH + non-rhotic' },
+      { word: 'lovely', from_segment: 3, context_sentence: "Lovely day, isn't it?", phonemes: 'L.UH.V.L.EE', tip: "Short U like 'cup': 'LUV-lee'.", body: "Not 'low-vly'. British U is darker.", feature: 'vowel sound' },
+      { word: 'meteorology', from_segment: 3, context_sentence: 'this is not a question about meteorology', phonemes: 'M.EE.T.EE.O.R.O.L.OH.G.EE', tip: "Six syllables: 'mee-tee-OR-ol-oh-gee'. Stress on 'OR'.", body: "Big word — practice the rhythm slowly.", feature: 'long word stress' },
+      { word: 'chilly', from_segment: 6, context_sentence: 'Bit chilly this morning', phonemes: 'CH.I.L.EE', tip: "'CHIL-ee'. Short I, like 'fill'.", body: "Common British weather word. Use it freely.", feature: 'short vowel' },
+      { word: 'forecasts', from_segment: 10, context_sentence: 'when referring to forecasts', phonemes: 'F.OR.K.AH.S.TS', tip: "Stress first: 'FOR-kahsts'. British 'AH' not 'AE'.", body: "American: 'FOR-kasts' (short A). British: long AH.", feature: 'British vs American vowel' },
+      { word: 'theatrical', from_segment: 9, context_sentence: 'with theatrical suffering', phonemes: 'TH.EE.A.T.R.I.K.UHL', tip: "Four syllables: 'thee-AT-ri-kuhl'. Stress on AT.", body: "Voiceless TH at start (no vibration).", feature: 'voiceless TH' }
+    ],
+    decode_questions: [
+      {
+        question: "A stranger says 'Lovely day, isn't it?' on a normal grey morning. What are they really doing?",
+        context: "\"Lovely day, isn't it?\" — this is not a question about meteorology.",
+        options: [
+          "Genuinely commenting on weather conditions",
+          "Offering a social handshake — say 'isn't it?' back even if it's drizzling",
+          "Being sarcastic about bad weather",
+          "Expecting you to discuss meteorology"
+        ],
+        correct: 1,
+        explanation: "'Lovely day' is a social handshake, not a weather report. The correct reply is 'isn't it?' — even if it's drizzling. You're not agreeing about weather; you're agreeing to acknowledge each other."
+      },
+      {
+        question: "It's 28°C in July. Your British colleague slumps and says 'Goodness me, this is unbearable.' What's happening?",
+        context: "You may complain about heat, but only above 25 degrees, and only with theatrical suffering.",
+        options: [
+          "Genuine medical distress",
+          "Theatrical heat complaint — required vocabulary above 25°C",
+          "She wants you to help her",
+          "She's mocking British summers"
+        ],
+        correct: 1,
+        explanation: "Above 25°C, the British heat complaint is performance art. 'Unbearable', 'tropical', 'absolute scorcher' — these are required vocabulary. Disagreeing ('I think it's pleasant') would be socially unsettling."
+      },
+      {
+        question: "You ask if it will rain. Your colleague says 'They said it might.' Who is 'they'?",
+        context: "You must always say \"they said\" when referring to forecasts, as if \"they\" were some distant, unreliable government.",
+        options: [
+          "A specific meteorologist she heard",
+          "Standard British hedge — 'they' is the mythical, unidentified weather authority",
+          "Her family members",
+          "The radio she listened to"
+        ],
+        correct: 1,
+        explanation: "'They said' is the British way of citing weather forecasts without committing to anything. 'They' is never identified. This protects everyone if it doesn't rain."
+      },
+      {
+        question: "A stranger walking their dog in heavy rain says 'Bit grim, isn't it?' What's the right response?",
+        context: "If someone says \"lovely day\", you do not disagree.",
+        options: [
+          "Tell them about the forecast",
+          "Agree warmly — they're inviting you into the brotherhood of weather-sufferers",
+          "Avoid eye contact",
+          "Talk about their dog"
+        ],
+        correct: 1,
+        explanation: "'Bit grim' between strangers in bad weather is an invitation. You're being welcomed into the silent club of 'People Out In This'. Correct response: 'Awful', 'Terrible', or simply 'Mm.'"
+      },
+      {
+        question: "It snows in March, which is unusual. A British colleague says 'I don't remember it being this cold last year.' What's the correct response?",
+        context: "we acknowledge each other.",
+        options: [
+          "Actually, last March was statistically colder — let me explain",
+          "Agree sympathetically: 'No, awful, isn't it?'",
+          "Discuss climate change",
+          "Ignore them"
+        ],
+        correct: 1,
+        explanation: "British weather memory is selective and emotional. 'I don't remember it being this cold' really means 'this is unpleasant and I want you to share my mild outrage'. Never correct them with facts."
+      }
+    ],
+    bgm_style: 'lofi',
+    background_hint: 'london rain grey street pedestrians'
+  },
+
+  'the-tea-question': {
+    id: 'the-tea-question',
+    title: 'The Tea Question',
+    author: 'Readii Editorial',
+    tag: 'Etiquette',
+    description: '"In Britain, refusing a cup of tea is not a refusal. It is an alarm…"',
+    estimated_minutes: 5,
+    word_count: 258,
+    audio_url: `${STORAGE_BASE}/article-audio/the-tea-question.mp3`,
+    full_text: `In Britain, refusing a cup of tea is not a refusal.\n\nIt is an alarm.\n\nIf you walk into a British home and decline tea, your host will not be offended. They will be worried. They will assume something is wrong. They may ask, gently, if you are unwell.\n\n"Would you like a cup of tea?" is rarely a real question. The expected answer is yes. Saying no creates a small, polite emergency.\n\nThe British make tea for everything. Bad news? Tea. Good news? Tea. Bereavement, engagement, a dropped phone, a stubbed toe, a national crisis — there will be tea. Tea is the answer to a question no one has asked.\n\nThere are layers. "Cup of tea?" is casual. "Fancy a brew?" is friendly. "I'll put the kettle on" is decisive — the matter is settled.\n\nIf you do accept, more questions follow. Milk? Sugar? How strong? Most British people have a precise answer they have worked out over decades, and asking helps them perform it. "Builder's, two sugars" sounds simple. It is, in fact, an identity.\n\nTea is also a clock. Morning tea is functional. Eleven-ish is "elevenses" — a brief institution. Afternoon tea is a delicate event involving small sandwiches and serious decisions about cake.\n\nI have been here long enough that when something goes wrong, I find myself saying — automatically, helplessly — "I'll put the kettle on."\n\nIt does not solve anything.\n\nBut it gives us, briefly, somewhere to put our hands.\n\nAnd in Britain, that has always been enough.`,
+    segments: [
+      { position: 1, audio_filename: 'the-tea-question-01.mp3', text: "In Britain, refusing a cup of tea is not a refusal." },
+      { position: 2, audio_filename: 'the-tea-question-02.mp3', text: "It is an alarm." },
+      { position: 3, audio_filename: 'the-tea-question-03.mp3', text: "If you walk into a British home and decline tea, your host will not be offended. They will be worried." },
+      { position: 4, audio_filename: 'the-tea-question-04.mp3', text: "They will assume something is wrong. They may ask, gently, if you are unwell." },
+      { position: 5, audio_filename: 'the-tea-question-05.mp3', text: "\"Would you like a cup of tea?\" is rarely a real question. The expected answer is yes." },
+      { position: 6, audio_filename: 'the-tea-question-06.mp3', text: "Saying no creates a small, polite emergency." },
+      { position: 7, audio_filename: 'the-tea-question-07.mp3', text: "The British make tea for everything. Bad news? Tea. Good news? Tea." },
+      { position: 8, audio_filename: 'the-tea-question-08.mp3', text: "Bereavement, engagement, a dropped phone, a stubbed toe, a national crisis — there will be tea." },
+      { position: 9, audio_filename: 'the-tea-question-09.mp3', text: "Tea is the answer to a question no one has asked." },
+      { position: 10, audio_filename: 'the-tea-question-10.mp3', text: "There are layers. \"Cup of tea?\" is casual. \"Fancy a brew?\" is friendly. \"I'll put the kettle on\" is decisive — the matter is settled." },
+      { position: 11, audio_filename: 'the-tea-question-11.mp3', text: "If you do accept, more questions follow. Milk? Sugar? How strong?" },
+      { position: 12, audio_filename: 'the-tea-question-12.mp3', text: "\"Builder's, two sugars\" sounds simple. It is, in fact, an identity." },
+      { position: 13, audio_filename: 'the-tea-question-13.mp3', text: "I have been here long enough that when something goes wrong, I find myself saying — automatically, helplessly — \"I'll put the kettle on.\"" },
+      { position: 14, audio_filename: 'the-tea-question-14.mp3', text: "It does not solve anything. But it gives us, briefly, somewhere to put our hands." },
+      { position: 15, audio_filename: 'the-tea-question-15.mp3', text: "And in Britain, that has always been enough." }
+    ],
+    drill_words: [
+      { word: 'refusing', from_segment: 1, context_sentence: 'refusing a cup of tea', phonemes: 'R.I.F.Y.OO.Z.ING', tip: "'ri-FYOO-zing'. Stress on second.", body: "Z sound in the middle, not S.", feature: 'stress pattern' },
+      { word: 'kettle', from_segment: 10, context_sentence: "I'll put the kettle on", phonemes: 'K.E.T.UHL', tip: "'KET-uhl'. Two syllables, soft ending.", body: "British T is sharp here. Don't say 'KED-l'.", feature: 'British T' },
+      { word: 'bereavement', from_segment: 8, context_sentence: 'Bereavement, engagement', phonemes: 'B.I.R.EE.V.M.UHNT', tip: "'bi-REEV-muhnt'. Three syllables, stress on REEV.", body: "Long EE in the middle.", feature: 'syllable stress' },
+      { word: 'engagement', from_segment: 8, context_sentence: 'Bereavement, engagement', phonemes: 'IN.G.AY.J.M.UHNT', tip: "'in-GAYJ-muhnt'. Stress on second syllable.", body: "Long AY in the middle, soft ending.", feature: 'long vowel' },
+      { word: 'elevenses', from_segment: 7, context_sentence: 'Eleven-ish is elevenses', phonemes: 'I.L.E.V.UHN.Z.UHZ', tip: "'i-LEV-uhn-zuhz'. Four syllables.", body: "British-only word. Means: tea around 11 AM.", feature: 'cultural word' },
+      { word: 'helplessly', from_segment: 13, context_sentence: 'automatically, helplessly', phonemes: 'H.E.L.P.L.UH.S.L.EE', tip: "'HELP-luhs-lee'. Three syllables, stress on first.", body: "British schwa in middle.", feature: 'schwa pattern' }
+    ],
+    decode_questions: [
+      {
+        question: "You arrive at a British friend's house. They open the door and say 'Cup of tea?' What's actually happening?",
+        context: "\"Would you like a cup of tea?\" is rarely a real question. The expected answer is yes.",
+        options: [
+          "A neutral question — say yes or no based on whether you want tea",
+          "Welcoming ritual — saying no would disrupt the arrival ceremony",
+          "Offer of a full meal",
+          "Test of your manners"
+        ],
+        correct: 1,
+        explanation: "'Cup of tea?' on arrival is barely a question. It's the British way of saying 'welcome' and 'sit down'. Refusing here doesn't just decline a drink — it disrupts the entire arrival ceremony."
+      },
+      {
+        question: "You've just shared bad news with a British friend. They stand up and say 'I'll put the kettle on.' What does this really mean?",
+        context: "Bereavement, engagement, a dropped phone, a stubbed toe, a national crisis — there will be tea.",
+        options: [
+          "They're avoiding the topic",
+          "Highest form of British emotional response — sympathy made practical",
+          "They're hungry",
+          "They want you to leave soon"
+        ],
+        correct: 1,
+        explanation: "When a British person responds to bad news with 'I'll put the kettle on', this is not avoidance — it is care made practical. The kettle is the British emergency response. The tea itself is irrelevant; the act of making it is the comfort."
+      },
+      {
+        question: "At a British home, the host asks 'Milk? Sugar? How strong?' How seriously should you answer?",
+        context: "Most British people have a precise answer they have worked out over decades.",
+        options: [
+          "Vaguely — 'however you make it' is fine",
+          "Seriously — they need your specific tea identity to make it correctly",
+          "Refuse to answer",
+          "Ask for something other than tea"
+        ],
+        correct: 1,
+        explanation: "Tea preferences in Britain are surprisingly serious. 'However you make it' is politely tolerated but slightly disappointing. Have a real answer ('milk, no sugar', 'just a splash of milk'). It signals you're a person of conviction."
+      },
+      {
+        question: "Your British colleague says of another colleague: 'He's a builder's, three sugars man.' What's she communicating?",
+        context: "\"Builder's, two sugars\" sounds simple. It is, in fact, an identity.",
+        options: [
+          "Random factual comment",
+          "Character description — tea preference signals class and personality",
+          "Recipe instruction",
+          "Insult"
+        ],
+        correct: 1,
+        explanation: "Tea reveals everything in Britain. 'Builder's' (strong, milky) suggests practical, working-class roots. 'Earl Grey, no milk' suggests something else entirely. This is gentle class commentary delivered through tea."
+      },
+      {
+        question: "It's 11 AM at a British office. Someone announces 'Elevenses?' What are they doing?",
+        context: "Eleven-ish is \"elevenses\" — a brief institution.",
+        options: [
+          "Asking what time it is",
+          "Inviting everyone for a brief tea-and-biscuits break",
+          "Counting something",
+          "Making a joke about the time"
+        ],
+        correct: 1,
+        explanation: "'Elevenses' is a small, sacred British institution: a tea break around 11 AM, often with a biscuit. Saying 'elevenses?' invites everyone within earshot. Declining is permitted; pretending you don't know what it means is suspicious."
+      }
+    ],
+    bgm_style: 'lofi',
+    background_hint: 'british kitchen teapot kettle morning'
   }
 };
 
@@ -1268,7 +1572,10 @@ const ARTICLES_DATA = {
 const ARTICLE_QUOTES = {
   'apology': 'And honestly? I rather like it.',
   'seven-novembers': 'Not too bad, thanks. And meant it.',
-  'shop-closes-for-lunch': 'Long may it close for lunch.'
+  'shop-closes-for-lunch': 'Long may it close for lunch.',
+  'the-queue': 'I will wait, so that you may wait. I have come to find it beautiful.',
+  'talking-about-weather': "Miserable, isn't it? — Always is.",
+  'the-tea-question': "I'll put the kettle on. — Somewhere to put our hands."
 };
 
 // ═════════════════════════════════════════════════════
