@@ -733,6 +733,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         </button>
       </div>
       <div class="ec-decision-row">
+        <button class="btn-listen ec-prev" id="ecPrevSegmentBtn" onclick="goToPreviousSegment()" style="display:none">← Previous</button>
         <button class="btn-listen ec-rerecord" onclick="reRecordCurrentSegment()">↻ Re-record</button>
         <button class="btn-start ec-keep" onclick="keepAndContinue()">→ Keep going</button>
       </div>
@@ -2266,7 +2267,8 @@ function showEchoFeedback(classification) {
 
     case 'irrelevant':
       feedbackEl.textContent = irrelevantPhrases[Math.floor(Math.random() * irrelevantPhrases.length)];
-      compareEl.classList.remove('show');
+      // v12: 答错时反而更需要听对比 — 显示 Hear yourself / Hear Daisy
+      compareEl.classList.add('show');
       nextBtn.style.display = 'inline-block'; // can still proceed
       break;
 
@@ -2859,6 +2861,10 @@ function enterReviewStage() {
   updateProgress();
   showStagePanel('ecStageReview');
 
+  // v12: Previous 按钮仅在不是第一句时可见
+  const prevBtn = document.getElementById('ecPrevSegmentBtn');
+  if (prevBtn) prevBtn.style.display = (ecCurrentSegmentIdx > 0) ? 'inline-block' : 'none';
+
   track('pass3_segment_recorded', {
     segment_idx: ecCurrentSegmentIdx,
     duration: segmentRecordings[ecCurrentSegmentIdx]?.duration || 0
@@ -2934,6 +2940,16 @@ function reRecordCurrentSegment() {
   });
 
   enterDaisyStage();
+}
+
+// v12: 回到前一句的 review(用户可在那再决定 keep 或 re-record)
+function goToPreviousSegment() {
+  if (ecCurrentSegmentIdx <= 0) {
+    toast("Already at the first sentence");
+    return;
+  }
+  ecCurrentSegmentIdx--;
+  enterReviewStage();
 }
 
 function keepAndContinue() {
@@ -3954,6 +3970,11 @@ function enterResultStage() {
   if (fullPreview && videoUrl) {
     fullPreview.src = videoUrl;
     fullPreview.load();
+    // v12: 尝试自动播放,从 preview audio 切到视频无缝过渡
+    // (iOS 严格时可能阻止,但 controls 仍可手动启动)
+    fullPreview.play().catch(err => {
+      console.log('Result video autoplay blocked (tap to play):', err.message);
+    });
   }
 
   // Stats
@@ -5045,16 +5066,34 @@ function ensureAudioContext() {
 }
 function playSound(type) {
   if (type === 'correct') {
-    // v11: 用外部 mp3 替代合成音
+    // v11: 用外部 mp3 替代合成音;v12: 加诊断 + 失败后 reload 重试
     if (sfxCorrectAudio) {
+      console.log('🔊 sfx state:', {
+        readyState: sfxCorrectAudio.readyState,
+        paused: sfxCorrectAudio.paused,
+        networkState: sfxCorrectAudio.networkState
+      });
       try {
         sfxCorrectAudio.currentTime = 0;
         sfxCorrectAudio.volume = IS_MOBILE ? 1.0 : globalVolume;
-        sfxCorrectAudio.play().catch(() => playSynthCorrect());
+        const p = sfxCorrectAudio.play();
+        if (p && typeof p.then === 'function') {
+          p.then(() => console.log('🔊 sfx mp3 play OK'))
+           .catch(err => {
+             console.warn('🔊 sfx mp3 play failed, reload+retry:', err.name, err.message);
+             sfxCorrectAudio.load();
+             sfxCorrectAudio.play().catch(e2 => {
+               console.warn('🔊 sfx retry failed, fallback synth:', e2.message);
+               playSynthCorrect();
+             });
+           });
+        }
         return;
       } catch (e) {
-        // fall through to synth
+        console.warn('🔊 sfx threw:', e.message);
       }
+    } else {
+      console.warn('🔊 sfxCorrectAudio is null');
     }
     playSynthCorrect();
     return;
