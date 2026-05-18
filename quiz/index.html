@@ -509,9 +509,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <p>Tap <b>⋯</b> top-right → <b>Open in Browser</b> for full experience</p>
 </div>
 <div class="container">
-  <div class="brand">
+  <div class="brand" style="position:relative">
     <h1>Readii</h1>
     <p>British Pronunciation Reader</p>
+    <a id="myLibraryLink" href="/my"
+       style="display:none;position:absolute;top:8px;right:16px;font-family:'Helvetica Neue',sans-serif;font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#B8873A;text-decoration:none;border-bottom:1px solid #B8873A;padding-bottom:2px">
+      My readings →
+    </a>
   </div>
 
   <!-- Global volume control (v10.1 fix #3) -->
@@ -772,11 +776,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <video id="videoPreview" controls playsinline preload="auto"></video>
       </div>
 
-      <!-- 未登录:Step 1 邮箱 -->
+      <!-- 未登录:Step 1 邮箱(注册后视频会进 /my 库,不再发邮件)-->
       <div class="email-form-section" id="emailFormSection">
         <div class="email-form-header">
-          <p class="email-form-label">📧 GET YOUR VIDEO BY EMAIL</p>
-          <p class="email-form-hint">We'll send the MP4 to your inbox</p>
+          <p class="email-form-label">💾 SAVE YOUR READING</p>
+          <p class="email-form-hint">Create an account to keep this in your library</p>
         </div>
 
         <div class="email-form-fields">
@@ -797,7 +801,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
       <!-- Step 2 OTP -->
       <div class="otp-form-section" id="otpFormSection" style="display:none">
-        <p class="otp-label">📩 CHECK YOUR INBOX</p>
+        <p class="otp-label">📩 ENTER YOUR CODE</p>
         <p class="otp-hint">We sent a 6-digit code to <span id="otpEmailDisplay"></span></p>
 
         <input type="text" id="otpInput" class="otp-input"
@@ -848,12 +852,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <p class="password-error" id="passwordError" style="display:none"></p>
       </div>
 
-      <!-- 已登录用户简化 UI(邮件已在后台自动发送,这里只更新订阅偏好) -->
+      <!-- 已登录用户简化 UI(视频已自动入库,这里只更新订阅偏好)-->
       <div class="signed-in-section" id="signedInSection" style="display:none">
-        <p class="signed-in-label">✨ ON ITS WAY TO YOUR INBOX</p>
+        <p class="signed-in-label">✨ SAVED TO YOUR LIBRARY</p>
         <p class="signed-in-hint">
-          Hi <strong id="signedInName"></strong> — your reading is heading to
-          <strong id="signedInEmail"></strong>. Update your preferences below.
+          Hi <strong id="signedInName"></strong>, your reading is saved.
+          View it anytime in your library.
         </p>
 
         <div class="newsletter-options">
@@ -876,15 +880,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <!-- 完成(新用户 / 已存在用户共用,JS 动态切换文案)-->
       <div class="email-done-section" id="emailDoneSection" style="display:none">
         <div class="email-done-icon">✓</div>
-        <h3 class="email-done-title" id="emailDoneTitle">All set!</h3>
-        <p class="email-done-text">
-          Your video will arrive at <span id="confirmedEmailDisplay"></span> in 1-2 minutes.
+        <h3 class="email-done-title" id="emailDoneTitle">Saved to your library</h3>
+        <p class="email-done-text" id="emailDoneText">
+          Your reading is now in your library.
         </p>
-        <p class="email-done-sub" id="emailDoneSub">You can close this page — the email will reach you.</p>
+        <p class="email-done-sub" id="emailDoneSub">View, re-play or share anytime.</p>
 
-        <button class="btn-start" onclick="showRoundComplete()" style="margin-top:14px">
-          See my results →
-        </button>
+        <a href="/my" class="btn-start" style="margin-top:14px;text-decoration:none;display:inline-block">
+          Open my library →
+        </a>
+        <!-- 历史 JS 仍向这个 span 写入 email,保留以避免报错 -->
+        <span id="confirmedEmailDisplay" style="display:none"></span>
       </div>
     </div>
 
@@ -1438,6 +1444,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Render library cards
   renderLibrary();
+
+  // v12: 已登录显示顶部 "My readings" 链接
+  (async () => {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user) {
+        const link = document.getElementById('myLibraryLink');
+        if (link) link.style.display = 'block';
+      }
+    } catch (e) {}
+  })();
 
   track('page_view', { referrer: document.referrer, challenge: slug || null });
   const lastVisit = localStorage.getItem('readii_last_visit');
@@ -4302,6 +4319,8 @@ async function submitOtp() {
       try { await attachVideoToUser(result.userId, result.email); } catch (e) { console.warn('attach failed:', e); }
 
       document.getElementById('emailDoneTitle').textContent = 'Welcome back!';
+      document.getElementById('emailDoneText').innerHTML =
+        'Your reading is now in your library.';
       document.getElementById('emailDoneSub').innerHTML =
         'You can log in at <strong>readii.co.uk</strong> with your existing password.';
 

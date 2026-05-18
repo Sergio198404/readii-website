@@ -194,21 +194,8 @@ exports.handler = async (event) => {
         .eq('video_type', 'full');
 
       for (const video of videos || []) {
-        // 快路径:mp4 已就绪 → 直接发邮件
-        if (video.mp4_url) {
-          try {
-            await fetch(`${process.env.URL || 'https://readii.co.uk'}/.netlify/functions/send-video-email`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ videoId: video.id, userEmail: normalizedEmail })
-            });
-          } catch (e) {
-            console.warn('Email trigger failed:', e);
-          }
-        }
-
-        // 双轨保证:无论是否有 mp4_url,都触发 transcode-background
-        // transcode-background 自身幂等(early-return),完成后会通过 maybeTriggerEmail 发邮件
+        // v12.5: 视频自动入 /my 库,不再发邮件
+        // 仍触发 transcode-background 把 webm 转 mp4(/my 和 /v 用 mp4 体验更好)
         try {
           await fetch(`${process.env.URL || 'https://readii.co.uk'}/.netlify/functions/video-transcode-background`, {
             method: 'POST',

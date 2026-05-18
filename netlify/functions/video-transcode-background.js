@@ -92,9 +92,8 @@ exports.handler = async (event) => {
     }
 
     if (videoRecord.mp4_url) {
-      // Already transcoded — 但邮件可能还没发,统一走 maybeTriggerEmail 兜底
-      console.log('🎬 early return — checking email for video', videoId);
-      await maybeTriggerEmail(supabase, videoId);
+      // Already transcoded — v12.5: 不再自动邮件(视频进 /my 库,改用 daily newsletter 推送)
+      console.log('🎬 early return — already transcoded for video', videoId);
       return { statusCode: 200, body: JSON.stringify({ alreadyDone: true, mp4Url: videoRecord.mp4_url }) };
     }
 
@@ -202,9 +201,8 @@ exports.handler = async (event) => {
       .update({ mp4_path: mp4Path, mp4_url: mp4PublicUrl })
       .eq('id', videoId);
 
-    // 转码完成后通过统一入口触发邮件(和 early-return 路径走同一个函数)
-    console.log('🎬 transcode + DB update done, checking email for video', videoId);
-    await maybeTriggerEmail(supabase, videoId);
+    // v12.5: 转码完成,视频自动入 /my 库,不再发邮件
+    console.log('🎬 transcode + DB update done for video', videoId);
 
     // Cleanup temp files
     try { fs.unlinkSync(inputPath); } catch (e) {}

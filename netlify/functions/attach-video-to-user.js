@@ -33,25 +33,9 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
     }
 
-    // 如果有 mp4 已就绪的 full 视频,直接触发邮件(快路径)
+    // v12.5: 视频自动入 /my 库,不再发邮件
+    // 仍触发 transcode-background 把 webm 转 mp4(/my 和 /v 用 mp4 体验更好)
     const fullVideo = (data || []).find(v => v.video_type === 'full');
-    if (fullVideo && fullVideo.mp4_url) {
-      try {
-        await fetch(`${process.env.URL || 'https://readii.co.uk'}/.netlify/functions/send-video-email`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            videoId: fullVideo.id,
-            userEmail: userEmail.toLowerCase()
-          })
-        });
-      } catch (e) {
-        console.warn('Email trigger failed:', e);
-      }
-    }
-
-    // 双轨保证:无论 mp4_url 是否已就绪,都触发 transcode-background
-    // transcode-background 自身幂等(early-return),完成后会通过 maybeTriggerEmail 发邮件
     if (fullVideo) {
       try {
         await fetch(`${process.env.URL || 'https://readii.co.uk'}/.netlify/functions/video-transcode-background`, {

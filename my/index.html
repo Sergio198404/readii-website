@@ -1,0 +1,448 @@
+<!-- /my/index.html — Readii personal library (logged-in only) -->
+<!--
+  设计目标:用户回访的核心入口,New Yorker 风格(同 /v 落地页)
+  Phase 1:三段式 → 问候 + 你的作品 + Read another (今日推荐 section 留给 Phase 2)
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Library · Readii</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #FAF8F3;
+      color: #1F4D40;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* Brand bar */
+    .brand-bar {
+      text-align: center;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: #B8873A;
+      margin-bottom: 40px;
+    }
+    .brand-bar .sep { opacity: 0.4; margin: 0 8px; }
+
+    /* Greeting */
+    .greeting {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .greeting-eyebrow {
+      font-family: 'Caveat', Georgia, cursive;
+      font-size: 22px;
+      color: #B8873A;
+    }
+    .greeting-name {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 32px;
+      margin: 4px 0 8px;
+    }
+    .greeting-stat {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #1F4D40;
+      opacity: 0.6;
+    }
+
+    /* Section heading */
+    .section {
+      margin-top: 56px;
+    }
+    .section-title {
+      text-align: center;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #B8873A;
+      margin: 0 0 8px;
+    }
+    .section-divider {
+      width: 40px;
+      height: 1px;
+      background: #B8873A;
+      opacity: 0.4;
+      margin: 0 auto 32px;
+      border: 0;
+    }
+
+    /* Reading card */
+    .reading-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(31, 77, 64, 0.08);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .reading-thumb {
+      flex-shrink: 0;
+      width: 90px;
+      height: 160px;
+      background: linear-gradient(180deg, #1F4D40, #0F2520);
+      border: 1px solid #1F4D40;
+      border-radius: 6px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .reading-thumb::before {
+      content: '▶';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #B8873A;
+      font-size: 28px;
+      z-index: 2;
+    }
+    .reading-thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .reading-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .reading-title {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 20px;
+      margin: 0 0 4px;
+      line-height: 1.2;
+    }
+    .reading-date {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #1F4D40;
+      opacity: 0.5;
+      margin-bottom: 12px;
+    }
+    .reading-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .action-link {
+      color: #1F4D40;
+      text-decoration: none;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #B8873A;
+      padding-bottom: 1px;
+    }
+    .action-link:hover { color: #B8873A; }
+    .action-link.disabled {
+      color: #999;
+      border-bottom-color: #ddd;
+      pointer-events: none;
+    }
+
+    /* Inline video player (replaces thumb when playing) */
+    .reading-thumb.playing::before { display: none; }
+
+    /* Big CTA */
+    .cta-section {
+      text-align: center;
+      margin-top: 48px;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: #B8873A;
+      color: #FAF8F3;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .cta-btn:hover { transform: translateY(-1px); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: #1F4D40;
+      opacity: 0.5;
+      margin-top: 56px;
+      text-transform: uppercase;
+    }
+    .footer a { color: inherit; text-decoration: none; }
+    .footer .sep { margin: 0 8px; opacity: 0.6; }
+
+    /* States */
+    .state-message {
+      text-align: center;
+      padding: 56px 24px;
+    }
+    .state-message h2 {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 24px;
+      color: #1F4D40;
+      margin: 0 0 16px;
+    }
+    .state-message p {
+      font-size: 14px;
+      opacity: 0.7;
+      margin: 0 0 32px;
+    }
+
+    .empty-readings {
+      text-align: center;
+      padding: 40px 16px;
+      background: #FFFFFF;
+      border: 1px dashed rgba(31, 77, 64, 0.15);
+      border-radius: 12px;
+    }
+    .empty-readings p {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #1F4D40;
+      opacity: 0.7;
+      margin: 0 0 16px;
+    }
+
+    /* Logout link */
+    .logout {
+      text-align: center;
+      margin-top: 24px;
+    }
+    .logout a {
+      color: #1F4D40;
+      opacity: 0.4;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .logout a:hover { opacity: 0.7; }
+  </style>
+</head>
+<body>
+
+  <!-- Loading -->
+  <div id="loadingState" class="state-message">
+    <p style="font-family:'Helvetica Neue',sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.5">Loading...</p>
+  </div>
+
+  <!-- Not logged in -->
+  <div id="signInState" class="page state-message" style="display:none">
+    <div class="brand-bar">READII <span class="sep">·</span> MY LIBRARY</div>
+    <h2>Sign in to see your library</h2>
+    <p>Your readings are saved here once you've signed up.</p>
+    <a href="/quiz" class="cta-btn">Go to Quiz →</a>
+  </div>
+
+  <!-- Main content (logged in) -->
+  <main id="main" class="page" style="display:none">
+
+    <div class="brand-bar">READII <span class="sep">·</span> MY LIBRARY</div>
+
+    <div class="greeting">
+      <div class="greeting-eyebrow">good to see you</div>
+      <h1 class="greeting-name" id="userName">there</h1>
+      <p class="greeting-stat" id="userStat"></p>
+    </div>
+
+    <div class="section">
+      <p class="section-title">Your readings</p>
+      <hr class="section-divider">
+      <div id="readingsList"></div>
+    </div>
+
+    <div class="cta-section">
+      <a href="/quiz" class="cta-btn">Read another →</a>
+    </div>
+
+    <div class="logout">
+      <a href="#" onclick="logout(); return false;">Sign out</a>
+    </div>
+
+    <div class="footer">
+      <a href="https://readii.co.uk">readii.co.uk</a>
+      <span class="sep">·</span>
+      Read British
+    </div>
+
+  </main>
+
+  <script>
+    // ─── Config (跟 /quiz 一致) ───
+    const SUPABASE_URL = 'https://bltfljdgjxhcmbfduert.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsdGZsamRnanhoY21iZmR1ZXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQwMDMsImV4cCI6MjA5MTM0MDAwM30.WL8e6w1x_Bz437jtke8ZhFF0GpBo2WlG5-7wvLm8o2s';
+
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // ─── Article metadata(简化字典,跟 /v 一致)───
+    const ARTICLES = {
+      'apology': { title: 'The Apology' },
+      'seven-novembers': { title: 'Seven Novembers' },
+      'shop-closes-for-lunch': { title: 'The Shop That Closes for Lunch' }
+    };
+
+    // ─── Helpers ───
+    function fmtRelative(iso) {
+      if (!iso) return '';
+      try {
+        const d = new Date(iso);
+        const days = Math.floor((Date.now() - d.getTime()) / (24 * 3600 * 1000));
+        if (days < 0) return d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
+        if (days === 0) return 'Today';
+        if (days === 1) return 'Yesterday';
+        if (days < 7) return `${days} days ago`;
+        return d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' });
+      } catch (e) { return ''; }
+    }
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+
+    // ─── Main ───
+    (async () => {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session?.user) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('signInState').style.display = 'block';
+        return;
+      }
+
+      const user = session.user;
+      // 拿 profile (display_name)
+      let displayName = user.email?.split('@')[0] || 'there';
+      try {
+        const { data: profile } = await sb
+          .from('user_profiles')
+          .select('player_name, display_name')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (profile) {
+          displayName = profile.player_name || profile.display_name || displayName;
+        }
+      } catch (e) {}
+
+      document.getElementById('userName').textContent = displayName;
+
+      // 拉用户视频列表
+      const { data: videos, error } = await sb
+        .from('pretotype_videos')
+        .select('id, article_id, public_url, mp4_url, share_slug, created_at')
+        .eq('user_id', user.id)
+        .eq('video_type', 'full')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Failed to load videos:', error);
+      }
+
+      const list = videos || [];
+      document.getElementById('userStat').textContent =
+        list.length === 0
+          ? "Welcome to Readii"
+          : `${list.length} reading${list.length === 1 ? '' : 's'} recorded`;
+
+      renderReadings(list);
+
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('main').style.display = 'block';
+    })().catch(e => {
+      console.error('Init failed:', e);
+      document.getElementById('loadingState').innerHTML = '<p style="opacity:.5">Something went wrong. Try refreshing.</p>';
+    });
+
+    // ─── Render ───
+    function renderReadings(videos) {
+      const wrap = document.getElementById('readingsList');
+      if (!videos.length) {
+        wrap.innerHTML = `
+          <div class="empty-readings">
+            <p>You haven't recorded anything yet.</p>
+            <a href="/quiz" class="cta-btn">Start your first reading →</a>
+          </div>
+        `;
+        return;
+      }
+      wrap.innerHTML = videos.map(v => {
+        const art = ARTICLES[v.article_id] || { title: 'A reading' };
+        const videoSrc = v.mp4_url || v.public_url || '';
+        const hasMp4 = !!v.mp4_url;
+        return `
+          <div class="reading-card">
+            <div class="reading-thumb" data-video-id="${v.id}" onclick="playInline(this, '${escapeHtml(videoSrc)}')"></div>
+            <div class="reading-info">
+              <h3 class="reading-title">${escapeHtml(art.title)}</h3>
+              <p class="reading-date">Recorded ${fmtRelative(v.created_at)}</p>
+              <div class="reading-actions">
+                ${v.share_slug ? `<a href="/v/${escapeHtml(v.share_slug)}" class="action-link">Open</a>` : ''}
+                ${hasMp4 ? `<a href="${escapeHtml(v.mp4_url)}" download class="action-link">⬇ MP4</a>` : `<span class="action-link disabled">⏳ MP4 processing…</span>`}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function playInline(thumb, src) {
+      if (!src || thumb.classList.contains('playing')) return;
+      thumb.classList.add('playing');
+      const v = document.createElement('video');
+      v.src = src;
+      v.controls = true;
+      v.playsInline = true;
+      v.style.width = '100%';
+      v.style.height = '100%';
+      v.style.objectFit = 'cover';
+      thumb.innerHTML = '';
+      thumb.appendChild(v);
+      v.play().catch(() => {});
+    }
+    window.playInline = playInline;
+
+    async function logout() {
+      try { await sb.auth.signOut(); } catch (e) {}
+      location.href = '/quiz';
+    }
+    window.logout = logout;
+  </script>
+</body>
+</html>
