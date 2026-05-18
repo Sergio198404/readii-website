@@ -2968,6 +2968,10 @@ function enterReviewStage() {
   updateProgress();
   showStagePanel('ecStageReview');
 
+  // v12: 跟读完一句立刻给反馈(不再等 keepAndContinue 点击)
+  playSound('correct');
+  triggerConfetti();
+
   // v12: Previous 按钮仅在不是第一句时可见
   const prevBtn = document.getElementById('ecPrevSegmentBtn');
   if (prevBtn) prevBtn.style.display = (ecCurrentSegmentIdx > 0) ? 'inline-block' : 'none';
@@ -3068,12 +3072,7 @@ function keepAndContinue() {
   if (ecAudioContext.state === 'suspended') {
     ecAudioContext.resume().then(() => console.log('🔊 AudioContext resumed in keepAndContinue'));
   }
-
-  // v12: 跟读一句完成 → 给用户即时反馈(音效 + 烟花),延续 Pass 1/2 的节奏
-  // 注:不延迟切 stage(Pass 1 也是直接切的,confetti 容器是全局 fixed,会叠加在新 panel 上)
-  playSound('correct');
-  triggerConfetti();
-  console.log('🎉 keepAndContinue: SFX + confetti triggered');
+  // 注:SFX + confetti 已移到 enterReviewStage(录完一句立即反馈,而不是等用户点 keep)
 
   // v10.1 fix #1: persist this segment's recording before advancing
   const justRecorded = ecCurrentSegmentIdx;
@@ -3846,11 +3845,12 @@ async function generateFinalVideo(audioBuffer) {
   audioSource.buffer = audioBuffer;
 
   const audioDest = audioCtx.createMediaStreamDestination();
-  // v11.7 修复1: 经过 GainNode 监听,响应 globalVolume(移动端静音监听)
+  // v12: monitor 静音(startPreviewPlayback 已经统一播 preview;双声源会回声)
+  // monitorGain 保留只为防止图结构改动破坏视频音轨,gain=0 实际无声
   const monitorGain = audioCtx.createGain();
-  monitorGain.gain.value = IS_MOBILE ? 0 : globalVolume;
-  audioSource.connect(audioDest);           // 给 MediaRecorder
-  audioSource.connect(monitorGain);         // 给监听
+  monitorGain.gain.value = 0;
+  audioSource.connect(audioDest);           // 给 MediaRecorder(视频音轨,必须)
+  audioSource.connect(monitorGain);         // monitor 静音,不再发声给用户
   monitorGain.connect(audioCtx.destination);
 
   const videoStream = canvas.captureStream(30);
