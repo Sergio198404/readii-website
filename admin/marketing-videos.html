@@ -716,9 +716,7 @@
 
     function renderIntroCard(ctx, article, elapsed, duration) {
       const W = 1080, H = 1920;
-      const alpha = Math.min(1, elapsed / 0.5);  // 0.5s 淡入
-      ctx.globalAlpha = alpha;
-
+      // v12: 不淡入(社交媒体抓第一帧做封面,淡入会让封面是空屏)
       // 顶部 brand
       ctx.fillStyle = '#B8873A';
       ctx.font = '700 36px "Helvetica Neue", Helvetica, sans-serif';
@@ -751,8 +749,6 @@
       ctx.fillStyle = '#B8873A';
       ctx.font = '500 64px Caveat, Georgia, cursive';
       ctx.fillText('a Daisy reading', W / 2, H / 2 + 220);
-
-      ctx.globalAlpha = 1;
     }
 
     function renderMainBody(ctx, article, localElapsed, segmentInfo) {
