@@ -21,6 +21,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- v12: Articles data (ARTICLES_DATA / STORAGE_BASE) — single source of truth -->
+  <script src="/data/articles.js"></script>
 
   <style>
     * { box-sizing: border-box; }
@@ -247,7 +249,7 @@
     const ADMIN_KEY = 'READII_MARKETING_2026';
     const SUPABASE_URL = 'https://bltfljdgjxhcmbfduert.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsdGZsamRnanhoY21iZmR1ZXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQwMDMsImV4cCI6MjA5MTM0MDAwM30.WL8e6w1x_Bz437jtke8ZhFF0GpBo2WlG5-7wvLm8o2s';
-    const STORAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public`;
+    // STORAGE_BASE 来自 /data/articles.js(避免重复声明冲突)
     const MARKETING_BUCKET = 'marketing-videos';
     const BGM_URL = `${STORAGE_BASE}/bgm-audio/bgm-lofi.mp3`;
 
@@ -256,140 +258,10 @@
     // ─────────── ARTICLES_DATA (admin 用,简化版) ───────────
     // 只含市场视频生成需要的字段:id, title, author, segments[].text, segments[].audio_filename
     // 加文章时这里和 quiz/index.html 都要加(目前 3 篇,可接受)
-    const ARTICLES_DATA = {
-      'apology': {
-        id: 'apology',
-        title: 'The Apology',
-        author: 'Xiaoyu Su',
-        segments: [
-          { audio_filename: 'apology-01.mp3', text: "There is a thing the English do, and after a year of living here, I have started doing it too." },
-          { audio_filename: 'apology-02.mp3', text: "I apologise to objects." },
-          { audio_filename: 'apology-03.mp3', text: "Last Tuesday, I bumped into a chair in a café. Not a person. A chair." },
-          { audio_filename: 'apology-04.mp3', text: "Wooden, motionless, entirely innocent. And what did I say?" },
-          { audio_filename: 'apology-05.mp3', text: "\"Sorry.\" Out loud. With feeling." },
-          { audio_filename: 'apology-06.mp3', text: "The chair, naturally, said nothing back, which I have decided to interpret as passive aggression on its part." },
-          { audio_filename: 'apology-07.mp3', text: "It gets worse. I apologise when other people bump into me. I apologise when I cannot hear what someone has said." },
-          { audio_filename: 'apology-08.mp3', text: "I apologised, last week, to a pigeon that walked rather too close to my shoe. The pigeon, like the chair, did not respond." },
-          { audio_filename: 'apology-09.mp3', text: "My English friends find this entirely normal. \"Quite,\" they say, when I bring it up, which is the English way of meaning absolutely nothing." },
-          { audio_filename: 'apology-10.mp3', text: "I have come to believe that \"sorry\" in England is not really an apology. It is more like a verbal handshake." },
-          { audio_filename: 'apology-11.mp3', text: "A way of saying: I see you, you see me, neither of us wants any trouble." },
-          { audio_filename: 'apology-12.mp3', text: "Let us continue avoiding each other politely for the remainder of our lives." },
-          { audio_filename: 'apology-13.mp3', text: "And honestly? I rather like it." }
-        ]
-      },
-      'seven-novembers': {
-        id: 'seven-novembers',
-        title: 'Seven Novembers',
-        author: 'Xiaoyu Su',
-        segments: [
-          { audio_filename: 'seven-novembers-01.mp3', text: "I have lived in London for seven Novembers now." },
-          { audio_filename: 'seven-novembers-02.mp3', text: "Bill Bryson once wrote that the English have a particular gift for making the appalling seem charming." },
-          { audio_filename: 'seven-novembers-03.mp3', text: "He was, I think, referring to the weather. But it works for almost everything here." },
-          { audio_filename: 'seven-novembers-04.mp3', text: "I still do not understand how anyone affords a house in this city." },
-          { audio_filename: 'seven-novembers-05.mp3', text: "I still do not know where the sun goes between October and April." },
-          { audio_filename: 'seven-novembers-06.mp3', text: "I still cannot tell you what an English person means when they say their weekend was \"fine.\"" },
-          { audio_filename: 'seven-novembers-07.mp3', text: "But here is what I have learned." },
-          { audio_filename: 'seven-novembers-08.mp3', text: "I have learned that \"interesting\" is rarely a compliment." },
-          { audio_filename: 'seven-novembers-09.mp3', text: "That \"I'll bear it in mind\" usually means I have already forgotten." },
-          { audio_filename: 'seven-novembers-10.mp3', text: "That when someone says \"we should get coffee sometime,\" they are not, in fact, suggesting coffee." },
-          { audio_filename: 'seven-novembers-11.mp3', text: "I have learned to find a strange comfort in grey light. To expect rain in June." },
-          { audio_filename: 'seven-novembers-12.mp3', text: "To carry an umbrella I will not use because opening it would feel, somehow, like making a fuss." },
-          { audio_filename: 'seven-novembers-13.mp3', text: "I am not English. I will never be English. My accent slips. My silences are not quite the right length." },
-          { audio_filename: 'seven-novembers-14.mp3', text: "But after seven Novembers, I have started apologising to furniture. I have started saying \"rather\" without meaning to." },
-          { audio_filename: 'seven-novembers-15.mp3', text: "And last week, when someone asked how I was, I said —" },
-          { audio_filename: 'seven-novembers-16.mp3', text: "\"Not too bad, thanks.\" And meant it." }
-        ]
-      },
-      'shop-closes-for-lunch': {
-        id: 'shop-closes-for-lunch',
-        title: 'The Shop That Closes for Lunch',
-        author: 'Xiaoyu Su',
-        segments: [
-          { audio_filename: 'shop-closes-for-lunch-01.mp3', text: "There is a bookshop near my flat in Marylebone that closes between one and two o'clock." },
-          { audio_filename: 'shop-closes-for-lunch-02.mp3', text: "I do not mean it gets busy at lunchtime. I mean it closes." },
-          { audio_filename: 'shop-closes-for-lunch-03.mp3', text: "A handwritten sign appears in the window: \"Back at 2.\"" },
-          { audio_filename: 'shop-closes-for-lunch-04.mp3', text: "For the first six months, I found this infuriating. In London. A capital city." },
-          { audio_filename: 'shop-closes-for-lunch-05.mp3', text: "Closing the shop because the owner, presumably, wants a sandwich." },
-          { audio_filename: 'shop-closes-for-lunch-06.mp3', text: "Then, slowly, I came to admire it." },
-          { audio_filename: 'shop-closes-for-lunch-07.mp3', text: "The shop is run by a woman in her sixties who has, as far as I can tell, no interest in scaling, no plan to franchise, and no ambition to be on Instagram." },
-          { audio_filename: 'shop-closes-for-lunch-08.mp3', text: "She knows her customers by name. She remembers what their daughters are reading." },
-          { audio_filename: 'shop-closes-for-lunch-09.mp3', text: "She orders three copies of a novel because she thinks three people might want it, and she is usually right." },
-          { audio_filename: 'shop-closes-for-lunch-10.mp3', text: "There is a particular kind of British business that exists quietly in this way." },
-          { audio_filename: 'shop-closes-for-lunch-11.mp3', text: "It does not optimise. It does not pivot." },
-          { audio_filename: 'shop-closes-for-lunch-12.mp3', text: "It simply continues, year after year, doing one thing rather well, closing for lunch, and shutting altogether on Sundays because that is what Sundays are for." },
-          { audio_filename: 'shop-closes-for-lunch-13.mp3', text: "I sometimes think the rest of the world has lost something the English never quite gave up." },
-          { audio_filename: 'shop-closes-for-lunch-14.mp3', text: "The bookshop, last I checked, has been there for thirty-one years." },
-          { audio_filename: 'shop-closes-for-lunch-15.mp3', text: "Long may it close for lunch." }
-        ]
-      },
-      'the-queue': {
-        id: 'the-queue',
-        title: 'The Queue',
-        author: 'Readii Editorial',
-        segments: [
-          { audio_filename: 'the-queue-01.mp3', text: "In Britain, the queue is sacred." },
-          { audio_filename: 'the-queue-02.mp3', text: "You learn this on your first day. Not from a book — from a quiet, devastating look someone gives you at a bus stop." },
-          { audio_filename: 'the-queue-03.mp3', text: "A queue is not just a line. It is a contract." },
-          { audio_filename: 'the-queue-04.mp3', text: "An invisible agreement that says: I was here first. You were here next. We will all wait. Together. In silence." },
-          { audio_filename: 'the-queue-05.mp3', text: "To break a queue is not impolite. It is criminal." },
-          { audio_filename: 'the-queue-06.mp3', text: "There is no act, short of murder, that a British person will resent more than someone pushing in." },
-          { audio_filename: 'the-queue-07.mp3', text: "But — and this is the interesting part — they will not say anything." },
-          { audio_filename: 'the-queue-08.mp3', text: "They will tut. They will sigh. They will mutter to whoever is standing behind them." },
-          { audio_filename: 'the-queue-09.mp3', text: "They will exchange glances of solidarity with strangers. But they will not, under any circumstances, speak to the offender directly." },
-          { audio_filename: 'the-queue-10.mp3', text: "You can join a queue without realising it. Three people standing vaguely near a counter? That is a queue." },
-          { audio_filename: 'the-queue-11.mp3', text: "Americans find this exhausting. Italians find it incomprehensible. The French refuse to participate." },
-          { audio_filename: 'the-queue-12.mp3', text: "But here is what no one tells you: queueing in Britain is a kind of love." },
-          { audio_filename: 'the-queue-13.mp3', text: "It is the country saying: I will wait, so that you may wait. I will not push, so that you are not pushed." },
-          { audio_filename: 'the-queue-14.mp3', text: "We are all, briefly, equal — in our weary, drizzly patience." },
-          { audio_filename: 'the-queue-15.mp3', text: "After six years here, I can spot a queue from across the street." },
-          { audio_filename: 'the-queue-16.mp3', text: "And reader, I have come to find it beautiful." }
-        ]
-      },
-      'talking-about-weather': {
-        id: 'talking-about-weather',
-        title: 'Talking About Weather',
-        author: 'Readii Editorial',
-        segments: [
-          { audio_filename: 'talking-about-weather-01.mp3', text: "In England, weather is not weather." },
-          { audio_filename: 'talking-about-weather-02.mp3', text: "It is a handshake. A door opener. A way of saying hello without saying hello." },
-          { audio_filename: 'talking-about-weather-03.mp3', text: "\"Lovely day, isn't it?\" — this is not a question about meteorology." },
-          { audio_filename: 'talking-about-weather-04.mp3', text: "It is an invitation. To stand near each other, briefly, and confirm that we are both here, both human." },
-          { audio_filename: 'talking-about-weather-05.mp3', text: "You can have an entire conversation in England about the weather. People do. For hours." },
-          { audio_filename: 'talking-about-weather-06.mp3', text: "\"Bit chilly this morning.\" \"Felt like proper autumn, didn't it?\"" },
-          { audio_filename: 'talking-about-weather-07.mp3', text: "\"They said rain later.\" \"Mm. Wouldn't surprise me.\"" },
-          { audio_filename: 'talking-about-weather-08.mp3', text: "Nothing has been said. Everything has been understood." },
-          { audio_filename: 'talking-about-weather-09.mp3', text: "There are rules. You may complain about heat, but only above 25 degrees, and only with theatrical suffering." },
-          { audio_filename: 'talking-about-weather-10.mp3', text: "You must always say \"they said\" when referring to forecasts, as if \"they\" were some distant, unreliable government." },
-          { audio_filename: 'talking-about-weather-11.mp3', text: "If someone says \"lovely day\", you do not disagree. Even if it is raining. Even if you are wet." },
-          { audio_filename: 'talking-about-weather-12.mp3', text: "You say \"isn't it?\" and you mean it — because the day is, by definition, lovely when shared." },
-          { audio_filename: 'talking-about-weather-13.mp3', text: "Yesterday, walking past a stranger in the rain, I said — without thinking — \"miserable, isn't it?\"" },
-          { audio_filename: 'talking-about-weather-14.mp3', text: "He smiled. \"Always is.\"" },
-          { audio_filename: 'talking-about-weather-15.mp3', text: "And I understood, finally, that we had not talked about the rain at all." }
-        ]
-      },
-      'the-tea-question': {
-        id: 'the-tea-question',
-        title: 'The Tea Question',
-        author: 'Readii Editorial',
-        segments: [
-          { audio_filename: 'the-tea-question-01.mp3', text: "In Britain, refusing a cup of tea is not a refusal." },
-          { audio_filename: 'the-tea-question-02.mp3', text: "It is an alarm." },
-          { audio_filename: 'the-tea-question-03.mp3', text: "If you walk into a British home and decline tea, your host will not be offended. They will be worried." },
-          { audio_filename: 'the-tea-question-04.mp3', text: "They will assume something is wrong. They may ask, gently, if you are unwell." },
-          { audio_filename: 'the-tea-question-05.mp3', text: "\"Would you like a cup of tea?\" is rarely a real question. The expected answer is yes." },
-          { audio_filename: 'the-tea-question-06.mp3', text: "Saying no creates a small, polite emergency." },
-          { audio_filename: 'the-tea-question-07.mp3', text: "The British make tea for everything. Bad news? Tea. Good news? Tea." },
-          { audio_filename: 'the-tea-question-08.mp3', text: "Bereavement, engagement, a dropped phone, a stubbed toe, a national crisis — there will be tea." },
-          { audio_filename: 'the-tea-question-09.mp3', text: "Tea is the answer to a question no one has asked." },
-          { audio_filename: 'the-tea-question-10.mp3', text: "There are layers. \"Cup of tea?\" is casual. \"Fancy a brew?\" is friendly. \"I'll put the kettle on\" is decisive — the matter is settled." },
-          { audio_filename: 'the-tea-question-11.mp3', text: "If you do accept, more questions follow. Milk? Sugar? How strong?" },
-          { audio_filename: 'the-tea-question-12.mp3', text: "\"Builder's, two sugars\" sounds simple. It is, in fact, an identity." },
-          { audio_filename: 'the-tea-question-13.mp3', text: "I have been here long enough that when something goes wrong, I find myself saying — automatically, helplessly — \"I'll put the kettle on.\"" },
-          { audio_filename: 'the-tea-question-14.mp3', text: "It does not solve anything. But it gives us, briefly, somewhere to put our hands." },
-          { audio_filename: 'the-tea-question-15.mp3', text: "And in Britain, that has always been enough." }
-        ]
-      }
-    };
+    // ===========================================================
+    // ARTICLES_DATA moved to /data/articles.js (loaded via <script src> above).
+    // Available as window.ARTICLES_DATA - same source as quiz/index.html.
+    // ===========================================================
 
     // ───────────────────── AUTH GATE ─────────────────────
     const urlKey = new URLSearchParams(location.search).get('key');
