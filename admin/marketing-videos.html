@@ -587,7 +587,7 @@
       // ── 7. 轮询 mp4 ready ──
       const mp4Url = `${STORAGE_BASE}/${MARKETING_BUCKET}/${mp4Path}`;
       const startPoll = Date.now();
-      const MAX_POLL_S = 300;  // 5 分钟兜底
+      const MAX_POLL_S = 600;  // 10 分钟兜底(高质量 1080p medium-fast 编码可能需要 3-6 分钟)
       while ((Date.now() - startPoll) / 1000 < MAX_POLL_S) {
         await sleep(5000);
         try {

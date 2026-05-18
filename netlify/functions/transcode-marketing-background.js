@@ -55,8 +55,9 @@ exports.handler = async (event) => {
       ffmpeg(inFile)
         .outputOptions([
           '-c:v libx264',
-          '-preset medium',           // 慢但质量好
-          '-crf 21',                  // 高质量(数字越低越好)
+          '-preset fast',             // 平衡:medium 在 Lambda 太慢(>5min),fast 是高质量档里的合理选
+          '-crf 22',                  // 高质量(数字越低越好),22 vs 21 视觉几乎无差
+          '-threads 0',               // 用满 Lambda 核心
           '-c:a aac',
           '-b:a 192k',                // 高音频码率
           '-ar 44100',
