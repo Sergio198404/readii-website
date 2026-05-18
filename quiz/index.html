@@ -530,8 +530,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         Sign in
       </button>
       <p id="signInError" style="display:none;color:#C0392B;font-size:12px;text-align:center;margin:12px 0 0;font-family:'Helvetica Neue',sans-serif"></p>
-      <p style="text-align:center;font-size:11px;opacity:.5;margin:20px 0 0;font-family:'Helvetica Neue',sans-serif;letter-spacing:.05em;line-height:1.5">
-        Forgot password? Email <a href="mailto:xiaoyusu@readii.co.uk" style="color:#1F4D40">xiaoyusu@readii.co.uk</a>
+      <p id="signInNotice" style="display:none;color:#1F4D40;font-size:12px;text-align:center;margin:12px 0 0;font-family:'Helvetica Neue',sans-serif"></p>
+      <p style="text-align:center;font-size:12px;margin:20px 0 0;font-family:'Helvetica Neue',sans-serif;letter-spacing:.05em">
+        <a href="#" onclick="doForgotPassword(); return false" style="color:#1F4D40;opacity:.6">Forgot password?</a>
       </p>
       <button onclick="closeSignInModal()"
               style="display:block;margin:14px auto 0;background:none;border:none;color:#1F4D40;opacity:.5;font-family:'Helvetica Neue',sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">
@@ -895,7 +896,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         </div>
 
         <button class="btn-start" id="signedInSubmitBtn" onclick="submitSignedInForm()">
-          Save my preferences →
+          Open my library →
         </button>
       </div>
 
@@ -1494,6 +1495,34 @@ async function doSignOut() {
   track('user_signed_out', {});
   await renderUserStatus();
   renderLibrary();
+}
+
+// v12: 忘记密码 — Supabase 发送 reset 邮件,用户点链接进 /reset 改密码
+async function doForgotPassword() {
+  const emailEl = document.getElementById('signInEmail');
+  const errEl = document.getElementById('signInError');
+  const noticeEl = document.getElementById('signInNotice');
+  errEl.style.display = 'none';
+  noticeEl.style.display = 'none';
+
+  let email = (emailEl?.value || '').trim().toLowerCase();
+  if (!email || !email.includes('@')) {
+    email = (prompt('Enter your account email — we will send a reset link:') || '').trim().toLowerCase();
+  }
+  if (!email || !email.includes('@')) return;
+
+  try {
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: `${location.origin}/reset/`
+    });
+    if (error) throw error;
+    track('password_reset_requested', {});
+    noticeEl.textContent = '✓ Check your inbox for a reset link';
+    noticeEl.style.display = 'block';
+  } catch (err) {
+    errEl.textContent = err.message || 'Failed to send reset link';
+    errEl.style.display = 'block';
+  }
 }
 
 // 让 modal 支持 Enter 提交
@@ -4032,7 +4061,8 @@ async function checkAuthAndShowForm() {
       const name = profile?.player_name || profile?.display_name || email.split('@')[0];
 
       document.getElementById('signedInName').textContent = name;
-      document.getElementById('signedInEmail').textContent = email;
+      // 注:之前 signedInEmail 那行被删了 — element 已在 v12 UI 简化时移除,
+      // 留着会 throw TypeError → 被 catch 吞掉 → 已登录用户错误地进入 OTP 流程
       document.getElementById('signedInSubDaily').checked = !!profile?.newsletter_daily_readings;
       document.getElementById('signedInSubEdu').checked = !!profile?.newsletter_edu_entrepreneurship;
 
@@ -4078,38 +4108,28 @@ async function attachVideoToUser(userId, email) {
 async function submitSignedInForm() {
   const btn = document.getElementById('signedInSubmitBtn');
   btn.disabled = true;
-  btn.textContent = 'Sending...';
+  btn.textContent = 'Opening...';
 
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) throw new Error('Not logged in');
-    console.log('🔧 submitSignedInForm session:', session?.user?.id);
+  // newsletter prefs fire-and-forget(不阻塞跳转;失败仅 console.warn,不打扰用户)
+  (async () => {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) return;
+      const subDaily = document.getElementById('signedInSubDaily').checked;
+      const subEdu = document.getElementById('signedInSubEdu').checked;
+      await sb.from('user_profiles')
+        .update({
+          newsletter_daily_readings: subDaily,
+          newsletter_edu_entrepreneurship: subEdu
+        })
+        .eq('id', session.user.id);
+    } catch (e) {
+      console.warn('Newsletter prefs save failed (non-blocking):', e);
+    }
+  })();
 
-    const subDaily = document.getElementById('signedInSubDaily').checked;
-    const subEdu = document.getElementById('signedInSubEdu').checked;
-
-    const { data, error } = await sb.from('user_profiles')
-      .update({
-        newsletter_daily_readings: subDaily,
-        newsletter_edu_entrepreneurship: subEdu
-      })
-      .eq('id', session.user.id)
-      .select();
-
-    console.log('🔧 update profile result:', {
-      rowsAffected: data?.length,
-      error: error?.message
-    });
-
-    document.getElementById('signedInSection').style.display = 'none';
-    document.getElementById('emailDoneSection').style.display = 'block';
-    document.getElementById('confirmedEmailDisplay').textContent = session.user.email;
-
-  } catch (err) {
-    toast('Failed. Try again?');
-    btn.disabled = false;
-    btn.textContent = 'Save my preferences →';
-  }
+  // 直接跳 /my(已登录用户视频已保存,不需要中间确认页)
+  location.href = '/my';
 }
 
 async function submitEmailForm() {

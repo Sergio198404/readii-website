@@ -1,0 +1,216 @@
+<!-- /reset/index.html — Password reset callback page -->
+<!--
+  Supabase resetPasswordForEmail 会发邮件,链接跳这里(带 hash params:
+    #access_token=...&refresh_token=...&type=recovery&...)
+  supabase-js 自动读 hash → 设 session → 我们用 updateUser({ password }) 改密码
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password · Readii</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #FAF8F3;
+      color: #1F4D40;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 36px 32px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 4px 24px rgba(31, 77, 64, 0.08);
+    }
+    .brand {
+      text-align: center;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: #B8873A;
+      margin-bottom: 16px;
+    }
+    h1 {
+      text-align: center;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 26px;
+      margin: 0 0 8px;
+    }
+    .sub {
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.7;
+      margin: 0 0 24px;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid rgba(31, 77, 64, 0.15);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: Georgia, serif;
+      background: #fff;
+      margin-bottom: 16px;
+    }
+    .btn {
+      width: 100%;
+      background: #B8873A;
+      color: #FAF8F3;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .err {
+      color: #C0392B;
+      font-size: 12px;
+      text-align: center;
+      margin: 12px 0 0;
+      font-family: 'Helvetica Neue', sans-serif;
+    }
+    .ok {
+      color: #1F4D40;
+      font-size: 14px;
+      text-align: center;
+      margin: 0 0 16px;
+    }
+    .link {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1F4D40;
+      opacity: 0.5;
+      text-decoration: none;
+    }
+    .link:hover { opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">READII</div>
+
+    <!-- Loading state -->
+    <div id="loading">
+      <h1>Verifying…</h1>
+      <p class="sub">Reading your reset link.</p>
+    </div>
+
+    <!-- Form state(session valid) -->
+    <div id="form" style="display:none">
+      <h1>Set a new password</h1>
+      <p class="sub">Choose a password — at least 8 characters.</p>
+      <input type="password" id="pwd" placeholder="New password" minlength="8" autocomplete="new-password">
+      <input type="password" id="pwdConfirm" placeholder="Confirm password" minlength="8" autocomplete="new-password">
+      <button class="btn" id="submitBtn" onclick="submit()">Update password</button>
+      <p id="err" class="err" style="display:none"></p>
+    </div>
+
+    <!-- Success state -->
+    <div id="success" style="display:none">
+      <h1>✓ Password updated</h1>
+      <p class="ok">You can now sign in with your new password.</p>
+      <a href="/quiz" class="btn" style="display:block;text-decoration:none;text-align:center">Continue to Readii →</a>
+    </div>
+
+    <!-- Invalid/expired link state -->
+    <div id="invalid" style="display:none">
+      <h1>Link expired</h1>
+      <p class="sub">This reset link is no longer valid. Request a new one from the sign-in screen.</p>
+      <a href="/quiz" class="btn" style="display:block;text-decoration:none;text-align:center">Back to Readii</a>
+    </div>
+
+    <a href="/quiz" class="link">← Back to Readii</a>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://bltfljdgjxhcmbfduert.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsdGZsamRnanhoY21iZmR1ZXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQwMDMsImV4cCI6MjA5MTM0MDAwM30.WL8e6w1x_Bz437jtke8ZhFF0GpBo2WlG5-7wvLm8o2s';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+      auth: { detectSessionInUrl: true, flowType: 'implicit' }
+    });
+
+    function showState(id) {
+      ['loading', 'form', 'success', 'invalid'].forEach(s => {
+        document.getElementById(s).style.display = (s === id) ? 'block' : 'none';
+      });
+    }
+
+    async function init() {
+      // supabase-js detectSessionInUrl 会自动从 URL hash 拿 access_token + 设 session
+      // 我们 poll 一下确认 session 已设
+      await new Promise(r => setTimeout(r, 300));
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user) {
+        showState('form');
+        document.getElementById('pwd').focus();
+      } else {
+        showState('invalid');
+      }
+    }
+
+    async function submit() {
+      const pwd = document.getElementById('pwd').value;
+      const pwdConfirm = document.getElementById('pwdConfirm').value;
+      const err = document.getElementById('err');
+      const btn = document.getElementById('submitBtn');
+      err.style.display = 'none';
+
+      if (pwd.length < 8) {
+        err.textContent = 'Password must be at least 8 characters';
+        err.style.display = 'block';
+        return;
+      }
+      if (pwd !== pwdConfirm) {
+        err.textContent = 'Passwords do not match';
+        err.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Updating...';
+      try {
+        const { error } = await sb.auth.updateUser({ password: pwd });
+        if (error) throw error;
+        showState('success');
+      } catch (e) {
+        err.textContent = e.message || 'Update failed';
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Update password';
+      }
+    }
+
+    // Enter 键提交
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && document.getElementById('form').style.display === 'block') {
+        submit();
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
