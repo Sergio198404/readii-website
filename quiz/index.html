@@ -512,10 +512,32 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <div class="brand" style="position:relative">
     <h1>Readii</h1>
     <p>British Pronunciation Reader</p>
-    <a id="myLibraryLink" href="/my"
-       style="display:none;position:absolute;top:8px;right:16px;font-family:'Helvetica Neue',sans-serif;font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#B8873A;text-decoration:none;border-bottom:1px solid #B8873A;padding-bottom:2px">
-      My readings →
-    </a>
+    <div id="userStatus"
+         style="position:absolute;top:8px;right:16px;font-family:'Helvetica Neue',sans-serif;font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;text-align:right;line-height:1.4"></div>
+  </div>
+
+  <!-- Sign in modal -->
+  <div id="signInModal" style="display:none;position:fixed;inset:0;background:rgba(15,37,32,.7);z-index:9999;align-items:center;justify-content:center;padding:24px">
+    <div style="background:#FAF8F3;border-radius:14px;padding:32px 28px 24px;max-width:360px;width:100%;font-family:Georgia,serif">
+      <h2 style="font-family:Georgia,serif;font-style:italic;font-size:26px;margin:0 0 6px;text-align:center;color:#1F4D40">Welcome back</h2>
+      <p style="font-size:13px;opacity:.7;text-align:center;margin:0 0 24px;color:#1F4D40">Sign in to see your readings</p>
+      <input type="email" id="signInEmail" placeholder="your@email.com" autocomplete="email"
+             style="width:100%;padding:12px 14px;border:1.5px solid rgba(31,77,64,.15);border-radius:8px;font-size:15px;margin-bottom:12px;background:#fff;font-family:Georgia,serif;box-sizing:border-box">
+      <input type="password" id="signInPassword" placeholder="Password" autocomplete="current-password"
+             style="width:100%;padding:12px 14px;border:1.5px solid rgba(31,77,64,.15);border-radius:8px;font-size:15px;margin-bottom:16px;background:#fff;font-family:Georgia,serif;box-sizing:border-box">
+      <button onclick="doSignIn()" id="signInBtn"
+              style="width:100%;background:#B8873A;color:#FAF8F3;border:none;padding:12px;border-radius:8px;font-family:'Helvetica Neue',sans-serif;font-weight:700;font-size:13px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">
+        Sign in
+      </button>
+      <p id="signInError" style="display:none;color:#C0392B;font-size:12px;text-align:center;margin:12px 0 0;font-family:'Helvetica Neue',sans-serif"></p>
+      <p style="text-align:center;font-size:11px;opacity:.5;margin:20px 0 0;font-family:'Helvetica Neue',sans-serif;letter-spacing:.05em;line-height:1.5">
+        Forgot password? Email <a href="mailto:xiaoyusu@readii.co.uk" style="color:#1F4D40">xiaoyusu@readii.co.uk</a>
+      </p>
+      <button onclick="closeSignInModal()"
+              style="display:block;margin:14px auto 0;background:none;border:none;color:#1F4D40;opacity:.5;font-family:'Helvetica Neue',sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">
+        Cancel
+      </button>
+    </div>
   </div>
 
   <!-- Global volume control (v10.1 fix #3) -->
@@ -1445,16 +1467,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render library cards
   renderLibrary();
 
-  // v12: 已登录显示顶部 "My readings" 链接
-  (async () => {
-    try {
-      const { data: { session } } = await sb.auth.getSession();
-      if (session?.user) {
-        const link = document.getElementById('myLibraryLink');
-        if (link) link.style.display = 'block';
-      }
-    } catch (e) {}
-  })();
+  // v12: 渲染右上角登录状态(已登录=Hi NAME + My readings + Sign out;未登录=Sign in)
+  renderUserStatus();
 
   track('page_view', { referrer: document.referrer, challenge: slug || null });
   const lastVisit = localStorage.getItem('readii_last_visit');
@@ -1633,6 +1647,110 @@ function formatRelativeDate(iso) {
     return '';
   }
 }
+
+// v12: 右上角登录状态(已登录:My readings + 名字 + Sign out;未登录:Sign in)
+async function renderUserStatus() {
+  const el = document.getElementById('userStatus');
+  if (!el) return;
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      // 拿 display name
+      let name = session.user.email?.split('@')[0] || 'You';
+      try {
+        const { data: profile } = await sb
+          .from('user_profiles')
+          .select('display_name, player_name')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        if (profile) name = profile.player_name || profile.display_name || name;
+      } catch (e) {}
+      el.innerHTML = `
+        <a href="/my" style="color:#B8873A;text-decoration:none;border-bottom:1px solid #B8873A;padding-bottom:2px;display:inline-block">My readings →</a>
+        <div style="color:#1F4D40;opacity:.5;font-size:10px;letter-spacing:.1em;margin-top:6px;text-transform:none;font-weight:500">
+          ${escapeHtml(name)} · <a href="#" onclick="doSignOut(); return false" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Sign out</a>
+        </div>
+      `;
+    } else {
+      el.innerHTML = `
+        <a href="#" onclick="openSignInModal(); return false" style="color:#B8873A;text-decoration:none;border-bottom:1px solid #B8873A;padding-bottom:2px;display:inline-block">Sign in →</a>
+      `;
+    }
+  } catch (e) {
+    console.warn('renderUserStatus failed:', e);
+    el.innerHTML = '';
+  }
+}
+
+function openSignInModal() {
+  const modal = document.getElementById('signInModal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  document.getElementById('signInError').style.display = 'none';
+  document.getElementById('signInPassword').value = '';
+  // 不清空 email(用户可能填了再切回)
+  setTimeout(() => document.getElementById('signInEmail').focus(), 50);
+}
+
+function closeSignInModal() {
+  const modal = document.getElementById('signInModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function doSignIn() {
+  const email = (document.getElementById('signInEmail').value || '').trim().toLowerCase();
+  const password = document.getElementById('signInPassword').value;
+  const errEl = document.getElementById('signInError');
+  const btn = document.getElementById('signInBtn');
+  errEl.style.display = 'none';
+
+  if (!email || !email.includes('@')) {
+    errEl.textContent = 'Please enter a valid email';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!password) {
+    errEl.textContent = 'Password required';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      errEl.textContent = error.message || 'Sign in failed';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
+      return;
+    }
+    track('user_signed_in', { method: 'password' });
+    closeSignInModal();
+    await renderUserStatus();
+    renderLibrary();  // 刷新 ✓ Read 标记
+  } catch (e) {
+    errEl.textContent = e.message || 'Sign in failed';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+  }
+}
+
+async function doSignOut() {
+  try { await sb.auth.signOut(); } catch (e) {}
+  track('user_signed_out', {});
+  await renderUserStatus();
+  renderLibrary();
+}
+
+// 让 modal 支持 Enter 提交
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && document.getElementById('signInModal')?.style.display === 'flex') {
+    doSignIn();
+  }
+});
 
 function selectArticle(articleId) {
   const article = ARTICLES_DATA[articleId];
