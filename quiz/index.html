@@ -79,6 +79,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .lib-card-title{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px}
 .lib-card-meta{font-size:11px;color:var(--muted);margin-bottom:8px}
 .lib-card-desc{font-family:var(--serif);font-size:13px;line-height:1.5;color:var(--ink);font-style:italic;opacity:.8}
+.lib-card-badge{display:none;background:var(--gold);color:var(--white);font-size:10px;font-weight:700;letter-spacing:.1em;padding:3px 9px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;font-family:'Helvetica Neue',sans-serif}
+.lib-card--done{border-color:var(--gold)}
+.lib-card--done .lib-card-badge{display:inline-block}
 .library-footer{text-align:center;font-size:11px;color:var(--muted);margin-top:8px;margin-bottom:20px}
 .byoc-toggle{margin-top:16px}
 .byoc-toggle summary{font-size:13px;color:var(--muted);text-align:center;cursor:pointer;padding:8px;list-style:none;text-decoration:underline}
@@ -1517,14 +1520,98 @@ function startCooldown() {
 function renderLibrary() {
   const grid = document.getElementById('libraryGrid');
   if (!grid) return;
+  // 第一阶段:立即渲染卡片(badge 隐藏)
   grid.innerHTML = Object.values(ARTICLES_DATA).map(article => `
-    <article class="lib-card" onclick="selectArticle('${article.id}')">
+    <article class="lib-card" data-article-id="${article.id}" onclick="selectArticle('${article.id}')">
+      <div class="lib-card-badge"></div>
       <div class="lib-card-tag">${article.tag}</div>
       <h3 class="lib-card-title">${escapeHtml(article.title)}</h3>
       <p class="lib-card-meta">${article.estimated_minutes} min · ${article.word_count} words</p>
       <p class="lib-card-desc">${escapeHtml(article.description)}</p>
     </article>
   `).join('');
+
+  // 第二阶段:异步获取已读列表(登录走 supabase + localStorage 合并),给已读卡片打 ✓ Read 徽章
+  getCompletedArticleIds().then(completed => {
+    Object.keys(completed).forEach(articleId => {
+      const card = grid.querySelector(`[data-article-id="${articleId}"]`);
+      if (!card) return;
+      card.classList.add('lib-card--done');
+      const badge = card.querySelector('.lib-card-badge');
+      if (badge) {
+        badge.textContent = `✓ Read · ${formatRelativeDate(completed[articleId].firstAt)}`;
+      }
+    });
+  }).catch(e => console.warn('Library progress fetch failed:', e));
+}
+
+// v12: 拉取用户已完成的 article 列表(登录: supabase + localStorage,未登录: 仅 localStorage)
+async function getCompletedArticleIds() {
+  const merged = {};
+
+  // 本地标记(未登录或刚完成还没同步)
+  try {
+    const raw = localStorage.getItem('readii_completed_articles');
+    const local = raw ? JSON.parse(raw) : {};
+    Object.keys(local).forEach(k => { merged[k] = local[k]; });
+  } catch (e) {}
+
+  // 远端记录(登录用户)
+  try {
+    if (typeof sb !== 'undefined' && sb?.auth?.getSession) {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user) {
+        const { data, error } = await sb
+          .from('pretotype_videos')
+          .select('article_id, created_at')
+          .eq('user_id', session.user.id)
+          .eq('video_type', 'full');
+        if (!error && Array.isArray(data)) {
+          for (const row of data) {
+            if (!row.article_id) continue;
+            const ex = merged[row.article_id];
+            if (!ex || (row.created_at && row.created_at < ex.firstAt)) {
+              merged[row.article_id] = { firstAt: row.created_at };
+            }
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Remote progress fetch failed:', e);
+  }
+
+  return merged;
+}
+
+function markArticleCompletedLocal(articleId) {
+  if (!articleId) return;
+  try {
+    const raw = localStorage.getItem('readii_completed_articles');
+    const list = raw ? JSON.parse(raw) : {};
+    if (!list[articleId]) {
+      list[articleId] = { firstAt: new Date().toISOString() };
+      localStorage.setItem('readii_completed_articles', JSON.stringify(list));
+    }
+  } catch (e) {
+    console.warn('Mark complete failed:', e);
+  }
+}
+
+function formatRelativeDate(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    const diffMs = Date.now() - d.getTime();
+    const days = Math.floor(diffMs / (24 * 3600 * 1000));
+    if (days < 0) return d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
+    if (days === 0) return 'Today';
+    if (days === 1) return 'Yesterday';
+    if (days < 7) return `${days} days ago`;
+    return d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
+  } catch (e) {
+    return '';
+  }
 }
 
 function selectArticle(articleId) {
@@ -3964,6 +4051,9 @@ function enterResultStage() {
 
   // v12: 进 Result 屏前停止 preview audio,让 video 元素接管播放
   stopPreviewPlayback();
+
+  // v12: 标记本地完成,Library 屏下次返回会看到 ✓ Read 徽章
+  markArticleCompletedLocal(currentArticleId);
 
   // 加载视频预览
   const fullPreview = document.getElementById('videoPreview');
