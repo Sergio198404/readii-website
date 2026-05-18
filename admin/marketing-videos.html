@@ -249,6 +249,7 @@
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsdGZsamRnanhoY21iZmR1ZXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQwMDMsImV4cCI6MjA5MTM0MDAwM30.WL8e6w1x_Bz437jtke8ZhFF0GpBo2WlG5-7wvLm8o2s';
     const STORAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public`;
     const MARKETING_BUCKET = 'marketing-videos';
+    const BGM_URL = `${STORAGE_BASE}/bgm-audio/bgm-lofi.mp3`;
 
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
@@ -466,6 +467,11 @@
       const stitched = await offline.startRendering();
       console.log('stitched duration:', stitched.duration.toFixed(1), 's');
 
+      // ── 2.5 Mix with BGM (Daisy 主声 + 柔和 lofi 背景) ──
+      setStatus(article.id, 'Adding background music...');
+      const finalAudio = await mixWithBGMMarketing(stitched);
+      console.log('final mixed duration:', finalAudio.duration.toFixed(1), 's');
+
       // ── 3. Canvas + MediaRecorder 录 webm ──
       setStatus(article.id, 'Recording video (DO NOT switch tabs)...');
       showRecordingOverlay(totalDuration);
@@ -477,7 +483,7 @@
 
       const playCtx = new (window.AudioContext || window.webkitAudioContext)();
       const audioSource = playCtx.createBufferSource();
-      audioSource.buffer = stitched;
+      audioSource.buffer = finalAudio;
       const audioDest = playCtx.createMediaStreamDestination();
       audioSource.connect(audioDest);
 
@@ -606,6 +612,61 @@
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+    // ───────────────────── BGM MIX ─────────────────────
+    // Daisy 朗读 + lofi 背景:user gain 0.88,bgm peak 0.08,1s 渐入,末尾 2s 渐出
+    let __cachedBgmBuffer = null;
+    async function mixWithBGMMarketing(userBuffer) {
+      try {
+        if (!__cachedBgmBuffer) {
+          const resp = await fetch(BGM_URL);
+          if (!resp.ok) {
+            console.warn('BGM fetch failed:', resp.status, '— skipping BGM');
+            return userBuffer;
+          }
+          const ab = await resp.arrayBuffer();
+          const tmpCtx = new (window.AudioContext || window.webkitAudioContext)();
+          __cachedBgmBuffer = await tmpCtx.decodeAudioData(ab);
+        }
+        const bgmBuffer = __cachedBgmBuffer;
+
+        const sampleRate = userBuffer.sampleRate;
+        const totalDuration = userBuffer.duration;
+        const channels = userBuffer.numberOfChannels;
+        const totalSamples = Math.ceil(totalDuration * sampleRate);
+
+        const offline = new OfflineAudioContext(channels, totalSamples, sampleRate);
+
+        // Daisy 主声 track
+        const userSrc = offline.createBufferSource();
+        userSrc.buffer = userBuffer;
+        const userGain = offline.createGain();
+        userGain.gain.value = 0.88;
+        userSrc.connect(userGain);
+        userGain.connect(offline.destination);
+        userSrc.start(0);
+
+        // BGM track:loop 铺满,1s 渐入,末尾 2s 渐出
+        const bgmSrc = offline.createBufferSource();
+        bgmSrc.buffer = bgmBuffer;
+        bgmSrc.loop = true;
+        const bgmGain = offline.createGain();
+        const peak = 0.08;
+        bgmGain.gain.setValueAtTime(0, 0);
+        bgmGain.gain.linearRampToValueAtTime(peak, 1.0);
+        bgmGain.gain.setValueAtTime(peak, Math.max(1.0, totalDuration - 2.0));
+        bgmGain.gain.linearRampToValueAtTime(0, totalDuration);
+        bgmSrc.connect(bgmGain);
+        bgmGain.connect(offline.destination);
+        bgmSrc.start(0);
+        bgmSrc.stop(totalDuration);
+
+        return await offline.startRendering();
+      } catch (e) {
+        console.warn('BGM mix failed, falling back to dry audio:', e);
+        return userBuffer;
+      }
+    }
 
     // ───────────────────── RECORDING OVERLAY ─────────────────────
     function showRecordingOverlay(totalSec) {
