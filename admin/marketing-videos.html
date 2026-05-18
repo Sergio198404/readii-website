@@ -1,0 +1,826 @@
+<!-- admin/marketing-videos.html — Readii Marketing Video Generator (browser-based MVP) -->
+<!--
+  URL: /admin/marketing-videos.html?key=READII_MARKETING_2026
+  生成流程:
+    1. 拉 Daisy article-audio segments
+    2. stitch + 计算 segment 时序
+    3. Canvas 1080x1920 + MediaRecorder 实时录 webm
+    4. 上传到 marketing-videos bucket
+    5. 触发 transcode-marketing-background → mp4
+    6. 轮询 mp4 ready → 显示下载链接
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Readii · Marketing Video Generator</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #FAF8F3;
+      color: #1F4D40;
+      line-height: 1.6;
+    }
+    .page { max-width: 720px; margin: 0 auto; padding: 40px 24px; }
+
+    .header {
+      text-align: center;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: #B8873A;
+      margin-bottom: 8px;
+    }
+    h1 {
+      text-align: center;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 32px;
+      margin: 0 0 8px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.7;
+      margin-bottom: 40px;
+    }
+
+    .article-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(31, 77, 64, 0.12);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 22px;
+      margin: 0 0 4px;
+    }
+    .article-meta {
+      font-size: 12px;
+      color: #1F4D40;
+      opacity: 0.6;
+      margin-bottom: 16px;
+      font-family: 'Helvetica Neue', sans-serif;
+      letter-spacing: 0.05em;
+    }
+    .article-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: #B8873A;
+      color: #FAF8F3;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-secondary {
+      background: transparent;
+      color: #1F4D40;
+      border: 1px solid rgba(31, 77, 64, 0.3);
+    }
+    .download-link {
+      display: inline-block;
+      color: #1F4D40;
+      font-size: 13px;
+      text-decoration: none;
+      border-bottom: 1px solid #B8873A;
+      padding-bottom: 2px;
+    }
+    .download-link:hover { color: #B8873A; }
+    .status {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: #1F4D40;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+    .status.err { color: #C0392B; opacity: 1; }
+    .status.ok { color: #1F4D40; opacity: 1; }
+
+    /* Recording overlay (录制中,防止误切 tab) */
+    .recording-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 37, 32, 0.96);
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+      color: #FAF8F3;
+      font-family: 'Helvetica Neue', sans-serif;
+      text-align: center;
+      padding: 32px;
+    }
+    .recording-overlay.show { display: flex; }
+    .overlay-inner { max-width: 480px; }
+    .recording-dot {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      background: #FF3B30;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 12px;
+      animation: rec-pulse 1.2s infinite;
+    }
+    @keyframes rec-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .overlay-title {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 28px;
+      margin: 0 0 24px;
+    }
+    .overlay-warning {
+      background: rgba(255, 59, 48, 0.15);
+      border: 1px solid #FF3B30;
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin-bottom: 32px;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      line-height: 1.5;
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: rgba(250, 248, 243, 0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #B8873A;
+      width: 0%;
+      transition: width 0.2s linear;
+    }
+    .elapsed-time {
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+    }
+
+    /* Red border for whole window during recording */
+    body.recording-active::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      border: 6px solid #FF3B30;
+      pointer-events: none;
+      z-index: 9997;
+      animation: rec-pulse 1.5s infinite;
+    }
+
+    .auth-gate {
+      text-align: center;
+      padding: 80px 24px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="authGate" class="auth-gate">Access denied · valid key required</div>
+
+  <main id="main" class="page" style="display:none">
+    <div class="header">READII · ADMIN</div>
+    <h1>Marketing Video Generator</h1>
+    <p class="subtitle">Generate Daisy reading videos for social media</p>
+
+    <div id="articleList"></div>
+
+    <canvas id="renderCanvas" width="1080" height="1920" style="display:none"></canvas>
+  </main>
+
+  <div id="recordingOverlay" class="recording-overlay">
+    <div class="overlay-inner">
+      <h2 class="overlay-title">
+        <span class="recording-dot"></span>
+        Recording in progress
+      </h2>
+      <div class="overlay-warning">
+        ⚠️ DO NOT switch tabs, scroll away, or close this window<br>
+        Switching will corrupt the recording — you'll have to start over.
+      </div>
+      <div class="progress-bar-wrap">
+        <div id="progBar" class="progress-bar-fill"></div>
+      </div>
+      <div id="elapsedTime" class="elapsed-time">0:00 / 0:00</div>
+    </div>
+  </div>
+
+  <script>
+    // ───────────────────── CONFIG ─────────────────────
+    const ADMIN_KEY = 'READII_MARKETING_2026';
+    const SUPABASE_URL = 'https://bltfljdgjxhcmbfduert.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsdGZsamRnanhoY21iZmR1ZXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQwMDMsImV4cCI6MjA5MTM0MDAwM30.WL8e6w1x_Bz437jtke8ZhFF0GpBo2WlG5-7wvLm8o2s';
+    const STORAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public`;
+    const MARKETING_BUCKET = 'marketing-videos';
+
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // ─────────── ARTICLES_DATA (admin 用,简化版) ───────────
+    // 只含市场视频生成需要的字段:id, title, author, segments[].text, segments[].audio_filename
+    // 加文章时这里和 quiz/index.html 都要加(目前 3 篇,可接受)
+    const ARTICLES_DATA = {
+      'apology': {
+        id: 'apology',
+        title: 'The Apology',
+        author: 'Xiaoyu Su',
+        segments: [
+          { audio_filename: 'apology-01.mp3', text: "There is a thing the English do, and after a year of living here, I have started doing it too." },
+          { audio_filename: 'apology-02.mp3', text: "I apologise to objects." },
+          { audio_filename: 'apology-03.mp3', text: "Last Tuesday, I bumped into a chair in a café. Not a person. A chair." },
+          { audio_filename: 'apology-04.mp3', text: "Wooden, motionless, entirely innocent. And what did I say?" },
+          { audio_filename: 'apology-05.mp3', text: "\"Sorry.\" Out loud. With feeling." },
+          { audio_filename: 'apology-06.mp3', text: "The chair, naturally, said nothing back, which I have decided to interpret as passive aggression on its part." },
+          { audio_filename: 'apology-07.mp3', text: "It gets worse. I apologise when other people bump into me. I apologise when I cannot hear what someone has said." },
+          { audio_filename: 'apology-08.mp3', text: "I apologised, last week, to a pigeon that walked rather too close to my shoe. The pigeon, like the chair, did not respond." },
+          { audio_filename: 'apology-09.mp3', text: "My English friends find this entirely normal. \"Quite,\" they say, when I bring it up, which is the English way of meaning absolutely nothing." },
+          { audio_filename: 'apology-10.mp3', text: "I have come to believe that \"sorry\" in England is not really an apology. It is more like a verbal handshake." },
+          { audio_filename: 'apology-11.mp3', text: "A way of saying: I see you, you see me, neither of us wants any trouble." },
+          { audio_filename: 'apology-12.mp3', text: "Let us continue avoiding each other politely for the remainder of our lives." },
+          { audio_filename: 'apology-13.mp3', text: "And honestly? I rather like it." }
+        ]
+      },
+      'seven-novembers': {
+        id: 'seven-novembers',
+        title: 'Seven Novembers',
+        author: 'Xiaoyu Su',
+        segments: [
+          { audio_filename: 'seven-novembers-01.mp3', text: "I have lived in London for seven Novembers now." },
+          { audio_filename: 'seven-novembers-02.mp3', text: "Bill Bryson once wrote that the English have a particular gift for making the appalling seem charming." },
+          { audio_filename: 'seven-novembers-03.mp3', text: "He was, I think, referring to the weather. But it works for almost everything here." },
+          { audio_filename: 'seven-novembers-04.mp3', text: "I still do not understand how anyone affords a house in this city." },
+          { audio_filename: 'seven-novembers-05.mp3', text: "I still do not know where the sun goes between October and April." },
+          { audio_filename: 'seven-novembers-06.mp3', text: "I still cannot tell you what an English person means when they say their weekend was \"fine.\"" },
+          { audio_filename: 'seven-novembers-07.mp3', text: "But here is what I have learned." },
+          { audio_filename: 'seven-novembers-08.mp3', text: "I have learned that \"interesting\" is rarely a compliment." },
+          { audio_filename: 'seven-novembers-09.mp3', text: "That \"I'll bear it in mind\" usually means I have already forgotten." },
+          { audio_filename: 'seven-novembers-10.mp3', text: "That when someone says \"we should get coffee sometime,\" they are not, in fact, suggesting coffee." },
+          { audio_filename: 'seven-novembers-11.mp3', text: "I have learned to find a strange comfort in grey light. To expect rain in June." },
+          { audio_filename: 'seven-novembers-12.mp3', text: "To carry an umbrella I will not use because opening it would feel, somehow, like making a fuss." },
+          { audio_filename: 'seven-novembers-13.mp3', text: "I am not English. I will never be English. My accent slips. My silences are not quite the right length." },
+          { audio_filename: 'seven-novembers-14.mp3', text: "But after seven Novembers, I have started apologising to furniture. I have started saying \"rather\" without meaning to." },
+          { audio_filename: 'seven-novembers-15.mp3', text: "And last week, when someone asked how I was, I said —" },
+          { audio_filename: 'seven-novembers-16.mp3', text: "\"Not too bad, thanks.\" And meant it." }
+        ]
+      },
+      'shop-closes-for-lunch': {
+        id: 'shop-closes-for-lunch',
+        title: 'The Shop That Closes for Lunch',
+        author: 'Xiaoyu Su',
+        segments: [
+          { audio_filename: 'shop-closes-for-lunch-01.mp3', text: "There is a bookshop near my flat in Marylebone that closes between one and two o'clock." },
+          { audio_filename: 'shop-closes-for-lunch-02.mp3', text: "I do not mean it gets busy at lunchtime. I mean it closes." },
+          { audio_filename: 'shop-closes-for-lunch-03.mp3', text: "A handwritten sign appears in the window: \"Back at 2.\"" },
+          { audio_filename: 'shop-closes-for-lunch-04.mp3', text: "For the first six months, I found this infuriating. In London. A capital city." },
+          { audio_filename: 'shop-closes-for-lunch-05.mp3', text: "Closing the shop because the owner, presumably, wants a sandwich." },
+          { audio_filename: 'shop-closes-for-lunch-06.mp3', text: "Then, slowly, I came to admire it." },
+          { audio_filename: 'shop-closes-for-lunch-07.mp3', text: "The shop is run by a woman in her sixties who has, as far as I can tell, no interest in scaling, no plan to franchise, and no ambition to be on Instagram." },
+          { audio_filename: 'shop-closes-for-lunch-08.mp3', text: "She knows her customers by name. She remembers what their daughters are reading." },
+          { audio_filename: 'shop-closes-for-lunch-09.mp3', text: "She orders three copies of a novel because she thinks three people might want it, and she is usually right." },
+          { audio_filename: 'shop-closes-for-lunch-10.mp3', text: "There is a particular kind of British business that exists quietly in this way." },
+          { audio_filename: 'shop-closes-for-lunch-11.mp3', text: "It does not optimise. It does not pivot." },
+          { audio_filename: 'shop-closes-for-lunch-12.mp3', text: "It simply continues, year after year, doing one thing rather well, closing for lunch, and shutting altogether on Sundays because that is what Sundays are for." },
+          { audio_filename: 'shop-closes-for-lunch-13.mp3', text: "I sometimes think the rest of the world has lost something the English never quite gave up." },
+          { audio_filename: 'shop-closes-for-lunch-14.mp3', text: "The bookshop, last I checked, has been there for thirty-one years." },
+          { audio_filename: 'shop-closes-for-lunch-15.mp3', text: "Long may it close for lunch." }
+        ]
+      }
+    };
+
+    // ───────────────────── AUTH GATE ─────────────────────
+    const urlKey = new URLSearchParams(location.search).get('key');
+    if (urlKey === ADMIN_KEY) {
+      document.getElementById('authGate').style.display = 'none';
+      document.getElementById('main').style.display = 'block';
+      init();
+    }
+
+    // ───────────────────── RENDER UI ─────────────────────
+    async function init() {
+      // 等字体加载完(Canvas 渲染依赖)
+      try {
+        await document.fonts.load('500 56px Caveat');
+        await document.fonts.ready;
+      } catch (e) { console.warn('fonts.load:', e); }
+
+      renderArticleList();
+    }
+
+    function renderArticleList() {
+      const list = document.getElementById('articleList');
+      list.innerHTML = Object.values(ARTICLES_DATA).map(article => `
+        <div class="article-card" data-article-id="${article.id}">
+          <h3 class="article-title">${escapeHtml(article.title)}</h3>
+          <p class="article-meta">${article.segments.length} segments · by ${escapeHtml(article.author)}</p>
+          <div class="article-actions">
+            <button class="btn" onclick="onGenerateClick('${article.id}')">Generate video</button>
+            <span class="download-status"></span>
+          </div>
+          <div class="status"></div>
+        </div>
+      `).join('');
+
+      // 检查 marketing-videos bucket 里已有的 mp4
+      checkExistingVideos();
+    }
+
+    async function checkExistingVideos() {
+      for (const id of Object.keys(ARTICLES_DATA)) {
+        const mp4Url = `${STORAGE_BASE}/${MARKETING_BUCKET}/${id}-daisy.mp4`;
+        try {
+          const resp = await fetch(mp4Url, { method: 'HEAD' });
+          if (resp.ok) {
+            updateDownloadStatus(id, mp4Url, 'existing');
+          }
+        } catch (e) {}
+      }
+    }
+
+    function updateDownloadStatus(articleId, mp4Url, label) {
+      const card = document.querySelector(`[data-article-id="${articleId}"]`);
+      if (!card) return;
+      const span = card.querySelector('.download-status');
+      span.innerHTML = `<a href="${mp4Url}" target="_blank" download class="download-link">⬇ Download mp4 ${label ? '· ' + label : ''}</a>`;
+    }
+
+    function setStatus(articleId, text, kind) {
+      const card = document.querySelector(`[data-article-id="${articleId}"]`);
+      if (!card) return;
+      const s = card.querySelector('.status');
+      s.className = 'status' + (kind ? ' ' + kind : '');
+      s.textContent = text;
+    }
+
+    function setButtonDisabled(articleId, disabled) {
+      const card = document.querySelector(`[data-article-id="${articleId}"]`);
+      if (!card) return;
+      const btn = card.querySelector('.btn');
+      btn.disabled = disabled;
+    }
+
+    // ───────────────────── GENERATE ─────────────────────
+    let generating = false;
+
+    async function onGenerateClick(articleId) {
+      if (generating) { alert('Another video is being generated.'); return; }
+      const article = ARTICLES_DATA[articleId];
+      if (!article) return;
+
+      generating = true;
+      setButtonDisabled(articleId, true);
+
+      try {
+        await generateVideo(article);
+      } catch (err) {
+        console.error('Generate failed:', err);
+        setStatus(articleId, '✕ ' + err.message, 'err');
+      } finally {
+        generating = false;
+        setButtonDisabled(articleId, false);
+      }
+    }
+
+    window.onGenerateClick = onGenerateClick;
+
+    async function generateVideo(article) {
+      // ── 1. 拉 Daisy 全部 segment audio ──
+      setStatus(article.id, 'Loading Daisy audio...');
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuffers = [];
+      for (let i = 0; i < article.segments.length; i++) {
+        const seg = article.segments[i];
+        const url = `${STORAGE_BASE}/article-audio/${seg.audio_filename}`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`Failed audio ${seg.audio_filename}: ${resp.status}`);
+        const ab = await resp.arrayBuffer();
+        const buf = await audioCtx.decodeAudioData(ab);
+        audioBuffers.push(buf);
+        setStatus(article.id, `Loading Daisy audio... ${i + 1}/${article.segments.length}`);
+      }
+
+      // ── 2. Stitch + 计算字幕时序 ──
+      setStatus(article.id, 'Stitching audio...');
+      const GAP_S = 0.2;
+      const INTRO_S = 3;
+      const OUTRO_S = 1;
+      const sampleRate = audioBuffers[0].sampleRate;
+      const channels = audioBuffers[0].numberOfChannels;
+
+      // 主体内字幕时序(local elapsed):startTime/endTime 相对于 main body 开始
+      const segmentInfo = [];
+      let cum = 0;
+      for (let i = 0; i < audioBuffers.length; i++) {
+        const d = audioBuffers[i].duration;
+        segmentInfo.push({ startTime: cum, endTime: cum + d + GAP_S });
+        cum += d + GAP_S;
+      }
+      const mainDuration = cum;
+      const totalDuration = INTRO_S + mainDuration + OUTRO_S;
+      const totalSamples = Math.ceil(totalDuration * sampleRate);
+
+      const offline = new OfflineAudioContext(channels, totalSamples, sampleRate);
+      let off = INTRO_S;
+      for (const b of audioBuffers) {
+        const s = offline.createBufferSource();
+        s.buffer = b;
+        s.connect(offline.destination);
+        s.start(off);
+        off += b.duration + GAP_S;
+      }
+      const stitched = await offline.startRendering();
+      console.log('stitched duration:', stitched.duration.toFixed(1), 's');
+
+      // ── 3. Canvas + MediaRecorder 录 webm ──
+      setStatus(article.id, 'Recording video (DO NOT switch tabs)...');
+      showRecordingOverlay(totalDuration);
+
+      const canvas = document.getElementById('renderCanvas');
+      canvas.width = 1080;
+      canvas.height = 1920;
+      const c2d = canvas.getContext('2d');
+
+      const playCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const audioSource = playCtx.createBufferSource();
+      audioSource.buffer = stitched;
+      const audioDest = playCtx.createMediaStreamDestination();
+      audioSource.connect(audioDest);
+
+      const videoStream = canvas.captureStream(30);
+      const combined = new MediaStream();
+      videoStream.getVideoTracks().forEach(t => combined.addTrack(t));
+      audioDest.stream.getAudioTracks().forEach(t => combined.addTrack(t));
+
+      const mimes = [
+        'video/webm;codecs=vp9,opus',
+        'video/webm;codecs=vp8,opus',
+        'video/webm'
+      ];
+      const mime = mimes.find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
+      const chunks = [];
+      const recorder = new MediaRecorder(combined, {
+        mimeType: mime,
+        videoBitsPerSecond: 4_000_000,    // 4 Mbps,适合 1080p marketing
+        audioBitsPerSecond: 192_000
+      });
+      recorder.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+
+      let didSwitchAway = false;
+      const visHandler = () => { if (document.hidden) didSwitchAway = true; };
+      document.addEventListener('visibilitychange', visHandler);
+
+      const startTime = Date.now();
+      const recordPromise = new Promise((resolve, reject) => {
+        recorder.onstop = () => resolve(new Blob(chunks, { type: mime }));
+        recorder.onerror = e => reject(new Error('MediaRecorder error: ' + (e.error?.message || 'unknown')));
+      });
+
+      recorder.start();
+      audioSource.start(0);
+
+      function renderLoop() {
+        const elapsed = (Date.now() - startTime) / 1000;
+        if (elapsed >= totalDuration) {
+          if (recorder.state !== 'inactive') recorder.stop();
+          return;
+        }
+        renderMarketingFrame(c2d, article, elapsed, totalDuration, INTRO_S, INTRO_S + mainDuration, segmentInfo);
+        updateRecordingProgress(elapsed, totalDuration);
+        requestAnimationFrame(renderLoop);
+      }
+      renderLoop();
+
+      // 兜底超时
+      const timeoutHandle = setTimeout(() => {
+        if (recorder.state !== 'inactive') {
+          try { recorder.stop(); } catch (e) {}
+        }
+      }, (totalDuration + 2) * 1000);
+
+      const webmBlob = await recordPromise;
+      clearTimeout(timeoutHandle);
+      document.removeEventListener('visibilitychange', visHandler);
+      hideRecordingOverlay();
+
+      // ── 4. 损坏检测 ──
+      const elapsedRecorded = (Date.now() - startTime) / 1000;
+      const expected = totalDuration;
+      console.log('recorded elapsed:', elapsedRecorded.toFixed(1), 'expected:', expected.toFixed(1));
+      if (didSwitchAway) {
+        throw new Error('Recording corrupted (tab was hidden). Please retry without switching tabs.');
+      }
+      if (elapsedRecorded < expected * 0.8) {
+        throw new Error(`Recording too short (${elapsedRecorded.toFixed(1)}s vs expected ${expected.toFixed(1)}s). Please retry.`);
+      }
+      if (webmBlob.size < 100_000) {
+        throw new Error(`Recording too small (${webmBlob.size} bytes). Likely corrupted.`);
+      }
+
+      // ── 5. 上传 webm 到 marketing-videos bucket ──
+      setStatus(article.id, `Uploading webm (${(webmBlob.size / 1024 / 1024).toFixed(1)} MB)...`);
+      const webmPath = `${article.id}-daisy.webm`;
+      const { error: upErr } = await sb.storage.from(MARKETING_BUCKET).upload(webmPath, webmBlob, {
+        contentType: 'video/webm',
+        upsert: true
+      });
+      if (upErr) throw new Error('Upload failed: ' + upErr.message + ' (bucket may need anon write policy)');
+
+      // ── 6. 触发 transcode-marketing-background ──
+      const mp4Path = `${article.id}-daisy.mp4`;
+      setStatus(article.id, 'Transcoding to mp4 (60-180s)...');
+      try {
+        await fetch('/.netlify/functions/transcode-marketing-background', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bucket: MARKETING_BUCKET,
+            inputPath: webmPath,
+            outputPath: mp4Path
+          })
+        });
+      } catch (e) {
+        // Background function 返回 202 是预期,只在网络真的断时才进 catch
+        console.log('transcode trigger network event:', e.message);
+      }
+
+      // ── 7. 轮询 mp4 ready ──
+      const mp4Url = `${STORAGE_BASE}/${MARKETING_BUCKET}/${mp4Path}`;
+      const startPoll = Date.now();
+      const MAX_POLL_S = 300;  // 5 分钟兜底
+      while ((Date.now() - startPoll) / 1000 < MAX_POLL_S) {
+        await sleep(5000);
+        try {
+          const resp = await fetch(mp4Url, { method: 'HEAD', cache: 'no-cache' });
+          if (resp.ok) {
+            const lastMod = resp.headers.get('last-modified');
+            // 必须是新文件(刚转码完的)而不是旧的同名文件
+            // 简单判断:upload 完成时间之后的文件
+            const modTime = lastMod ? new Date(lastMod).getTime() : 0;
+            if (modTime > startTime - 10000) {
+              setStatus(article.id, '✓ Generated', 'ok');
+              updateDownloadStatus(article.id, mp4Url + '?t=' + Date.now(), 'just now');
+              return;
+            }
+          }
+          const sec = Math.round((Date.now() - startPoll) / 1000);
+          setStatus(article.id, `Transcoding to mp4... (${sec}s elapsed)`);
+        } catch (e) {}
+      }
+      throw new Error('Transcode polling timed out. Check Netlify Functions log for transcode-marketing-background.');
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+    // ───────────────────── RECORDING OVERLAY ─────────────────────
+    function showRecordingOverlay(totalSec) {
+      document.body.classList.add('recording-active');
+      document.getElementById('recordingOverlay').classList.add('show');
+      document.getElementById('progBar').style.width = '0%';
+      document.getElementById('elapsedTime').textContent = '0:00 / ' + fmtTime(totalSec);
+    }
+    function hideRecordingOverlay() {
+      document.body.classList.remove('recording-active');
+      document.getElementById('recordingOverlay').classList.remove('show');
+    }
+    function updateRecordingProgress(elapsed, total) {
+      const pct = Math.min(100, (elapsed / total) * 100);
+      document.getElementById('progBar').style.width = pct + '%';
+      document.getElementById('elapsedTime').textContent = fmtTime(elapsed) + ' / ' + fmtTime(total);
+    }
+    function fmtTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // ───────────────────── CANVAS RENDER ─────────────────────
+    function renderMarketingFrame(ctx, article, elapsed, totalDuration, mainStart, mainEnd, segmentInfo) {
+      const W = 1080, H = 1920;
+
+      // 背景渐变(跟 /quiz 一致)
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, '#1F4D40');
+      grad.addColorStop(0.5, '#2D5A4F');
+      grad.addColorStop(1, '#0F2520');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+      // 微妙金色纹理
+      ctx.fillStyle = 'rgba(184, 135, 58, 0.04)';
+      ctx.fillRect(0, 0, W, H);
+
+      if (elapsed < mainStart) {
+        renderIntroCard(ctx, article, elapsed, mainStart);
+      } else if (elapsed >= mainEnd) {
+        renderOutroCard(ctx, elapsed - mainEnd, totalDuration - mainEnd);
+      } else {
+        renderMainBody(ctx, article, elapsed - mainStart, segmentInfo);
+      }
+    }
+
+    function renderIntroCard(ctx, article, elapsed, duration) {
+      const W = 1080, H = 1920;
+      const alpha = Math.min(1, elapsed / 0.5);  // 0.5s 淡入
+      ctx.globalAlpha = alpha;
+
+      // 顶部 brand
+      ctx.fillStyle = '#B8873A';
+      ctx.font = '700 36px "Helvetica Neue", Helvetica, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('READII · READ BRITISH', W / 2, 240);
+
+      ctx.strokeStyle = 'rgba(184, 135, 58, 0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 200, 280);
+      ctx.lineTo(W / 2 + 200, 280);
+      ctx.stroke();
+
+      // 文章标题
+      ctx.fillStyle = '#FAF8F3';
+      ctx.font = 'italic 88px Georgia, serif';
+      ctx.fillText(article.title, W / 2, H / 2 - 80);
+
+      ctx.strokeStyle = 'rgba(184, 135, 58, 0.4)';
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 60, H / 2 - 20);
+      ctx.lineTo(W / 2 + 60, H / 2 - 20);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(250, 248, 243, 0.7)';
+      ctx.font = 'italic 36px Georgia, serif';
+      ctx.fillText('by ' + article.author, W / 2, H / 2 + 40);
+
+      // 手写体 "a Daisy reading"
+      ctx.fillStyle = '#B8873A';
+      ctx.font = '500 64px Caveat, Georgia, cursive';
+      ctx.fillText('a Daisy reading', W / 2, H / 2 + 220);
+
+      ctx.globalAlpha = 1;
+    }
+
+    function renderMainBody(ctx, article, localElapsed, segmentInfo) {
+      const W = 1080, H = 1920;
+
+      // 顶部 brand
+      ctx.fillStyle = '#B8873A';
+      ctx.font = '700 52px "Helvetica Neue", Helvetica, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(184, 135, 58, 0.3)';
+      ctx.shadowBlur = 12;
+      ctx.fillText('READII', W / 2, 130);
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = 'rgba(250, 248, 243, 0.75)';
+      ctx.font = 'italic 24px Georgia, serif';
+      ctx.fillText('Read British', W / 2, 170);
+
+      ctx.strokeStyle = 'rgba(184, 135, 58, 0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 80, 200);
+      ctx.lineTo(W / 2 + 80, 200);
+      ctx.stroke();
+
+      // Daisy reads
+      ctx.fillStyle = '#FAF8F3';
+      ctx.font = '700 56px Georgia, serif';
+      ctx.fillText('Daisy', W / 2, 280);
+
+      ctx.fillStyle = 'rgba(250, 248, 243, 0.6)';
+      ctx.font = '300 26px "Helvetica Neue", sans-serif';
+      ctx.fillText('reads', W / 2, 322);
+
+      // 文章标题
+      ctx.fillStyle = '#FAF8F3';
+      ctx.font = 'italic 46px Georgia, serif';
+      ctx.fillText(article.title, W / 2, 400);
+
+      // 字幕(基于 localElapsed 切换 segment)
+      renderKaraokeFromSegments(ctx, article.segments, segmentInfo, localElapsed, W, H);
+    }
+
+    function renderKaraokeFromSegments(ctx, segments, segInfo, localElapsed, W, H) {
+      let activeIdx = -1;
+      for (let i = 0; i < segInfo.length; i++) {
+        if (localElapsed >= segInfo[i].startTime && localElapsed < segInfo[i].endTime) {
+          activeIdx = i;
+          break;
+        }
+      }
+      if (activeIdx === -1 && segments.length > 0) {
+        activeIdx = segments.length - 1;
+      }
+      const active = segments[activeIdx];
+      if (!active) return;
+
+      // 当前句 — 大白字 + gold 阴影
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'italic 700 60px Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(184, 135, 58, 0.4)';
+      ctx.shadowBlur = 20;
+
+      const words = active.text.split(/\s+/);
+      const maxWidth = W - 160;
+      const lines = [];
+      let currentLine = '';
+      for (const w of words) {
+        const test = currentLine ? currentLine + ' ' + w : w;
+        if (ctx.measureText(test).width > maxWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = w;
+        } else {
+          currentLine = test;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+
+      const lineHeight = 80;
+      const totalH = lines.length * lineHeight;
+      const startY = H / 2 - totalH / 2 + 80;
+      lines.forEach((line, i) => {
+        ctx.fillText(line, W / 2, startY + i * lineHeight);
+      });
+      ctx.shadowBlur = 0;
+
+      // 上下虚影
+      ctx.font = '300 36px Georgia, serif';
+      ctx.fillStyle = 'rgba(250, 248, 243, 0.3)';
+      if (activeIdx > 0) {
+        const prev = segments[activeIdx - 1].text;
+        const prevShort = prev.length > 80 ? prev.slice(0, 80) + '…' : prev;
+        ctx.fillText(prevShort, W / 2, startY - 100);
+      }
+      if (activeIdx < segments.length - 1) {
+        const next = segments[activeIdx + 1].text;
+        const nextShort = next.length > 80 ? next.slice(0, 80) + '…' : next;
+        ctx.fillText(nextShort, W / 2, startY + totalH + 60);
+      }
+    }
+
+    function renderOutroCard(ctx, localElapsed, duration) {
+      const W = 1080, H = 1920;
+      const alpha = Math.min(1, localElapsed / 0.3);
+      ctx.globalAlpha = alpha;
+
+      // 巨大 READII
+      ctx.fillStyle = '#B8873A';
+      ctx.font = '700 96px "Helvetica Neue", Helvetica, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(184, 135, 58, 0.5)';
+      ctx.shadowBlur = 24;
+      ctx.fillText('READII', W / 2, H / 2 - 20);
+      ctx.shadowBlur = 0;
+
+      ctx.strokeStyle = 'rgba(184, 135, 58, 0.6)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 70, H / 2 + 30);
+      ctx.lineTo(W / 2 + 70, H / 2 + 30);
+      ctx.stroke();
+
+      ctx.fillStyle = '#FAF8F3';
+      ctx.font = 'italic 34px Georgia, serif';
+      ctx.fillText('Read British', W / 2, H / 2 + 100);
+
+      ctx.globalAlpha = 1;
+    }
+  </script>
+</body>
+</html>
