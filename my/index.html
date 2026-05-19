@@ -15,6 +15,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- Mobile debug console (only when ?debug in URL) -->
+  <script>
+    if (location.search.indexOf('debug') >= 0) {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/eruda';
+      s.onload = function() { eruda.init(); };
+      document.head.appendChild(s);
+    }
+  </script>
 
   <style>
     * { box-sizing: border-box; }
@@ -342,9 +351,24 @@
     }
 
     // ─── Main ───
+    // v12: 防无限 Loading — 10s 没出 main → 显示错误 + retry
+    const initTimeoutId = setTimeout(() => {
+      if (document.getElementById('main').style.display === 'none' &&
+          document.getElementById('signInState').style.display === 'none') {
+        console.warn('⚠️ /my init timed out (>10s)');
+        document.getElementById('loadingState').innerHTML =
+          '<p style="opacity:.7;text-align:center;font-family:Georgia,serif;font-style:italic">Loading is slow.</p>' +
+          '<p style="text-align:center;margin-top:16px"><a href="javascript:location.reload()" style="color:#B8873A;text-decoration:none;border-bottom:1px solid #B8873A;padding-bottom:2px;font-family:\'Helvetica Neue\',sans-serif;font-size:13px;letter-spacing:.1em">Retry</a></p>';
+      }
+    }, 10000);
+
     (async () => {
+      console.log('🔍 /my init: getSession...');
       const { data: { session } } = await sb.auth.getSession();
+      console.log('🔍 session user.id:', session?.user?.id, 'email:', session?.user?.email);
+
       if (!session?.user) {
+        clearTimeout(initTimeoutId);
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('signInState').style.display = 'block';
         return;
@@ -359,20 +383,26 @@
           .select('player_name, display_name')
           .eq('id', user.id)
           .maybeSingle();
+        console.log('🔍 user_profiles:', profile);
         if (profile) {
           displayName = profile.player_name || profile.display_name || displayName;
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn('user_profiles fetch failed:', e);
+      }
 
       document.getElementById('userName').textContent = displayName;
 
       // 拉用户视频列表
+      console.log('🔍 querying pretotype_videos where user_id =', user.id);
       const { data: videos, error } = await sb
         .from('pretotype_videos')
-        .select('id, article_id, public_url, mp4_url, share_slug, created_at')
+        .select('id, article_id, public_url, mp4_url, share_slug, created_at, user_id, video_type, session_id')
         .eq('user_id', user.id)
         .eq('video_type', 'full')
         .order('created_at', { ascending: false });
+
+      console.log('🔍 pretotype_videos result:', { count: videos?.length, error, sample: videos?.[0] });
 
       if (error) {
         console.warn('Failed to load videos:', error);
@@ -386,11 +416,15 @@
 
       renderReadings(list);
 
+      clearTimeout(initTimeoutId);
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('main').style.display = 'block';
     })().catch(e => {
+      clearTimeout(initTimeoutId);
       console.error('Init failed:', e);
-      document.getElementById('loadingState').innerHTML = '<p style="opacity:.5">Something went wrong. Try refreshing.</p>';
+      document.getElementById('loadingState').innerHTML =
+        '<p style="opacity:.7;text-align:center">Something went wrong: ' + escapeHtml(e.message || String(e)) + '</p>' +
+        '<p style="text-align:center;margin-top:16px"><a href="javascript:location.reload()" style="color:#B8873A">Retry</a></p>';
     });
 
     // ─── Render ───
