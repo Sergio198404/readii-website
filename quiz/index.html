@@ -82,6 +82,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .lib-card-badge{display:none;background:var(--gold);color:var(--white);font-size:10px;font-weight:700;letter-spacing:.1em;padding:3px 9px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;font-family:'Helvetica Neue',sans-serif}
 .lib-card--done{border-color:var(--gold)}
 .lib-card--done .lib-card-badge{display:inline-block}
+.founding-banner{display:flex;justify-content:space-between;align-items:center;gap:16px;background:linear-gradient(135deg,#1F4D40,#2D5A4F);color:#FAF8F3;padding:14px 18px;border-radius:12px;margin:0 0 20px;text-decoration:none;font-family:'Helvetica Neue',sans-serif;font-size:13px;line-height:1.4;border:1px solid rgba(184,135,58,0.4)}
+.founding-banner:hover{border-color:#B8873A}
+.founding-banner-btn{background:#B8873A;color:#FAF8F3;padding:8px 14px;border-radius:6px;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+@media(max-width:480px){.founding-banner{flex-direction:column;text-align:center;gap:10px}}
 .library-footer{text-align:center;font-size:11px;color:var(--muted);margin-top:8px;margin-bottom:20px}
 .byoc-toggle{margin-top:16px}
 .byoc-toggle summary{font-size:13px;color:var(--muted);text-align:center;cursor:pointer;padding:8px;list-style:none;text-decoration:underline}
@@ -588,6 +592,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <p class="lib-sub-label">TODAY'S CURATED READING</p>
       <h2 class="library-title">Pick a piece. Read aloud. Feel English.</h2>
     </div>
+
+    <!-- Stage 0: 72h Founding Member validation. Replace STRIPE_PAYMENT_LINK_URL when ready. -->
+    <a href="https://buy.stripe.com/28EeVf1UE5Oz9ATcALcZa00" target="_blank" rel="noopener" class="founding-banner">
+      <span>🎁 <strong>72-hour Founding Member</strong> · £79 lifetime · all future features included</span>
+      <span class="founding-banner-btn">Get lifetime →</span>
+    </a>
 
     <div class="library-grid" id="libraryGrid"></div>
 
