@@ -784,6 +784,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <div class="ec-generating-box">
         <div class="spinner"></div>
         <h3 class="ec-generating-title">Crafting your reading video</h3>
+        <p style="background:rgba(255,180,0,.12);border:1px solid #B8873A;color:#1F4D40;padding:12px 16px;border-radius:8px;font-size:13px;line-height:1.5;margin:16px 0;font-family:'Helvetica Neue',sans-serif;text-align:left">
+          ⚠️ <strong>Keep this page open for ~60 seconds.</strong><br>
+          Switching apps will damage the video — your reading is saved either way.
+        </p>
         <ul class="ec-generating-steps" id="ecGeneratingSteps">
           <li id="ecStepStitch">🔄 Stitching your sentences...</li>
           <li id="ecStepMusic" style="display:none">🎵 Adding music...</li>
@@ -803,6 +807,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <div style="font-size:48px;margin-bottom:12px">🎉</div>
         <h3 id="resultTitle">Your reading is ready</h3>
         <p class="fullread-stats" id="pass3Stats"></p>
+      </div>
+
+      <!-- v12: 切走导致视频中断 → 显示 Regenerate 入口(视频生成需要前台运行)-->
+      <div id="videoInterruptedNotice" style="display:none;padding:20px;background:rgba(255,180,0,.12);border:1px solid #B8873A;border-radius:12px;margin-bottom:20px;text-align:center">
+        <p style="font-family:'Helvetica Neue',sans-serif;font-weight:700;color:#1F4D40;margin:0 0 8px;font-size:14px;letter-spacing:.05em">⚠️ Video recording was interrupted</p>
+        <p style="font-size:13px;color:#1F4D40;opacity:.8;margin:0 0 16px;line-height:1.5">You switched apps during generation. Your reading is saved as segments — we just need to re-render the video.</p>
+        <button onclick="regenerateVideo()" class="btn-start" style="display:inline-block">Regenerate video →</button>
       </div>
 
       <div class="full-video-section">
@@ -1261,6 +1272,13 @@ document.addEventListener('visibilitychange', () => {
     if (echoMediaRecorder && echoMediaRecorder.state === 'recording') {
       console.log('🛑 Tab hidden, stopping Pass 1 echo recording');
       try { echoMediaRecorder.stop(); } catch (e) {}
+    }
+    // v12: 视频生成期间切走 → mark interrupted + 主动停 recorder(浏览器会暂停 RAF/AudioContext,
+    // 录的视频损坏。回前台时让用户从 Regenerate 重跑,不强制留在页面)
+    if (videoMediaRecorder && videoMediaRecorder.state === 'recording') {
+      console.log('🛑 Tab hidden during video generation — marking interrupted');
+      window.__readiiVideoInterrupted = true;
+      try { videoMediaRecorder.stop(); } catch (e) {}
     }
   }
 });
@@ -3068,8 +3086,20 @@ function evaluateViralQualification() {
   return { qualified: true };
 }
 
+// v12: 视频中断时重新生成(用内存里的 segmentRecordings 重跑 stitch + mix + record + upload)
+async function regenerateVideo() {
+  if (!Array.isArray(segmentRecordings) || segmentRecordings.length === 0) {
+    toast('Segments not found in memory. Please refresh and resume from your library.');
+    return;
+  }
+  document.getElementById('videoInterruptedNotice').style.display = 'none';
+  await enterGeneratingStage();
+}
+window.regenerateVideo = regenerateVideo;
+
 async function enterGeneratingStage() {
   ecStage = 'generating';
+  window.__readiiVideoInterrupted = false;  // v12: reset interrupted flag(每次进入 generating 重置)
   updateProgress();
   showStagePanel('ecStageGenerating');
 
@@ -3983,16 +4013,28 @@ function enterResultStage() {
   // v12: 标记本地完成,Library 屏下次返回会看到 ✓ Read 徽章
   markArticleCompletedLocal(currentArticleId);
 
-  // 加载视频预览
-  const fullPreview = document.getElementById('videoPreview');
-  if (fullPreview && videoUrl) {
-    fullPreview.src = videoUrl;
-    fullPreview.load();
-    // v12: 尝试自动播放,从 preview audio 切到视频无缝过渡
-    // (iOS 严格时可能阻止,但 controls 仍可手动启动)
-    fullPreview.play().catch(err => {
-      console.log('Result video autoplay blocked (tap to play):', err.message);
-    });
+  // v12: 切走导致视频中断 → 显示 Regenerate UI,不显示坏视频(stats 等其他 UI 仍正常显示)
+  const interrupted = !!window.__readiiVideoInterrupted;
+  const notice = document.getElementById('videoInterruptedNotice');
+  const videoSection = document.querySelector('.full-video-section');
+  if (interrupted) {
+    if (notice) notice.style.display = 'block';
+    if (videoSection) videoSection.style.display = 'none';
+  } else {
+    if (notice) notice.style.display = 'none';
+    if (videoSection) videoSection.style.display = '';
+
+    // 加载视频预览
+    const fullPreview = document.getElementById('videoPreview');
+    if (fullPreview && videoUrl) {
+      fullPreview.src = videoUrl;
+      fullPreview.load();
+      // v12: 尝试自动播放,从 preview audio 切到视频无缝过渡
+      // (iOS 严格时可能阻止,但 controls 仍可手动启动)
+      fullPreview.play().catch(err => {
+        console.log('Result video autoplay blocked (tap to play):', err.message);
+      });
+    }
   }
 
   // Stats
