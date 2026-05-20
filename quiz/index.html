@@ -48,6 +48,23 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
 /* Lives bar */
 .lives-bar{display:flex;align-items:center;justify-content:center;gap:3px;margin-bottom:16px;padding:10px;background:var(--white);border-radius:10px;border:1px solid var(--border)}
+/* v12: Pass 2 完成屏 dopamine moment(Notion/Linear 极简风) */
+.dopamine-complete{display:flex;flex-direction:column;align-items:center;padding:40px 24px 32px;text-align:center}
+.dopamine-score-box{display:flex;align-items:baseline;justify-content:center;gap:4px;margin:8px 0 12px;transition:transform .2s cubic-bezier(.34,1.56,.64,1);min-height:110px}
+.dopamine-score-box.lock{transform:scale(1.04)}
+.dopamine-score-box.glow .dopamine-score-num{text-shadow:0 0 24px rgba(184,135,58,.4)}
+.dopamine-score-num{font-family:Georgia,'Times New Roman',serif;font-size:96px;font-weight:700;color:var(--forest);line-height:1;letter-spacing:-.02em}
+.dopamine-score-frac{font-family:Georgia,serif;font-size:24px;color:var(--muted)}
+.dopamine-label{font-family:'Helvetica Neue',sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 40px;opacity:0;transition:opacity .4s}
+.dopamine-label.show{opacity:1}
+.dopamine-divider{width:40px;height:1px;background:var(--border);margin:0 auto 28px;border:0}
+.dopamine-words{margin:0 0 24px;opacity:0;transition:opacity .4s}
+.dopamine-words.show{opacity:1}
+.dopamine-words-label{font-family:'Helvetica Neue',sans-serif;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.dopamine-words-list{font-family:Georgia,serif;font-style:italic;font-size:18px;color:var(--forest);margin:0;line-height:1.4}
+.dopamine-words.worst .dopamine-words-list{color:#8B7355}
+.dopamine-cta{margin-top:20px;opacity:0;transition:opacity .4s}
+.dopamine-cta.show{opacity:1}
 .lives-bar .heart{font-size:14px;transition:transform .2s,opacity .2s}
 .lives-bar .heart.lost{opacity:.15;transform:scale(.7)}
 .lives-bar .count{font-size:13px;font-weight:700;color:var(--red);margin-left:8px}
@@ -557,7 +574,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     <span class="volume-display" id="volDisplay">80%</span>
   </div>
 
-  <div class="lives-bar" id="livesBar"></div>
+  <!-- v12: hearts × 15 隐藏(成人向 UX,lives logic 保留供未来 Feature 0 streak/rank 复用) -->
+  <div class="lives-bar" id="livesBar" style="display:none"></div>
 
   <!-- Shared preview screen (v10.1) -->
   <div class="screen" id="screenSharedPreview">
@@ -691,13 +709,30 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   </div>
 
   <!-- Transition: Pass 2 → Pass 3 -->
+  <!-- v12: Pass 2 完成屏 — dopamine moment(只用现有 drillResults 数据,无新 logic / 无 DB / 无 streak/rank/Native-Pass)-->
   <div class="screen" id="screenTransition23">
-    <div class="transition-page">
-      <div style="font-size:48px;margin-bottom:14px">💪</div>
-      <h2>Words practised!</h2>
-      <p class="transition-stats" id="trans23Stats">You drilled 6 words</p>
-      <p class="transition-sub">Now read the full article one more time. Feel the difference.</p>
-      <button class="btn-start" onclick="startPass3()">Final read-through →</button>
+    <div class="dopamine-complete">
+      <div class="dopamine-score-box" id="dopamineScoreBox">
+        <span class="dopamine-score-num" id="dopamineScoreNum">—</span>
+        <span class="dopamine-score-frac">/100</span>
+      </div>
+      <p class="dopamine-label" id="dopamineLabel">Word Accuracy</p>
+
+      <hr class="dopamine-divider">
+
+      <div class="dopamine-words nailed" id="dopamineNailed">
+        <p class="dopamine-words-label">Words you nailed</p>
+        <p class="dopamine-words-list" id="nailedWordsList">—</p>
+      </div>
+
+      <div class="dopamine-words worst" id="dopamineWorst">
+        <p class="dopamine-words-label">Worth another go</p>
+        <p class="dopamine-words-list" id="worstWordsList">—</p>
+      </div>
+
+      <div class="dopamine-cta" id="dopamineCta">
+        <button class="btn-start" onclick="startPass3()">Continue Pass 3 →</button>
+      </div>
     </div>
   </div>
 
@@ -2547,11 +2582,78 @@ function finishPass2() {
     article_id: currentArticleId
   });
   showScreen('Transition23');
-  const totalEchoed = drillResults.length;
-  document.getElementById('trans23Stats').textContent =
-    totalEchoed > 0
-      ? `You echoed ${totalEchoed} words ✓`
-      : `Words explored ✓`;
+
+  // v12: dopamine UI — 用现有 drillResults 数据,无新 logic
+  const total = drillResults.length;
+  const score = total > 0 ? Math.round((passed / total) * 100) : 0;
+
+  const nailed = drillResults
+    .filter(r => r.classification === 'hit')
+    .slice(0, 3)
+    .map(r => r.word);
+  const worst = drillResults
+    .filter(r => r.classification !== 'hit')
+    .slice(0, 3)
+    .map(r => r.word);
+
+  document.getElementById('nailedWordsList').textContent =
+    nailed.length > 0 ? nailed.join(' · ') : '—';
+  document.getElementById('worstWordsList').textContent =
+    worst.length > 0 ? worst.join(' · ') : 'All nailed ✓';
+
+  // Hide worst section if no worst words
+  document.getElementById('dopamineWorst').style.display =
+    worst.length > 0 ? 'block' : 'none';
+
+  // Hide nailed section if no hits(rare,但 silent/全错时)
+  document.getElementById('dopamineNailed').style.display =
+    nailed.length > 0 ? 'block' : 'none';
+
+  // 重置 staggered reveal classes
+  ['dopamineLabel', 'dopamineNailed', 'dopamineWorst', 'dopamineCta'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+  });
+  document.getElementById('dopamineScoreNum').textContent = '—';
+  document.getElementById('dopamineScoreBox').classList.remove('lock', 'glow');
+
+  // 启动数字滚动动画
+  setTimeout(() => animateDopamineScore(score), 300);
+}
+
+// v12: 数字滚动 + tactile feedback(纯前端,无新 API)
+function animateDopamineScore(target) {
+  const el = document.getElementById('dopamineScoreNum');
+  const box = document.getElementById('dopamineScoreBox');
+  if (!el || !box) return;
+  const duration = 1200;
+  const t0 = performance.now();
+
+  function tick(now) {
+    const t = Math.min(1, (now - t0) / duration);
+    // cubic ease-out
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(target * eased);
+    if (t < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      // lock: 数字定到 target,触发 tactile 微动效(scale 1.04 → 1)
+      el.textContent = target;
+      box.classList.add('lock', 'glow');
+      setTimeout(() => box.classList.remove('lock'), 200);
+      setTimeout(() => box.classList.remove('glow'), 800);
+
+      // Staggered reveal:label → nailed → worst → cta
+      setTimeout(() => document.getElementById('dopamineLabel').classList.add('show'), 0);
+      setTimeout(() => document.getElementById('dopamineNailed').classList.add('show'), 300);
+      setTimeout(() => document.getElementById('dopamineWorst').classList.add('show'), 500);
+      setTimeout(() => document.getElementById('dopamineCta').classList.add('show'), 700);
+
+      // Subtle single-note "ding"(复用现有 playSound,不新加 audio asset)
+      try { playSound('correct'); } catch (e) {}
+    }
+  }
+  requestAnimationFrame(tick);
 }
 
 // ═════════════════════════════════════════════════════
