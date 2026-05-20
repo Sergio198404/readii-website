@@ -868,6 +868,108 @@ const ARTICLES_DATA = {
     ],
     bgm_style: 'classical',
     background_hint: 'quiet british sunday afternoon grey light empty street'
+  },
+
+  'the-long-wait': {
+    id: 'the-long-wait',
+    title: 'Twenty-Two Years',
+    author: 'Readii Editorial',
+    tag: 'Loyalty',
+    description: '"On Tuesday, Arsenal won the league for the first time in twenty-two years. Grown men wept in the street…"',
+    estimated_minutes: 5,
+    word_count: 273,
+    audio_url: `${STORAGE_BASE}/article-audio/the-long-wait.mp3`,
+    full_text: `On Tuesday evening, Arsenal won the Premier League for the first time in twenty-two years.\n\nThey did not even play. They sat at home and watched their rivals, Manchester City, fail to win. When the final whistle blew in another stadium, a hundred miles away, north London erupted.\n\nGrown men wept in the street. Strangers embraced. Outside the Emirates Stadium, thousands gathered to sing into the night.\n\nTwenty-two years. To understand what that means, consider this: many of the fans crying on Tuesday were children the last time Arsenal were champions. They had waited a third of their lives.\n\nA foreigner might find this strange. It is, after all, only football. Why such tears over a game?\n\nBut to understand Britain, you must understand this first: you do not choose your football team. Your team is given to you — like a surname — and you keep it for life.\n\nYou might inherit it from your father. You might be born near a particular ground. Either way, the matter is settled before you can walk. And you cannot change it. An Englishman may change his job, his politics, even his religion — but never his team. To switch would be a betrayal without a name.\n\nHere is the strangest part: supporting a team is mostly about suffering. You stay through the losing seasons, the near misses, the years of "maybe next time". The winning, when it finally comes, is almost beside the point.\n\nWhat matters is that you were there for all of it.\n\nThat is what those tears were, on Tuesday.\n\nNot joy, exactly. Something deeper. Something that waited twenty-two years to come out.`,
+    segments: [
+      { position: 1, audio_filename: 'the-long-wait-01.mp3', text: "On Tuesday evening, Arsenal won the Premier League for the first time in twenty-two years." },
+      { position: 2, audio_filename: 'the-long-wait-02.mp3', text: "They did not even play. They sat at home and watched their rivals, Manchester City, fail to win." },
+      { position: 3, audio_filename: 'the-long-wait-03.mp3', text: "When the final whistle blew in another stadium, a hundred miles away, north London erupted." },
+      { position: 4, audio_filename: 'the-long-wait-04.mp3', text: "Grown men wept in the street. Strangers embraced." },
+      { position: 5, audio_filename: 'the-long-wait-05.mp3', text: "Outside the Emirates Stadium, thousands gathered to sing into the night." },
+      { position: 6, audio_filename: 'the-long-wait-06.mp3', text: "Twenty-two years. To understand what that means, consider this:" },
+      { position: 7, audio_filename: 'the-long-wait-07.mp3', text: "many of the fans crying on Tuesday were children the last time Arsenal were champions. They had waited a third of their lives." },
+      { position: 8, audio_filename: 'the-long-wait-08.mp3', text: "A foreigner might find this strange. It is, after all, only football. Why such tears over a game?" },
+      { position: 9, audio_filename: 'the-long-wait-09.mp3', text: "But to understand Britain, you must understand this first: you do not choose your football team." },
+      { position: 10, audio_filename: 'the-long-wait-10.mp3', text: "Your team is given to you — like a surname — and you keep it for life." },
+      { position: 11, audio_filename: 'the-long-wait-11.mp3', text: "You might inherit it from your father. You might be born near a particular ground." },
+      { position: 12, audio_filename: 'the-long-wait-12.mp3', text: "Either way, the matter is settled before you can walk. And you cannot change it." },
+      { position: 13, audio_filename: 'the-long-wait-13.mp3', text: "An Englishman may change his job, his politics, even his religion — but never his team. To switch would be a betrayal without a name." },
+      { position: 14, audio_filename: 'the-long-wait-14.mp3', text: "Here is the strangest part: supporting a team is mostly about suffering. You stay through the losing seasons, the near misses, the years of \"maybe next time\"." },
+      { position: 15, audio_filename: 'the-long-wait-15.mp3', text: "The winning, when it finally comes, is almost beside the point. What matters is that you were there for all of it." },
+      { position: 16, audio_filename: 'the-long-wait-16.mp3', text: "That is what those tears were, on Tuesday. Not joy, exactly. Something deeper. Something that waited twenty-two years to come out." }
+    ],
+    drill_words: [
+      { word: 'rivals', from_segment: 2, context_sentence: 'watched their rivals, Manchester City', phonemes: 'R.AI.V.UHL.Z', tip: "'RYE-vuhlz'. Stress on first.", body: "Long 'I' like 'eye', soft ending.", feature: 'long vowel' },
+      { word: 'erupted', from_segment: 3, context_sentence: 'north London erupted', phonemes: 'I.R.UH.P.T.I.D', tip: "'i-RUP-tid'. Stress on RUP.", body: "Short U, sharp -pt cluster.", feature: 'consonant cluster' },
+      { word: 'embraced', from_segment: 4, context_sentence: 'Strangers embraced', phonemes: 'IM.B.R.AY.S.T', tip: "'im-BRAYST'. Stress on second.", body: "Long AY, strong final -st.", feature: 'stress pattern' },
+      { word: 'champions', from_segment: 7, context_sentence: 'the last time Arsenal were champions', phonemes: 'CH.A.M.P.EE.UHN.Z', tip: "'CHAM-pee-uhnz'. Stress on first.", body: "'CHAM' like 'champ', soft middle.", feature: 'stress pattern' },
+      { word: 'inherit', from_segment: 11, context_sentence: 'You might inherit it from your father', phonemes: 'IN.H.E.R.IT', tip: "'in-HERR-it'. Stress on HERR.", body: "Soft H, stress on middle.", feature: 'stress pattern' },
+      { word: 'betrayal', from_segment: 13, context_sentence: 'a betrayal without a name', phonemes: 'B.I.T.R.AY.UHL', tip: "'bi-TRAY-uhl'. Stress on TRAY.", body: "Long AY in the middle, soft ending.", feature: 'stress pattern' }
+    ],
+    decode_questions: [
+      {
+        question: "Arsenal 'won the league without even playing.' How does that work?",
+        context: "They did not even play. They sat at home and watched their rivals, Manchester City, fail to win.",
+        options: [
+          "They were given the title for free",
+          "Their rivals dropped points, making Arsenal mathematically uncatchable",
+          "It was a mistake",
+          "They won a separate match"
+        ],
+        correct: 1,
+        explanation: "In a league, the title is decided by total points across the season. When Manchester City drew instead of winning, Arsenal's lead became mathematically impossible to overturn — so they were crowned champions while watching from home, without kicking a ball."
+      },
+      {
+        question: "A British person says 'You don't choose your team — it's given to you, like a surname.' What's the cultural rule?",
+        context: "Your team is given to you — like a surname — and you keep it for life.",
+        options: [
+          "You support whichever team is best",
+          "Team loyalty is inherited and lifelong — fixed by family or birthplace",
+          "You can pick a new team each season",
+          "Teams assign fans officially"
+        ],
+        correct: 1,
+        explanation: "British football loyalty works like family identity — inherited from a parent or fixed by where you were born. You don't pick a team for its success; you're born into one. Choosing a team for its trophies is seen as having no real loyalty at all."
+      },
+      {
+        question: "Why is 'switching teams' described as 'a betrayal without a name'?",
+        context: "An Englishman may change his job, his politics, even his religion — but never his team.",
+        options: [
+          "There's a law against it",
+          "It violates a loyalty so deep that ordinary words for betrayal feel insufficient",
+          "It's simply inconvenient",
+          "Nobody really cares"
+        ],
+        correct: 1,
+        explanation: "The phrase suggests that abandoning your team breaks something more fundamental than a normal betrayal. Because the team is tied to family, childhood, and identity, switching for success is a kind of self-erasure — worse than changing jobs or even religion."
+      },
+      {
+        question: "A fan says 'Supporting a team is mostly about suffering' — and seems almost proud of it. Why?",
+        context: "You stay through the losing seasons, the near misses, the years of \"maybe next time\".",
+        options: [
+          "They enjoy losing",
+          "Enduring the bad years is the proof of real loyalty — and a quiet badge of honour",
+          "They want to quit",
+          "They're being pessimistic"
+        ],
+        correct: 1,
+        explanation: "Staying loyal through losing seasons is what makes you a 'real' fan in British culture. The suffering isn't a complaint — it's earned credibility. Fans who only show up for the winning years are quietly looked down on as 'glory hunters'."
+      },
+      {
+        question: "The writer says the tears were 'not joy, exactly — something deeper.' What's the real meaning of 22 years of waiting?",
+        context: "Something that waited twenty-two years to come out.",
+        options: [
+          "Fans were just very happy",
+          "The team holds decades of memory, belonging and identity — the tears release all of it",
+          "They were sad it took so long",
+          "Football is the most important thing in life"
+        ],
+        correct: 1,
+        explanation: "The tears aren't simple happiness. Twenty-two years of loyalty means twenty-two years of shared memory — friends, family, childhood, people now gone. The team is the thread holding all of it together. Winning finally released decades of accumulated meaning. It was never really about football."
+      }
+    ],
+    bgm_style: 'classical',
+    background_hint: 'arsenal fans celebrating emirates stadium night emotional'
   }
 };
 
@@ -881,7 +983,8 @@ const ARTICLE_QUOTES = {
   'the-tea-question': "I'll put the kettle on. — Somewhere to put our hands.",
   'saying-goodbye': "We said goodbye for thirty-five minutes. We had a lovely time.",
   'the-art-of-understatement': "Mustn't grumble. — I mean it with my whole heart.",
-  'sunday-afternoons': "I do nothing, beautifully. — How to be still, and call it a good day."
+  'sunday-afternoons': "I do nothing, beautifully. — How to be still, and call it a good day.",
+  'the-long-wait': "Not joy, exactly. Something that waited twenty-two years to come out."
 };
 
 // ═════════════════════════════════════════════════════════════════════
