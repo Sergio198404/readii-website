@@ -1,14 +1,13 @@
-<!-- /my/index.html — Readii personal library (logged-in only) -->
-<!--
-  设计目标:用户回访的核心入口,New Yorker 风格(同 /v 落地页)
-  Phase 1:三段式 → 问候 + 你的作品 + Read another (今日推荐 section 留给 Phase 2)
+<!-- /my/index.html — Readii Personal Journey (logged-in)
+  v12 D-track: 真数据(readings list)+ 假数据(stats/chart/milestones)with PREVIEW 标记
+  全程标记 "Preview · Coming soon" 避免用户误以为真数据
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Library · Readii</title>
+  <title>My Journey · Readii</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,9 +35,9 @@
       -webkit-font-smoothing: antialiased;
     }
     .page {
-      max-width: 480px;
+      max-width: 560px;
       margin: 0 auto;
-      padding: 32px 24px 64px;
+      padding: 28px 20px 64px;
     }
 
     /* Brand bar */
@@ -46,12 +45,93 @@
       text-align: center;
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 0.3em;
       color: #B8873A;
-      margin-bottom: 40px;
+      margin-bottom: 24px;
     }
     .brand-bar .sep { opacity: 0.4; margin: 0 8px; }
+
+    /* ── Top stats header (PREVIEW data) ── */
+    .top-stats {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 20px;
+      background: #FFFFFF;
+      border: 1px solid rgba(31, 77, 64, 0.08);
+      border-radius: 12px;
+      margin-bottom: 28px;
+      font-family: 'Helvetica Neue', sans-serif;
+      flex-wrap: wrap;
+    }
+    .top-stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #1F4D40;
+      font-weight: 600;
+    }
+    .top-stat-icon { font-size: 15px; }
+    .top-stat-score {
+      flex: 1;
+      min-width: 150px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .score-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(31, 77, 64, 0.5);
+      font-weight: 700;
+    }
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .score-num {
+      font-family: Georgia, serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: #1F4D40;
+    }
+    .score-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(31, 77, 64, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1F4D40, #B8873A);
+    }
+    .score-delta {
+      font-size: 11px;
+      color: #2D7A4A;
+      font-weight: 700;
+    }
+    .preview-tag-corner {
+      position: absolute;
+      top: -9px;
+      right: 14px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #B8873A;
+      background: #FAF8F3;
+      padding: 2px 8px;
+      border: 1px solid rgba(184, 135, 58, 0.5);
+      border-radius: 4px;
+      font-weight: 700;
+    }
 
     /* Greeting */
     .greeting {
@@ -60,62 +140,172 @@
     }
     .greeting-eyebrow {
       font-family: 'Caveat', Georgia, cursive;
-      font-size: 22px;
+      font-size: 20px;
       color: #B8873A;
     }
     .greeting-name {
       font-family: Georgia, serif;
       font-style: italic;
-      font-size: 32px;
-      margin: 4px 0 8px;
+      font-size: 30px;
+      margin: 2px 0 6px;
+      font-weight: normal;
     }
     .greeting-stat {
       font-family: 'Helvetica Neue', sans-serif;
       font-size: 11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: #1F4D40;
-      opacity: 0.6;
+      color: rgba(31, 77, 64, 0.55);
+      margin: 0 0 8px;
     }
 
-    /* Section heading */
+    /* Section */
     .section {
-      margin-top: 56px;
+      margin-top: 48px;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
     }
     .section-title {
-      text-align: center;
       font-family: 'Helvetica Neue', sans-serif;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.3em;
       text-transform: uppercase;
       color: #B8873A;
-      margin: 0 0 8px;
+      margin: 0;
+    }
+    .preview-tag-inline {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #B8873A;
+      background: rgba(184, 135, 58, 0.1);
+      padding: 3px 7px;
+      border-radius: 4px;
+      font-weight: 700;
     }
     .section-divider {
       width: 40px;
       height: 1px;
-      background: #B8873A;
-      opacity: 0.4;
-      margin: 0 auto 32px;
+      background: rgba(184, 135, 58, 0.4);
+      margin: 8px auto 24px;
       border: 0;
     }
+    .section.preview { opacity: 0.96; }
 
-    /* Reading card */
+    /* Chart (Native-Pass · 30 days) — SVG inline, no library */
+    .chart-wrap {
+      background: #FFFFFF;
+      border: 1px solid rgba(31, 77, 64, 0.08);
+      border-radius: 12px;
+      padding: 20px 18px;
+      margin-bottom: 14px;
+    }
+    .chart-svg {
+      width: 100%;
+      height: 180px;
+      display: block;
+    }
+    .insight-card {
+      background: rgba(184, 135, 58, 0.08);
+      border-left: 3px solid #B8873A;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      font-family: Georgia, serif;
+      font-size: 14px;
+      color: #1F4D40;
+      line-height: 1.5;
+    }
+    .insight-card strong {
+      color: #1F4D40;
+      font-weight: 700;
+    }
+
+    /* This week stats */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .stat-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(31, 77, 64, 0.08);
+      border-radius: 12px;
+      padding: 20px 12px;
+      text-align: center;
+    }
+    .stat-card-num {
+      font-family: Georgia, serif;
+      font-weight: 700;
+      font-size: 32px;
+      color: #1F4D40;
+      line-height: 1;
+    }
+    .stat-card-unit {
+      font-size: 14px;
+      color: rgba(31, 77, 64, 0.5);
+      font-weight: 500;
+      margin-left: 2px;
+    }
+    .stat-card-label {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(31, 77, 64, 0.6);
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    /* Milestones */
+    .milestones {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .milestone {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      border: 1px solid rgba(31, 77, 64, 0.08);
+      border-radius: 8px;
+      font-family: Georgia, serif;
+      font-size: 13px;
+    }
+    .milestone.done { color: #1F4D40; }
+    .milestone.locked { color: rgba(31, 77, 64, 0.4); background: rgba(255,255,255,0.5); }
+    .milestone-sub {
+      font-size: 10px;
+      font-family: 'Helvetica Neue', sans-serif;
+      letter-spacing: 0.05em;
+      color: rgba(31, 77, 64, 0.55);
+      margin-left: auto;
+    }
+
+    /* Reading card (REAL data) */
     .reading-card {
       background: #FFFFFF;
       border: 1px solid rgba(31, 77, 64, 0.08);
       border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 16px;
+      padding: 18px;
+      margin-bottom: 12px;
       display: flex;
       gap: 16px;
       align-items: flex-start;
     }
     .reading-thumb {
       flex-shrink: 0;
-      width: 90px;
-      height: 160px;
+      width: 80px;
+      height: 142px;
       background: linear-gradient(180deg, #1F4D40, #0F2520);
       border: 1px solid #1F4D40;
       border-radius: 6px;
@@ -126,19 +316,18 @@
     .reading-thumb::before {
       content: '▶';
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       color: #B8873A;
-      font-size: 28px;
+      font-size: 24px;
       z-index: 2;
     }
     .reading-thumb video {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
       display: block;
     }
+    .reading-thumb.playing::before { display: none; }
     .reading-info {
       flex: 1;
       min-width: 0;
@@ -146,22 +335,21 @@
     .reading-title {
       font-family: Georgia, serif;
       font-style: italic;
-      font-size: 20px;
+      font-size: 19px;
       margin: 0 0 4px;
-      line-height: 1.2;
+      line-height: 1.25;
     }
     .reading-date {
       font-family: 'Helvetica Neue', sans-serif;
-      font-size: 11px;
-      letter-spacing: 0.1em;
+      font-size: 10px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #1F4D40;
-      opacity: 0.5;
-      margin-bottom: 12px;
+      color: rgba(31, 77, 64, 0.5);
+      margin: 0 0 10px;
     }
     .reading-actions {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       flex-wrap: wrap;
     }
     .action-link {
@@ -169,7 +357,7 @@
       text-decoration: none;
       font-family: 'Helvetica Neue', sans-serif;
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: 0.05em;
       border-bottom: 1px solid #B8873A;
       padding-bottom: 1px;
@@ -181,38 +369,76 @@
       pointer-events: none;
     }
 
-    /* Inline video player (replaces thumb when playing) */
-    .reading-thumb.playing::before { display: none; }
+    /* Coming soon */
+    .coming-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .coming-list li {
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.5);
+      border: 1px dashed rgba(31, 77, 64, 0.15);
+      border-radius: 8px;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 14px;
+      color: rgba(31, 77, 64, 0.65);
+      margin-bottom: 8px;
+    }
+    .coming-list .coming-eta {
+      font-style: normal;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #B8873A;
+      margin-left: 8px;
+    }
 
-    /* Big CTA */
+    /* CTA */
     .cta-section {
       text-align: center;
-      margin-top: 48px;
+      margin-top: 44px;
     }
     .cta-btn {
       display: inline-block;
       background: #B8873A;
       color: #FAF8F3;
       text-decoration: none;
-      padding: 14px 32px;
+      padding: 14px 30px;
       border-radius: 8px;
       font-family: 'Helvetica Neue', sans-serif;
       font-weight: 600;
       font-size: 13px;
       letter-spacing: 0.15em;
       text-transform: uppercase;
+      transition: transform 0.15s;
     }
     .cta-btn:hover { transform: translateY(-1px); }
 
-    /* Footer */
+    /* Footer + logout */
+    .logout {
+      text-align: center;
+      margin-top: 24px;
+    }
+    .logout a {
+      color: #1F4D40;
+      opacity: 0.4;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .logout a:hover { opacity: 0.7; }
     .footer {
       text-align: center;
       font-family: 'Helvetica Neue', sans-serif;
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 0.2em;
-      color: #1F4D40;
-      opacity: 0.5;
-      margin-top: 56px;
+      color: rgba(31, 77, 64, 0.4);
+      margin-top: 36px;
       text-transform: uppercase;
     }
     .footer a { color: inherit; text-decoration: none; }
@@ -236,57 +462,87 @@
       margin: 0 0 32px;
     }
 
-    .empty-readings {
-      text-align: center;
-      padding: 40px 16px;
+    /* Empty state (logged in, no readings yet) */
+    .empty-journey {
       background: #FFFFFF;
-      border: 1px dashed rgba(31, 77, 64, 0.15);
+      border: 1px solid rgba(184, 135, 58, 0.3);
       border-radius: 12px;
+      padding: 36px 24px;
+      text-align: center;
+      margin-top: 8px;
     }
-    .empty-readings p {
+    .empty-journey h3 {
       font-family: Georgia, serif;
       font-style: italic;
+      font-size: 24px;
       color: #1F4D40;
-      opacity: 0.7;
-      margin: 0 0 16px;
+      margin: 0 0 12px;
     }
-
-    /* Logout link */
-    .logout {
-      text-align: center;
-      margin-top: 24px;
+    .empty-journey p {
+      font-family: Georgia, serif;
+      font-size: 14px;
+      color: rgba(31, 77, 64, 0.75);
+      margin: 0 0 24px;
+      line-height: 1.5;
     }
-    .logout a {
-      color: #1F4D40;
-      opacity: 0.4;
+    .empty-journey .recommend {
       font-family: 'Helvetica Neue', sans-serif;
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      text-decoration: none;
+      color: rgba(31, 77, 64, 0.5);
+      margin: 16px 0 0;
     }
-    .logout a:hover { opacity: 0.7; }
+
+    @media (max-width: 480px) {
+      .stat-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .stat-card { padding: 14px 6px; }
+      .stat-card-num { font-size: 26px; }
+      .milestones { grid-template-columns: 1fr; }
+      .top-stats { gap: 10px; padding: 14px; }
+      .top-stat { font-size: 12px; }
+      .reading-card { padding: 14px; gap: 12px; }
+      .reading-thumb { width: 64px; height: 114px; }
+      .reading-title { font-size: 17px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Loading -->
   <div id="loadingState" class="state-message">
     <p style="font-family:'Helvetica Neue',sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.5">Loading...</p>
   </div>
 
-  <!-- Not logged in -->
   <div id="signInState" class="page state-message" style="display:none">
-    <div class="brand-bar">READII <span class="sep">·</span> MY LIBRARY</div>
-    <h2>Sign in to see your library</h2>
+    <div class="brand-bar">READII <span class="sep">·</span> MY JOURNEY</div>
+    <h2>Sign in to see your journey</h2>
     <p>Your readings are saved here once you've signed up.</p>
     <a href="/quiz" class="cta-btn">Go to Quiz →</a>
   </div>
 
-  <!-- Main content (logged in) -->
   <main id="main" class="page" style="display:none">
 
-    <div class="brand-bar">READII <span class="sep">·</span> MY LIBRARY</div>
+    <div class="brand-bar">READII <span class="sep">·</span> MY JOURNEY</div>
+
+    <!-- ── Top stats (假数据 PREVIEW)── -->
+    <div class="top-stats">
+      <div class="preview-tag-corner">Preview</div>
+      <div class="top-stat">
+        <span class="top-stat-icon">🔥</span>
+        <span>Day —</span>
+      </div>
+      <div class="top-stat">
+        <span class="top-stat-icon">🏅</span>
+        <span>Visitor</span>
+      </div>
+      <div class="top-stat top-stat-score">
+        <div class="score-label">Native-Pass</div>
+        <div class="score-row">
+          <span class="score-num">—</span>
+          <div class="score-bar"><div class="score-bar-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
 
     <div class="greeting">
       <div class="greeting-eyebrow">good to see you</div>
@@ -294,10 +550,106 @@
       <p class="greeting-stat" id="userStat"></p>
     </div>
 
+    <!-- ── Native-Pass Score · 30 days (PREVIEW)── -->
+    <div class="section preview">
+      <div class="section-header">
+        <p class="section-title">Native-Pass · 30 days</p>
+        <span class="preview-tag-inline">Preview · Coming soon</span>
+      </div>
+      <hr class="section-divider">
+      <div class="chart-wrap">
+        <svg class="chart-svg" viewBox="0 0 560 180" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Y-axis labels -->
+          <text x="6" y="32" font-family="Helvetica Neue, sans-serif" font-size="9" fill="rgba(31,77,64,0.45)">80</text>
+          <text x="6" y="80" font-family="Helvetica Neue, sans-serif" font-size="9" fill="rgba(31,77,64,0.45)">60</text>
+          <text x="6" y="128" font-family="Helvetica Neue, sans-serif" font-size="9" fill="rgba(31,77,64,0.45)">40</text>
+          <!-- Target dashed line at 80 -->
+          <line x1="30" y1="28" x2="555" y2="28" stroke="#B8873A" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+          <text x="555" y="22" text-anchor="end" font-family="Helvetica Neue, sans-serif" font-size="9" fill="#B8873A" font-weight="700">★ TARGET</text>
+          <!-- Score area gradient (subtle) -->
+          <defs>
+            <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1F4D40" stop-opacity="0.15"/>
+              <stop offset="100%" stop-color="#1F4D40" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M 30,130 L 90,128 L 150,120 L 210,110 L 270,95 L 330,82 L 390,72 L 450,62 L 510,55 L 540,50 L 540,170 L 30,170 Z" fill="url(#scoreGrad)"/>
+          <!-- Score polyline -->
+          <polyline points="30,130 90,128 150,120 210,110 270,95 330,82 390,72 450,62 510,55 540,50" fill="none" stroke="#1F4D40" stroke-width="2"/>
+          <!-- Today dot -->
+          <circle cx="540" cy="50" r="5" fill="#B8873A"/>
+          <text x="538" y="40" text-anchor="end" font-family="Helvetica Neue, sans-serif" font-size="10" fill="#1F4D40" font-weight="700">Today</text>
+          <!-- X-axis -->
+          <text x="30" y="170" font-family="Helvetica Neue, sans-serif" font-size="9" fill="rgba(31,77,64,0.45)">Day 1</text>
+          <text x="555" y="170" text-anchor="end" font-family="Helvetica Neue, sans-serif" font-size="9" fill="rgba(31,77,64,0.45)">Day 30</text>
+        </svg>
+      </div>
+      <div class="insight-card">
+        <strong>You're +17 points in 30 days.</strong><br>
+        At this rate, Native-Passing in ~24 days.
+      </div>
+    </div>
+
+    <!-- ── This week (PREVIEW) ── -->
+    <div class="section preview">
+      <div class="section-header">
+        <p class="section-title">This week</p>
+        <span class="preview-tag-inline">Preview · Coming soon</span>
+      </div>
+      <hr class="section-divider">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-card-num">3</div>
+          <div class="stat-card-label">Stories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num">47<span class="stat-card-unit">min</span></div>
+          <div class="stat-card-label">Practised</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num">+5</div>
+          <div class="stat-card-label">Points</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Milestones (PREVIEW) ── -->
+    <div class="section preview">
+      <div class="section-header">
+        <p class="section-title">Milestones</p>
+        <span class="preview-tag-inline">Preview · Coming soon</span>
+      </div>
+      <hr class="section-divider">
+      <div class="milestones">
+        <div class="milestone done">🏅 Reader <span class="milestone-sub">Native-Pass 50+</span></div>
+        <div class="milestone locked">⚪ Pro Reader <span class="milestone-sub">3 more pts</span></div>
+        <div class="milestone done">✓ First Reading</div>
+        <div class="milestone locked">⚪ 7-day Streak</div>
+        <div class="milestone done">✓ 3 Articles</div>
+        <div class="milestone locked">⚪ Native-Passing 80+</div>
+      </div>
+    </div>
+
+    <!-- ── Your readings (REAL data)── -->
     <div class="section">
-      <p class="section-title">Your readings</p>
+      <div class="section-header">
+        <p class="section-title">Your readings</p>
+      </div>
       <hr class="section-divider">
       <div id="readingsList"></div>
+    </div>
+
+    <!-- ── Coming soon ── -->
+    <div class="section">
+      <div class="section-header">
+        <p class="section-title">Coming soon</p>
+      </div>
+      <hr class="section-divider">
+      <ul class="coming-list">
+        <li>◯ Native-Pass Score (real-time tracking) <span class="coming-eta">Founding Members First</span></li>
+        <li>◯ Hear your Future Self (voice cloning) <span class="coming-eta">Q3 2026</span></li>
+        <li>◯ Year-End Wrapped <span class="coming-eta">December</span></li>
+      </ul>
     </div>
 
     <div class="cta-section">
@@ -323,7 +675,7 @@
 
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    // ─── Article metadata(简化字典,跟 /v 一致)───
+    // ─── Article metadata(简化字典,跟 quiz/admin/v 各自独立)───
     const ARTICLES = {
       'apology': { title: 'The Apology' },
       'seven-novembers': { title: 'Seven Novembers' },
@@ -355,7 +707,7 @@
     }
 
     // ─── Main ───
-    // v12: 防无限 Loading — 10s 没出 main → 显示错误 + retry
+    // 防无限 Loading(10s timeout)
     const initTimeoutId = setTimeout(() => {
       if (document.getElementById('main').style.display === 'none' &&
           document.getElementById('signInState').style.display === 'none') {
@@ -379,7 +731,6 @@
       }
 
       const user = session.user;
-      // 拿 profile (display_name)
       let displayName = user.email?.split('@')[0] || 'there';
       try {
         const { data: profile } = await sb
@@ -394,7 +745,6 @@
       } catch (e) {
         console.warn('user_profiles fetch failed:', e);
       }
-
       document.getElementById('userName').textContent = displayName;
 
       // 拉用户视频列表
@@ -407,10 +757,7 @@
         .order('created_at', { ascending: false });
 
       console.log('🔍 pretotype_videos result:', { count: videos?.length, error, sample: videos?.[0] });
-
-      if (error) {
-        console.warn('Failed to load videos:', error);
-      }
+      if (error) console.warn('Failed to load videos:', error);
 
       const list = videos || [];
       document.getElementById('userStat').textContent =
@@ -431,14 +778,17 @@
         '<p style="text-align:center;margin-top:16px"><a href="javascript:location.reload()" style="color:#B8873A">Retry</a></p>';
     });
 
-    // ─── Render ───
+    // ─── Render readings(真数据,无 fake score)───
     function renderReadings(videos) {
       const wrap = document.getElementById('readingsList');
       if (!videos.length) {
+        // 空状态:推荐 Apology 作为入门
         wrap.innerHTML = `
-          <div class="empty-readings">
-            <p>You haven't recorded anything yet.</p>
-            <a href="/quiz" class="cta-btn">Start your first reading →</a>
+          <div class="empty-journey">
+            <h3>Your journey starts here.</h3>
+            <p>Read your first British story. ~7 minutes — listen, drill, perform.</p>
+            <a href="/quiz" class="cta-btn">▷ Start with "The Apology"</a>
+            <p class="recommend">Recommended for first-time readers</p>
           </div>
         `;
         return;
@@ -452,10 +802,11 @@
             <div class="reading-thumb" data-video-id="${v.id}" onclick="playInline(this, '${escapeHtml(videoSrc)}')"></div>
             <div class="reading-info">
               <h3 class="reading-title">${escapeHtml(art.title)}</h3>
-              <p class="reading-date">Recorded ${fmtRelative(v.created_at)}</p>
+              <p class="reading-date">${fmtRelative(v.created_at)} · Pass 3</p>
               <div class="reading-actions">
-                ${v.share_slug ? `<a href="/v/${escapeHtml(v.share_slug)}" class="action-link">Open</a>` : ''}
-                ${hasMp4 ? `<a href="${escapeHtml(v.mp4_url)}" download class="action-link">⬇ MP4</a>` : `<span class="action-link disabled">⏳ MP4 processing…</span>`}
+                ${v.share_slug ? `<a href="/v/${escapeHtml(v.share_slug)}" class="action-link">▷ Play</a>` : ''}
+                ${hasMp4 ? `<a href="${escapeHtml(v.mp4_url)}" download class="action-link">⬇ MP4</a>` : `<span class="action-link disabled">⏳ MP4 processing</span>`}
+                ${v.share_slug ? `<a href="/v/${escapeHtml(v.share_slug)}" target="_blank" class="action-link">🔗 Share</a>` : ''}
               </div>
             </div>
           </div>
