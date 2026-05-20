@@ -562,6 +562,312 @@ const ARTICLES_DATA = {
     ],
     bgm_style: 'lofi',
     background_hint: 'british kitchen teapot kettle morning'
+  },
+
+  'saying-goodbye': {
+    id: 'saying-goodbye',
+    title: 'Saying Goodbye',
+    author: 'Readii Editorial',
+    tag: 'Ritual',
+    description: '"In Britain, \'I should get going\' is not a departure. It is an opening bid…"',
+    estimated_minutes: 5,
+    word_count: 261,
+    audio_url: `${STORAGE_BASE}/article-audio/saying-goodbye.mp3`,
+    full_text: `In Britain, saying goodbye takes longer than the visit.\n\n"I should probably get going" is not a departure. It is an opening bid. A signal that the goodbye process — which may take twenty minutes — has now, formally, begun.\n\nYou do not simply leave. That would be abrupt. Rude, even. Instead, you announce your intention to leave, and then you stay exactly where you are, continuing the conversation, for some time.\n\n"Right, I really must be off."\n\nYou do not move.\n\n"Anyway, I won't keep you."\n\nThis is said by the person who is, in fact, being kept. Nobody knows who is keeping whom. It does not matter. The ritual requires it.\n\nThen comes the migration. You move slowly toward the door, pausing at every stage to begin a new topic. The hallway is for one more story. The doorstep is for two more. The threshold may take another ten minutes, particularly if it is raining and someone says "ooh, it's coming down now."\n\nYou will be invited, at this point, to wait until the rain stops. You will decline. You will then wait anyway.\n\nAt the car, there is waving. Not a single wave — a sustained one. The host waves. You wave back. You drive off slowly so the waving can continue. They are still waving as you turn the corner.\n\nI used to find this exhausting.\n\nNow I do it too. Last week I said goodbye to a friend for thirty-five minutes.\n\nWe had a lovely time.`,
+    segments: [
+      { position: 1, audio_filename: 'saying-goodbye-01.mp3', text: "In Britain, saying goodbye takes longer than the visit." },
+      { position: 2, audio_filename: 'saying-goodbye-02.mp3', text: "\"I should probably get going\" is not a departure. It is an opening bid." },
+      { position: 3, audio_filename: 'saying-goodbye-03.mp3', text: "A signal that the goodbye process — which may take twenty minutes — has now, formally, begun." },
+      { position: 4, audio_filename: 'saying-goodbye-04.mp3', text: "You do not simply leave. That would be abrupt. Rude, even." },
+      { position: 5, audio_filename: 'saying-goodbye-05.mp3', text: "Instead, you announce your intention to leave, and then you stay exactly where you are, continuing the conversation, for some time." },
+      { position: 6, audio_filename: 'saying-goodbye-06.mp3', text: "\"Right, I really must be off.\" You do not move." },
+      { position: 7, audio_filename: 'saying-goodbye-07.mp3', text: "\"Anyway, I won't keep you.\" This is said by the person who is, in fact, being kept." },
+      { position: 8, audio_filename: 'saying-goodbye-08.mp3', text: "Nobody knows who is keeping whom. It does not matter. The ritual requires it." },
+      { position: 9, audio_filename: 'saying-goodbye-09.mp3', text: "Then comes the migration. You move slowly toward the door, pausing at every stage to begin a new topic." },
+      { position: 10, audio_filename: 'saying-goodbye-10.mp3', text: "The hallway is for one more story. The doorstep is for two more." },
+      { position: 11, audio_filename: 'saying-goodbye-11.mp3', text: "The threshold may take another ten minutes, particularly if it is raining and someone says \"ooh, it's coming down now.\"" },
+      { position: 12, audio_filename: 'saying-goodbye-12.mp3', text: "You will be invited to wait until the rain stops. You will decline. You will then wait anyway." },
+      { position: 13, audio_filename: 'saying-goodbye-13.mp3', text: "At the car, there is waving. Not a single wave — a sustained one." },
+      { position: 14, audio_filename: 'saying-goodbye-14.mp3', text: "You drive off slowly so the waving can continue. They are still waving as you turn the corner." },
+      { position: 15, audio_filename: 'saying-goodbye-15.mp3', text: "I used to find this exhausting. Now I do it too." },
+      { position: 16, audio_filename: 'saying-goodbye-16.mp3', text: "Last week I said goodbye to a friend for thirty-five minutes. We had a lovely time." }
+    ],
+    drill_words: [
+      { word: 'departure', from_segment: 2, context_sentence: 'is not a departure', phonemes: 'D.I.P.AR.CH.UH', tip: "'di-PAR-chuh'. Stress on PAR.", body: "British non-rhotic — no hard R at end.", feature: 'non-rhotic ending' },
+      { word: 'abrupt', from_segment: 4, context_sentence: 'That would be abrupt', phonemes: 'UH.B.R.UH.P.T', tip: "'uh-BRUPT'. Stress on second.", body: "Sharp final consonant cluster -pt.", feature: 'consonant cluster' },
+      { word: 'migration', from_segment: 9, context_sentence: 'Then comes the migration', phonemes: 'M.AI.G.R.AY.SH.UHN', tip: "'my-GRAY-shun'. Stress on GRAY.", body: "Long AY in stressed syllable.", feature: 'stress pattern' },
+      { word: 'threshold', from_segment: 11, context_sentence: 'The threshold may take another ten minutes', phonemes: 'TH.R.E.SH.OH.L.D', tip: "'THRESH-ohld'. Voiceless TH at start.", body: "Tongue between teeth, no vibration.", feature: 'voiceless TH' },
+      { word: 'sustained', from_segment: 13, context_sentence: 'a sustained one', phonemes: 'S.UH.S.T.AY.N.D', tip: "'suh-STAYND'. Stress on second.", body: "Long AY before final -nd.", feature: 'stress pattern' },
+      { word: 'exhausting', from_segment: 15, context_sentence: 'I used to find this exhausting', phonemes: 'IG.Z.OR.S.T.ING', tip: "'ig-ZOR-sting'. The X sounds like 'gz'.", body: "Silent H. Stress on ZOR.", feature: 'silent letter' }
+    ],
+    decode_questions: [
+      {
+        question: "Your British host says 'I should probably get going' — wait, you're the guest. What's happening?",
+        context: "\"I should probably get going\" is not a departure. It is an opening bid.",
+        options: [
+          "They want you to leave immediately",
+          "It's the opening of a long goodbye ritual — nobody leaves yet",
+          "They're confused about whose house it is",
+          "They're being rude"
+        ],
+        correct: 1,
+        explanation: "'I should get going' is the starting gun, not the finish line. It signals that the goodbye process — which can take 20+ minutes — has formally begun. Everyone stays exactly where they are."
+      },
+      {
+        question: "Someone says 'Anyway, I won't keep you' — but you're the one trying to leave. Who's keeping whom?",
+        context: "This is said by the person who is, in fact, being kept.",
+        options: [
+          "They genuinely think they're holding you up",
+          "It's a ritual phrase — the logic doesn't matter, the politeness does",
+          "They want you to leave",
+          "They're accusing you of staying too long"
+        ],
+        correct: 1,
+        explanation: "'I won't keep you' is often said by the very person doing the keeping. The phrase is pure ritual — its literal meaning is irrelevant. It's a polite gesture toward ending, which then doesn't end."
+      },
+      {
+        question: "You're at the door leaving. It starts raining. Your host says 'Ooh, it's coming down now. Wait till it stops?'",
+        context: "You will be invited to wait until the rain stops. You will decline. You will then wait anyway.",
+        options: [
+          "They genuinely want you to stay another hour",
+          "Ritual offer — you decline politely, then somehow stay anyway",
+          "They're worried about your safety",
+          "They want to keep talking about the weather"
+        ],
+        correct: 1,
+        explanation: "The rain-delay offer is part of the choreography. The correct response is to decline ('Oh no, I'll be fine') — and then stay anyway, continuing to chat in the doorway. Both parties know the script."
+      },
+      {
+        question: "You've driven off. In the mirror, your host is still standing there, waving. Why?",
+        context: "They are still waving as you turn the corner.",
+        options: [
+          "They forgot to tell you something",
+          "Sustained waving is the closing ceremony — drive slowly to honour it",
+          "They want you to come back",
+          "They're flagging down someone else"
+        ],
+        correct: 1,
+        explanation: "The wave is not a single gesture — it's sustained until you're out of sight. The polite guest drives off slowly so the waving can continue properly. Turning the corner mid-wave is the only acceptable way to end it."
+      },
+      {
+        question: "A British friend says 'Right, I really must be off' and then... doesn't move. What should you do?",
+        context: "\"Right, I really must be off.\" You do not move.",
+        options: [
+          "Walk them to the door immediately",
+          "Continue the conversation — 'must be off' means 'let's talk for 15 more minutes'",
+          "Say goodbye and turn away",
+          "Ask why they're not leaving"
+        ],
+        correct: 1,
+        explanation: "'Right, I really must be off' is a conversational milestone, not an action. Said while standing still, it means the goodbye has entered its active phase — which involves more conversation, not less. Don't rush them out."
+      }
+    ],
+    bgm_style: 'lofi',
+    background_hint: 'british doorway front door evening goodbye'
+  },
+
+  'the-art-of-understatement': {
+    id: 'the-art-of-understatement',
+    title: 'The Art of Understatement',
+    author: 'Readii Editorial',
+    tag: 'Language',
+    description: '"In Britain, \'not bad\' can mean anything from adequate to magnificent…"',
+    estimated_minutes: 5,
+    word_count: 264,
+    audio_url: `${STORAGE_BASE}/article-audio/the-art-of-understatement.mp3`,
+    full_text: `The British do not say what they mean. They say roughly the opposite, quietly, and trust you to work it out.\n\nThis is understatement, and it is the national art form.\n\nA surgeon may describe a six-hour operation as "a bit fiddly". A mountaineer, having nearly died, will report that conditions were "not ideal". If a British person tells you something is "not bad", they may mean it is the finest thing they have ever encountered. You cannot be sure. That is the point.\n\nThe scale runs in both directions, and it is treacherous.\n\n"Quite good" can mean genuinely good — or faintly disappointing. "Interesting" usually means I disagree. "I'm sure it's fine" means it is not fine. "With respect" means none is coming.\n\nThe most dangerous phrase is "a bit of a problem". This may describe a minor inconvenience, or a complete catastrophe in which the building is on fire. The words are identical. Only the eyebrows differ.\n\nForeigners struggle with this. Americans, in particular, find it maddening — they say what they mean and mean what they say, and they expect the same in return. In Britain, this is considered slightly vulgar.\n\nThe rule is: the bigger the feeling, the smaller the words.\n\nGreat joy is "rather nice". Devastation is "a shame". The best meal of your life is "quite tasty, actually".\n\nIt took me years to learn. Now, when something wonderful happens, I hear myself say "mustn't grumble".\n\nI mean it with my whole heart.`,
+    segments: [
+      { position: 1, audio_filename: 'the-art-of-understatement-01.mp3', text: "The British do not say what they mean. They say roughly the opposite, quietly, and trust you to work it out." },
+      { position: 2, audio_filename: 'the-art-of-understatement-02.mp3', text: "This is understatement, and it is the national art form." },
+      { position: 3, audio_filename: 'the-art-of-understatement-03.mp3', text: "A surgeon may describe a six-hour operation as \"a bit fiddly\"." },
+      { position: 4, audio_filename: 'the-art-of-understatement-04.mp3', text: "A mountaineer, having nearly died, will report that conditions were \"not ideal\"." },
+      { position: 5, audio_filename: 'the-art-of-understatement-05.mp3', text: "If a British person tells you something is \"not bad\", they may mean it is the finest thing they have ever encountered." },
+      { position: 6, audio_filename: 'the-art-of-understatement-06.mp3', text: "You cannot be sure. That is the point." },
+      { position: 7, audio_filename: 'the-art-of-understatement-07.mp3', text: "The scale runs in both directions, and it is treacherous." },
+      { position: 8, audio_filename: 'the-art-of-understatement-08.mp3', text: "\"Quite good\" can mean genuinely good — or faintly disappointing. \"Interesting\" usually means I disagree." },
+      { position: 9, audio_filename: 'the-art-of-understatement-09.mp3', text: "\"I'm sure it's fine\" means it is not fine. \"With respect\" means none is coming." },
+      { position: 10, audio_filename: 'the-art-of-understatement-10.mp3', text: "The most dangerous phrase is \"a bit of a problem\"." },
+      { position: 11, audio_filename: 'the-art-of-understatement-11.mp3', text: "This may describe a minor inconvenience, or a complete catastrophe in which the building is on fire." },
+      { position: 12, audio_filename: 'the-art-of-understatement-12.mp3', text: "The words are identical. Only the eyebrows differ." },
+      { position: 13, audio_filename: 'the-art-of-understatement-13.mp3', text: "The rule is: the bigger the feeling, the smaller the words." },
+      { position: 14, audio_filename: 'the-art-of-understatement-14.mp3', text: "Great joy is \"rather nice\". Devastation is \"a shame\". The best meal of your life is \"quite tasty, actually\"." },
+      { position: 15, audio_filename: 'the-art-of-understatement-15.mp3', text: "It took me years to learn. Now, when something wonderful happens, I hear myself say \"mustn't grumble\"." },
+      { position: 16, audio_filename: 'the-art-of-understatement-16.mp3', text: "I mean it with my whole heart." }
+    ],
+    drill_words: [
+      { word: 'understatement', from_segment: 2, context_sentence: 'This is understatement', phonemes: 'UHN.D.UH.S.T.AY.T.M.UHNT', tip: "'un-duh-STATE-muhnt'. Stress on STATE.", body: "Five syllables — keep the rhythm even.", feature: 'long word stress' },
+      { word: 'treacherous', from_segment: 7, context_sentence: 'and it is treacherous', phonemes: 'T.R.E.CH.UH.R.UHS', tip: "'TRECH-uh-ruhs'. Stress on first.", body: "'TRECH' like 'fetch', soft schwa endings.", feature: 'schwa endings' },
+      { word: 'catastrophe', from_segment: 11, context_sentence: 'a complete catastrophe', phonemes: 'K.UH.T.A.S.T.R.UH.F.EE', tip: "'kuh-TAS-truh-fee'. Stress on TAS.", body: "Four syllables, ends in 'fee' not 'foe'.", feature: 'stress + ending' },
+      { word: 'inconvenience', from_segment: 11, context_sentence: 'a minor inconvenience', phonemes: 'IN.K.UHN.V.EE.N.Y.UHNS', tip: "'in-kuhn-VEEN-yuhns'. Stress on VEEN.", body: "Five syllables — don't rush the middle.", feature: 'long word' },
+      { word: 'vulgar', from_segment: 1, context_sentence: 'this is considered slightly vulgar', phonemes: 'V.UH.L.G.UH', tip: "'VUL-guh'. Non-rhotic ending.", body: "No hard R — British 'guh' not 'gar'.", feature: 'non-rhotic ending' },
+      { word: 'grumble', from_segment: 15, context_sentence: "I hear myself say mustn't grumble", phonemes: 'G.R.UH.M.B.UHL', tip: "'GRUM-buhl'. Short U like 'cup'.", body: "Soft -ble ending, common British word.", feature: 'vowel sound' }
+    ],
+    decode_questions: [
+      {
+        question: "You cooked dinner for a British friend. They take a bite and say 'Not bad, actually.' How did they like it?",
+        context: "If a British person tells you something is \"not bad\", they may mean it is the finest thing they have ever encountered.",
+        options: [
+          "It was mediocre — they're being polite",
+          "Could be genuinely impressed — 'not bad' often means excellent",
+          "They didn't like it",
+          "They want more"
+        ],
+        correct: 1,
+        explanation: "'Not bad, actually' — especially with 'actually' — is high praise in British. The understatement scale runs upward: the smaller the words, the bigger the feeling. They may have loved it. The flat delivery is the compliment."
+      },
+      {
+        question: "In a meeting, your British colleague says 'That's an interesting idea.' What do they actually think?",
+        context: "\"Interesting\" usually means I disagree.",
+        options: [
+          "They find your idea genuinely fascinating",
+          "They disagree but are being polite about it",
+          "They want you to explain more",
+          "They're impressed"
+        ],
+        correct: 1,
+        explanation: "'Interesting' in a British professional setting is rarely a compliment. It usually means 'I disagree' or 'I have serious doubts'. The more enthusiastic the tone, the more polite the disagreement. Tread carefully."
+      },
+      {
+        question: "Your British boss says 'I'm sure it's fine' about your report. Should you relax?",
+        context: "\"I'm sure it's fine\" means it is not fine.",
+        options: [
+          "Yes — they've approved it",
+          "No — 'I'm sure it's fine' often means it is NOT fine",
+          "They haven't read it",
+          "They want praise"
+        ],
+        correct: 1,
+        explanation: "'I'm sure it's fine' is a classic British hedge that often means the opposite. If they were truly happy, they'd say nothing or be specific. The reassurance itself is the warning. Go back and check your report."
+      },
+      {
+        question: "An email opens with 'With all due respect...' What's coming next?",
+        context: "\"With respect\" means none is coming.",
+        options: [
+          "A respectful, considerate point",
+          "A polite-sounding but pointed disagreement or criticism",
+          "A compliment",
+          "An apology"
+        ],
+        correct: 1,
+        explanation: "'With all due respect' is the British signal that no respect is, in fact, forthcoming. It's the velvet glove before the punch. What follows is usually a firm disagreement, dressed in courtesy."
+      },
+      {
+        question: "A British colleague mentions 'a bit of a problem' with the project. How worried should you be?",
+        context: "This may describe a minor inconvenience, or a complete catastrophe in which the building is on fire.",
+        options: [
+          "Not at all — 'a bit' means small",
+          "Possibly very worried — 'a bit of a problem' can mean total disaster",
+          "It's definitely minor",
+          "They're exaggerating"
+        ],
+        correct: 1,
+        explanation: "'A bit of a problem' is dangerously ambiguous. It can mean a tiny hiccup — or a five-alarm catastrophe. The words never change; only the eyebrows and tone reveal the truth. When in doubt, ask follow-up questions."
+      }
+    ],
+    bgm_style: 'lofi',
+    background_hint: 'british office understated conversation tea'
+  },
+
+  'sunday-afternoons': {
+    id: 'sunday-afternoons',
+    title: 'Sunday Afternoons',
+    author: 'Readii Editorial',
+    tag: 'Reflection',
+    description: '"There is a particular quiet to a British Sunday afternoon. It sounds like nothing happening…"',
+    estimated_minutes: 5,
+    word_count: 255,
+    audio_url: `${STORAGE_BASE}/article-audio/sunday-afternoons.mp3`,
+    full_text: `There is a particular quiet to a British Sunday afternoon.\n\nIt is not silence, exactly. It is the sound of nothing much happening, and everyone being faintly content about it.\n\nThe shops, if open at all, close early. The streets empty. Somewhere, a lawnmower starts, runs for twenty minutes, and stops. A church bell, perhaps. The distant sound of a football match on a television two houses away.\n\nWhen I first arrived, I found Sundays unbearable. In the city I came from, Sunday was simply another day to do things — to shop, to work, to move. Here, the whole country seemed to pause, and I did not know what to do with the pause.\n\nI would walk for hours, looking for somewhere open, somewhere busy, somewhere that felt alive. I rarely found it. Just closed shutters, and the smell of someone's roast dinner, and the grey light that the British call "bright" if it is not actually raining.\n\nIt took me a long time to understand that the emptiness was the point.\n\nThe Sunday afternoon is for nothing. For a long lunch that drifts into the evening. For a walk with no destination. For falling asleep in a chair with a book on your chest. For the radio murmuring in another room.\n\nNow, on Sunday afternoons, I do nothing, beautifully.\n\nI have learned the rarest British skill of all: how to be still, in the grey light, and call it a good day.`,
+    segments: [
+      { position: 1, audio_filename: 'sunday-afternoons-01.mp3', text: "There is a particular quiet to a British Sunday afternoon." },
+      { position: 2, audio_filename: 'sunday-afternoons-02.mp3', text: "It is not silence, exactly. It is the sound of nothing much happening, and everyone being faintly content about it." },
+      { position: 3, audio_filename: 'sunday-afternoons-03.mp3', text: "The shops, if open at all, close early. The streets empty." },
+      { position: 4, audio_filename: 'sunday-afternoons-04.mp3', text: "Somewhere, a lawnmower starts, runs for twenty minutes, and stops. A church bell, perhaps." },
+      { position: 5, audio_filename: 'sunday-afternoons-05.mp3', text: "The distant sound of a football match on a television two houses away." },
+      { position: 6, audio_filename: 'sunday-afternoons-06.mp3', text: "When I first arrived, I found Sundays unbearable." },
+      { position: 7, audio_filename: 'sunday-afternoons-07.mp3', text: "In the city I came from, Sunday was simply another day to do things — to shop, to work, to move." },
+      { position: 8, audio_filename: 'sunday-afternoons-08.mp3', text: "Here, the whole country seemed to pause, and I did not know what to do with the pause." },
+      { position: 9, audio_filename: 'sunday-afternoons-09.mp3', text: "I would walk for hours, looking for somewhere open, somewhere busy, somewhere that felt alive." },
+      { position: 10, audio_filename: 'sunday-afternoons-10.mp3', text: "I rarely found it. Just closed shutters, and the smell of someone's roast dinner." },
+      { position: 11, audio_filename: 'sunday-afternoons-11.mp3', text: "And the grey light that the British call \"bright\" if it is not actually raining." },
+      { position: 12, audio_filename: 'sunday-afternoons-12.mp3', text: "It took me a long time to understand that the emptiness was the point." },
+      { position: 13, audio_filename: 'sunday-afternoons-13.mp3', text: "The Sunday afternoon is for nothing. For a long lunch that drifts into the evening. For a walk with no destination." },
+      { position: 14, audio_filename: 'sunday-afternoons-14.mp3', text: "For falling asleep in a chair with a book on your chest. For the radio murmuring in another room." },
+      { position: 15, audio_filename: 'sunday-afternoons-15.mp3', text: "Now, on Sunday afternoons, I do nothing, beautifully." },
+      { position: 16, audio_filename: 'sunday-afternoons-16.mp3', text: "I have learned the rarest British skill of all: how to be still, in the grey light, and call it a good day." }
+    ],
+    drill_words: [
+      { word: 'particular', from_segment: 1, context_sentence: 'a particular quiet', phonemes: 'P.UH.T.I.K.Y.UH.L.UH', tip: "'puh-TIK-yuh-luh'. Stress on TIK.", body: "Four syllables, non-rhotic ending.", feature: 'non-rhotic ending' },
+      { word: 'faintly', from_segment: 2, context_sentence: 'everyone being faintly content', phonemes: 'F.AY.N.T.L.EE', tip: "'FAYNT-lee'. Long AY at start.", body: "Soft T before -ly.", feature: 'long vowel' },
+      { word: 'lawnmower', from_segment: 4, context_sentence: 'a lawnmower starts', phonemes: 'L.OR.N.M.OH.UH', tip: "'LORN-moh-uh'. Compound word.", body: "British 'lawn' = 'lorn', non-rhotic.", feature: 'compound word' },
+      { word: 'unbearable', from_segment: 6, context_sentence: 'I found Sundays unbearable', phonemes: 'UHN.B.AIR.UH.B.UHL', tip: "'un-BAIR-uh-buhl'. Stress on BAIR.", body: "Four syllables, soft ending.", feature: 'stress pattern' },
+      { word: 'destination', from_segment: 13, context_sentence: 'a walk with no destination', phonemes: 'D.E.S.T.I.N.AY.SH.UHN', tip: "'des-ti-NAY-shun'. Stress on NAY.", body: "Four syllables, even rhythm.", feature: 'stress pattern' },
+      { word: 'murmuring', from_segment: 14, context_sentence: 'the radio murmuring', phonemes: 'M.UH.M.UH.R.ING', tip: "'MUR-muh-ring'. Both U's are schwa.", body: "Soft, gentle word — say it softly.", feature: 'schwa repetition' }
+    ],
+    decode_questions: [
+      {
+        question: "A British friend describes the weather as 'bright' but it's overcast and grey. What do they mean?",
+        context: "the grey light that the British call \"bright\" if it is not actually raining.",
+        options: [
+          "It's genuinely sunny",
+          "'Bright' just means 'not currently raining' — British optimism about grey skies",
+          "They're being sarcastic",
+          "They can't see properly"
+        ],
+        correct: 1,
+        explanation: "In Britain, 'bright' is graded on a generous curve. If it isn't actively raining, the day qualifies as 'bright'. This is not delusion — it's a survival skill in a country where genuine sunshine is rationed."
+      },
+      {
+        question: "You suggest going shopping on a British Sunday afternoon. Your friend looks uneasy. Why?",
+        context: "The shops, if open at all, close early. The streets empty.",
+        options: [
+          "They don't like shopping",
+          "Sunday is for stillness — the whole rhythm of the day resists 'doing things'",
+          "They have no money",
+          "Shops are always closed in Britain"
+        ],
+        correct: 1,
+        explanation: "The British Sunday afternoon has a sacred slowness. Shops close early, streets empty, and there's a collective agreement to do very little. Suggesting busy activity slightly violates the unspoken rhythm of the day."
+      },
+      {
+        question: "Your British host says 'Shall we just... not do much this afternoon?' Is something wrong?",
+        context: "The Sunday afternoon is for nothing.",
+        options: [
+          "They're bored of your company",
+          "No — 'doing nothing' on Sunday is a positive plan, even an invitation to intimacy",
+          "They're tired and want you to leave",
+          "They forgot to plan something"
+        ],
+        correct: 1,
+        explanation: "'Let's not do much' is not a failure to plan — it IS the plan. The British Sunday afternoon celebrates gentle nothingness: long lunches, aimless walks, dozing in chairs. Being invited to do nothing together is a quiet form of closeness."
+      },
+      {
+        question: "Someone describes their perfect Sunday as 'falling asleep in a chair with a book.' What are they valuing?",
+        context: "For falling asleep in a chair with a book on your chest.",
+        options: [
+          "Being lazy and unproductive",
+          "The deep British art of restful stillness — a skill, not a failure",
+          "Avoiding social contact",
+          "Not having enough to do"
+        ],
+        correct: 1,
+        explanation: "Dozing off mid-book on a Sunday isn't laziness in British culture — it's a small triumph. The ability to be still, to rest without guilt, is considered a hard-won skill. The book on the chest is almost a badge of honour."
+      },
+      {
+        question: "After years in Britain, the writer says 'I do nothing, beautifully.' What changed?",
+        context: "Now, on Sunday afternoons, I do nothing, beautifully.",
+        options: [
+          "They became lazy",
+          "They learned to value stillness rather than fearing emptiness",
+          "They ran out of things to do",
+          "They gave up on life"
+        ],
+        correct: 1,
+        explanation: "The transformation is from anxiety to peace. Where the writer once found Sunday emptiness 'unbearable' and walked for hours seeking activity, they now embrace stillness as a quiet pleasure. 'Doing nothing, beautifully' is the arrival, not the surrender."
+      }
+    ],
+    bgm_style: 'classical',
+    background_hint: 'quiet british sunday afternoon grey light empty street'
   }
 };
 
@@ -572,7 +878,10 @@ const ARTICLE_QUOTES = {
   'shop-closes-for-lunch': 'Long may it close for lunch.',
   'the-queue': 'I will wait, so that you may wait. I have come to find it beautiful.',
   'talking-about-weather': "Miserable, isn't it? — Always is.",
-  'the-tea-question': "I'll put the kettle on. — Somewhere to put our hands."
+  'the-tea-question': "I'll put the kettle on. — Somewhere to put our hands.",
+  'saying-goodbye': "We said goodbye for thirty-five minutes. We had a lovely time.",
+  'the-art-of-understatement': "Mustn't grumble. — I mean it with my whole heart.",
+  'sunday-afternoons': "I do nothing, beautifully. — How to be still, and call it a good day."
 };
 
 // ═════════════════════════════════════════════════════════════════════
