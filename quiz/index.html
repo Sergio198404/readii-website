@@ -1300,6 +1300,18 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!slug) checkForUnfinishedPass3();
 });
 
+// v12: 浏览器后退处理 — 用户在 quiz 内部任何屏后退 → 回 Library(不是退到主站)
+// 再后退一次才退出 quiz(用 replaceState 清掉残留的 quiz hash entries)
+window.addEventListener('popstate', () => {
+  __quizPopstate = true;
+  showScreen('Library');
+  __quizPopstate = false;
+  // 清 hash,下次后退直接退出 quiz(不再卡在 Library 反复)
+  if (location.hash) {
+    history.replaceState(null, '', location.pathname + (location.search || ''));
+  }
+});
+
 // v10.1: 页面切到后台时暂停播放;v12: 切走时立即停止录音
 // (background 时 silence detection 的 RAF 暂停,会让录音被拉到几分钟,导致视频生成卡死)
 document.addEventListener('visibilitychange', () => {
@@ -1712,9 +1724,21 @@ function emailSkipCooldown() {
 // ═════════════════════════════════════════════════════
 // SCREEN NAVIGATION
 // ═════════════════════════════════════════════════════
+// v12: 防误退 — 给非 Library/Loading 屏 push history entry,后退能回 Library 而不是退出 quiz
+let __quizPopstate = false;
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(`screen${name}`).classList.add('active');
+  const target = document.getElementById(`screen${name}`);
+  if (target) target.classList.add('active');
+
+  // 跳到 quiz 内非入口屏 → push state(防误退)
+  // 由 popstate 触发的切换不再 push(__quizPopstate flag)
+  if (!__quizPopstate && name !== 'Library' && name !== 'Loading') {
+    if (history.state?.quizScreen !== name) {
+      const newUrl = location.pathname + (location.search || '') + '#' + name.toLowerCase();
+      history.pushState({ quizScreen: name }, '', newUrl);
+    }
+  }
 }
 
 // ═════════════════════════════════════════════════════
