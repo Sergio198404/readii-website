@@ -18,11 +18,14 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Lora:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <!-- v12: Articles data (ARTICLES_DATA / STORAGE_BASE) — single source of truth -->
   <script src="/data/articles.js"></script>
+  <!-- v12: Quote cards data per article -->
+  <script src="/data/quote-cards.js"></script>
 
   <style>
     * { box-sizing: border-box; }
@@ -124,6 +127,106 @@
     }
     .status.err { color: #C0392B; opacity: 1; }
     .status.ok { color: #1F4D40; opacity: 1; }
+
+    /* v12: Quote Cards section */
+    .quote-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed rgba(31, 77, 64, 0.12);
+    }
+    .quote-section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .quote-section-label {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #B8873A;
+      font-weight: 700;
+      margin: 0;
+    }
+    .quote-section-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .quote-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+    @media (max-width: 600px) {
+      .quote-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .quote-thumb {
+      position: relative;
+      aspect-ratio: 9 / 16;
+      background: #FAF7F0;
+      border: 1px solid rgba(31, 77, 64, 0.12);
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .quote-thumb:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .quote-thumb.pending {
+      color: rgba(31,77,64,0.4);
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .quote-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .quote-thumb-badge {
+      position: absolute;
+      top: 4px;
+      left: 6px;
+      background: rgba(255,255,255,0.85);
+      color: #1F4D40;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .quote-thumb-dl {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: #B8873A;
+      color: #FAF8F3;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 9px;
+      padding: 3px 6px;
+      border-radius: 3px;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .btn-small {
+      background: transparent;
+      color: #1F4D40;
+      border: 1px solid rgba(31, 77, 64, 0.3);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .btn-small:hover { border-color: #B8873A; color: #B8873A; }
+    .btn-small:disabled { opacity: 0.4; cursor: not-allowed; }
+    /* Hidden canvas for card rendering */
+    .quote-render-canvas { display: none; }
 
     /* Recording overlay (录制中,防止误切 tab) */
     .recording-overlay {
@@ -284,7 +387,10 @@
 
     function renderArticleList() {
       const list = document.getElementById('articleList');
-      list.innerHTML = Object.values(ARTICLES_DATA).map(article => `
+      list.innerHTML = Object.values(ARTICLES_DATA).map(article => {
+        const hasQuoteCards = !!(window.QUOTE_CARDS && window.QUOTE_CARDS[article.id]);
+        const numCards = hasQuoteCards ? window.QUOTE_CARDS[article.id].length : 0;
+        return `
         <div class="article-card" data-article-id="${article.id}">
           <h3 class="article-title">${escapeHtml(article.title)}</h3>
           <p class="article-meta">${article.segments.length} segments · by ${escapeHtml(article.author)}</p>
@@ -293,8 +399,29 @@
             <span class="download-status"></span>
           </div>
           <div class="status"></div>
+
+          ${hasQuoteCards ? `
+          <div class="quote-section">
+            <div class="quote-section-header">
+              <p class="quote-section-label">📸 Quote Cards (${numCards})</p>
+              <div class="quote-section-actions">
+                <button class="btn-small" onclick="generateAllQuoteCards('${article.id}')">Generate all</button>
+                <button class="btn-small" id="zipBtn-${article.id}" onclick="downloadZipForArticle('${article.id}')" disabled>⬇ ZIP</button>
+              </div>
+            </div>
+            <div class="quote-grid" id="quoteGrid-${article.id}">
+              ${window.QUOTE_CARDS[article.id].map((card, i) => `
+                <div class="quote-thumb pending" data-slug="${article.id}" data-idx="${card.card_index}" onclick="generateSingleCardAndDownload('${article.id}', ${card.card_index})">
+                  <span>${card.card_index} · ${card.type === 'phrase' ? 'phrase' : card.type === 'carousel-cover' ? 'cover' : 'phoneme'}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="status" id="quoteStatus-${article.id}"></div>
+          </div>
+          ` : ''}
         </div>
-      `).join('');
+      `;
+      }).join('');
 
       // 检查 marketing-videos bucket 里已有的 mp4
       checkExistingVideos();
@@ -816,6 +943,380 @@
       ctx.fillText('Read British', W / 2, H / 2 + 100);
 
       ctx.globalAlpha = 1;
+    }
+
+    // ════════════════════════════════════════════════════════════════════
+    // Quote Cards — Canvas 1080×1920 PNG renderer (Phase 1)
+    // ════════════════════════════════════════════════════════════════════
+
+    const CARD_W = 1080;
+    const CARD_H = 1920;
+    const COLOR = {
+      bg: '#FAF7F0',
+      green: '#1B4D3E',
+      gold: '#B89968',
+      body: '#4A4640',
+      muted: '#8A8579',
+      faded: '#A8A29A',
+      divider: '#E8E0D0'
+    };
+
+    let quoteFontsLoaded = false;
+    async function loadQuoteFonts() {
+      if (quoteFontsLoaded) return;
+      try {
+        await Promise.all([
+          document.fonts.load('600 64px Lora'),
+          document.fonts.load('700 96px Lora'),
+          document.fonts.load('500 42px "IBM Plex Mono"'),
+          document.fonts.load('500 56px "IBM Plex Mono"'),
+          document.fonts.load('400 32px "Noto Serif SC"'),
+          document.fonts.load('700 80px "Noto Serif SC"'),
+          document.fonts.load('italic 22px "Noto Serif SC"'),
+          document.fonts.load('italic 36px Lora'),
+          document.fonts.load('400 18px Lora')
+        ]);
+        await document.fonts.ready;
+        quoteFontsLoaded = true;
+      } catch (e) {
+        console.warn('Font load incomplete:', e);
+      }
+    }
+
+    function wrapText(ctx, text, maxWidth) {
+      if (!text) return [];
+      // CJK-aware: 中文按字断,英文按词断
+      const hasCJK = /[一-鿿]/.test(text);
+      const tokens = hasCJK ? Array.from(text) : text.split(/(\s+)/);
+      const lines = [];
+      let line = '';
+      for (const tok of tokens) {
+        const test = line + tok;
+        if (ctx.measureText(test).width > maxWidth && line.trim()) {
+          lines.push(line.trim());
+          line = tok.replace(/^\s+/, '');
+        } else {
+          line = test;
+        }
+      }
+      if (line.trim()) lines.push(line.trim());
+      return lines;
+    }
+
+    function drawBrandBar(ctx, label) {
+      ctx.textAlign = 'center';
+      ctx.fillStyle = COLOR.muted;
+      ctx.font = 'italic 22px "Noto Serif SC", "Source Han Serif SC", serif';
+      ctx.fillText(label, CARD_W / 2, 110);
+    }
+
+    function drawFooter(ctx, label) {
+      ctx.textAlign = 'center';
+      ctx.fillStyle = COLOR.faded;
+      ctx.font = '400 18px Lora, Georgia, serif';
+      ctx.fillText(label, CARD_W / 2, 1850);
+    }
+
+    function drawPhraseCard(ctx, card) {
+      drawBrandBar(ctx, 'Readii · 英伦短文');
+      ctx.textAlign = 'center';
+
+      // English phrase
+      ctx.fillStyle = COLOR.green;
+      ctx.font = '600 64px Lora, Georgia, serif';
+      const enLines = wrapText(ctx, card.english_phrase, 900);
+      const enLH = 88;
+      const enBlockH = enLines.length * enLH;
+      const enStartY = 540 - enBlockH / 2 + enLH * 0.7;
+      enLines.forEach((l, i) => ctx.fillText(l, CARD_W / 2, enStartY + i * enLH));
+      let cursorY = enStartY + (enLines.length - 1) * enLH;
+
+      // Phonetic respelling
+      if (card.phonetic_respelling) {
+        ctx.fillStyle = COLOR.gold;
+        ctx.font = '500 40px "IBM Plex Mono", monospace';
+        const phLines = wrapText(ctx, card.phonetic_respelling, 920);
+        const phLH = 56;
+        cursorY += 120;
+        phLines.forEach((l, i) => ctx.fillText(l, CARD_W / 2, cursorY + i * phLH));
+        cursorY += (phLines.length - 1) * phLH;
+      }
+
+      // Divider
+      cursorY += 90;
+      ctx.fillStyle = COLOR.divider;
+      ctx.fillRect(CARD_W / 2 - 60, cursorY, 120, 1.5);
+
+      // Chinese
+      cursorY += 90;
+      ctx.fillStyle = COLOR.body;
+      ctx.font = '400 36px "Noto Serif SC", "Source Han Serif SC", serif';
+      const zhLines = wrapText(ctx, card.chinese_translation, 920);
+      const zhLH = 54;
+      zhLines.forEach((l, i) => ctx.fillText(l, CARD_W / 2, cursorY + i * zhLH));
+      cursorY += (zhLines.length - 1) * zhLH;
+
+      // Cultural note
+      if (card.cultural_note) {
+        cursorY += 110;
+        ctx.fillStyle = COLOR.muted;
+        ctx.font = 'italic 26px "Noto Serif SC", "Source Han Serif SC", serif';
+        const noteLines = wrapText(ctx, card.cultural_note, 880);
+        const noteLH = 42;
+        noteLines.forEach((l, i) => ctx.fillText(l, CARD_W / 2, cursorY + i * noteLH));
+      }
+
+      drawFooter(ctx, '@readii · 英国第 28 个月');
+    }
+
+    function drawCarouselCover(ctx, card) {
+      drawBrandBar(ctx, 'Readii · 英伦观察');
+      ctx.textAlign = 'center';
+
+      // 中文反差钩子大字
+      ctx.fillStyle = COLOR.green;
+      ctx.font = '700 72px "Noto Serif SC", "Source Han Serif SC", serif';
+      const zhLines = wrapText(ctx, card.chinese_translation, 900);
+      const zhLH = 110;
+      const zhBlockH = zhLines.length * zhLH;
+      const zhStartY = CARD_H / 2 - zhBlockH / 2 - 80 + zhLH * 0.7;
+      zhLines.forEach((l, i) => ctx.fillText(l, CARD_W / 2, zhStartY + i * zhLH));
+      let cursorY = zhStartY + (zhLines.length - 1) * zhLH;
+
+      // English smaller italic
+      cursorY += 130;
+      ctx.fillStyle = COLOR.body;
+      ctx.font = 'italic 36px Lora, Georgia, serif';
+      const enLines = wrapText(ctx, card.english_phrase, 900);
+      const enLH = 54;
+      enLines.forEach((l, i) => ctx.fillText(l, CARD_W / 2, cursorY + i * enLH));
+      cursorY += (enLines.length - 1) * enLH;
+
+      // Slide prompt(gold)
+      if (card.cultural_note) {
+        cursorY += 120;
+        ctx.fillStyle = COLOR.gold;
+        ctx.font = '500 28px "Noto Serif SC", "Source Han Serif SC", serif';
+        const promptLines = wrapText(ctx, card.cultural_note, 900);
+        const promptLH = 44;
+        promptLines.forEach((l, i) => ctx.fillText(l, CARD_W / 2, cursorY + i * promptLH));
+      }
+
+      drawFooter(ctx, '@readii · 英音 + 英伦文化');
+    }
+
+    function drawPhonemeSpotlight(ctx, card) {
+      drawBrandBar(ctx, 'Readii · 英音拼读法');
+      ctx.textAlign = 'center';
+
+      // Word(大字)
+      ctx.fillStyle = COLOR.green;
+      ctx.font = '700 120px Lora, Georgia, serif';
+      ctx.fillText(card.english_phrase, CARD_W / 2, 460);
+
+      // Phonetic boxed(核心视觉)
+      const phStr = card.phonetic_respelling || '';
+      ctx.font = '500 56px "IBM Plex Mono", monospace';
+      const phWidth = ctx.measureText(phStr).width;
+      const boxW = phWidth + 100;
+      const boxH = 130;
+      const boxX = CARD_W / 2 - boxW / 2;
+      const boxY = 600;
+
+      ctx.strokeStyle = COLOR.gold;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(boxX, boxY, boxW, boxH, 14);
+      } else {
+        ctx.rect(boxX, boxY, boxW, boxH);
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = COLOR.gold;
+      ctx.font = '500 56px "IBM Plex Mono", monospace';
+      ctx.fillText(phStr, CARD_W / 2, boxY + boxH / 2 + 20);
+
+      // Chinese label
+      ctx.fillStyle = COLOR.body;
+      ctx.font = '400 40px "Noto Serif SC", "Source Han Serif SC", serif';
+      ctx.fillText(card.chinese_translation, CARD_W / 2, 900);
+
+      // Cultural note(可能含 \n)
+      if (card.cultural_note) {
+        ctx.fillStyle = COLOR.muted;
+        ctx.font = 'italic 28px "Noto Serif SC", "Source Han Serif SC", serif';
+        let y = 1100;
+        const paragraphs = card.cultural_note.split('\n');
+        const lineH = 46;
+        paragraphs.forEach((para, pi) => {
+          const wrapped = wrapText(ctx, para, 900);
+          wrapped.forEach((l) => {
+            ctx.fillText(l, CARD_W / 2, y);
+            y += lineH;
+          });
+          if (pi < paragraphs.length - 1) y += 20;
+        });
+      }
+
+      // Daisy hint
+      ctx.fillStyle = COLOR.faded;
+      ctx.font = 'italic 22px Lora, Georgia, serif';
+      ctx.fillText('Daisy reads this in British accent', CARD_W / 2, 1740);
+
+      drawFooter(ctx, '@readii');
+    }
+
+    async function drawQuoteCard(card) {
+      await loadQuoteFonts();
+      const canvas = document.createElement('canvas');
+      canvas.width = CARD_W;
+      canvas.height = CARD_H;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = COLOR.bg;
+      ctx.fillRect(0, 0, CARD_W, CARD_H);
+
+      if (card.type === 'phrase') drawPhraseCard(ctx, card);
+      else if (card.type === 'carousel-cover') drawCarouselCover(ctx, card);
+      else if (card.type === 'phoneme-spotlight') drawPhonemeSpotlight(ctx, card);
+
+      return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), 'image/png'));
+    }
+
+    function triggerDownload(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    }
+
+    function paintThumb(slug, cardIndex, blob) {
+      const thumb = document.querySelector(
+        `.quote-thumb[data-slug="${slug}"][data-idx="${cardIndex}"]`
+      );
+      if (!thumb) return;
+      const url = URL.createObjectURL(blob);
+      thumb.classList.remove('pending');
+      thumb.classList.add('done');
+      thumb.innerHTML =
+        `<img src="${url}" alt="card ${cardIndex}" style="width:100%;height:100%;object-fit:cover;display:block;">` +
+        `<span class="quote-thumb-badge">${cardIndex}</span>` +
+        `<a class="quote-thumb-dl" href="${url}" download="${slug}_card_${String(cardIndex).padStart(2, '0')}.png" onclick="event.stopPropagation()">⬇</a>`;
+    }
+
+    function cacheBlob(slug, cardIndex, blob) {
+      if (!window.__cardCache) window.__cardCache = {};
+      if (!window.__cardCache[slug]) window.__cardCache[slug] = {};
+      window.__cardCache[slug][cardIndex] = blob;
+    }
+
+    async function generateSingleCardAndDownload(slug, cardIndex) {
+      const cards = (window.QUOTE_CARDS || {})[slug] || [];
+      const card = cards.find((c) => c.card_index === cardIndex);
+      if (!card) return;
+      const statusEl = document.getElementById(`quoteStatus-${slug}`);
+      if (statusEl) {
+        statusEl.textContent = `Rendering card ${cardIndex}…`;
+        statusEl.className = 'status';
+      }
+      try {
+        const blob = await drawQuoteCard(card);
+        cacheBlob(slug, cardIndex, blob);
+        paintThumb(slug, cardIndex, blob);
+        triggerDownload(blob, `${slug}_card_${String(cardIndex).padStart(2, '0')}.png`);
+        if (statusEl) {
+          statusEl.textContent = `✓ Card ${cardIndex} downloaded`;
+          statusEl.className = 'status ok';
+        }
+        maybeEnableZip(slug);
+      } catch (e) {
+        console.error(e);
+        if (statusEl) {
+          statusEl.textContent = `✗ Render failed: ${e.message}`;
+          statusEl.className = 'status err';
+        }
+      }
+    }
+    window.generateSingleCardAndDownload = generateSingleCardAndDownload;
+
+    async function generateAllQuoteCards(slug) {
+      const cards = (window.QUOTE_CARDS || {})[slug] || [];
+      if (!cards.length) return;
+      const statusEl = document.getElementById(`quoteStatus-${slug}`);
+      const zipBtn = document.getElementById(`zipBtn-${slug}`);
+      if (statusEl) {
+        statusEl.textContent = `Generating 0/${cards.length}…`;
+        statusEl.className = 'status';
+      }
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        try {
+          const blob = await drawQuoteCard(card);
+          cacheBlob(slug, card.card_index, blob);
+          paintThumb(slug, card.card_index, blob);
+        } catch (e) {
+          console.error('Card render failed:', card.card_index, e);
+        }
+        if (statusEl) statusEl.textContent = `Generating ${i + 1}/${cards.length}…`;
+      }
+      if (statusEl) {
+        statusEl.textContent = `✓ ${cards.length} cards ready · click any thumbnail to download, or ZIP for all`;
+        statusEl.className = 'status ok';
+      }
+      if (zipBtn) zipBtn.disabled = false;
+    }
+    window.generateAllQuoteCards = generateAllQuoteCards;
+
+    function maybeEnableZip(slug) {
+      const cards = (window.QUOTE_CARDS || {})[slug] || [];
+      const cache = (window.__cardCache || {})[slug] || {};
+      if (Object.keys(cache).length === cards.length) {
+        const zipBtn = document.getElementById(`zipBtn-${slug}`);
+        if (zipBtn) zipBtn.disabled = false;
+      }
+    }
+
+    async function downloadZipForArticle(slug) {
+      const cache = (window.__cardCache || {})[slug];
+      if (!cache || !Object.keys(cache).length) return;
+      const statusEl = document.getElementById(`quoteStatus-${slug}`);
+      if (statusEl) {
+        statusEl.textContent = 'Packaging ZIP…';
+        statusEl.className = 'status';
+      }
+      try {
+        const zip = new JSZip();
+        Object.keys(cache)
+          .sort((a, b) => parseInt(a, 10) - parseInt(b, 10))
+          .forEach((idx) => {
+            zip.file(`${slug}_card_${String(idx).padStart(2, '0')}.png`, cache[idx]);
+          });
+        const content = await zip.generateAsync({ type: 'blob' });
+        triggerDownload(content, `${slug}_quote_cards.zip`);
+        if (statusEl) {
+          statusEl.textContent = '✓ ZIP downloaded';
+          statusEl.className = 'status ok';
+        }
+      } catch (e) {
+        console.error(e);
+        if (statusEl) {
+          statusEl.textContent = `✗ ZIP failed: ${e.message}`;
+          statusEl.className = 'status err';
+        }
+      }
+    }
+    window.downloadZipForArticle = downloadZipForArticle;
+
+    // Preload fonts on first idle so first click is fast
+    if (window.requestIdleCallback) {
+      requestIdleCallback(() => loadQuoteFonts());
+    } else {
+      setTimeout(() => loadQuoteFonts(), 1500);
     }
   </script>
 </body>
